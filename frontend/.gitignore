@@ -4,7 +4,6 @@
 .sass-cache
 
 # npm & bower
-/node_modules/
 /app/bower_components/
 
 # ionic fonts
