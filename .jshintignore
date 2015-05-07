@@ -1,0 +1,10 @@
+.DS_Store
+node_modules
+frontend/dist
+.tmp
+frontend/.sass-cache
+frontend/app/bower_components
+frontend/platforms/ios/www/**
+frontend/**/xcuserdata/
+frontend/xcshareddata/
+.idea/*

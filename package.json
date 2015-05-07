@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node backend/app.js",
-    "test": "mocha backend/test/test.js"
+    "test": "cd backend && mocha"
   },
   "keywords": [
     "civis"
@@ -20,6 +20,7 @@
     "node": ">=0.10.0"
   },
   "devDependencies": {
+    "chai": "*",
     "connect": "^3.3.4",
     "connect-livereload": "^0.5.3",
     "cordova": "5.0.0",
@@ -46,17 +47,19 @@
     "gulp-size": "^1.2.1",
     "gulp-uglify": "^1.1.0",
     "gulp-useref": "^1.1.1",
+    "jscs": "^1.13.1",
     "jshint-stylish": "^1.0.1",
     "main-bower-files": "^2.5.0",
     "minimist": "^1.1.0",
+    "mocha": "^2.2.4",
+    "mocha-jscs": "^1.1.0",
+    "mocha-jshint": "^2.2.3",
     "opn": "^1.0.1",
     "require-dir": "^0.1.0",
     "serve-static": "^1.9.1",
     "vinyl-paths": "^1.0.0",
     "wiredep": "^2.2.2",
-    "xml2js": "^0.4.5",
-    "chai": "*",
-    "mocha": "^2.2.4"
+    "xml2js": "^0.4.5"
   },
   "dependencies": {
     "express": "^4.12.3",
