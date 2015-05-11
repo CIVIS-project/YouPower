@@ -15,16 +15,18 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
+mongoose.connect('mongodb://localhost/civis');
+var db = mongoose.connection;
+
 var app = express();
+app.set('mongoose', mongoose);
+
 var port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(require('./middlewares/auth').initialize());
 app.use(require('./controllers'));
-
-mongoose.connect('mongodb://localhost/civis');
-var db = mongoose.connection;
-app.set('mongoose', mongoose);
 
 db.on('error', l.error.bind(console, 'connection error:'));
 db.once('open', function() {
