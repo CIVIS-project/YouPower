@@ -27,7 +27,7 @@ var db = mongoose.connection;
 app.set('mongoose', mongoose);
 
 db.on('error', l.error.bind(console, 'connection error:'));
-db.once('open', function(callback) {
+db.once('open', function() {
   l.info('connected to database');
   app.listen(port, function() {
     l.info('express listening on port', port);
