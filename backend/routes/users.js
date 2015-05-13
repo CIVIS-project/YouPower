@@ -4,7 +4,15 @@ var express = require('express');
 var router = express.Router();
 var User = require('../models/user').User;
 
-// user registration
+/**
+ * @api {put} /users/register New user registration
+ * @apiGroup Users
+ *
+ * @apiParam {String} username User's e-mail address
+ * @apiParam {String} password User's password
+ *
+ * @apiVersion 1.0.0
+ */
 router.put('/register', function(req, res) {
   var username = req.body.username;
   var password = req.body.password;

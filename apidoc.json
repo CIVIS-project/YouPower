@@ -1,0 +1,10 @@
+{
+  "name": "CIVIS backend API",
+  "version": "0.1.0",
+  "description": "Documentation for each of the API calls",
+  "title": "CIVIS backend API documentation",
+  "url": "/api",
+  "template": {
+    "withCompare": false
+  }
+}

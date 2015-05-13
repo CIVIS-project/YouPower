@@ -26,7 +26,8 @@ var port = process.env.PORT || 3000;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(require('./middlewares/auth').initialize());
-app.use(require('./routes'));
+app.use('/api', require('./routes'));
+app.use(express.static(__dirname + '/apidoc'));
 
 db.on('error', l.error.bind(console, 'connection error:'));
 db.once('open', function() {

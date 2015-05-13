@@ -8,3 +8,4 @@ frontend/platforms/ios/www/**
 frontend/**/xcuserdata/
 frontend/xcshareddata/
 .idea/*
+backend/apidoc/**
