@@ -72,6 +72,6 @@ gulp.task('build-templates', ['clean'], function () {
 // copy assets, wait for fonts
 gulp.task('build-assets', ['clean', 'bower-fonts'], function () {
   return gulp.src('app/*/assets/**/*')
-    .pipe($.if(options.minify, $.imagemin()))
+    //.pipe($.if(options.minify, $.imagemin()))
     .pipe(gulp.dest(paths.dist));
 });
