@@ -1,9 +1,17 @@
-webhooks:
-  urls:
-    - https://webhooks.gitter.im/e/0fe0629b79405afc6e48
-  on_success: change  # options: [always|never|change] default: always
-  on_failure: always  # options: [always|never|change] default: always
-  on_start: false     # default: false
+notifications:
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/0fe0629b79405afc6e48
+    on_success: change
+    on_failure: always
+    on_start: never
 language: node_js
 node_js:
-  - 'node'
+  - 0.10
+deploy:
+  provider: heroku
+  api_key:
+    secure: LZrXEfoiNPEx9LmG0+fh3beJSbzzfhzDj+mcmgPdjcUFNO3tkAB2HDubbLJpI8ozCHT4LGPE+TgP/D+z16udV17fuaSDom5ZMaNyevGKG9zEjXvR/hL6eicqjmf5XMdFgB/nxUOidFI8loSV4neQQcPlQT+HZ4OprBfE5ijpTyFVQNmqKsf8IwgK4WML2wCb7ADIudmJ8kGC26vPQIteSTbzM2cUna3giORUcM0Hc8tUPYTIK9wdw2PZbzPQpDQFwrlUGqoaTbSedq9Pv1cJy6UdKCt2DZxeYHw0jaMHUdfqKp0wLt4Z7WDxMr5AucvFepNqJn8o4et1H+Hof4Ewj8qbMbIN9Up8jXGNS0cNhgVpwqhjeTPLYL5gxaBvB5mLCHCYeR4zC5vVdthtLAPV8ZxBoNKvDR4C5rfIWhzpxdT5DIOJ4NGKWY8Abnlh43HYeNlDHKLU4tToFOYdzTSNS41C8HBHfDPA9UbzFpROaMMqrCG7gg8nkC0mGqRcb3y9xvLyrSPPYyjtdwsM2qGPFV629qimb/GVj/TdaVMcmJq7ZRRBNXyPZdMDXZyuKFmc20Tat0xhPEDcusZGSzqj7TpS3yOnHNUtVLFtw2wdUgVfq6K5F3vG7AqKocQKXEgdhX5/jWcaIfkSA2UJnTOImXrisY+475WitLF1+A4CKes=
+  app: gentle-coast-9691
+  on:
+    repo: CIVIS-project/CIVIS

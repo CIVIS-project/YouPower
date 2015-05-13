@@ -15,7 +15,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost/civis');
+mongoose.connect(process.env.MONGO_URL || 'mongodb://localhost/civis');
 var db = mongoose.connection;
 
 var app = express();
