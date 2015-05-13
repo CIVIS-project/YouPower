@@ -26,7 +26,7 @@ var port = process.env.PORT || 3000;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(require('./middlewares/auth').initialize());
-app.use(require('./controllers'));
+app.use(require('./routes'));
 
 db.on('error', l.error.bind(console, 'connection error:'));
 db.once('open', function() {
