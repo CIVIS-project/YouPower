@@ -3,7 +3,6 @@
 This is the backend of the CIVIS project.
 
 ## Setup
-
 ```
 cd backend/     # move into correct directory
 npm install     # install dependencies
@@ -13,7 +12,6 @@ npm start       # run server
 ## Running unit tests
 
 Make sure that unit tests pass before pushing your code into the repository:
-
 ```
 npm test
 ```
@@ -25,7 +23,7 @@ Successful builds are automatically deployed into a free Heroku Sandbox (at
 the moment) and will be available at: https://gentle-coast-9691.herokuapp.com/
 
 ## File structure
-<pre>
+```
 ├──  apidoc/        - generated documentation for REST API, do not edit directly
 ├──  middlewares/   - misc express.js middleware
 ├──  models/        - database models
@@ -33,7 +31,7 @@ the moment) and will be available at: https://gentle-coast-9691.herokuapp.com/
 ├──  test/          - unit tests
 ├──  app.js         - entry point
 └──  README.md      - this file
-</pre>
+```
 
 ## Notes on apidoc
 The REST API documentation is generated from inline code comments following
