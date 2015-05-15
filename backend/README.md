@@ -31,5 +31,8 @@ API documentation at http://localhost:3000
 
 We will try to keep every single API path documented like this.
 
+Current API documentation of latest master available here:
+https://gentle-coast-9691.herokuapp.com/
+
 ## TODO:
 - OAuth 2.0 instead of HTTP basic auth (eg. OAuth2orize)
