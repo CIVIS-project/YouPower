@@ -1,21 +1,7 @@
-# temp files
-.DS_Store
-.tmp
-.sass-cache
+# Specifies intentionally untracked files to ignore when using Git
+# http://git-scm.com/docs/gitignore
 
-# npm & bower
-/app/bower_components/
-
-# ionic fonts
-/app/main/assets/fonts/ionicons.*
-
-# cordova
-/platforms/
-/plugins/
-
-# cordova build folder
-/www/**
-
-# IDE
-*.sublime-project
-*.sublime-workspace
+node_modules/
+platforms/
+plugins/
+www/css/
