@@ -16,6 +16,12 @@ Running `ionic serve --lab` will simulate different mobile platforms for
 testing.
 
 ## Deploying
+
+### Android
+```
+cordova run
+```
+
 TODO!
 
 ## File structure
