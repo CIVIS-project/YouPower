@@ -3,11 +3,26 @@
 This is the backend of the CIVIS project.
 
 ## Setup
-- npm install
-- npm start
+
+```
+cd backend/     # move into correct directory
+npm install     # install dependencies
+npm start       # run server
+```
 
 ## Running unit tests
-- npm test
+
+Make sure that unit tests pass before pushing your code into the repository:
+
+```
+npm test
+```
+
+## Deploying
+
+Code in the master branch is automatically built and tested by Travis CI.
+Successful builds are automatically deployed into a free Heroku Sandbox (at
+the moment) and will be available at: https://gentle-coast-9691.herokuapp.com/
 
 ## File structure
 <pre>
