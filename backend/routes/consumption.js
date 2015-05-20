@@ -11,12 +11,15 @@ router.use(passport.authenticate('basic', {session: false}));
  * @api {get} /consumption Get energy consumption data
  * @apiGroup Consumption
  *
- * @apiParam {String} userID CIVIS backend user ID
- * @apiParam {String} token CIVIS backend user token
- * @apiParam {String} from Start date string in simplified extended ISO8601
- * format
- * @apiParam {String} to End date string in simplified extended ISO8601
- * format
+ * @apiParam {String} userID Mandatory CIVIS backend user ID
+ * @apiParam {String} token Mandatory CIVIS backend user token
+ * @apiParam {String} from Mandatory Start date string in simplified extended
+ * ISO8601 format
+ * @apiParam {String} to Mandatory End date string in simplified extended
+ * ISO8601 format
+ * @apiParam {String} res Mandatory Granularity of the answer. Possible values:
+ * quarterly, hourly, daily, weekly, monthly
+ * @apiHeader {String} Authorization Mandatory Authentication credentials
  *
  * @apiVersion 1.0.0
  */
