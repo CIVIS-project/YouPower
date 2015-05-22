@@ -74,6 +74,8 @@ exports.get = function(id, cb) {
   }, function(err, action) {
     if (err) {
       cb(err);
+    } else if (!action) {
+      cb('Action not found');
     } else {
       action = action.toObject();
       includeRatingStats(action);
