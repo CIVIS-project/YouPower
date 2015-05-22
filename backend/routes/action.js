@@ -127,6 +127,9 @@ router.get('/:id', function(req, res) {
  * @apiExample {curl} Example usage:
  *    curl -i -X DELETE http://localhost:3000/api/action/555ecb997aa6360e40f26451
  *
+ * @apiSuccess {Integer} n Number of deleted actions (0 or 1)
+ * @apiSuccess {Integer} ok Mongoose internals
+ *
  * @apiSuccessExample {json} Success-Response:
  *   {
  *     "n": 0,
