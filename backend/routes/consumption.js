@@ -3,9 +3,10 @@
 var express = require('express');
 var router = express.Router();
 var Consumption = require('../models/consumption');
-var passport = require('passport');
 
-router.use(passport.authenticate('basic', {session: false}));
+// TODO: auth
+//var passport = require('passport');
+//router.use(passport.authenticate('basic', {session: false}));
 
 /**
  * @api {get} /consumption Get energy consumption data

@@ -5,7 +5,7 @@ var router = express.Router();
 var User = require('../models/user').User;
 
 /**
- * @api {put} /users/register New user registration
+ * @api {post} /users/register New user registration
  * @apiGroup Users
  *
  * @apiParam {String} username User's e-mail address
@@ -13,7 +13,7 @@ var User = require('../models/user').User;
  *
  * @apiVersion 1.0.0
  */
-router.put('/register', function(req, res) {
+router.post('/register', function(req, res) {
   var username = req.body.username;
   var password = req.body.password;
   var energyPlatformID = req.body.energyPlatformID;

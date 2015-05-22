@@ -13,6 +13,7 @@ var l = winston.loggers.get('default');
 
 var express = require('express');
 var bodyParser = require('body-parser');
+var expressValidator = require('express-validator');
 var mongoose = require('mongoose');
 var fs = require('fs');
 
@@ -28,6 +29,7 @@ var port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(expressValidator());
 app.use(require('./middlewares/auth').initialize());
 app.use('/api', require('./routes'));
 app.get('/', function(req, res, next) {
