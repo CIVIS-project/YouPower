@@ -140,18 +140,11 @@ exports.rate = function(id, user, rating, comment, cb) {
       action.save(function(err) {
         cb(err);
       });
-      /*
-      action.ratings.findOne({})
-      .exec(function(err, rating) {
-        console.log(err, rating);
-      });
-      */
     }
   });
 };
 
 /*
-// this functionality maybe belongs in user.js
 exports.allByUser = function(user, cb) {
   cb(null, []);
 };
