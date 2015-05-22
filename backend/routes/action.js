@@ -80,7 +80,7 @@ router.get('/:id', function(req, res) {
 });
 
 /**
- * @api {delete} /action/:id Fetch an action by id
+ * @api {delete} /action/:id Delete an action by id
  * @apiGroup Action
  *
  * @apiParam {String} id MongoId of action
