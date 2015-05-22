@@ -2,7 +2,7 @@
   "preset": "google",
 
   "requireParenthesesAroundIIFE": true,
-  "maximumLineLength": 80,
+  "maximumLineLength": 100,
   "validateLineBreaks": "LF",
   "validateIndentation": 2,
 
