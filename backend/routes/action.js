@@ -25,6 +25,17 @@ var Action = require('../models/action');
  *    "effort": 2
  *  }' \
  *  http://localhost:3000/api/action
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "__v": 0,
+ *     "_id": "555f0163688305b57c7cef6c",
+ *     "description": "Disabling standby can save up to 10% in total electricity costs.",
+ *     "effort": 2,
+ *     "impact": 30,
+ *     "name": "Disable standby on your devices",
+ *     "ratings": []
+ *   }
  */
 router.post('/', function(req, res) {
   Action.create(req.body.name, req.body.description, req.body.impact, req.body.effort,
@@ -42,6 +53,15 @@ router.post('/', function(req, res) {
  * authorization token later!)
  * @apiParam {Number} rating Rating of action (1 [least] - 5 [most])
  * @apiParam {String} [comment] Comment attached to rating
+ *
+ * @apiExample {curl} Example usage:
+ *  curl -i -X PUT -H "Content-Type: application/json" -d \
+ *  '{
+ *    "username": "testUser",
+ *    "rating": 4,
+ *    "comment": "This tip is awesome!"
+ *  }' \
+ *  http://localhost:3000/api/action/rate/555ef84b2fd41ffc6e078a34
  */
 router.put('/rate/:id', function(req, res) {
   req.checkParams('id', 'Invalid action id').isMongoId();
@@ -65,6 +85,26 @@ router.put('/rate/:id', function(req, res) {
  * @apiParam {String} id MongoId of action
  * @apiExample {curl} Example usage:
  *    curl -i http://localhost:3000/api/action/555ecb997aa6360e40f26451
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "__v": 8,
+ *     "_id": "555ef84b2fd41ffc6e078a34",
+ *     "avgRating": 4.25,
+ *     "description": "Disabling standby can save up to 10% in total electricity costs.",
+ *     "effort": 3,
+ *     "impact": 10,
+ *     "name": "Disable standby on your devices",
+ *     "numRatings": 4,
+ *     "ratings": [
+ *       {
+ *         "_id": "testUser",
+ *         "comment": "This tip is awesome!",
+ *         "rating": 4
+ *       },
+ *       ...
+ *     ]
+ *   }
  */
 router.get('/:id', function(req, res) {
   req.checkParams('id', 'Invalid action id').isMongoId();
@@ -86,6 +126,12 @@ router.get('/:id', function(req, res) {
  * @apiParam {String} id MongoId of action
  * @apiExample {curl} Example usage:
  *    curl -i -X DELETE http://localhost:3000/api/action/555ecb997aa6360e40f26451
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "n": 0,
+ *     "ok": 1
+ *   }
  */
 router.delete('/:id', function(req, res) {
   req.checkParams('id', 'Invalid action id').isMongoId();
@@ -107,6 +153,24 @@ router.delete('/:id', function(req, res) {
  * @apiParam {Integer} [limit=50] Maximum number of results returned
  * @apiParam {Integer} [skip=0] Number of results skipped
  * @apiParam {Boolean} [includeRatings=false] Include individual user ratings of action
+ *
+ * @apiExample {curl} Example usage:
+ *    curl -i http://localhost:3000/api/action
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   [
+ *     {
+ *       "__v": 8,
+ *       "_id": "555ef84b2fd41ffc6e078a34",
+ *       "avgRating": 4.25,
+ *       "description": "Disabling standby can save up to 10% in total electricity costs.",
+ *       "effort": 3,
+ *       "impact": 10,
+ *       "name": "Disable standby on your devices",
+ *       "numRatings": 4
+ *     },
+ *     ...
+ *   ]
  */
 router.get('/', function(req, res) {
   req.checkBody('limit').optional().isInt();
