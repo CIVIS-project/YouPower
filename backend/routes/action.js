@@ -27,9 +27,35 @@ var Action = require('../models/action');
  *  http://localhost:3000/api/action
  */
 router.post('/', function(req, res) {
-  Action.create(req.body.name, req.body.impact, req.body.effort, function(err, action) {
+  Action.create(req.body.name, req.body.description, req.body.impact, req.body.effort,
+      function(err, action) {
     res.status(err ? 500 : 200).send(err || action);
   });
+});
+
+/**
+ * @api {put} /action/rate/:id Create/update user's rating of action
+ * @apiGroup Action
+ *
+ * @apiParam {String} id MongoId of action
+ * @apiParam {String} username User's username (NOTE: will be replaced by
+ * authorization token later!)
+ * @apiParam {Number} rating Rating of action (1 [least] - 5 [most])
+ * @apiParam {String} [comment] Comment attached to rating
+ */
+router.put('/rate/:id', function(req, res) {
+  req.checkParams('id', 'Invalid action id').isMongoId();
+  req.checkBody('username', 'Invalid username').notEmpty();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    Action.rate(req.params.id, req.body.username, req.body.rating, req.body.comment,
+        function(err, action) {
+      res.status(err ? 500 : 200).send(err || action);
+    });
+  }
 });
 
 /**
@@ -80,12 +106,15 @@ router.delete('/:id', function(req, res) {
  *
  * @apiParam {Integer} [limit=50] Maximum number of results returned
  * @apiParam {Integer} [skip=0] Number of results skipped
+ * @apiParam {Boolean} [includeRatings=false] Include individual user ratings of action
  */
 router.get('/', function(req, res) {
   req.checkBody('limit').optional().isInt();
   req.checkBody('skip').optional().isInt();
 
-  Action.all(req.body.limit, req.body.skip, function(err, action) {
+  req.sanitize('includeReviews').toBoolean();
+
+  Action.all(req.body.limit, req.body.skip, req.body.includeRatings, function(err, action) {
     res.status(err ? 500 : 200).send(err || action);
   });
 });
