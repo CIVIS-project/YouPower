@@ -1,30 +1,28 @@
-angular.module('starter.controllers', [])
+angular.module('starter.controllers').controller('WelcomeCtrl', function($translate, $scope) {
 
-.controller('WelcomeCtrl', function($scope) {})
+	$scope.changeLanguage = function (langKey) {
+		$translate.use(langKey);
+	};
 
-.controller('ActionsCtrl', function($scope) {})
+}); 
 
-.controller('HomeCtrl', function($scope) {})
+angular.module('starter.controllers').controller('ActionsCtrl', function($scope) {});
 
-.controller('CommunityCtrl', function($scope) {})
+angular.module('starter.controllers').controller('HomeCtrl', function($scope) {});
 
-.controller('PerformanceCtrl', function($scope) {})
+angular.module('starter.controllers').controller('CommunityCtrl', function($scope) {});
 
-.controller('ChallengesCtrl', function($scope) {})
+angular.module('starter.controllers').controller('PerformanceCtrl', function($scope) {});
 
-.controller('ChatsCtrl', function($scope, Chats) {
-  $scope.chats = Chats.all();
-  $scope.remove = function(chat) {
-    Chats.remove(chat);
-  }
-})
+angular.module('starter.controllers').controller('ChallengesCtrl', function($scope) {});
 
-.controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
-  $scope.chat = Chats.get($stateParams.chatId);
-})
+angular.module('starter.controllers').controller('ChatsCtrl', function($scope, Chats) {
+	$scope.chats = Chats.all();
+	$scope.remove = function(chat) {
+		Chats.remove(chat);
+	}
+});
 
-.controller('SettingsCtrl', function($scope) {
-  $scope.settings = {
-    enableFriends: true
-  };
+angular.module('starter.controllers').controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
+	$scope.chat = Chats.get($stateParams.chatId);
 });

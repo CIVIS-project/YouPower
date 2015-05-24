@@ -5,16 +5,16 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'pascalprecht.translate'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
-    if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
-      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-    }
-    if (window.StatusBar) {
+  if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
+    cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+  }
+  if (window.StatusBar) {
       // org.apache.cordova.statusbar required
       StatusBar.styleLightContent();
       if (cordova.platformId == 'android') {
@@ -24,7 +24,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
+.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider, $translateProvider) {
 
   // Ionic uses AngularUI Router which uses the concept of states
   // Learn more here: https://github.com/angular-ui/ui-router
@@ -116,19 +116,66 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
         }
       }
     })
-  */
+*/
 
-  .state('tab.settings', {
-    url: '/settings',
-    views: {
-      'tab-settings': {
-        templateUrl: 'templates/tab-settings.html',
-        controller: 'SettingsCtrl'
-      }
+.state('tab.settings', {
+  url: '/settings',
+  views: {
+    'tab-settings': {
+      templateUrl: 'templates/tab-settings.html',
+      controller: 'SettingsCtrl'
     }
-  });
+  }
+})
+
+.state('tab.personal', {
+  url: '/personal-profile',
+  views: {
+    'tab-settings': {
+      templateUrl: 'templates/tab-settings-personal.html',
+      controller: 'SettingsCtrl'
+    }
+  }
+})
+
+.state('tab.household', {
+  url: '/household-profile',
+  views: {
+    'tab-settings': {
+      templateUrl: 'templates/tab-settings-household.html'
+    }
+  }
+})
+
+
+.state('tab.preferences', {
+  url: '/preferences',
+  views: {
+    'tab-settings': {
+      templateUrl: 'templates/tab-settings-preferences.html'
+    }
+  }
+})
+
+;
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/welcome');
 
+  for(lang in translations){
+    $translateProvider.translations(lang, translations[lang]);
+  }
+  
+  $translateProvider
+  .preferredLanguage('en')
+  .fallbackLanguage('en');
+
 });
+
+
+angular.module('starter.controllers', []);
+
+
+
+
+
