@@ -182,7 +182,7 @@ router.get('/', function(req, res) {
 
   req.sanitize('includeReviews').toBoolean();
 
-  Action.all(req.body.limit, req.body.skip, req.body.includeRatings, function(err, action) {
+  Action.all(req.body.limit || 50, req.body.skip, req.body.includeRatings, function(err, action) {
     res.status(err ? 500 : 200).send(err || action);
   });
 });
