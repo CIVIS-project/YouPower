@@ -49,12 +49,16 @@ router.post('/', function(req, res) {
  * @api {put} /action/rate/:id Create/update user's rating of action
  * @apiGroup Action
  *
+ * @apiUse Authorization
+ *
  * @apiParam {String} id MongoId of action
  * @apiParam {Number} rating Rating of action (1 [least] - 5 [most])
  * @apiParam {String} [comment] Comment attached to rating
  *
  * @apiExample {curl} Example usage:
- *  curl -i -X PUT -H "Content-Type: application/json" -d \
+ *  curl -i -X PUT \
+ *  -H "Authorization: Bearer 615ea82f7fec0ffaee5..." \
+ *  -H "Content-Type: application/json" -d \
  *  '{
  *    "rating": 4,
  *    "comment": "This tip is awesome!"

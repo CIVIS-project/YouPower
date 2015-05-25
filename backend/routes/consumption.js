@@ -3,10 +3,7 @@
 var express = require('express');
 var router = express.Router();
 var Consumption = require('../models/consumption');
-
-// TODO: auth
-//var passport = require('passport');
-//router.use(passport.authenticate('basic', {session: false}));
+var auth = require('../middleware/auth');
 
 /**
  * @api {get} /consumption Get energy consumption data
@@ -25,7 +22,7 @@ var Consumption = require('../models/consumption');
  *
  * @apiVersion 1.0.0
  */
-router.get('/', function(req, res) {
+router.get('/', auth.authenticate(), function(req, res) {
   Consumption.get(req.body,
     function(err, consumption) {
       if (err) {
