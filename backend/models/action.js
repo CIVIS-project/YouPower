@@ -30,7 +30,7 @@ var ActionSchema = new Schema({
   ratings: {
     type: [
       {
-        _id: String, // username of commenter
+        _id: String, // userId of commenter
         rating: {
           type: Number,
           min: 1,
@@ -120,8 +120,8 @@ exports.all = function(limit, skip, includeRatings, cb) {
 };
 
 exports.rate = function(id, user, rating, comment, cb) {
-  // TODO: get username via auth token
-  var username = user;
+  // TODO: get userId via auth token
+  var userId = user;
 
   Action.findOne({
     _id: id
@@ -132,7 +132,7 @@ exports.rate = function(id, user, rating, comment, cb) {
       cb('Action not found');
     } else {
       action.ratings.addToSet({
-        _id: username,
+        _id: userId,
         rating: rating,
         comment: comment
       });

@@ -49,7 +49,7 @@ router.post('/', function(req, res) {
  * @apiGroup Action
  *
  * @apiParam {String} id MongoId of action
- * @apiParam {String} username User's username (NOTE: will be replaced by
+ * @apiParam {String} userId User's id (NOTE: will be replaced by
  * authorization token later!)
  * @apiParam {Number} rating Rating of action (1 [least] - 5 [most])
  * @apiParam {String} [comment] Comment attached to rating
@@ -57,7 +57,7 @@ router.post('/', function(req, res) {
  * @apiExample {curl} Example usage:
  *  curl -i -X PUT -H "Content-Type: application/json" -d \
  *  '{
- *    "username": "testUser",
+ *    "userId": "testUser",
  *    "rating": 4,
  *    "comment": "This tip is awesome!"
  *  }' \
@@ -65,13 +65,13 @@ router.post('/', function(req, res) {
  */
 router.put('/rate/:id', function(req, res) {
   req.checkParams('id', 'Invalid action id').isMongoId();
-  req.checkBody('username', 'Invalid username').notEmpty();
+  req.checkBody('userId', 'Invalid userId').notEmpty();
 
   var err;
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    Action.rate(req.params.id, req.body.username, req.body.rating, req.body.comment,
+    Action.rate(req.params.id, req.body.userId, req.body.rating, req.body.comment,
         function(err, action) {
       res.status(err ? 500 : 200).send(err || action);
     });
