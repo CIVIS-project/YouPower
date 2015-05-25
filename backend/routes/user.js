@@ -8,6 +8,8 @@ var escapeRegexp = require('escape-string-regexp');
 var router = express.Router();
 var User = require('../models/user').User;
 
+router.use('/action', require('./userAction'));
+
 /**
  * @api {post} /user/register New user registration
  * @apiGroup User

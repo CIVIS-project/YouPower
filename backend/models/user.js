@@ -12,6 +12,13 @@ var UserSchema = new Schema({
     email: String,
     photo: String
   },
+  actions: {
+    // NOTE: mixed type schemas below,
+    // http://mongoosejs.com/docs/schematypes.html#mixed
+    done: {},
+    inProgress: {},
+    canceled: {}
+  },
   energyPlatformID: Number
 });
 UserSchema.plugin(passportLocalMongoose, {
