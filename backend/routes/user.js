@@ -1,5 +1,6 @@
 'use strict';
 
+var auth = require('../middleware/auth');
 var express = require('express');
 var router = express.Router();
 var User = require('../models/user').User;
@@ -28,6 +29,9 @@ router.post('/register', function(req, res) {
 
     res.end('successfully registered user: ' + userId);
   });
+});
+
+router.get('/info', function(req, res) {
 });
 
 module.exports = router;
