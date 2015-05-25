@@ -31,7 +31,8 @@ router.post('/register', function(req, res) {
   });
 });
 
-router.get('/info', function(req, res) {
+router.get('/info', auth.authenticate(), function(req, res) {
+  res.end('authenticated api path');
 });
 
 module.exports = router;

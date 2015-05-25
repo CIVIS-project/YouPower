@@ -119,10 +119,7 @@ exports.all = function(limit, skip, includeRatings, cb) {
   });
 };
 
-exports.rate = function(id, user, rating, comment, cb) {
-  // TODO: get userId via auth token
-  var userId = user;
-
+exports.rate = function(id, userId, rating, comment, cb) {
   Action.findOne({
     _id: id
   }, function(err, action) {
@@ -136,7 +133,7 @@ exports.rate = function(id, user, rating, comment, cb) {
         rating: rating,
         comment: comment
       });
-      console.log(require('util').inspect(action));
+
       action.save(function(err) {
         cb(err);
       });
