@@ -34,6 +34,7 @@
     "morgan": "~1.5.0",
     "passport": "^0.2.1",
     "passport-http": "^0.2.2",
+    "passport-http-bearer": "^1.0.1",
     "passport-local-mongoose": "^1.0.0",
     "request": "^2.55.0",
     "serve-favicon": "~2.2.0",
