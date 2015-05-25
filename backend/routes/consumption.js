@@ -11,9 +11,9 @@ var auth = require('../middleware/auth');
  *
  * @apiParam {String} userID CIVIS backend user ID
  * @apiParam {String} token CIVIS backend user token
- * @apiParam {String} from Start date string in simplified extended
+ * @apiParam {Date} from Start date string in simplified extended
  * ISO8601 format
- * @apiParam {String} to End date string in simplified extended
+ * @apiParam {Date} to End date string in simplified extended
  * ISO8601 format
  * @apiParam {String} res Granularity of the answer. Possible values:
  * quarterly, hourly, daily, weekly, monthly

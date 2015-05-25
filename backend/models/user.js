@@ -6,6 +6,12 @@ var passportLocalMongoose = require('passport-local-mongoose');
 
 var UserSchema = new Schema({
   token: String,
+  profile: {
+    name: String,
+    dob: Date,
+    email: String,
+    photo: String
+  },
   energyPlatformID: Number
 });
 UserSchema.plugin(passportLocalMongoose, {
