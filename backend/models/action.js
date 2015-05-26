@@ -11,6 +11,19 @@ var ActionSchema = new Schema({
     type: String,
     required: true
   },
+  category: {
+    type: String,
+    enum: 'oneshot reminder continuous repeating'.split(' '),
+    default: 'oneshot'
+  },
+  activation: {
+    configurable: {
+      type: Boolean,
+      default: false
+    },
+    repeat: Date,
+    delay: Date
+  },
   description: {
     type: String,
     required: true
@@ -59,12 +72,14 @@ var includeRatingStats = function(action) {
   action.numRatings = cnt;
 };
 
-exports.create = function(name, description, impact, effort, cb) {
+exports.create = function(action, cb) {
   Action.create({
-    name: name,
-    description: description,
-    impact: impact,
-    effort: effort
+    name: action.name,
+    category: action.category,
+    activation: action.activation,
+    description: action.description,
+    impact: action.impact,
+    effort: action.effort
   }, cb);
 };
 

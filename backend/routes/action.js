@@ -39,8 +39,7 @@ var Action = require('../models/action');
  *   }
  */
 router.post('/', function(req, res) {
-  Action.create(req.body.name, req.body.description, req.body.impact, req.body.effort,
-      function(err, action) {
+  Action.create(req.body, function(err, action) {
     res.status(err ? 500 : 200).send(err || action);
   });
 });
