@@ -12,6 +12,42 @@ var Action = require('../models/action');
  *
  * @apiParam {String} name Action name
  * @apiParam {String} description Action description
+ * @apiParam {String} [category=oneshot] Category of action. Can be one of:
+ *
+ *   - **oneshot**: action only needs to be performed once, then it’s
+ *   considered done (eg. disable standby setting on your devices)
+ *
+ *   - **reminder**: enabling action sets a reminder X days into the future,
+ *   when performed once, it’s considered done (eg. perform a weatherization
+ *   repair just before winter
+ *
+ *   - **continuous**: action is valid for a long period of time, requires the
+ *   user to be aware of it all the time (eg. turn lights, appliances etc. off
+ *   when not in use)
+ *
+ *   - **repeating**: like reminders but will also repeat every X days. (eg.
+ *   change & clean filters in heating and cooling equipment monthly)
+ *
+ * @apiParam {json} [activation] Settings for when action is activated:
+ *
+ * ```json
+ * {
+ * "repeat": Number,
+ * "delay": Number,
+ * "configurable": Boolean
+ * }
+ * ```
+ *
+ * Where
+ *
+ * - **repeat**: how often (days) does the action repeat? (default = 0, never)
+ *
+ * - **delay**: how many days to delay this action with? (default = 0, no delay)
+ *
+ * - **configurable**: is user allowed to customize **repeat** and **delay** if
+ *   they have non-zero defaults. (values of zero always customizeable to allow
+ *   postponing an action. default = false)
+ *
  * @apiParam {Number} [impact=10] Initial impact estimation of the action
  * (1 [least] - 100 [most])
  * @apiParam {Number} [effort=3] Initial effort estimation of the action

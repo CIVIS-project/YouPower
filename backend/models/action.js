@@ -21,8 +21,8 @@ var ActionSchema = new Schema({
       type: Boolean,
       default: false
     },
-    repeat: Date,
-    delay: Date
+    repeat: Number,
+    delay: Number
   },
   description: {
     type: String,
