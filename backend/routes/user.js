@@ -59,6 +59,7 @@ router.post('/register', function(req, res) {
  */
 router.get('/profile', auth.authenticate(), function(req, res) {
   res.json({
+    userId: req.user.userId,
     profile: req.user.profile,
     energyConsumption: {},
     topActions: [],

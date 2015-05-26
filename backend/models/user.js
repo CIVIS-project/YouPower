@@ -6,6 +6,7 @@ var passportLocalMongoose = require('passport-local-mongoose');
 
 var UserSchema = new Schema({
   token: String,
+  facebookId: String,
   profile: {
     name: String,
     dob: Date,

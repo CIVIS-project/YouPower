@@ -1,8 +1,15 @@
 'use strict';
 
+var winston = require('winston');
+var l = winston.loggers.get('default');
+var mongoose = require('mongoose');
+var crypto = require('crypto');
+
 var passport = require('passport');
+
 var BearerStrategy = require('passport-http-bearer');
 var BasicStrategy = require('passport-http').BasicStrategy;
+var FacebookStrategy = require('passport-facebook');
 var User = require('../models/user').User;
 
 exports.initialize = function() {
@@ -22,6 +29,57 @@ exports.initialize = function() {
     });
   }));
 
+  if (!process.env.FACEBOOK_APP_ID || !process.env.FACEBOOK_APP_SECRET) {
+    l.warn('Facebook login not set up. Please set environment variables:');
+    l.warn('FACEBOOK_APP_ID');
+    l.warn('FACEBOOK_APP_SECRET');
+    l.warn('FACEBOOK_CALLBACK_URL');
+    l.warn('Disabling Facebook login.');
+  } else {
+    passport.use(new FacebookStrategy({
+      clientID: process.env.FACEBOOK_APP_ID,
+      clientSecret: process.env.FACEBOOK_APP_SECRET,
+      callbackURL: process.env.FACEBOOK_CALLBACK_URL ||
+        'http://localhost:3000/api/auth/facebook/callback',
+      enableProof: false
+    }, function(accessToken, refreshToken, profile, done) {
+      User.findOne({facebookId: profile.id}, function(err, user) {
+        if (err) {
+          return done(err);
+        } else if (!user) {
+          // TODO: refactor this mess
+          // user does not exist, register new user
+          crypto.randomBytes(48, function(ex, buf) {
+            var password = buf.toString('hex');
+            User.register(new User({
+              userId: mongoose.Types.ObjectId(),
+              facebookId: profile.id,
+              profile: {
+                name: profile.displayName,
+                gender: profile.gender
+              }
+            }), password, function(err) {
+              if (err) {
+                return done(err);
+              }
+
+              User.findOne({facebookId: profile.id}, function(err, user) {
+                if (err) {
+                  return done(err);
+                } else if (!user) {
+                  return done('user not found after registering! should never happen');
+                }
+                return done(null, user);
+              });
+            });
+          });
+        } else {
+          return done(err, user);
+        }
+      });
+    }));
+  }
+
   passport.serializeUser(User.serializeUser());
   passport.deserializeUser(User.deserializeUser());
 
@@ -34,4 +92,8 @@ exports.basicauth = function() {
 
 exports.authenticate = function() {
   return passport.authenticate('bearer', {session: false});
+};
+
+exports.facebook = function() {
+  return passport.authenticate('facebook', {session: false});
 };

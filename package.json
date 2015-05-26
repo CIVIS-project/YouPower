@@ -34,6 +34,7 @@
     "mongoose": "^4.0.2",
     "morgan": "~1.5.0",
     "passport": "^0.2.1",
+    "passport-facebook": "^2.0.0",
     "passport-http": "^0.2.2",
     "passport-http-bearer": "^1.0.1",
     "passport-local-mongoose": "^1.0.0",
