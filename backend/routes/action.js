@@ -84,8 +84,6 @@ router.post('/', function(req, res) {
  * @api {put} /action/rate/:id Create/update user's rating of action
  * @apiGroup Action
  *
- * @apiUse Authorization
- *
  * @apiParam {String} id MongoId of action
  * @apiParam {Number} rating Rating of action (1 [least] - 5 [most])
  * @apiParam {String} [comment] Comment attached to rating

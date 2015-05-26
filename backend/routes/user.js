@@ -55,8 +55,6 @@ router.post('/register', function(req, res) {
  * @api {get} /user/profile Get your profile
  * @apiGroup User
  *
- * @apiUse Authorization
- *
  * @apiVersion 1.0.0
  */
 router.get('/profile', auth.authenticate(), function(req, res) {
@@ -73,8 +71,6 @@ router.get('/profile', auth.authenticate(), function(req, res) {
 /**
  * @api {post} /user/profile Update your profile
  * @apiGroup User
- *
- * @apiUse Authorization
  *
  * @apiParam {String} [name] Your nickname
  * @apiParam {Date} [dob] Your date of birth
@@ -114,8 +110,6 @@ router.post('/profile', auth.authenticate(), function(req, res) {
  * @api {get} /user/profile/:userId Get another user's profile
  * @apiGroup User
  *
- * @apiUse Authorization
- *
  * @apiVersion 1.0.0
  */
 router.get('/profile/:userId', auth.authenticate(), function(req, res) {
@@ -146,8 +140,6 @@ router.get('/profile/:userId', auth.authenticate(), function(req, res) {
 /**
  * @api {post} /user/search Search for users
  * @apiGroup User
- *
- * @apiUse Authorization
  *
  * @apiParam {String} q Search query
  *

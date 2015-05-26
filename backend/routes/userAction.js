@@ -11,8 +11,6 @@ var Action = require('../models/action');
  * @api {get} /user/action Get user's action list
  * @apiGroup User Action
  *
- * @apiUse Authorization
- *
  * @apiVersion 1.0.0
  */
 router.get('/', auth.authenticate(), function(req, res) {
@@ -24,8 +22,6 @@ router.get('/', auth.authenticate(), function(req, res) {
  * @apiGroup User Action
  *
  * @apiParam {String} actionId Action's MongoId
- *
- * @apiUse Authorization
  *
  * @apiVersion 1.0.0
  */
@@ -66,8 +62,6 @@ router.post('/start/:actionId', auth.authenticate(), function(req, res) {
  *
  * @apiParam {String} actionId Action's MongoId
  *
- * @apiUse Authorization
- *
  * @apiVersion 1.0.0
  */
 router.post('/cancel/:actionId', auth.authenticate(), function(req, res) {
@@ -105,8 +99,6 @@ router.post('/cancel/:actionId', auth.authenticate(), function(req, res) {
  * @apiDescription Note: action must be currently in progress.
  *
  * @apiParam {String} actionId Action's MongoId
- *
- * @apiUse Authorization
  *
  * @apiVersion 1.0.0
  */

@@ -18,8 +18,6 @@ var auth = require('../middleware/auth');
  * @apiParam {String} res Granularity of the answer. Possible values:
  * quarterly, hourly, daily, weekly, monthly
  *
- * @apiUse Authorization
- *
  * @apiVersion 1.0.0
  */
 router.get('/', auth.authenticate(), function(req, res) {
