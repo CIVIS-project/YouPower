@@ -1,11 +1,16 @@
 // Ionic Starter App
 
+
+var controllers = angular.module('starter.controllers', []);
+var services = angular.module('starter.services', []);
+
+
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'pascalprecht.translate'])
+var starter = angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'pascalprecht.translate'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -42,7 +47,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
   .state('tab', {
     url: "/tab",
     abstract: true,
-    templateUrl: "templates/tabs.html"
+    templateUrl: "app/tabs.html"
   })
 
   // Each tab has its own nav history stack:
@@ -122,7 +127,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
   url: '/settings',
   views: {
     'tab-settings': {
-      templateUrl: 'templates/tab-settings.html',
+      templateUrl: 'app/settings/tab-settings.html',
       controller: 'SettingsCtrl'
     }
   }
@@ -132,7 +137,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
   url: '/personal-profile',
   views: {
     'tab-settings': {
-      templateUrl: 'templates/tab-settings-personal.html',
+      templateUrl: 'app/settings/settingsPersonal.html',
       controller: 'SettingsCtrl'
     }
   }
@@ -142,7 +147,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
   url: '/household-profile',
   views: {
     'tab-settings': {
-      templateUrl: 'templates/tab-settings-household.html'
+      templateUrl: 'app/settings/settingsHousehold.html'
     }
   }
 })
@@ -152,7 +157,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
   url: '/preferences',
   views: {
     'tab-settings': {
-      templateUrl: 'templates/tab-settings-preferences.html'
+      templateUrl: 'app/settings/settingsPreferences.html'
     }
   }
 })
@@ -173,7 +178,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 });
 
 
-angular.module('starter.controllers', []);
 
 
 

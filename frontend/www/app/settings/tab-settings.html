@@ -1,4 +1,4 @@
-<ion-view view-title="Settings">
+<ion-view view-title={{"Settings"|translate}}>
   <ion-content>
     <!-- <ion-list>
     <ion-toggle  ng-model="settings.enableFriends">
@@ -13,13 +13,13 @@
 	  <ion-checkbox ng-model="isChecked">Checkbox Label</ion-checkbox>
     </ion-list> -->
 <div class="list card">
-  <div class="item item-divider">About You</div>
+  <div class="item item-divider" translate>About_You</div>
   <div class="item item-input">
     <span class="input-label" translate>Username</span>
     {{person.username}}
   </div>
   <div class="item item-input" ng-repeat="entry in personDataView">
-    <span class="input-label" translate>{{entry.label}}</span> {{entry.value}}
+    <span class="input-label" translate>{{entry.label}}</span> <i translate>{{entry.value}}</i>
   </div>
   <a href="#/tab/personal-profile" class="item item-divider item-icon-left">
     <i class="icon ion-social-snapchat-outline"></i>

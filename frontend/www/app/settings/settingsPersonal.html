@@ -1,4 +1,4 @@
-<ion-view view-title="Personal Profile">
+<ion-view view-title={{"Personal_Profile"|translate}}>
   <ion-content>
   <div class="list">
     <label class="item item-input">
@@ -35,7 +35,7 @@
     </label>
     <label class="item item-input item-select">
       <span class="input-label" translate>Language</span>
-      <select ng-model="person.language">
+      <select ng-model="person.language" ng-change="save()">
         <option value=0 translate>English</option>
         <option value=1 translate>Italian</option>
       </select>
