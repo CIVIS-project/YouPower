@@ -19,7 +19,7 @@ var Action = require('../models/action');
  *
  *   - **reminder**: enabling action sets a reminder X days into the future,
  *   when performed once, it’s considered done (eg. perform a weatherization
- *   repair just before winter
+ *   repair just before winter)
  *
  *   - **continuous**: action is valid for a long period of time, requires the
  *   user to be aware of it all the time (eg. turn lights, appliances etc. off
