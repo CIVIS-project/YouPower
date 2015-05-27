@@ -1,6 +1,6 @@
-# CIVIS backend
+# YouPower backend
 
-This is the backend of the CIVIS project.
+This is the backend of the YouPower app.
 
 ## Setup
 ```

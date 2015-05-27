@@ -7,7 +7,7 @@ var getUserConfig = function() {
   var userConfig = {};
 
   try {
-    userConfig = require(process.env.HOME + '/.civisapp.json');
+    userConfig = require(process.env.HOME + '/.youpower.json');
   } catch (e) {
     l.warn('could not find user config, using defaults');
   }

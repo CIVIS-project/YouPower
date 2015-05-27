@@ -1,19 +1,20 @@
 {
-  "name": "civis-backend",
+  "name": "youpower-backend",
   "version": "0.0.1",
-  "description": "CIVIS project backend",
+  "description": "YouPower app backend",
   "main": "index.js",
   "scripts": {
     "start": "node backend/app.js",
     "test": "cd backend && mocha"
   },
   "keywords": [
-    "civis"
+    "civis",
+    "youpower"
   ],
   "author": "",
   "repository": {
     "type": "git",
-    "url": "https://github.com/CIVIS-project/CIVIS"
+    "url": "https://github.com/CIVIS-project/YouPower"
   },
   "license": "Apache License Version 2.0",
   "engines": {
