@@ -1,5 +1,5 @@
 
-services.factory('personalProfile', function() {
+sharedServices.factory('PersonalProfile', function() {
 
 	var personalData = {
 		username: "jmayer@youpower.eu",

@@ -1,0 +1,66 @@
+<ion-view view-title="Current Actions ({{actions.length}})">
+<ion-content>
+<ion-slide-box active-slide="slideIdx" does-continue="true" show-pager="false">
+<ion-slide ng-repeat="(idx, action) in actions">
+<div class="list card">
+  <div class="item item-divider item-text-wrap">{{idx+1}}. {{action.title}}</div>
+  <div class="item item-body">
+
+<table width="100%">
+  <tr>
+    <td width="20%"> Impact</td>
+    <td width="45%" style="font-size:24px;"><i class="ion-happy balanced" ng-repeat="i in getNumber(action.impact) track by $index"></i><i class="ion-load-c balanced" ng-repeat="i in getNumber(scale-action.impact) track by $index"></i></td> 
+    <td rowspan="2" align="right" style="font-size:35px;"><i class="balanced" ><i class="icon ion-leaf balanced"></i> {{action.points}}</i></td>
+  </tr>
+  <tr>
+    <td> Effort</td>
+    <td style="font-size:24px;"><i class="ion-ios-heart balanced" ng-repeat="i in getNumber(action.effort) track by $index"></i><i class="ion-ios-heart-outline balanced" ng-repeat="i in getNumber(scale-action.effort) track by $index"></i></td> 
+  </tr>
+</table>
+  <p>{{action.description}}</p>
+  <p><a href="#" class="subdued">{{action.participants}} Participants.</a> You started on {{action.date | date:'yyyy-MM-dd'}}.</p>
+</div>
+</div> 
+
+<div class="list card">
+<div class="item item-icon-left item-divider item-text-wrap">How are you doing?<i class="icon ion-ios-help balanced" style="font-size:35px;"></i> </div>
+<i class="item item-checkbox checkbox-balanced item-text-wrap">
+     <label class="checkbox">
+       <input type="checkbox">
+     </label>
+     I have done this<i ng-show="action.regular"> regularly for 3<i class="ion-ios-plus-empty"></i> weeks</i>.
+  </i>
+  <i class="item item-checkbox checkbox-balanced item-text-wrap">
+     <label class="checkbox">
+       <input type="checkbox">
+     </label>
+     I don't like to do this anymore.
+  </i>
+
+  
+</div>
+
+<div class="list card">
+<div class="item item-divider tabs tabs-secondary tabs-icon-left">
+  <a class="tab-item" href="#">
+    <i class="icon ion-thumbsup"></i>
+    {{action.like}} Like 
+  </a>
+  <a class="tab-item" href="#">
+    <i class="icon ion-chatbox"></i>
+    {{action.comments.length}} Comments
+  </a>
+  <a class="tab-item" href="#">
+    <i class="icon ion-share"></i>
+    {{action.share}} Share
+  </a>
+</div>
+<div class="item item-avatar item-text-wrap" ng-repeat="comment in action.comments" >
+  <img ng-src="img/{{comment.name}}.jpg"><h3> {{comment.name}}</h3>
+  <p>{{comment.description}}</p>
+</div>
+</div>
+</ion-slide>
+</ion-slide-box>
+</ion-content>
+</ion-view>

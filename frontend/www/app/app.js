@@ -2,7 +2,7 @@
 
 
 var controllers = angular.module('starter.controllers', []);
-var services = angular.module('starter.services', []);
+var sharedServices = angular.module('starter.sharedServices', []);
 
 
 // angular.module is a global place for creating, registering and retrieving Angular modules
@@ -10,7 +10,7 @@ var services = angular.module('starter.services', []);
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-var starter = angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'pascalprecht.translate'])
+var starter = angular.module('starter', ['ionic', 'starter.controllers', 'starter.sharedServices', 'pascalprecht.translate'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -56,7 +56,17 @@ var starter = angular.module('starter', ['ionic', 'starter.controllers', 'starte
     url: '/actions',
     views: {
       'tab-actions': {
-        templateUrl: 'templates/tab-actions.html',
+        templateUrl: 'app/yourActions/tab-actions.html',
+        controller: 'ActionsCtrl'
+      }
+    }
+  })
+
+  .state('tab.your-actions', {
+    url: '/your-actions',
+    views: {
+      'tab-actions': {
+        templateUrl: 'app/yourActions/your-actions.html',
         controller: 'ActionsCtrl'
       }
     }

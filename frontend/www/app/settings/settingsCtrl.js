@@ -6,9 +6,9 @@ controllers.controller('SettingsCtrl', SettingsCtrl);
 // Inject my dependencies
 //SettingsCtrl.$inject = ['$scope', '$filter', '$translate'];
 
-function SettingsCtrl($scope, $filter, $translate, personalProfile) {
+function SettingsCtrl($scope, $filter, $translate, PersonalProfile) { 
 
-	$scope.person = personalProfile.personalData;
+	$scope.person = PersonalProfile.personalData;
 
 	$scope.person.birthday = $filter("date")($scope.person.birthday, 'yyyy-MM-dd');
 
@@ -23,8 +23,8 @@ function SettingsCtrl($scope, $filter, $translate, personalProfile) {
 	});
 
 	$scope.setPersonDataView = function() {
-		$scope.addPersonDataView("Password", personalProfile.getPwdDate()); 
-		$scope.addPersonDataView("Name", personalProfile.getFullName()); 
+		$scope.addPersonDataView("Password", PersonalProfile.getPwdDate()); 
+		$scope.addPersonDataView("Name", PersonalProfile.getFullName()); 
 		$scope.addPersonDataView("Birthday", $scope.person.birthday); 
 		$scope.addPersonDataView("Language", $scope.languages[$scope.person.language]); 
 	};
