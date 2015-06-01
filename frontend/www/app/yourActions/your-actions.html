@@ -26,13 +26,13 @@
 <div class="item item-icon-left item-divider item-text-wrap">How are you doing?<i class="icon ion-ios-help balanced" style="font-size:35px;"></i> </div>
 <i class="item item-checkbox checkbox-balanced item-text-wrap">
      <label class="checkbox">
-       <input type="checkbox">
+       <input type="checkbox" ng-model="actionDone" ng-change="actionCompleted(action,actionDone)">
      </label>
      I have done this<i ng-show="action.regular"> regularly for 3<i class="ion-ios-plus-empty"></i> weeks</i>.
   </i>
-  <i class="item item-checkbox checkbox-balanced item-text-wrap">
+  <i class="item item-checkbox checkbox-balanced item-text-wrap" >
      <label class="checkbox">
-       <input type="checkbox">
+       <input type="checkbox" ng-model="actionCanceled" ng-change="actionDone = !actionCanceled">
      </label>
      I don't like to do this anymore.
   </i>
@@ -56,7 +56,7 @@
   </a>
 </div>
 <div class="item item-avatar item-text-wrap" ng-repeat="comment in action.comments" >
-  <img ng-src="img/{{comment.name}}.jpg"><h3> {{comment.name}}</h3>
+  <img ng-src="img/{{comment.name}}.jpg"><h3>{{comment.name}}</h3>
   <p>{{comment.description}}</p>
 </div>
 </div>

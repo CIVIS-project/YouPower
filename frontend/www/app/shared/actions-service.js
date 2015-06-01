@@ -5,7 +5,8 @@ sharedServices.factory('Actions', function() {
 	{
 		id: 447876543,
 		name: "Yilin",
-		description: "It is easier to use switch-plugs."
+		description: "Turning off stanbys is easier with switch plugs or power strips.",
+		date: "",
 	},
 	{
 		id: 447876543,
@@ -15,7 +16,7 @@ sharedServices.factory('Actions', function() {
 	{
 		id: 447876543,
 		name: "Martijn", 
-		description: "I run a server at home 24/7. I don't like to turn it off. "
+		description: "I run a server at home 24/7. I will not turn it off. I can see that I do not have many standbys. I installed Smappee."
 	}
 	];
 
@@ -28,7 +29,7 @@ sharedServices.factory('Actions', function() {
 	{
 		id: 447876543,
 		name: "Christophe",
-		description: "My parents' house is pretty old. I spent a lot of time in the past two months helping them renovate some parts and seal up the leaks. Can I get leaves for that?"
+		description: "My parents' house is pretty old. I spent a lot of time in the past two months helping them renovate some parts and seal up the leaks. Can I get leafs for that?"
 	},
 	{
 		id: 447876543,
@@ -74,7 +75,8 @@ sharedServices.factory('Actions', function() {
 		date: new Date (2015, 5-1 , 23),
 		participants: 34,
 		like: 45,
-		comments: comments1,
+		comments: [
+		],
 		share: 23,
 	},
 	{

@@ -1,5 +1,10 @@
 // Ionic Starter App
 
+endev.autoStart = false;
+endev.firebaseProvider = {
+  path: "https://youpower.firebaseio.com/"
+};
+
 
 var controllers = angular.module('starter.controllers', []);
 var sharedServices = angular.module('starter.sharedServices', []);
@@ -10,7 +15,7 @@ var sharedServices = angular.module('starter.sharedServices', []);
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-var starter = angular.module('starter', ['ionic', 'starter.controllers', 'starter.sharedServices', 'pascalprecht.translate'])
+var starter = angular.module('starter', ['ionic', 'Endev', 'starter.controllers', 'starter.sharedServices', 'pascalprecht.translate'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -68,6 +73,16 @@ var starter = angular.module('starter', ['ionic', 'starter.controllers', 'starte
       'tab-actions': {
         templateUrl: 'app/yourActions/your-actions.html',
         controller: 'ActionsCtrl'
+      }
+    }
+  })
+
+  .state('tab.action-completed', {
+    url: '/action-completed/:id',
+    views: {
+      'tab-actions': {
+        templateUrl: 'app/yourActions/action-completed.html',
+        controller: 'FormsCtrl'
       }
     }
   })
