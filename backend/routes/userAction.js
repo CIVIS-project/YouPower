@@ -29,9 +29,12 @@ router.post('/start/:actionId', auth.authenticate(), function(req, res) {
   Action.get(req.params.actionId, function(err, actionResult) {
     if (err) {
       res.status(500).json({err: err});
+    } else if (!actionResult) {
+      res.status(404).json({err: 'Action not found'});
     } else {
       // store this action in inProgress list
-      req.user.actions.inProgress[req.params.actionId] = actionResult.toObject();
+      console.log(actionResult);
+      req.user.actions.inProgress[req.params.actionId] = actionResult;
       var action = req.user.actions.inProgress[req.params.actionId];
 
       action.startedDate = new Date();

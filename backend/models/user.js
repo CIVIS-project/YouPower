@@ -16,9 +16,18 @@ var UserSchema = new Schema({
   actions: {
     // NOTE: mixed type schemas below,
     // http://mongoosejs.com/docs/schematypes.html#mixed
-    done: {},
-    inProgress: {},
-    canceled: {}
+    done: {
+      type: Object,
+      default: {}
+    },
+    inProgress: {
+      type: Object,
+      default: {}
+    },
+    canceled: {
+      type: Object,
+      default: {}
+    }
   },
   energyPlatformID: Number
 });
