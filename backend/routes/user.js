@@ -9,6 +9,7 @@ var router = express.Router();
 var User = require('../models/user').User;
 
 router.use('/action', require('./userAction'));
+router.use('/challenge', require('./userChallenge'));
 
 /**
  * @api {post} /user/register New user registration
