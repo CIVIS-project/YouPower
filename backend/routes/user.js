@@ -139,7 +139,7 @@ router.get('/profile/:userId', auth.authenticate(), function(req, res) {
 });
 
 /**
- * @api {post} /user/search Search for users
+ * @api {get} /user/search Search for users
  * @apiGroup User
  *
  * @apiParam {String} q Search query
