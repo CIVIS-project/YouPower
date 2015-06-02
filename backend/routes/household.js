@@ -87,21 +87,21 @@ router.get('/:id', function(req, res) {
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    Household.get(req.params.id, function(err, household) {
+    Household.getApartmentInfo(req.params.id, function(err, household) {
       res.status(err ? 500 : 200).send(err || household);
     });
   }
 });
 
 /**
- * @api {delete} /action/:id Delete a Household by id
+ * @api {delete} /household/:id Delete a Household by id
  * @apiGroup Household
  *
  * @apiParam {String} id MongoId of household
  * @apiExample {curl} Example usage:
  *    curl -i -X DELETE http://localhost:3000/api/household/555ecb997aa6360e40f26451
  *
- * @apiSuccess {Integer} n Number of deleted actions (0 or 1)
+ * @apiSuccess {Integer} n Number of deleted household (0 or 1)
  * @apiSuccess {Integer} ok Mongoose internals
  *
  * @apiSuccessExample {json} Success-Response:
@@ -122,4 +122,34 @@ router.delete('/:id', function(req, res) {
     });
   }
 });
+
+/**
+ * @api {put} /household/:id Update address of household
+ * @apiGroup Household
+ *
+ * @apiParam {String} id MongoId of action
+ * @apiParam {Address} Address of household
+ *
+ * @apiExample {curl} Example usage:
+ *  curl -i -X PUT \
+ *  -H "Authorization: Bearer 615ea82f7fec0ffaee5..." \
+ *  -H "Content-Type: application/json" -d \
+ *  '{
+ *    "Address": "Konemiehentie 2, Otaniemi, Espoo, 02150"
+ *  }' \
+ *  http://localhost:3000/api/household/555ef84b2fd41ffef6e078a34
+ */
+router.put('/:id', function(req, res) {
+  req.checkParams('id', 'Invalid household id').isMongoId();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    Household.updateAddress(req.body, function(err, house) {
+      res.status(err ? 500 : 200).send(err || house);
+    });
+  }
+});
+
 module.exports = router;

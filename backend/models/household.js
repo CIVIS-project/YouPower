@@ -8,9 +8,21 @@ var Schema = mongoose.Schema;
 var HouseSchema = new Schema({
   apartmentID: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   address: {
+    type: String,
+    required: true
+  },
+  appliancesList: {
+    appliance: {
+      type: String,
+      required: true
+    },
+    quantity:Number
+  },
+  energyVal:{
     type: String,
     required: true
   },
@@ -26,19 +38,21 @@ var HouseSchema = new Schema({
 
 var Household = mongoose.model('Household', HouseSchema);
 
-// create household with members
+// create household entity
 
 exports.create = function(household, cb) {
   Household.create({
     apartmentID: household.apartmentID,
     address: household.address,
-    members:household.members // need to change
+    appliancesList: household.appliancesList,
+    energyVal: household.energyVal,
+    members: household.User.name // need to verify. not really correct
   }, cb);
 };
 
 // get household by id
 
-exports.get = function(id, cb) {
+exports.getApartmentInfo = function(id, cb) {
   Household.findOne({
     _id: id
   }, function(err, household) {
@@ -55,9 +69,9 @@ exports.get = function(id, cb) {
 
 // find by apartmentID?
 
-exports.getByApartmentID = function(apartmentID, cb) {
+exports.getByApartmentID = function(id, cb) {
   Household.findOne({
-    _id: apartmentID
+    apartmentID: id
   }, function(err, household) {
     if (err) {
       cb(err);
@@ -68,6 +82,23 @@ exports.getByApartmentID = function(apartmentID, cb) {
       cb(null, household);
     }
   });
+};
+
+//update address
+
+exports.updateAddress = function(household, cb) {
+  Household.findByIdAndUpdate({
+  _id: household.id
+}, function(err, house) {
+  if (err) {
+    cb(err);
+  } else if (!house) {
+    cb('Household not found');
+  } else {
+    house.address = household.address;
+    cb(null, household);
+  }
+});
 };
 
 // delete houshold by id
