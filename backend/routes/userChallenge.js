@@ -101,45 +101,4 @@ router.post('/cancel/:challengeId', auth.authenticate(), function(req, res) {
   */
 });
 
-/**
- * @api {post} /user/challenge/complete/:challengeId Complete an challenge for current user (TODO)
- * @apiGroup User Challenge
- * @apiDescription Note: challenge must be currently in progress.
- *
- * @apiParam {String} challengeId Challenge's MongoId
- *
- * @apiVersion 1.0.0
- */
-router.post('/complete/:challengeId', auth.authenticate(), function(req, res) {
-  res.status(501).send('Not implemented');
-  /*
-  var challenge = req.user.challenges.inProgress[req.params.challengeId];
-
-  if (!challenge) {
-    res.status(404).json({err: 'Challenge not in progress'});
-  } else {
-    // store this challenge in done list
-    req.user.challenges.done[req.params.challengeId] = challenge;
-
-    challenge.doneDate = new Date();
-
-    // get rid of the challenge in other lists
-    delete(req.user.challenges.canceled[req.params.challengeId]);
-    delete(req.user.challenges.inProgress[req.params.challengeId]);
-
-    // must be manually marked as modified due to mixed type schemas
-    req.user.markModified('challenges.inProgress');
-    req.user.markModified('challenges.done');
-    req.user.markModified('challenges.canceled');
-    req.user.save(function(err, user) {
-      if (err) {
-        res.status(500).json({err: err});
-      } else {
-        res.json({user: user});
-      }
-    });
-  }
-  */
-});
-
 module.exports = router;
