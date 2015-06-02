@@ -33,7 +33,6 @@ router.post('/start/:actionId', auth.authenticate(), function(req, res) {
       res.status(404).json({err: 'Action not found'});
     } else {
       // store this action in inProgress list
-      console.log(actionResult);
       req.user.actions.inProgress[req.params.actionId] = actionResult;
       var action = req.user.actions.inProgress[req.params.actionId];
 

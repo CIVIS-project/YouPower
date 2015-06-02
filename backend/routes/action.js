@@ -220,4 +220,46 @@ router.get('/', function(req, res) {
   });
 });
 
+/**
+ * @api {get} /action/search Search for actions (TODO: implement me)
+ * @apiGroup Action
+ *
+ * @apiParam {String} q Search query
+ *
+ * @apiExample {curl} Example usage:
+ *  curl -i http://localhost:3000/api/action/search\?q\=foobar
+ */
+router.get('/search', auth.authenticate(), function(req, res) {
+  req.checkQuery('q', 'Invalid query parameter').notEmpty();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    res.status(501).send('Not implemented');
+    /*
+    var regexpQuery = new RegExp(escapeRegexp(req.query.q));
+
+    var query = User.find({
+      $or: [
+        {'profile.name':  regexpQuery},
+        {'userId':        regexpQuery}
+      ]
+    });
+
+    query.select('profile userId');
+    query.limit(50);
+
+    query.exec(function(err, users) {
+      if (err) {
+        res.status(500).json(err);
+      } else {
+        res.json({
+          users: users
+        });
+      }
+    });
+    */
+  }
+});
 module.exports = router;
