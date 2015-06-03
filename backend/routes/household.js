@@ -16,7 +16,17 @@ var Household = require('../models/household');
  *  curl -i -X POST -H "Content-Type: application/json" -d \
  *  '{
  *    "apartmentID": "XYZ",
- *    "address": "Konemiehentie 2, Otaniemi, Espoo, 02150",
+ *    "appliancesList": [
+ *       {
+ *       "appliance": "Washing Machine",
+ *       "quantity": 2
+ *       },
+ *       {
+ *        "appliance": "Heater",
+ *        "quantity": 4
+ *       }
+ *    ],
+ *    "address": "Konemiehentie 2, Espoo, 02150",
  *    "members": [
  *       {
  *         "_id": "testUser1",
@@ -35,12 +45,24 @@ var Household = require('../models/household');
  *     "__v": 0,
  *     "_id": "555f0163688305b57c7cef6c",
  *     "apartmentID": "XYZ",
+ *     "appliancesList': [
+ *       {
+ *         "appliance":"Washing Machine",
+ *         "quanity":2
+ *       },
+ *       {
+ *         "appliance":"Heater",
+ *         "quanity":4
+ *       }
+ *     ],
  *     "address": "Konemiehentie 2, Otaniemi, Espoo, 02150",
  *      "members": [
+ *        "User":
  *         {
  *          "_id": "testUser1",
  *          "name": "Jane",
  *        },
+ *       "User" :
  *        {
  *         "_id": "testUser2",
  *         "name": "Jack",
@@ -66,6 +88,16 @@ router.post('/', function(req, res) {
  *     "__v": 8,
  *     "_id": "555ef84b2fd41ffc6e078a34",
  *     "apartmentID": XYZ,
+ *     "appliancesList': [
+ *       {
+ *         "appliance":"Washing Machine",
+ *         "quanity":2
+ *       },
+ *       {
+ *         "appliance":"Heater",
+ *         "quanity":4
+ *       }
+ *     ],
  *     "address": "Konemiehentie 2, Otaniemi, Espoo 02150",
  *     "members": [
  *       {
@@ -139,6 +171,7 @@ router.delete('/:id', function(req, res) {
  *  }' \
  *  http://localhost:3000/api/household/555ef84b2fd41ffef6e078a34
  */
+
 router.put('/:id', function(req, res) {
   req.checkParams('id', 'Invalid household id').isMongoId();
 
@@ -147,6 +180,36 @@ router.put('/:id', function(req, res) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
     Household.updateAddress(req.body, function(err, house) {
+      res.status(err ? 500 : 200).send(err || house);
+    });
+  }
+});
+
+/**
+ * @api {put} /household/:id Add appliance to household
+ * @apiGroup Household
+ *
+ * @apiParam {String} id MongoId of action
+ * @apiParam {applianceList} List of appliances in the household
+ *
+ * @apiExample {curl} Example usage:
+ *  curl -i -X PUT \
+ *  -H "Authorization: Bearer 615ea82f7fec0ffaee5..." \
+ *  -H "Content-Type: application/json" -d \
+ *  '{
+ *    "appliance": "Oven",
+*     "quantity":1
+ *  }' \
+ *  http://localhost:3000/api/household/555ef84b2fd41ffef6e078a34
+ */
+router.put('/:id', function(req, res) {
+  req.checkParams('id', 'Invalid household id').isMongoId();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    Household.addAppliance(req.body, function(err, house) {
       res.status(err ? 500 : 200).send(err || house);
     });
   }

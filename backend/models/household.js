@@ -5,6 +5,12 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
+//Appliance Schema
+var applianceSchema = new Schema(
+  {
+    appliance: String,
+    quantity: Number
+  });
 var HouseSchema = new Schema({
   apartmentID: {
     type: String,
@@ -16,24 +22,21 @@ var HouseSchema = new Schema({
     required: true
   },
   appliancesList: {
-    appliance: {
-      type: String,
-      required: true
-    },
-    quantity:Number
+    type:[
+      applianceSchema
+    ]
   },
   energyVal:{
     type: String,
     required: true
   },
-  members: {
-    User: {
+  members: [
+    {
       type: Schema.Types.ObjectId,
       ref: 'User',
       required: true
     }
-  }
-
+  ]
 });
 
 var Household = mongoose.model('Household', HouseSchema);
@@ -96,6 +99,23 @@ exports.updateAddress = function(household, cb) {
     cb('Household not found');
   } else {
     house.address = household.address;
+    cb(null, household);
+  }
+});
+};
+
+//add appliances to the household
+
+exports.addAppliance = function(household, cb) {
+  Household.findById({
+  _id: household.id
+}, function(err, house) {
+  if (err) {
+    cb(err);
+  } else if (!house) {
+    cb('Household not found');
+  } else {
+    house.appliancesList.push(household);
     cb(null, household);
   }
 });
