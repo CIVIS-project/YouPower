@@ -138,7 +138,6 @@ exports.all = function(limit, skip, includeRatings, cb) {
 };
 
 exports.rate = function(id, userId, rating, comment, cb) {
-  console.log(id, userId, rating, comment);
   Action.findOne({
     _id: id
   }, function(err, action) {
