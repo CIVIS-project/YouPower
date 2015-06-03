@@ -202,7 +202,7 @@ router.put('/:id', function(req, res) {
  *  }' \
  *  http://localhost:3000/api/household/555ef84b2fd41ffef6e078a34
  */
-router.put('/:id', function(req, res) {
+router.put('/appliance/:id', function(req, res) {
   req.checkParams('id', 'Invalid household id').isMongoId();
 
   var err;
@@ -215,4 +215,33 @@ router.put('/:id', function(req, res) {
   }
 });
 
+/**
+ * @api {put} /household/:id Remove appliance to household
+ * @apiGroup Household
+ *
+ * @apiParam {String} id MongoId of action
+ * @apiParam {applianceList} List of appliances in the household
+ *
+ * @apiExample {curl} Example usage:
+ *  curl -i -X PUT \
+ *  -H "Authorization: Bearer 615ea82f7fec0ffaee5..." \
+ *  -H "Content-Type: application/json" -d \
+ *  '{
+ *    "appliance": "Oven",
+*     "quantity":1
+ *  }' \
+ *  http://localhost:3000/api/household/555ef84b2fd41ffef6e078a34
+ */
+router.put('/appliance/:id', function(req, res) {
+  req.checkParams('id', 'Invalid household id').isMongoId();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    Household.removeAppliance(req.body, function(err, house) {
+      res.status(err ? 500 : 200).send(err || house);
+    });
+  }
+});
 module.exports = router;
