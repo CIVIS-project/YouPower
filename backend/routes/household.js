@@ -190,7 +190,7 @@ router.put('/:id', function(req, res) {
  * @apiGroup Household
  *
  * @apiParam {String} id MongoId of household
- * @apiParam {applianceList} List of appliances in the household
+ * @apiParam {Array} List of appliances in the household
  *
  * @apiExample {curl} Example usage:
  *  curl -i -X PUT \
@@ -220,7 +220,7 @@ router.put('/add/:id', function(req, res) {
  * @apiGroup Household
  *
  * @apiParam {String} id MongoId of action
- * @apiParam {applianceList} List of appliances in the household
+ * @apiParam {Array} List of appliances in the household
  *
  * @apiExample {curl} Example usage:
  *  curl -i -X PUT \
