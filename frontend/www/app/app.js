@@ -10,6 +10,7 @@ var controllers = angular.module('starter.controllers', []);
 var sharedServices = angular.module('starter.sharedServices', []);
 
 
+
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
@@ -17,7 +18,18 @@ var sharedServices = angular.module('starter.sharedServices', []);
 // 'starter.controllers' is found in controllers.js
 var starter = angular.module('starter', ['ionic', 'Endev', 'starter.controllers', 'starter.sharedServices', 'pascalprecht.translate'])
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, $rootScope) {
+
+  $rootScope.scale = 5; 
+
+  $rootScope._=_;
+
+  $rootScope.currentUser = null;
+
+  $rootScope.getNumber = function(num) {
+      return new Array(num);   
+  }
+
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -44,7 +56,7 @@ var starter = angular.module('starter', ['ionic', 'Endev', 'starter.controllers'
 
   .state('welcome', {
     url: "/welcome",
-    templateUrl: "templates/welcome.html",
+    templateUrl: "app/welcome/welcome.html",
     controller: 'WelcomeCtrl'
   })
 
@@ -67,8 +79,18 @@ var starter = angular.module('starter', ['ionic', 'Endev', 'starter.controllers'
     }
   })
 
+  .state('tab.action', {
+    url: '/actions/:id',
+    views: {
+      'tab-actions': {
+        templateUrl: 'app/yourActions/action.html',
+        controller: 'ActionCtrl'
+      }
+    }
+  })
+
   .state('tab.your-actions', {
-    url: '/your-actions',
+    url: '/your-actions/:index',
     views: {
       'tab-actions': {
         templateUrl: 'app/yourActions/your-actions.html',

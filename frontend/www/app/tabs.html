@@ -4,6 +4,9 @@ Each tab's child <ion-nav-view> directive will have its own
 navigation history that also transitions its views in and out.
 -->
 <ion-tabs class="tabs-striped tabs-background-balanced tabs-color-light">
+  <div from = "users user" provider="firebase" where="user.username=currentUser.username" default="{username:currentUser.username, prefferdNrOfActions:2}" auto-insert="true" loaded="user.lang = curretnUser.lang" auto-update="true">
+
+
   <!-- My Actions Tab -->
   <ion-tab title="My Actions" icon="ion-person" href="#/tab/actions">
     <ion-nav-view name="tab-actions"></ion-nav-view>
@@ -33,4 +36,5 @@ navigation history that also transitions its views in and out.
   <ion-tab title="Settings" icon="ion-settings" href="#/tab/settings">
     <ion-nav-view name="tab-settings"></ion-nav-view>
   </ion-tab>
+  </div>
 </ion-tabs>

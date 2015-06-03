@@ -1,0 +1,37 @@
+<ion-view view-title="CIVIS">
+  <ion-content class="padding">
+    <div class="list card">
+      <div class="item item-divider">
+        <h1 class="text-center padding-vertical">
+          EnergyUP
+        </h1>
+      </div>
+      <h2 class="text-center">
+        <i class="icon ion-earth"></i> Be more <span class="balanced">green.</span>
+      </h2>
+      <h2 class="text-center">
+        <i class="icon ion-happy-outline"></i> Be more <span class="balanced">social.</span>
+      </h2>
+      <h2 class="text-center padding-bottom">
+        <i class="icon ion-checkmark-circled"></i> Take actions!
+      </h2>
+      </div>
+    </div>
+   <!--  <input ng-model="emailAddress"/>
+ -->
+    <div class="list card">
+    <label class="item text-center item-text-wrap">
+      <p>User your <i>Email address</i> to create or retrieve an account, or use the default account "jmayber@energyup.eu"</p>
+    </label>
+    <label class="item item-input">
+      <span class="input-label">Username</span>
+      <input type="text" placeholder="Your Email address" ng-model="emailAddress">
+    </label>
+    </div>
+
+    <div class="button-bar">
+      <a class="button button-balanced" href="#/tab/actions/0" ng-click="changeLanguage('it')">Iniziare!</a>
+      <a class="button button-balanced" href="#/tab/actions" insert-into="users" provider="firebase" ng-click="setCurrentUser({username:emailAddress,lang:'en'});changeLanguage('en')">Get started!</a>
+    </div>
+  </ion-content>
+</ion-view>
