@@ -202,7 +202,7 @@ router.put('/:id', function(req, res) {
  *  }' \
  *  http://localhost:3000/api/household/555ef84b2fd41ffef6e078a34
  */
-router.put('/appliance/:id', function(req, res) {
+router.put('/add/:id', function(req, res) {
   req.checkParams('id', 'Invalid household id').isMongoId();
 
   var err;
@@ -232,7 +232,7 @@ router.put('/appliance/:id', function(req, res) {
  *  }' \
  *  http://localhost:3000/api/household/555ef84b2fd41ffef6e078a34
  */
-router.put('/appliance/:id', function(req, res) {
+router.put('/remove/:id', function(req, res) {
   req.checkParams('id', 'Invalid household id').isMongoId();
 
   var err;
