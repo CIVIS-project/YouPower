@@ -8,7 +8,7 @@ var Household = require('../models/household');
  * @api {post} /household Create new household
  * @apiGroup Household
  *
- * @apiParam {String} apartmentID Enery meter id of the household
+ * @apiParam {String} apartmentID Energy meter id of the household
  * @apiParam {String} address Household address
  * @apiParam {json}   members Member ids and names in the household
  *
@@ -159,8 +159,8 @@ router.delete('/:id', function(req, res) {
  * @api {put} /household/:id Update address of household
  * @apiGroup Household
  *
- * @apiParam {String} id MongoId of action
- * @apiParam {Address} Address of household
+ * @apiParam {String} id MongoId of household
+ * @apiParam {Address} String Address of household
  *
  * @apiExample {curl} Example usage:
  *  curl -i -X PUT \
@@ -189,7 +189,7 @@ router.put('/:id', function(req, res) {
  * @api {put} /household/:id Add appliance to household
  * @apiGroup Household
  *
- * @apiParam {String} id MongoId of action
+ * @apiParam {String} id MongoId of household
  * @apiParam {applianceList} List of appliances in the household
  *
  * @apiExample {curl} Example usage:
@@ -200,7 +200,7 @@ router.put('/:id', function(req, res) {
  *    "appliance": "Oven",
 *     "quantity":1
  *  }' \
- *  http://localhost:3000/api/household/555ef84b2fd41ffef6e078a34
+ *  http://localhost:3000/api/household/add/555ef84b2fd41ffef6e078a34
  */
 router.put('/add/:id', function(req, res) {
   req.checkParams('id', 'Invalid household id').isMongoId();
@@ -230,7 +230,7 @@ router.put('/add/:id', function(req, res) {
  *    "appliance": "Oven",
 *     "quantity":1
  *  }' \
- *  http://localhost:3000/api/household/555ef84b2fd41ffef6e078a34
+ *  http://localhost:3000/api/household/remove/555ef84b2fd41ffef6e078a34
  */
 router.put('/remove/:id', function(req, res) {
   req.checkParams('id', 'Invalid household id').isMongoId();
