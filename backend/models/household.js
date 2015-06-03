@@ -120,7 +120,9 @@ exports.addAppliance = function(household, cb) {
   }
 });
 };
-//remove appliance
+
+//remove appliance from household
+
 exports.removeAppliance = function(household, cb) {
   Household.findById({
   _id: household.id
@@ -135,6 +137,41 @@ exports.removeAppliance = function(household, cb) {
   }
 });
 };
+
+//add member to the household
+
+exports.addMember = function(user, cb) {
+  Household.findById({
+  _id: user.id
+}, function(err, house) {
+  if (err) {
+    cb(err);
+  } else if (!house) {
+    cb('Household not found');
+  } else {
+    house.members.push(user);
+    cb(null, user);
+  }
+});
+};
+
+//remove member from  household
+
+exports.removeMember = function(user, cb) {
+  Household.findById({
+  _id: user.id
+}, function(err, house) {
+  if (err) {
+    cb(err);
+  } else if (!house) {
+    cb('Household not found');
+  } else {
+    house.members.remove(user);
+    cb(null, user);
+  }
+});
+};
+
 // delete houshold by id
 exports.delete = function(id, cb) {
   Household.remove({

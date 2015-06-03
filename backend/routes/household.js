@@ -163,7 +163,7 @@ router.delete('/:id', function(req, res) {
  * @apiGroup Household
  *
  * @apiParam {String} id MongoId of household
- * @apiParam {Address} String Address of household
+ * @apiParam {Address} Address String of household
  *
  * @apiExample {curl} Example usage:
  *  curl -i -X PUT \
@@ -218,7 +218,7 @@ router.put('/add/:id', function(req, res) {
 });
 
 /**
- * @api {put} /household/remove/:id Remove appliance to household
+ * @api {put} /household/remove/:id Remove appliance from household
  * @apiGroup Household
  *
  * @apiParam {String} id MongoId of action
@@ -242,6 +242,74 @@ router.put('/remove/:id', function(req, res) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
     Household.removeAppliance(req.body, function(err, house) {
+      res.status(err ? 500 : 200).send(err || house);
+    });
+  }
+});
+
+/**
+ * @api {put} /household/add/:id Add member to household
+ * @apiGroup Household
+ *
+ * @apiParam {String} id MongoId of household
+ * @apiParam {Array} List of members in the household
+ *
+ * @apiExample {curl} Example usage:
+ *  curl -i -X PUT \
+ *  -H "Authorization: Bearer 615ea82f7fec0ffaee5..." \
+ *  -H "Content-Type: application/json" -d \
+ *  '{
+ *    "_id": "testUser1",
+ *    "name": "Jane",
+ *   }'
+ * '{
+ *    "_id": "testUser2",
+ *    "name": "Jack",
+ *  }' \
+ *  http://localhost:3000/api/household/adduser/555ef84b2fd41ffef6e078a34
+ */
+router.put('/addmember/:id', function(req, res) {
+  req.checkParams('id', 'Invalid household id').isMongoId();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    Household.addmember(req.body, function(err, house) {
+      res.status(err ? 500 : 200).send(err || house);
+    });
+  }
+});
+
+/**
+ * @api {put} /household/remove/:id Remove member from household
+ * @apiGroup Household
+ *
+ * @apiParam {String} id MongoId of action
+ * @apiParam {Array} List of members in the household
+ *
+ * @apiExample {curl} Example usage:
+ *  curl -i -X PUT \
+ *  -H "Authorization: Bearer 615ea82f7fec0ffaee5..." \
+ *  -H "Content-Type: application/json" -d \
+ *  '{
+ *    "_id": "testUser1",
+ *    "name": "Jane",
+ *   }'
+ * '{
+ *    "_id": "testUser2",
+ *    "name": "Jack",
+ *  }' \
+ *  http://localhost:3000/api/household/removemember/555ef84b2fd41ffef6e078a34
+ */
+router.put('/removemember/:id', function(req, res) {
+  req.checkParams('id', 'Invalid household id').isMongoId();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    Household.removeMember(req.body, function(err, house) {
       res.status(err ? 500 : 200).send(err || house);
     });
   }
