@@ -4,6 +4,7 @@ var express = require('express');
 var util = require('util');
 var router = express.Router();
 var Household = require('../models/household');
+
 /**
  * @api {post} /household Create new household
  * @apiGroup Household
@@ -75,6 +76,7 @@ router.post('/', function(req, res) {
     res.status(err ? 500 : 200).send(err || household);
   });
 });
+
 /**
  * @api {get} /household/:id Fetch a household by id
  * @apiGroup Household
@@ -112,6 +114,7 @@ router.post('/', function(req, res) {
  *     ]
  *   }
  */
+
 router.get('/:id', function(req, res) {
   req.checkParams('id', 'Invalid household id').isMongoId();
 
@@ -171,7 +174,6 @@ router.delete('/:id', function(req, res) {
  *  }' \
  *  http://localhost:3000/api/household/555ef84b2fd41ffef6e078a34
  */
-
 router.put('/:id', function(req, res) {
   req.checkParams('id', 'Invalid household id').isMongoId();
 
@@ -186,7 +188,7 @@ router.put('/:id', function(req, res) {
 });
 
 /**
- * @api {put} /household/:id Add appliance to household
+ * @api {put} /household/add/:id Add appliance to household
  * @apiGroup Household
  *
  * @apiParam {String} id MongoId of household
@@ -216,7 +218,7 @@ router.put('/add/:id', function(req, res) {
 });
 
 /**
- * @api {put} /household/:id Remove appliance to household
+ * @api {put} /household/remove/:id Remove appliance to household
  * @apiGroup Household
  *
  * @apiParam {String} id MongoId of action
@@ -244,4 +246,5 @@ router.put('/remove/:id', function(req, res) {
     });
   }
 });
+
 module.exports = router;
