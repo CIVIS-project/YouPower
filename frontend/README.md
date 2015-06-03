@@ -1,5 +1,5 @@
-# CIVIS frontend
-This is the frontend of the CIVIS project.
+# YouPower frontend
+This is the frontend of the YouPower project.
 
 ## Setup
 ```

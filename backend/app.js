@@ -21,7 +21,6 @@ mongoose.connect(process.env.MONGO_URL || 'mongodb://localhost/civis');
 var db = mongoose.connection;
 
 var app = express();
-app.set('mongoose', mongoose);
 app.set('view engine', 'jade');
 app.set('views', __dirname + '/apidoc');
 

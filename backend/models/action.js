@@ -43,7 +43,10 @@ var ActionSchema = new Schema({
   ratings: {
     type: [
       {
-        _id: String, // userId of commenter
+        _id: {
+          type: String, // userId of commenter
+          required: true
+        },
         rating: {
           type: Number,
           min: 1,
