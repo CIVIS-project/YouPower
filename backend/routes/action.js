@@ -48,8 +48,8 @@ var Action = require('../models/action');
  *   they have non-zero defaults. (values of zero always customizeable to allow
  *   postponing an action. default = false)
  *
- * @apiParam {Number} [impact=10] Initial impact estimation of the action
- * (1 [least] - 100 [most])
+ * @apiParam {Number} [impact=3] Initial impact estimation of the action
+ * (1 [least] - 5 [most])
  * @apiParam {Number} [effort=3] Initial effort estimation of the action
  * (1 [least] - 5 [most])
  *
@@ -58,7 +58,7 @@ var Action = require('../models/action');
  *  '{
  *    "name": "Disable standby on your devices",
  *    "description": "Disabling standby can save up to 10% in total electricity costs.",
- *    "impact": 30,
+ *    "impact": 2,
  *    "effort": 2
  *  }' \
  *  http://localhost:3000/api/action
@@ -69,7 +69,7 @@ var Action = require('../models/action');
  *     "_id": "555f0163688305b57c7cef6c",
  *     "description": "Disabling standby can save up to 10% in total electricity costs.",
  *     "effort": 2,
- *     "impact": 30,
+ *     "impact": 2,
  *     "name": "Disable standby on your devices",
  *     "ratings": []
  *   }
@@ -127,7 +127,7 @@ router.put('/rate/:id', auth.authenticate(), function(req, res) {
  *     "avgRating": 4.25,
  *     "description": "Disabling standby can save up to 10% in total electricity costs.",
  *     "effort": 3,
- *     "impact": 10,
+ *     "impact": 2,
  *     "name": "Disable standby on your devices",
  *     "numRatings": 4,
  *     "ratings": [
@@ -202,7 +202,7 @@ router.delete('/:id', function(req, res) {
  *       "avgRating": 4.25,
  *       "description": "Disabling standby can save up to 10% in total electricity costs.",
  *       "effort": 3,
- *       "impact": 10,
+ *       "impact": 2,
  *       "name": "Disable standby on your devices",
  *       "numRatings": 4
  *     },

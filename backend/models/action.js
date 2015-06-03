@@ -31,8 +31,8 @@ var ActionSchema = new Schema({
   impact: {
     type: Number,
     min: 1,
-    max: 100,
-    default: 10
+    max: 5,
+    default: 3
   },
   effort: {
     type: Number,
