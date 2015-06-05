@@ -45,7 +45,8 @@ describe('models', function() {
 
     /*
     it('should add rating to action document', function(done) {
-      models.action.rate(firstAction._id.toString(), 'myuser', 4, 'foo bar', function(err) {
+      models.action.rate(String(firstAction._id), 'myuser', 4, 'foo bar', function(err) {
+        console.log(require('util').inspect(err));
         if (err) {
           return done(err);
         }
