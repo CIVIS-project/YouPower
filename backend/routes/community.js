@@ -184,7 +184,7 @@ router.delete('/:id', function(req, res) {
  * @apiGroup Household
  *
  * @apiParam {String} id MongoId of Community
- * @apiParam {Array} List of members in the Community
+ * @apiParam {Array} members List of members in the Community
  *
  * @apiExample {curl} Example usage:
  *  curl -i -X PUT \
@@ -216,7 +216,7 @@ router.put('/join/:id', function(req, res) {
  * @apiGroup Community
  *
  * @apiParam {String} id MongoId of action
- * @apiParam {Array} List of members in the community
+ * @apiParam {Array} members List of members in the community
  *
  * @apiExample {curl} Example usage:
  *  curl -i -X PUT \
