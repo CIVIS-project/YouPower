@@ -180,7 +180,7 @@ router.delete('/:id', function(req, res) {
 });
 
 /**
- * @api {put} /community/add/:id Add member to Community
+ * @api {put} /community/join/:id Add member to Community
  * @apiGroup Household
  *
  * @apiParam {String} id MongoId of Community
@@ -200,7 +200,7 @@ router.delete('/:id', function(req, res) {
  *  }' \
  *  http://localhost:3000/api/household/join/555ef84b2fd41ffef6e078a34
  */
-router.put('/joincommunity/:id', function(req, res) {
+router.put('/join/:id', function(req, res) {
   req.checkParams('id', 'Invalid household id').isMongoId();
 
   var err;
@@ -232,7 +232,7 @@ router.put('/joincommunity/:id', function(req, res) {
  *  }' \
  *  http://localhost:3000/api/community/leave/555ef84b2fd41ffef6e078a34
  */
-router.put('/leavecommunity/:id', function(req, res) {
+router.put('/leave/:id', function(req, res) {
   req.checkParams('id', 'Invalid household id').isMongoId();
 
   var err;
