@@ -12,6 +12,21 @@ var BasicStrategy = require('passport-http').BasicStrategy;
 var FacebookStrategy = require('passport-facebook');
 var User = require('../models/user').User;
 
+exports.genToken = function(cb) {
+  crypto.randomBytes(48, function(ex, buf) {
+    cb(buf.toString('hex'));
+  });
+};
+
+exports.newUserToken = function(user, cb) {
+  exports.genToken(function(token) {
+    user.token = token;
+    user.save(function(err) {
+      cb(err, token);
+    });
+  });
+};
+
 exports.initialize = function() {
   passport.use(new BasicStrategy(User.authenticate()));
   passport.use(new BearerStrategy(function(token, done) {

@@ -2,7 +2,6 @@
 
 var auth = require('../middleware/auth');
 var express = require('express');
-var crypto = require('crypto');
 var util = require('util');
 var escapeRegexp = require('escape-string-regexp');
 var router = express.Router();
@@ -35,12 +34,16 @@ router.post('/register', function(req, res) {
       profile: {
         name: req.body.name
       }
-    }), req.body.password, function(err) {
+    }), req.body.password, function(err, user) {
       if (err) {
-        return res.status(501).end('error while registering: ' + err);
+        return res.status(500).end('error while registering: ' + err);
       }
 
-      res.end('successfully registered user: ' + req.body.userId);
+      auth.newUserToken(user, function(err, token) {
+        res.successRes(err, {
+          token: token
+        });
+      });
     });
   }
 });
@@ -210,19 +213,32 @@ router.get('/search', auth.authenticate(), function(req, res) {
  *
  * @apiVersion 1.0.0
  */
-router.get('/token', auth.basicauth(), function(req, res) {
-  crypto.randomBytes(48, function(ex, buf) {
-    var token = buf.toString('hex');
-    req.user.token = token;
-    req.user.save(function(err) {
-      if (err) {
-        res.status(500).json(err);
-      } else {
-        res.json({
-          token: token
-        });
-      }
+router.post('/token', auth.basicauth(), function(req, res) {
+  auth.newUserToken(req.user, function(err, token) {
+    res.successRes(err, {
+      token: token
     });
+  });
+});
+
+/**
+ * @api {get} /user/token Get current API token
+ * @apiGroup User
+ *
+ * @apiHeader {String} Authorization HTTP Basic Authentication credentials
+ * @apiHeaderExample {String} Authorization-Example:
+ *   "Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ=="
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "token": "615ea82f7fec0ffaee5..."
+ *   }
+ *
+ * @apiVersion 1.0.0
+ */
+router.get('/token', auth.basicauth(), function(req, res) {
+  res.json({
+    token: req.user.token
   });
 });
 
