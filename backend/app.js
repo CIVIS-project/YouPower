@@ -12,6 +12,13 @@ winston.loggers.add('default', {
 var l = winston.loggers.get('default');
 
 var express = require('express');
+
+express.response.successRes = function(err, json, errStatus, okStatus) {
+  errStatus = errStatus || 500;
+  okStatus = okStatus || 200;
+  this.status(err ? errStatus : okStatus).json(err || json);
+};
+
 var bodyParser = require('body-parser');
 var expressValidator = require('express-validator');
 var mongoose = require('mongoose');

@@ -2,7 +2,6 @@
 
 var express = require('express');
 var auth = require('../middleware/auth');
-var crypto = require('crypto');
 var router = express.Router();
 
 /**
@@ -18,18 +17,14 @@ router.get('/facebook', auth.facebook(), function() {
  * @apiGroup Facebook Login
  */
 router.get('/facebook/callback', auth.facebook(), function(req, res) {
-  crypto.randomBytes(48, function(ex, buf) {
-    var token = buf.toString('hex');
-    req.user.token = token;
-    req.user.save(function(err) {
-      if (err) {
-        res.status(500).json(err);
-      } else {
-        res.json({
-          token: token
-        });
-      }
-    });
+  auth.newUserToken(req.user, function(err, token) {
+    if (err) {
+      res.status(500).json(err);
+    } else {
+      res.json({
+        token: token
+      });
+    }
   });
 });
 
