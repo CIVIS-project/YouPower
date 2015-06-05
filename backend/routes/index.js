@@ -9,5 +9,6 @@ router.use('/action', require('./action'));
 router.use('/challenge', require('./challenge'));
 router.use('/auth', require('./auth'));
 router.use('/household', require('./household'));
+router.use('/community', require('./community'));
 
 module.exports = router;
