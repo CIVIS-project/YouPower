@@ -181,7 +181,7 @@ router.delete('/:id', function(req, res) {
 
 /**
  * @api {put} /community/join/:id Add member to Community
- * @apiGroup Household
+ * @apiGroup Community
  *
  * @apiParam {String} id MongoId of Community
  * @apiParam {Array} members List of members in the Community
@@ -192,10 +192,6 @@ router.delete('/:id', function(req, res) {
  *  -H "Content-Type: application/json" -d \
  *  '{
  *    "_id": "testUser1",
- *    "name": "Jane",
- *   }'
- * '{
- *    "_id": "testUser2",
  *    "name": "Jack",
  *  }' \
  *  http://localhost:3000/api/community/join/555ef84b2fd41ffef6e078a34
