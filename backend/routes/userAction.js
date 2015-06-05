@@ -28,9 +28,9 @@ router.get('/', auth.authenticate(), function(req, res) {
 router.post('/start/:actionId', auth.authenticate(), function(req, res) {
   Action.get(req.params.actionId, function(err, actionResult) {
     if (err) {
-      res.status(500).json({err: err});
+      res.successRes(err);
     } else if (!actionResult) {
-      res.status(404).json({err: 'Action not found'});
+      res.successRes('Action not found');
     } else {
       // store this action in inProgress list
       req.user.actions.inProgress[req.params.actionId] = actionResult;
@@ -46,13 +46,7 @@ router.post('/start/:actionId', auth.authenticate(), function(req, res) {
       req.user.markModified('actions.inProgress');
       req.user.markModified('actions.done');
       req.user.markModified('actions.canceled');
-      req.user.save(function(err, user) {
-        if (err) {
-          res.status(500).json({err: err});
-        } else {
-          res.json({user: user});
-        }
-      });
+      req.user.save(res.successRes);
     }
   });
 });
@@ -85,13 +79,7 @@ router.post('/cancel/:actionId', auth.authenticate(), function(req, res) {
     req.user.markModified('actions.inProgress');
     req.user.markModified('actions.done');
     req.user.markModified('actions.canceled');
-    req.user.save(function(err, user) {
-      if (err) {
-        res.status(500).json({err: err});
-      } else {
-        res.json({user: user});
-      }
-    });
+    req.user.save(res.successRes);
   }
 });
 
@@ -123,13 +111,7 @@ router.post('/complete/:actionId', auth.authenticate(), function(req, res) {
     req.user.markModified('actions.inProgress');
     req.user.markModified('actions.done');
     req.user.markModified('actions.canceled');
-    req.user.save(function(err, user) {
-      if (err) {
-        res.status(500).json({err: err});
-      } else {
-        res.json({user: user});
-      }
-    });
+    req.user.save(res.successRes);
   }
 });
 

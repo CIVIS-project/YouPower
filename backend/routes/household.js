@@ -72,9 +72,7 @@ var Household = require('../models/household');
  *   }
  */
 router.post('/', function(req, res) {
-  Household.create(req.body, function(err, household) {
-    res.status(err ? 500 : 200).send(err || household);
-  });
+  Household.create(req.body, res.successRes);
 });
 
 /**
@@ -122,9 +120,7 @@ router.get('/:id', function(req, res) {
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    Household.getApartmentInfo(req.params.id, function(err, household) {
-      res.status(err ? 500 : 200).send(err || household);
-    });
+    Household.getApartmentInfo(req.params.id, res.successRes);
   }
 });
 
@@ -152,9 +148,7 @@ router.delete('/:id', function(req, res) {
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    Household.delete(req.params.id, function(err, action) {
-      res.status(err ? 500 : 200).send(err || action);
-    });
+    Household.delete(req.params.id, res.successRes);
   }
 });
 
@@ -181,9 +175,7 @@ router.put('/:id', function(req, res) {
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    Household.updateAddress(req.body, function(err, house) {
-      res.status(err ? 500 : 200).send(err || house);
-    });
+    Household.updateAddress(req.body, res.successRes);
   }
 });
 
@@ -211,9 +203,7 @@ router.put('/add/:id', function(req, res) {
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    Household.addAppliance(req.body, function(err, house) {
-      res.status(err ? 500 : 200).send(err || house);
-    });
+    Household.addAppliance(req.body, res.successRes);
   }
 });
 
@@ -241,9 +231,7 @@ router.put('/remove/:id', function(req, res) {
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    Household.removeAppliance(req.body, function(err, house) {
-      res.status(err ? 500 : 200).send(err || house);
-    });
+    Household.removeAppliance(req.body, res.successRes);
   }
 });
 
@@ -275,9 +263,7 @@ router.put('/addmember/:id', function(req, res) {
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    Household.addmember(req.body, function(err, house) {
-      res.status(err ? 500 : 200).send(err || house);
-    });
+    Household.addmember(req.body, res.successRes);
   }
 });
 
@@ -309,9 +295,7 @@ router.put('/removemember/:id', function(req, res) {
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    Household.removeMember(req.body, function(err, house) {
-      res.status(err ? 500 : 200).send(err || house);
-    });
+    Household.removeMember(req.body, res.successRes);
   }
 });
 

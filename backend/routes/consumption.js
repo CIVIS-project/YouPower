@@ -21,14 +21,7 @@ var auth = require('../middleware/auth');
  * @apiVersion 1.0.0
  */
 router.get('/', auth.authenticate(), function(req, res) {
-  Consumption.get(req.body,
-    function(err, consumption) {
-      if (err) {
-        return res.status(500).send(err);
-      }
-      res.send(consumption);
-    }
-  );
+  Consumption.get(req.body, res.successRes);
 });
 
 module.exports = router;

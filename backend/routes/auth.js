@@ -18,13 +18,9 @@ router.get('/facebook', auth.facebook(), function() {
  */
 router.get('/facebook/callback', auth.facebook(), function(req, res) {
   auth.newUserToken(req.user, function(err, token) {
-    if (err) {
-      res.status(500).json(err);
-    } else {
-      res.json({
-        token: token
-      });
-    }
+    res.successRes(err, {
+      token: token
+    });
   });
 });
 

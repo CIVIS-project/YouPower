@@ -76,7 +76,7 @@ var Action = require('../models/action');
  */
 router.post('/', function(req, res) {
   Action.create(req.body, function(err, action) {
-    res.status(err ? 500 : 200).send(err || action);
+    res.successRes(err, action);
   });
 });
 
@@ -107,7 +107,7 @@ router.put('/rate/:id', auth.authenticate(), function(req, res) {
   } else {
     Action.rate(req.params.id, req.user.userId, req.body.rating, req.body.comment,
         function(err, action) {
-      res.status(err ? 500 : 200).send(err || action);
+      res.successRes(err, action);
     });
   }
 });
@@ -148,7 +148,7 @@ router.get('/:id', function(req, res) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
     Action.get(req.params.id, function(err, action) {
-      res.status(err ? 500 : 200).send(err || action);
+      res.successRes(err, action);
     });
   }
 });
@@ -178,7 +178,7 @@ router.delete('/:id', function(req, res) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
     Action.delete(req.params.id, function(err, action) {
-      res.status(err ? 500 : 200).send(err || action);
+      res.successRes(err, action);
     });
   }
 });
@@ -216,7 +216,7 @@ router.get('/', function(req, res) {
   req.sanitize('includeReviews').toBoolean();
 
   Action.all(req.body.limit || 50, req.body.skip, req.body.includeRatings, function(err, action) {
-    res.status(err ? 500 : 200).send(err || action);
+    res.successRes(err, action);
   });
 });
 

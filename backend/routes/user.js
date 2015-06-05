@@ -100,13 +100,9 @@ router.post('/profile', auth.authenticate(), function(req, res) {
     req.user.profile.photo =  req.body.photo || req.user.profile.photo;
 
     req.user.save(function(err) {
-      if (err) {
-        res.status(500).json(err);
-      } else {
-        res.json({
-          profile: req.user.profile
-        });
-      }
+      res.successRes(err, {
+        profile: req.user.profile
+      });
     });
   }
 });
@@ -123,22 +119,21 @@ router.get('/profile/:userId', auth.authenticate(), function(req, res) {
   query.select('profile userId');
 
   query.exec(function(err, user) {
-    if (err) {
-      res.status(500).json(err);
-    } else if (!user) {
-      res.status(404).json({
-        err: 'User not found'
-      });
-    } else {
-      res.json({
-        userID: user.userId,
-        profile: user.profile,
-        energyConsumption: {},
-        topActions: [],
-        topChallenges: [],
-        topCommunities: []
-      });
+    var errStatus = 500;
+
+    if (!err && !user) {
+      err = 'User not found';
+      errStatus = 404;
     }
+
+    res.successRes(err, {
+      userID: user.userId,
+      profile: user.profile,
+      energyConsumption: {},
+      topActions: [],
+      topChallenges: [],
+      topCommunities: []
+    }, errStatus);
   });
 });
 
@@ -186,15 +181,7 @@ router.get('/search', auth.authenticate(), function(req, res) {
     query.select('profile userId');
     query.limit(50);
 
-    query.exec(function(err, users) {
-      if (err) {
-        res.status(500).json(err);
-      } else {
-        res.json({
-          users: users
-        });
-      }
-    });
+    query.exec(res.successRes);
   }
 });
 
@@ -237,7 +224,7 @@ router.post('/token', auth.basicauth(), function(req, res) {
  * @apiVersion 1.0.0
  */
 router.get('/token', auth.basicauth(), function(req, res) {
-  res.json({
+  res.successRes(req.user.token ? null : 'User token not found', {
     token: req.user.token
   });
 });
