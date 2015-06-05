@@ -198,7 +198,7 @@ router.delete('/:id', function(req, res) {
  *    "_id": "testUser2",
  *    "name": "Jack",
  *  }' \
- *  http://localhost:3000/api/household/join/555ef84b2fd41ffef6e078a34
+ *  http://localhost:3000/api/community/join/555ef84b2fd41ffef6e078a34
  */
 router.put('/join/:id', function(req, res) {
   req.checkParams('id', 'Invalid household id').isMongoId();
