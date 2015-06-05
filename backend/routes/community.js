@@ -90,9 +90,7 @@ var Community = require('../models/community');
  *   }
  */
 router.post('/', function(req, res) {
-  Community.create(req.body, function(err, community) {
-    res.status(err ? 500 : 200).send(err || community);
-  });
+  Community.create(req.body, res.successRes);
 });
 
 /**
@@ -149,9 +147,7 @@ router.get('/:id', function(req, res) {
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    Community.getCommunityInfo(req.params.id, function(err, community) {
-      res.status(err ? 500 : 200).send(err || community);
-    });
+    Community.getCommunityInfo(req.params.id, res.successRes);
   }
 });
 
@@ -179,9 +175,7 @@ router.delete('/:id', function(req, res) {
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    Community.delete(req.params.id, function(err, community) {
-      res.status(err ? 500 : 200).send(err || community);
-    });
+    Community.delete(req.params.id, res.successRes);
   }
 });
 
@@ -213,9 +207,7 @@ router.put('/joincommunity/:id', function(req, res) {
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    Community.addmember(req.body, function(err, community) {
-      res.status(err ? 500 : 200).send(err || community);
-    });
+    Community.addmember(req.body, res.successRes);
   }
 });
 
@@ -247,9 +239,7 @@ router.put('/leavecommunity/:id', function(req, res) {
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    Community.removeMember(req.body, function(err, community) {
-      res.status(err ? 500 : 200).send(err || community);
-    });
+    Community.removeMember(req.body, res.successRes);
   }
 });
 
