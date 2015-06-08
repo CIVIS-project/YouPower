@@ -39,6 +39,10 @@ UserSchema.plugin(passportLocalMongoose, {
 
 var User = mongoose.model('User', UserSchema);
 
+exports.authenticate = User.authenticate;
+exports.serializeUser = User.serializeUser;
+exports.deserializeUser = User.deserializeUser;
+
 exports.register = function(userInfo, password, cb) {
   User.register(new User(userInfo), password, cb);
 };
@@ -64,6 +68,8 @@ exports.getProfile = function(id, cb) {
   });
 };
 
+// TODO: we should NOT allow arbitrary queries in the REST API, only maybe
+// email or profile
 exports.find = function(q, multi, limit, skip, cb) {
   var query = User.find(q);
   query.select('profile email');
