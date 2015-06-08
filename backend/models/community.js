@@ -78,7 +78,7 @@ exports.addMember = function(user, cb) {
     cb('Community not found');
   } else {
     community.members.push(user);
-    cb(null, user);
+    cb(null, community);
   }
 });
 };
@@ -95,7 +95,23 @@ exports.removeMember = function(user, cb) {
     cb('Community not found');
   } else {
     community.members.remove(user);
-    cb(null, user);
+    cb(null, community);
+  }
+});
+};
+
+//return top actions in community- "actions with rating > 3"- need to verify this
+exports.topActions = function(id, cb) {
+  Community
+  .find({_id: id})
+  .where('Community.actions.ratings.rating')
+  .gt(3)
+  .populate('actions')
+  .exec(function(err, actions) {
+  if (err) {
+    cb(err);
+  } else {
+    cb(actions);
   }
 });
 };

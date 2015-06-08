@@ -197,7 +197,7 @@ router.delete('/:id', function(req, res) {
  *  http://localhost:3000/api/community/join/555ef84b2fd41ffef6e078a34
  */
 router.put('/join/:id', function(req, res) {
-  req.checkParams('id', 'Invalid household id').isMongoId();
+  req.checkParams('id', 'Invalid Community id').isMongoId();
 
   var err;
   if ((err = req.validationErrors())) {
@@ -229,13 +229,40 @@ router.put('/join/:id', function(req, res) {
  *  http://localhost:3000/api/community/leave/555ef84b2fd41ffef6e078a34
  */
 router.put('/leave/:id', function(req, res) {
-  req.checkParams('id', 'Invalid household id').isMongoId();
+  req.checkParams('id', 'Invalid Community id').isMongoId();
 
   var err;
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
     Community.removeMember(req.body, res.successRes);
+  }
+});
+
+/**
+ * @api {put} /community/top/:id Display top actions from community
+ * @apiGroup Community
+ *
+ * @apiParam {String} id MongoId of action
+ * @apiParam {Array} actions List of top actions in the community, actions with high rating
+ *
+ * @apiExample {curl} Example usage:
+ *  curl -i -X PUT \
+ *  -H "Authorization: Bearer 615ea82f7fec0ffaee5..." \
+ *  -H "Content-Type: application/json" -d \
+ *  '{
+ *    "_id": "315ea82f7fec0ffaee5",
+ *   }' \
+ *  http://localhost:3000/api/community/top/315ea82f7fec0ffaee5
+ */
+router.get('/top/:id', function(req, res) {
+  req.checkParams('id', 'Invalid Community id').isMongoId();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    Community.topActions(req.id, res.successRes);
   }
 });
 
