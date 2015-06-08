@@ -13,12 +13,6 @@ var l = winston.loggers.get('default');
 
 var express = require('express');
 
-express.response.successRes = function(err, json, errStatus, okStatus) {
-  errStatus = errStatus || 500;
-  okStatus = okStatus || 200;
-  this.status(err ? errStatus : okStatus).json(err || json);
-};
-
 var bodyParser = require('body-parser');
 var expressValidator = require('express-validator');
 var mongoose = require('mongoose');
@@ -30,6 +24,15 @@ var db = mongoose.connection;
 var app = express();
 app.set('view engine', 'jade');
 app.set('views', __dirname + '/apidoc');
+app.use(function(req, res, next) {
+  res.successRes = function(err, json, errStatus, okStatus) {
+    errStatus = errStatus || 500;
+    okStatus = okStatus || 200;
+    res.status(err ? errStatus : okStatus).json(err || json);
+  };
+  next();
+});
+
 
 var port = process.env.PORT || 3000;
 
