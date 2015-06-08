@@ -4,8 +4,8 @@
   "description": "YouPower app backend",
   "main": "index.js",
   "scripts": {
-    "start": "node backend/app.js",
-    "test": "cd backend && mocha"
+    "start": "MONGOOSE_DISABLE_STABILITY_WARNING=1 node backend/app.js",
+    "test": "cd backend && MONGOOSE_DISABLE_STABILITY_WARNING=1 mocha"
   },
   "keywords": [
     "civis",
@@ -38,7 +38,7 @@
     "express-validator": "^2.10.0",
     "jade": "^1.9.2",
     "moment": "^2.10.3",
-    "mongoose": "4.0.5",
+    "mongoose": "^4.0.5",
     "morgan": "~1.5.0",
     "passport": "^0.2.1",
     "passport-facebook": "^2.0.0",
