@@ -103,7 +103,7 @@ router.put('/rate/:id', auth.authenticate(), function(req, res) {
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    Action.rate(req.params.id, req.user.userId, req.body.rating, req.body.comment, res.successRes);
+    Action.rate(req.params.id, req.user._id, req.body.rating, req.body.comment, res.successRes);
   }
 });
 
@@ -232,11 +232,11 @@ router.get('/search', auth.authenticate(), function(req, res) {
     var query = User.find({
       $or: [
         {'profile.name':  regexpQuery},
-        {'userId':        regexpQuery}
+        {'email':         regexpQuery}
       ]
     });
 
-    query.select('profile userId');
+    query.select('profile email');
     query.limit(50);
 
     query.exec(function(err, users) {

@@ -13,7 +13,7 @@ exports.get = function(params, cb) {
   request({
     url: config.civisURL + '/downloadMyData',
     qs: {
-      userID: params.userID,
+      email: params.userId,
       token: params.token,
       from: moment(params.from).format('DD-MMM-YY hh:mm:SS A'),
       to: moment(params.to).format('DD-MMM-YY hh:mm:SS A'),

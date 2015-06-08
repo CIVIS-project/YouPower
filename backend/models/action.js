@@ -43,8 +43,8 @@ var ActionSchema = new Schema({
   ratings: {
     type: [
       {
-        _id: {
-          type: String, // userId of commenter
+        userId: {
+          type: Schema.Types.ObjectId, // _id of commenter
           required: true
         },
         rating: {
@@ -81,6 +81,7 @@ exports.create = function(action, cb) {
     category: action.category,
     activation: action.activation,
     description: action.description,
+    ratings: action.ratings || [],
     impact: action.impact,
     effort: action.effort
   }, cb);
@@ -147,7 +148,7 @@ exports.rate = function(id, userId, rating, comment, cb) {
       cb('Action not found');
     } else {
       action.ratings.addToSet({
-        _id: userId,
+        userId: userId,
         rating: rating,
         comment: comment
       });

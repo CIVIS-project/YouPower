@@ -10,7 +10,7 @@ var passport = require('passport');
 var BearerStrategy = require('passport-http-bearer');
 var BasicStrategy = require('passport-http').BasicStrategy;
 var FacebookStrategy = require('passport-facebook');
-var User = require('../models/user').User;
+var User = require('../models/user');
 
 exports.genToken = function(cb) {
   crypto.randomBytes(48, function(ex, buf) {
@@ -34,7 +34,7 @@ exports.initialize = function() {
       return done('No token provided');
     }
 
-    User.findOne({token: token}, function(err, user) {
+    User.find({token: token}, false, null, null, function(err, user) {
       if (err) {
         return done(err);
       } else if (!user) {
@@ -58,7 +58,7 @@ exports.initialize = function() {
         'http://localhost:3000/api/auth/facebook/callback',
       enableProof: false
     }, function(accessToken, refreshToken, profile, done) {
-      User.findOne({facebookId: profile.id}, function(err, user) {
+      User.find({facebookId: profile.id}, false, null, null, function(err, user) {
         if (err) {
           return done(err);
         } else if (!user) {
@@ -66,19 +66,21 @@ exports.initialize = function() {
           // user does not exist, register new user
           crypto.randomBytes(48, function(ex, buf) {
             var password = buf.toString('hex');
-            User.register(new User({
-              userId: mongoose.Types.ObjectId(),
+            console.log(profile);
+            User.register({
+              // TODO: get email via facebook
+              email: mongoose.Types.ObjectId(),
               facebookId: profile.id,
               profile: {
                 name: profile.displayName,
                 gender: profile.gender
               }
-            }), password, function(err) {
+            }, password, function(err) {
               if (err) {
                 return done(err);
               }
 
-              User.findOne({facebookId: profile.id}, function(err, user) {
+              User.find({facebookId: profile.id}, false, null, null, function(err, user) {
                 if (err) {
                   return done(err);
                 } else if (!user) {

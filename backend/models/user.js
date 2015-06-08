@@ -1,6 +1,7 @@
 'use strict';
 
 var mongoose = require('mongoose');
+var Action = require('./action');
 var Schema = mongoose.Schema;
 var passportLocalMongoose = require('passport-local-mongoose');
 
@@ -10,7 +11,6 @@ var UserSchema = new Schema({
   profile: {
     name: String,
     dob: Date,
-    email: String,
     photo: String
   },
   actions: {
@@ -32,11 +32,139 @@ var UserSchema = new Schema({
   energyPlatformID: Number
 });
 UserSchema.plugin(passportLocalMongoose, {
-  usernameField: 'userId'
+  usernameField: 'email',
+  // do fewer pbkdf2 hashing iterations when unit testing for performance reasons
+  iterations: process.env.NODE_ENV === 'test' ? 1 : 25000
 });
 
 var User = mongoose.model('User', UserSchema);
 
-module.exports = {
-  User: User
+exports.authenticate = User.authenticate;
+exports.serializeUser = User.serializeUser;
+exports.deserializeUser = User.deserializeUser;
+
+exports.register = function(userInfo, password, cb) {
+  User.register(new User(userInfo), password, cb);
+};
+
+exports.getProfile = function(id, cb) {
+  User.findOne({_id: id}, false, function(err, user) {
+    if (err) {
+      return cb(err);
+    }
+    if (!user) {
+      return cb('User not found');
+    }
+
+    cb(null, {
+      email: user.email,
+      profile: user.profile,
+      energyConsumption: {}, // TODO
+      topActions: [], // TODO
+      topChallenges: [], // TODO
+      topCommunities: [], // TODO
+      topFriends: [] // TODO
+    });
+  });
+};
+
+// TODO: we should NOT allow arbitrary queries in the REST API, only maybe
+// email or profile
+exports.find = function(q, multi, limit, skip, cb) {
+  var query = User.find(q);
+  query.select('profile email');
+  query.limit(limit);
+  query.skip(skip);
+  query.exec(function(err, res) {
+    // return array if multi is true, otherwise return first element if defined, otherwise undefined
+    cb(err, multi ? res : res ? res[0] : undefined);
+  });
+};
+
+// NOTE: the rest of these functions go against the convention of taking in a
+// model id instead of the model itself. Reason for this is that
+// passport-local-mongoose gives us the user model after each a successful
+// authentication, and it would be wasteful to fetch it again here
+
+exports.updateProfile = function(user, profile, cb) {
+  // update any fields that are defined
+  user.profile.name  = profile.name  || user.profile.name;
+  user.profile.dob   = profile.dob   || user.profile.dob;
+  user.profile.photo = profile.photo || user.profile.photo;
+
+  user.save(function(err, user) {
+    cb(err, user.profile);
+  });
+};
+
+exports.startAction = function(user, actionId, cb) {
+  Action.get(actionId, function(err, actionResult) {
+    if (err) {
+      cb(err);
+    } else if (!actionResult) {
+      cb('Action not found');
+    } else {
+      // store this action in inProgress list
+      user.actions.inProgress[actionId] = actionResult;
+      var action = user.actions.inProgress[actionId];
+
+      action.startedDate = new Date();
+
+      // get rid of the action in other lists
+      delete(user.actions.done[actionId]);
+      delete(user.actions.canceled[actionId]);
+
+      // must be manually marked as modified due to mixed type schemas
+      user.markModified('actions.inProgress');
+      user.markModified('actions.done');
+      user.markModified('actions.canceled');
+      user.save(cb);
+    }
+  });
+};
+
+exports.cancelAction = function(user, actionId, cb) {
+  var action = user.actions.inProgress[actionId];
+
+  if (!action) {
+    cb('Action not in progress');
+  } else {
+    // store this action in canceled list
+    user.actions.canceled[actionId] = action;
+
+    action.canceledDate = new Date();
+
+    // get rid of the action in other lists
+    delete(user.actions.done[actionId]);
+    delete(user.actions.inProgress[actionId]);
+
+    // must be manually marked as modified due to mixed type schemas
+    user.markModified('actions.inProgress');
+    user.markModified('actions.done');
+    user.markModified('actions.canceled');
+    user.save(cb);
+  }
+};
+
+exports.completeAction = function(user, actionId, cb) {
+  var action = user.actions.inProgress[actionId];
+
+  if (!action) {
+    cb('Action not in progress');
+  } else {
+    // store this action in done list
+    user.actions.done[actionId] = action;
+
+    action.doneDate = new Date();
+
+    // get rid of the action in other lists
+    delete(user.actions.canceled[actionId]);
+    delete(user.actions.inProgress[actionId]);
+
+    // must be manually marked as modified due to mixed type schemas
+    user.markModified('actions.inProgress');
+    user.markModified('actions.done');
+    user.markModified('actions.canceled');
+    user.save(cb);
+  }
 };
