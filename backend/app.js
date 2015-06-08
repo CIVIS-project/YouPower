@@ -12,7 +12,9 @@ winston.loggers.add('default', {
 var l = winston.loggers.get('default');
 
 if (process.env.NODE_ENV === 'test') {
+  l.warn('========================= NOTICE ==========================');
   l.warn('running in test mode, this should NOT be used in production');
+  l.warn('===========================================================\n');
 }
 
 var express = require('express');
