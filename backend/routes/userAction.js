@@ -1,11 +1,9 @@
 'use strict';
 
 var auth = require('../middleware/auth');
-//var util = require('util');
 var express = require('express');
 var router = express.Router();
-//var User = require('../models/user').User;
-var Action = require('../models/action');
+var User = require('../models/user');
 
 /**
  * @api {get} /user/action Get user's action list
@@ -26,29 +24,7 @@ router.get('/', auth.authenticate(), function(req, res) {
  * @apiVersion 1.0.0
  */
 router.post('/start/:actionId', auth.authenticate(), function(req, res) {
-  Action.get(req.params.actionId, function(err, actionResult) {
-    if (err) {
-      res.successRes(err);
-    } else if (!actionResult) {
-      res.successRes('Action not found');
-    } else {
-      // store this action in inProgress list
-      req.user.actions.inProgress[req.params.actionId] = actionResult;
-      var action = req.user.actions.inProgress[req.params.actionId];
-
-      action.startedDate = new Date();
-
-      // get rid of the action in other lists
-      delete(req.user.actions.done[req.params.actionId]);
-      delete(req.user.actions.canceled[req.params.actionId]);
-
-      // must be manually marked as modified due to mixed type schemas
-      req.user.markModified('actions.inProgress');
-      req.user.markModified('actions.done');
-      req.user.markModified('actions.canceled');
-      req.user.save(res.successRes);
-    }
-  });
+  User.startAction(req.user, req.params.actionId, res.successRes);
 });
 
 /**
@@ -61,26 +37,7 @@ router.post('/start/:actionId', auth.authenticate(), function(req, res) {
  * @apiVersion 1.0.0
  */
 router.post('/cancel/:actionId', auth.authenticate(), function(req, res) {
-  var action = req.user.actions.inProgress[req.params.actionId];
-
-  if (!action) {
-    res.status(404).json({err: 'Action not in progress'});
-  } else {
-    // store this action in canceled list
-    req.user.actions.canceled[req.params.actionId] = action;
-
-    action.canceledDate = new Date();
-
-    // get rid of the action in other lists
-    delete(req.user.actions.done[req.params.actionId]);
-    delete(req.user.actions.inProgress[req.params.actionId]);
-
-    // must be manually marked as modified due to mixed type schemas
-    req.user.markModified('actions.inProgress');
-    req.user.markModified('actions.done');
-    req.user.markModified('actions.canceled');
-    req.user.save(res.successRes);
-  }
+  User.cancelAction(req.user, req.params.actionId, res.successRes);
 });
 
 /**
@@ -93,26 +50,7 @@ router.post('/cancel/:actionId', auth.authenticate(), function(req, res) {
  * @apiVersion 1.0.0
  */
 router.post('/complete/:actionId', auth.authenticate(), function(req, res) {
-  var action = req.user.actions.inProgress[req.params.actionId];
-
-  if (!action) {
-    res.status(404).json({err: 'Action not in progress'});
-  } else {
-    // store this action in done list
-    req.user.actions.done[req.params.actionId] = action;
-
-    action.doneDate = new Date();
-
-    // get rid of the action in other lists
-    delete(req.user.actions.canceled[req.params.actionId]);
-    delete(req.user.actions.inProgress[req.params.actionId]);
-
-    // must be manually marked as modified due to mixed type schemas
-    req.user.markModified('actions.inProgress');
-    req.user.markModified('actions.done');
-    req.user.markModified('actions.canceled');
-    req.user.save(res.successRes);
-  }
+  User.completeAction(req.user, req.params.actionId, res.successRes);
 });
 
 module.exports = router;
