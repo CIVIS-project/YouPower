@@ -9,7 +9,7 @@ var auth = require('../middleware/auth');
  * @api {get} /consumption Get energy consumption data
  * @apiGroup Consumption
  *
- * @apiParam {String} userID CIVIS backend user ID
+ * @apiParam {String} userId CIVIS backend user ID
  * @apiParam {String} token CIVIS backend user token
  * @apiParam {Date} from Start date string in simplified extended
  * ISO8601 format

@@ -47,7 +47,7 @@ router.put('/rate/:id', auth.authenticate(), function(req, res) {
   } else {
     res.status(501).send('Not implemented');
     /*
-    Challenge.rate(req.params.id, req.user.userId, req.body.rating, req.body.comment,
+    Challenge.rate(req.params.id, req.user.email, req.body.rating, req.body.comment,
         function(err, challenge) {
       res.status(err ? 500 : 200).send(err || challenge);
     });
@@ -177,11 +177,11 @@ router.get('/search', auth.authenticate(), function(req, res) {
     var query = User.find({
       $or: [
         {'profile.name':  regexpQuery},
-        {'userId':        regexpQuery}
+        {'email':         regexpQuery}
       ]
     });
 
-    query.select('profile userId');
+    query.select('profile email');
     query.limit(50);
 
     query.exec(function(err, users) {

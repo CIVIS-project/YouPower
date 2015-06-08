@@ -14,14 +14,14 @@ router.use('/challenge', require('./userChallenge'));
  * @api {post} /user/register New user registration
  * @apiGroup User
  *
- * @apiParam {String} userId User's e-mail address
+ * @apiParam {String} email User's e-mail address
  * @apiParam {String} name User's nickname
  * @apiParam {String} password User's password
  *
  * @apiVersion 1.0.0
  */
 router.post('/register', function(req, res) {
-  req.checkBody('userId').notEmpty();
+  req.checkBody('email').notEmpty();
   req.checkBody('password').notEmpty();
   req.checkBody('name').notEmpty();
 
@@ -30,7 +30,7 @@ router.post('/register', function(req, res) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
     User.register(new User({
-      userId: req.body.userId,
+      email: req.body.email,
       profile: {
         name: req.body.name
       }
@@ -63,7 +63,7 @@ router.post('/register', function(req, res) {
  */
 router.get('/profile', auth.authenticate(), function(req, res) {
   res.json({
-    userId: req.user.userId,
+    email: req.user.email,
     profile: req.user.profile,
     energyConsumption: {},
     topActions: [],
@@ -79,14 +79,12 @@ router.get('/profile', auth.authenticate(), function(req, res) {
  *
  * @apiParam {String} [name] Your nickname
  * @apiParam {Date} [dob] Your date of birth
- * @apiParam {String} [email] Your email
  * @apiParam {String} [photo] Profile photo
  *
  * @apiVersion 1.0.0
  */
 router.post('/profile', auth.authenticate(), function(req, res) {
   req.checkBody('name').optional().notEmpty();
-  req.checkBody('email').optional().notEmpty();
   req.checkBody('photo').optional().notEmpty();
 
   var err;
@@ -96,7 +94,6 @@ router.post('/profile', auth.authenticate(), function(req, res) {
     // update any fields that are defined
     req.user.profile.name  =  req.body.name  || req.user.profile.name;
     req.user.profile.dob   =  req.body.dob   || req.user.profile.dob;
-    req.user.profile.email =  req.body.email || req.user.profile.email;
     req.user.profile.photo =  req.body.photo || req.user.profile.photo;
 
     req.user.save(function(err) {
@@ -108,15 +105,15 @@ router.post('/profile', auth.authenticate(), function(req, res) {
 });
 
 /**
- * @api {get} /user/profile/:userId Get another user's profile
+ * @api {get} /user/profile/:email Get another user's profile
  * @apiGroup User
  *
  * @apiVersion 1.0.0
  */
-router.get('/profile/:userId', auth.authenticate(), function(req, res) {
-  var query = User.findOne({userId: req.params.userId});
+router.get('/profile/:email', auth.authenticate(), function(req, res) {
+  var query = User.findOne({email: req.params.email});
 
-  query.select('profile userId');
+  query.select('profile email');
 
   query.exec(function(err, user) {
     var errStatus = 500;
@@ -127,7 +124,7 @@ router.get('/profile/:userId', auth.authenticate(), function(req, res) {
     }
 
     res.successRes(err, {
-      userID: user.userId,
+      email: user.email,
       profile: user.profile,
       energyConsumption: {},
       topActions: [],
@@ -151,7 +148,7 @@ router.get('/profile/:userId', auth.authenticate(), function(req, res) {
  *     "users": [
  *       {
  *         "_id": "5562c1d46b1083a13e5b7843",
- *         "userId": "testUser",
+ *         "email": "testUser@foo.com",
  *         "profile": {
  *           ...
  *         }
@@ -174,11 +171,11 @@ router.get('/search', auth.authenticate(), function(req, res) {
     var query = User.find({
       $or: [
         {'profile.name':  regexpQuery},
-        {'userId':        regexpQuery}
+        {'email':        regexpQuery}
       ]
     });
 
-    query.select('profile userId');
+    query.select('profile email');
     query.limit(50);
 
     query.exec(res.successRes);

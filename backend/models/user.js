@@ -10,7 +10,6 @@ var UserSchema = new Schema({
   profile: {
     name: String,
     dob: Date,
-    email: String,
     photo: String
   },
   actions: {
@@ -32,7 +31,7 @@ var UserSchema = new Schema({
   energyPlatformID: Number
 });
 UserSchema.plugin(passportLocalMongoose, {
-  usernameField: 'userId'
+  usernameField: 'email'
 });
 
 var User = mongoose.model('User', UserSchema);

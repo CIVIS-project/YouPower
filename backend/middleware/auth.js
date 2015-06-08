@@ -67,7 +67,8 @@ exports.initialize = function() {
           crypto.randomBytes(48, function(ex, buf) {
             var password = buf.toString('hex');
             User.register(new User({
-              userId: mongoose.Types.ObjectId(),
+              // TODO: get email via facebook
+              email: mongoose.Types.ObjectId(),
               facebookId: profile.id,
               profile: {
                 name: profile.displayName,

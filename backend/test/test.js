@@ -43,19 +43,23 @@ describe('models', function() {
       });
     });
 
-    /*
     it('should add rating to action document', function(done) {
-      models.action.rate(String(firstAction._id), 'myuser', 4, 'foo bar', function(err) {
-        console.log(require('util').inspect(err));
+      models.action.rate(firstAction._id,
+          dummyData.ratings[0].userId,
+          dummyData.ratings[0].rating,
+          dummyData.ratings[0].comment, function(err) {
         if (err) {
           return done(err);
         }
         models.action.get(firstAction._id, function(err, action) {
-          console.log(action.ratings);
+          var rating = action.ratings[0];
+          rating.userId = rating.userId.toString();
+          delete(rating._id);
+
+          rating.should.deep.equal(dummyData.ratings[0]);
           done();
         });
       });
     });
-    */
   });
 });

@@ -27,7 +27,7 @@
     "jscs": "^1.13.1",
     "mocha-jscs": "^1.1.0",
     "mocha-jshint": "^2.2.3",
-    "mockgoose": "^2.0.2"
+    "mockgoose": "2.0.1"
   },
   "dependencies": {
     "async": "^1.2.0",
@@ -38,7 +38,7 @@
     "express-validator": "^2.10.0",
     "jade": "^1.9.2",
     "moment": "^2.10.3",
-    "mongoose": "^4.0.4",
+    "mongoose": "4.0.5",
     "morgan": "~1.5.0",
     "passport": "^0.2.1",
     "passport-facebook": "^2.0.0",
