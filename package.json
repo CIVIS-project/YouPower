@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "MONGOOSE_DISABLE_STABILITY_WARNING=1 node backend/app.js",
-    "test": "cd backend && MONGOOSE_DISABLE_STABILITY_WARNING=1 mocha"
+    "test": "cd backend && NODE_ENV=test MONGOOSE_DISABLE_STABILITY_WARNING=1 mocha"
   },
   "keywords": [
     "civis",

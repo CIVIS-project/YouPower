@@ -32,10 +32,64 @@ var UserSchema = new Schema({
   energyPlatformID: Number
 });
 UserSchema.plugin(passportLocalMongoose, {
-  usernameField: 'email'
+  usernameField: 'email',
+  // do fewer pbkdf2 hashing iterations when unit testing for performance reasons
+  iterations: process.env.NODE_ENV === 'test' ? 1 : 25000
 });
 
-exports.User = mongoose.model('User', UserSchema);
+var User = mongoose.model('User', UserSchema);
+
+exports.register = function(userInfo, password, cb) {
+  User.register(new User(userInfo), password, cb);
+};
+
+exports.getProfile = function(id, cb) {
+  User.findOne({_id: id}, false, function(err, user) {
+    if (err) {
+      return cb(err);
+    }
+    if (!user) {
+      return cb('User not found');
+    }
+
+    cb(null, {
+      email: user.email,
+      profile: user.profile,
+      energyConsumption: {}, // TODO
+      topActions: [], // TODO
+      topChallenges: [], // TODO
+      topCommunities: [], // TODO
+      topFriends: [] // TODO
+    });
+  });
+};
+
+exports.find = function(q, multi, limit, skip, cb) {
+  var query = User.find(q);
+  query.select('profile email');
+  query.limit(limit);
+  query.skip(skip);
+  query.exec(function(err, res) {
+    // return array if multi is true, otherwise return first element if defined, otherwise undefined
+    cb(err, multi ? res : res ? res[0] : undefined);
+  });
+};
+
+// NOTE: the rest of these functions go against the convention of taking in a
+// model id instead of the model itself. Reason for this is that
+// passport-local-mongoose gives us the user model after each a successful
+// authentication, and it would be wasteful to fetch it again here
+
+exports.updateProfile = function(user, profile, cb) {
+  // update any fields that are defined
+  user.profile.name  = profile.name  || user.profile.name;
+  user.profile.dob   = profile.dob   || user.profile.dob;
+  user.profile.photo = profile.photo || user.profile.photo;
+
+  user.save(function(err, user) {
+    cb(err, user.profile);
+  });
+};
 
 exports.startAction = function(user, actionId, cb) {
   Action.get(actionId, function(err, actionResult) {

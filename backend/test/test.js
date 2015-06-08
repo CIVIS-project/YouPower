@@ -185,4 +185,66 @@ describe('models', function() {
       });
     });
   });
+
+  describe('user', function() {
+    var dbUsers = [];
+
+    beforeEach(function(done) {
+      mockgoose.reset();
+
+      async.map(dummyData.users, function(user, cb) {
+        models.user.register(user, user.password, cb);
+      }, function(err, users) {
+        _.each(users, function(user, i) {
+          dbUsers[i] = user;
+        });
+        done(err);
+      });
+    });
+
+    it('should return profile', function(done) {
+      models.user.getProfile(dbUsers[0]._id, function(err, user) {
+        user.email.should.equal(dbUsers[0].email);
+        done(err);
+      });
+    });
+
+    it('should return error for bogus profile query', function(done) {
+      models.user.getProfile(dummyData.ids[0], function(err, user) {
+        should.not.exist(user);
+        done(err ? null : 'no error for bogus profile query!');
+      });
+    });
+
+    it('should find user by query', function(done) {
+      models.user.find({'email': dbUsers[0].email}, true, null, null, function(err, users) {
+        users.length.should.equal(1);
+        users[0].email.should.equal(dbUsers[0].email);
+        users[0].profile.name.should.equal(dbUsers[0].profile.name);
+        done(err);
+      });
+    });
+
+    it('should return only one user', function(done) {
+      models.user.find({'email': dbUsers[0].email}, false, null, null, function(err, user) {
+        user.email.should.equal(dbUsers[0].email);
+        user.profile.name.should.equal(dbUsers[0].profile.name);
+        done(err);
+      });
+    });
+
+    it('bogus query should return empty array for multi-find', function(done) {
+      models.user.find({'email': 'dasfsada'}, true, null, null, function(err, users) {
+        users.should.be.empty;
+        done(err);
+      });
+    });
+
+    it('bogus query should return undefined for non multi-find', function(done) {
+      models.user.find({'email': 'dasfsada'}, false, null, null, function(err, user) {
+        should.not.exist(user);
+        done(err);
+      });
+    });
+  });
 });

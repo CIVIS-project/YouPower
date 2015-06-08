@@ -5,7 +5,7 @@ var express = require('express');
 var util = require('util');
 var escapeRegexp = require('escape-string-regexp');
 var router = express.Router();
-var User = require('../models/user').User;
+var User = require('../models/user');
 
 router.use('/action', require('./userAction'));
 router.use('/challenge', require('./userChallenge'));
@@ -29,12 +29,12 @@ router.post('/register', function(req, res) {
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    User.register(new User({
+    User.register({
       email: req.body.email,
       profile: {
         name: req.body.name
       }
-    }), req.body.password, function(err, user) {
+    }, req.body.password, function(err, user) {
       if (err) {
         return res.status(500).end('error while registering: ' + err);
       }
@@ -62,15 +62,7 @@ router.post('/register', function(req, res) {
  * @apiVersion 1.0.0
  */
 router.get('/profile', auth.authenticate(), function(req, res) {
-  res.json({
-    email: req.user.email,
-    profile: req.user.profile,
-    energyConsumption: {},
-    topActions: [],
-    topChallenges: [],
-    topCommunities: [],
-    topFriends: []
-  });
+  User.getProfile(req.user._id, res.successRes);
 });
 
 /**
@@ -91,47 +83,18 @@ router.post('/profile', auth.authenticate(), function(req, res) {
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    // update any fields that are defined
-    req.user.profile.name  =  req.body.name  || req.user.profile.name;
-    req.user.profile.dob   =  req.body.dob   || req.user.profile.dob;
-    req.user.profile.photo =  req.body.photo || req.user.profile.photo;
-
-    req.user.save(function(err) {
-      res.successRes(err, {
-        profile: req.user.profile
-      });
-    });
+    User.updateProfile(req.user, req.body, res.successRes);
   }
 });
 
 /**
- * @api {get} /user/profile/:email Get another user's profile
+ * @api {get} /user/profile/:id Get another user's profile
  * @apiGroup User
  *
  * @apiVersion 1.0.0
  */
-router.get('/profile/:email', auth.authenticate(), function(req, res) {
-  var query = User.findOne({email: req.params.email});
-
-  query.select('profile email');
-
-  query.exec(function(err, user) {
-    var errStatus = 500;
-
-    if (!err && !user) {
-      err = 'User not found';
-      errStatus = 404;
-    }
-
-    res.successRes(err, {
-      email: user.email,
-      profile: user.profile,
-      energyConsumption: {},
-      topActions: [],
-      topChallenges: [],
-      topCommunities: []
-    }, errStatus);
-  });
+router.get('/profile/:id', auth.authenticate(), function(req, res) {
+  User.getProfile(req.params.id, res.successRes);
 });
 
 /**
@@ -168,17 +131,12 @@ router.get('/search', auth.authenticate(), function(req, res) {
   } else {
     var regexpQuery = new RegExp(escapeRegexp(req.query.q));
 
-    var query = User.find({
+    User.find({
       $or: [
         {'profile.name':  regexpQuery},
         {'email':        regexpQuery}
       ]
-    });
-
-    query.select('profile email');
-    query.limit(50);
-
-    query.exec(res.successRes);
+    }, true, 50, null, res.successRes);
   }
 });
 
