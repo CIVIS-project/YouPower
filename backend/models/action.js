@@ -81,6 +81,7 @@ exports.create = function(action, cb) {
     category: action.category,
     activation: action.activation,
     description: action.description,
+    ratings: action.ratings || [],
     impact: action.impact,
     effort: action.effort
   }, cb);
