@@ -11,6 +11,10 @@ winston.loggers.add('default', {
 
 var l = winston.loggers.get('default');
 
+if (process.env.NODE_ENV === 'test') {
+  l.warn('running in test mode, this should NOT be used in production');
+}
+
 var express = require('express');
 
 var bodyParser = require('body-parser');
