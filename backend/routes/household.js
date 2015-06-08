@@ -236,7 +236,7 @@ router.put('/remove/:id', function(req, res) {
 });
 
 /**
- * @api {put} /household/add/:id Add member to household
+ * @api {put} /household/addmember/:id Add member to household
  * @apiGroup Household
  *
  * @apiParam {String} id MongoId of household
@@ -254,7 +254,7 @@ router.put('/remove/:id', function(req, res) {
  *    "_id": "testUser2",
  *    "name": "Jack",
  *  }' \
- *  http://localhost:3000/api/household/adduser/555ef84b2fd41ffef6e078a34
+ *  http://localhost:3000/api/household/addmember/555ef84b2fd41ffef6e078a34
  */
 router.put('/addmember/:id', function(req, res) {
   req.checkParams('id', 'Invalid household id').isMongoId();
@@ -268,7 +268,7 @@ router.put('/addmember/:id', function(req, res) {
 });
 
 /**
- * @api {put} /household/remove/:id Remove member from household
+ * @api {put} /household/removemember/:id Remove member from household
  * @apiGroup Household
  *
  * @apiParam {String} id MongoId of action
