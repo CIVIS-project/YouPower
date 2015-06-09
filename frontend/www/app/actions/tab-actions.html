@@ -14,7 +14,7 @@
 
 <div class="list card">
   <div class="item item-divider">Current Actions ({{_.size(user.actionsActive)}})</div>
-  <a class="item item-icon-left item-icon-right" ng-repeat="actionA in user.actionsActive" ng-href="#/tab/current-details/{{$index}}">
+  <a class="item item-icon-left item-icon-right" ng-repeat="actionA in user.actionsActive" ng-href="#/tab/actions/Active/{{$index}}">
   <span from="actions action"  provider="firebase" where="action.id=actionA.id" >
     <!-- ng-repeat="(idx, action) in actions" > -->
     <span class="balanced" >
@@ -29,7 +29,7 @@
 
 <div class="list card" ng-if="_.size(user.actionsPending) > 0">
   <div class="item item-divider">Pending actions ({{_.size(user.actionsPending)}})</div>
-<a class="item item-icon-left item-icon-right" ng-repeat="actionA in user.actionsPending" ng-href="#/tab/current-details/{{$index}}">
+<a class="item item-icon-left item-icon-right" ng-repeat="actionA in user.actionsPending" ng-href="#/tab/actions/Pending/{{$index}}">
   <span from="actions action"  provider="firebase" where="action.id=actionA.id" >
     <!-- ng-repeat="(idx, action) in actions" > -->
     <span class="balanced" >
@@ -41,7 +41,7 @@
   </span>
 </a>
 </div>
-<a class="button button-full button-balanced" href="#">
+<a class="button button-full button-balanced" ng-click="nextTip(user)">
   <i class="icon ion-plus"></i>
   Add actions
 </a>

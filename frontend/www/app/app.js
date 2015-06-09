@@ -18,13 +18,52 @@ var sharedServices = angular.module('starter.sharedServices', []);
 // 'starter.controllers' is found in controllers.js
 var starter = angular.module('starter', ['ionic', 'ionic.rating', 'Endev', 'starter.controllers', 'starter.sharedServices', 'pascalprecht.translate'])
 
-.run(function($ionicPlatform, $rootScope) {
+.run(function($ionicPlatform, $rootScope, $window,$firebaseArray,$ionicHistory, $state) {
 
   $rootScope.scale = 5; 
 
   $rootScope._=_;
 
-  $rootScope.currentUser = {};
+  // Fix for remembaring the user between refresh
+  $rootScope.currentUser = $window.localStorage['username'] ? {username: $window.localStorage['username'], lang: "en"} : {};
+
+  $rootScope.$watch("currentUser.username",function(newValue, oldValue){
+    if(newValue && oldValue !== newValue) {
+      $window.localStorage['username'] = newValue;
+    }
+  })
+
+  $rootScope.nextTip = function(user,backToActions) {
+    $ionicHistory.nextViewOptions({
+      disableBack: true
+    });
+
+    //TO FIX: the user.actionsActive is not always up to date
+    // therefore the size calculation can sometimes be wrong
+    if(backToActions && user.actionsActive && _.size(user.actionsActive) >= user.preferredNrOfActions) {
+
+      $state.go("tab.actions");
+    
+    } else {
+
+      var actionsRef = new Firebase(endev.firebaseProvider.path + "actions/");
+      $firebaseArray(actionsRef).$loaded().then(function(actions){
+        possibleActions = _.shuffle(_.filter(actions,function(action){
+          var eqalityFn = function(a) {
+            return a.id == action.id;
+          }
+
+          return !_.find(user.actionsActive,eqalityFn) && 
+          !_.find(user.actionsDone,eqalityFn) && 
+          !_.find(user.actionsPending,eqalityFn) && 
+          !_.find(user.actionsAbandoned,eqalityFn);
+        }));
+
+        $state.go("tab.action",{id:possibleActions[0].id});
+      });
+    }
+      //todo: choose next action
+  }
 
   //$rootScope.currentUser = {username:"jmayer@energyup.eu"};
 

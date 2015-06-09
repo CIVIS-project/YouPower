@@ -1,7 +1,7 @@
 <ion-view view-title="Action Not Completed">
 <ion-content "padding">
 
-<div from="actions action" provider="firebase" where="action.id=actionId">
+<div from="actions action" provider="firebase" where="action.id=actionId" loaded="setBonus(action.points)">
 
   <div class="list card">
     <div class="item item-divider item-icon-left item-text-wrap">
@@ -12,7 +12,7 @@
       Sorry to hear that you are going to abandon the action: {{action.title}}
       <span class="balanced">You are so close to finish!</span> 
     </br>
-    You still can earn <b class="balanced text-large"><i style="font-size:32px;" class="icon ion-leaf icon-large balanced"></i> {{Math.round(action.points/5)}}</b> by filling the feedback form. We love to hear from you.
+    You still can earn <b class="balanced text-large"><i style="font-size:32px;" class="icon ion-leaf icon-large balanced"></i> {{bonus}}</b> by filling the feedback form. We love to hear from you.
   </div>
 </div>
 
@@ -51,7 +51,7 @@
 
   </div>
   
-    <button style="width:50%" class="button button-balanced" remove-from="action.feedback" ng-click="remove(feedback);goBack()">Cancel</button><button style="width:50%" class="button button-balanced" remove-from="user.actionsActive" from="user.actionsActive act" where="act.id=action.id" insert-into="user.actionsAbandoned" loaded="_act={id:action.id, dateStarted:act.date, dateAbandoned:Date.now()}" ng-click="insert(_act); remove(act); goForward();">Done</button>
+    <button style="width:50%" class="button button-balanced" remove-from="action.feedback" ng-click="remove(feedback);goBack()">Cancel</button><button style="width:50%" class="button button-balanced" remove-from="user.actionsActive" from="user.actionsActive act" where="act.id=action.id" insert-into="user.actionsAbandoned" loaded="_act={id:action.id, dateStarted:act.date, dateAbandoned:Date.now()}" data-click="setPoints(user.points + (feedback.isNotUseful || feedback.isEffort || feedback.isExpensive || feedback.isNotAppliable || feedback.isNotLike || feedback.otherReasons ? bonus : 0)); remove(act); insert(_act); nextTip(user)">Done</button>
     <!-- user.points=user.points+Math.round(action.points/5); -->
 
 

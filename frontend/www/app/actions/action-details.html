@@ -1,7 +1,7 @@
-<ion-view view-title="Current Actions ({{_.size(user.actionsActive)}})">
+<ion-view view-title="{{actionsType}} Actions ({{_.size(user['actions' + actionsType])}})">
 <ion-content>
 <ion-slide-box active-slide="slideIdx" does-continue="false" show-pager="false">
-<ion-slide ng-repeat="act in user.actionsActive track by $index">
+<ion-slide ng-repeat="act in user['actions' + actionsType] track by $index">
 
 <div from="actions action"  provider="firebase" where="action.id=act.id">
 
@@ -15,7 +15,7 @@
     </div>
   </div> 
 
-  <div class="list card">
+  <div class="list card" ng-if="actionsType == 'Active'">
     <div class="item item-icon-left item-divider item-text-wrap">
       How are you doing?
       <i class="icon ion-ios-chatbubble-outline balanced" style="font-size:35px;"></i> 

@@ -12,19 +12,7 @@ function ActionsCtrl($scope, $timeout, $state, $stateParams, $filter, $ionicSlid
 	
 	$scope.slideIdx = $stateParams.index ? $stateParams.index : 0; 
 
-
-	$scope.nextTip = function(user) {
-
-		if(user.actionsActive && _.size(user.actionsActive) >= user.preferredNrOfActions) {
-			//do nothing
-		}else{
-			$ionicHistory.nextViewOptions({
-				disableBack: true
-			});
-			//todo: choose next action
-			$state.go("tab.action",{id:"0"});
-		}
-	}
+	$scope.actionsType = $stateParams.type;
 
 
 	$scope.actionCompleted = function(action){
