@@ -282,5 +282,73 @@ describe('models', function() {
         done(err);
       });
     });
+
+    it('should add action to user model', function(done) {
+      models.user.startAction(dbUsers[0], dbActions[0]._id, function(err) {
+        if (err) {
+          return done(err);
+        }
+        models.user.find({_id: dbUsers[0]._id}, false, null, null, function(err, user) {
+          user.actions.inProgress[dbActions[0]._id].name.should.equal(dbActions[0].name);
+          done(err);
+        });
+      });
+    });
+
+    it('should add multiple actions to user model', function(done) {
+      async.parallel([
+        function(cb) {
+          models.user.startAction(dbUsers[0], dbActions[0]._id, cb);
+        },
+        function(cb) {
+          models.user.startAction(dbUsers[0], dbActions[1]._id, cb);
+        }
+      ], function(err) {
+        if (err) {
+          return done(err);
+        }
+        models.user.find({_id: dbUsers[0]._id}, false, null, null, function(err, user) {
+          user.actions.inProgress[dbActions[0]._id].name.should.equal(dbActions[0].name);
+          user.actions.inProgress[dbActions[1]._id].name.should.equal(dbActions[1].name);
+          done(err);
+        });
+      });
+    });
+    it('should remove same action from other action lists when adding', function(done) {
+      // insert some actions into both done and canceled
+      dbUsers[0].actions.done[dbActions[0]._id] = dbActions[0];
+      dbUsers[0].markModified('actions.done');
+      dbUsers[0].actions.canceled[dbActions[1]._id] = dbActions[1];
+      dbUsers[0].markModified('actions.canceled');
+      dbUsers[0].save(function(err) {
+        if (err) {
+          return done(err);
+        }
+        async.parallel([
+          function(cb) {
+            models.user.startAction(dbUsers[0], dbActions[0]._id, cb);
+          },
+          function(cb) {
+            models.user.startAction(dbUsers[0], dbActions[1]._id, cb);
+          }
+        ], function(err) {
+          if (err) {
+            return done(err);
+          }
+          models.user.find({_id: dbUsers[0]._id}, false, null, null, function(err, user) {
+            user.actions.inProgress[dbActions[0]._id].name.should.equal(dbActions[0].name);
+            user.actions.inProgress[dbActions[1]._id].name.should.equal(dbActions[1].name);
+            should.not.exist(user.actions.done[dbActions[0]]);
+            should.not.exist(user.actions.canceled[dbActions[1]]);
+            done(err);
+          });
+        });
+      });
+    });
+    it('should return error when trying to add bogus action id', function(done) {
+      models.user.startAction(dbUsers[0], dummyData.ids[0], function(err) {
+        done(err ? null : 'no error returned!');
+      });
+    });
   });
 });

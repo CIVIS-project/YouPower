@@ -62,6 +62,7 @@ exports.getProfile = function(id, cb) {
     cb(null, {
       email: user.email,
       profile: user.profile,
+      actions: user.actions,
       energyConsumption: {}, // TODO
       topActions: [], // TODO
       topChallenges: [], // TODO
@@ -75,7 +76,7 @@ exports.getProfile = function(id, cb) {
 // email or profile
 exports.find = function(q, multi, limit, skip, cb) {
   var query = User.find(q);
-  query.select('profile email');
+  query.select('email profile actions');
   query.limit(limit);
   query.skip(skip);
   query.exec(function(err, res) {
@@ -112,9 +113,16 @@ exports.startAction = function(user, actionId, cb) {
       cb('Action not found');
     } else {
       // store this action in inProgress list
-      user.actions.inProgress[actionId] = actionResult;
+      user.actions.inProgress[actionId] = {};
       var action = user.actions.inProgress[actionId];
 
+      action.id = actionId;
+      action.name = actionResult.name;
+      action.description = actionResult.description;
+      action.effort = actionResult.effort;
+      action.impact = actionResult.impact;
+      action.activation = actionResult.activation;
+      action.category = actionResult.category;
       action.startedDate = new Date();
 
       // get rid of the action in other lists
