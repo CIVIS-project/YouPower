@@ -10,6 +10,20 @@ var should = require('chai').should();
 var models = require('../models');
 var dummyData = require ('./dummyData');
 
+var resetModel = function(modelName, cb) {
+  var resModels = [];
+  conn.connection.db.dropCollection(modelName + 's', function() {
+    async.map(dummyData[modelName + 's'], function(model, cb) {
+      models[modelName].create(model, cb);
+    }, function(err, models) {
+      _.each(models, function(model, i) {
+        resModels[i] = model;
+      });
+      cb(err, resModels);
+    });
+  });
+};
+
 describe('models', function() {
   describe('action', function() {
     var dbActions = [];
@@ -21,15 +35,9 @@ describe('models', function() {
 
     beforeEach(function(done) {
       // reset actions collection
-      conn.connection.db.dropCollection('actions', function() {
-        async.map(dummyData.actions, function(action, cb) {
-          models.action.create(action, cb);
-        }, function(err, actions) {
-          _.each(actions, function(action, i) {
-            dbActions[i] = action;
-          });
-          done(err);
-        });
+      resetModel('action', function(err, actions) {
+        dbActions = actions;
+        done(err);
       });
     });
 
@@ -192,18 +200,25 @@ describe('models', function() {
 
   describe('user', function() {
     var dbUsers = [];
+    var dbActions = [];
 
     beforeEach(function(done) {
       // reset users collection
-      conn.connection.db.dropCollection('users', function() {
-        async.map(dummyData.users, function(user, cb) {
-          models.user.register(user, user.password, cb);
-        }, function(err, users) {
-          _.each(users, function(user, i) {
-            dbUsers[i] = user;
+      async.parallel([
+        function(cb) {
+          resetModel('user', function(err, users) {
+            dbUsers = users;
+            cb(err);
           });
-          done(err);
-        });
+        },
+        function(cb) {
+          resetModel('action', function(err, actions) {
+            dbActions = actions;
+            cb(err);
+          });
+        }
+      ], function(err) {
+        done(err);
       });
     });
 

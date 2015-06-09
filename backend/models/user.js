@@ -46,6 +46,9 @@ exports.deserializeUser = User.deserializeUser;
 exports.register = function(userInfo, password, cb) {
   User.register(new User(userInfo), password, cb);
 };
+exports.create = function(userInfo, cb) { // alias for unit tests
+  exports.register(userInfo, userInfo.password, cb);
+};
 
 exports.getProfile = function(id, cb) {
   User.findOne({_id: id}, false, function(err, user) {
