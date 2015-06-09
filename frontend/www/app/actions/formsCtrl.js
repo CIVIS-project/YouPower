@@ -4,7 +4,7 @@ controllers.controller('FormsCtrl', FormsCtrl);
 // Inject my dependencies
 //SettingsCtrl.$inject = ['$scope', '$filter', '$translate'];
 
-function FormsCtrl($scope, $timeout, $state, $stateParams, $ionicHistory, $firebaseObject, $firebaseArray) { 
+function FormsCtrl($scope, $timeout, $state, $stateParams, $ionicHistory, $firebaseObject, $ionicPopup) { 
 
 	$scope.actionId = $stateParams.id;
 
@@ -47,8 +47,41 @@ function FormsCtrl($scope, $timeout, $state, $stateParams, $ionicHistory, $fireb
 			object.points = points;
 			object.$save();
 		});
-	}  
+	}
 
+	$scope.completed = function(user){
+		var alertPopup = $ionicPopup.confirm({
+	       title: 'Action completed',
+	       template: 'Do you want to add another action?',
+	       okText: "Yes",
+	       cancelText: "Not now",
+	       okType: "button-balanced"
+	     });
+	     alertPopup.then(function(res) {
+	       if(res) {
+	       	$scope.nextTip(user);
+	       }else {
+	       	$state.go("tab.actions");
+	       }
+	     });
+	}
+
+	$scope.abandoned = function(user){
+		var alertPopup = $ionicPopup.confirm({
+	       title: 'Action removed',
+	       template: 'Do you want to add another action instead?',
+	       okText: "Yes",
+	       cancelText: "Not now",
+	       okType: "button-balanced"
+	     });
+	     alertPopup.then(function(res) {
+	       if(res) {
+	       	$scope.nextTip(user);
+	       }else {
+	       	$state.go("tab.actions");
+	       }
+	     });
+	}  
 };
 
 
