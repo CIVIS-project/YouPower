@@ -5,7 +5,7 @@ navigation history that also transitions its views in and out.
 -->
 <ion-tabs class="tabs-striped tabs-background-balanced tabs-color-light">
   
-  <div from = "users user" provider="firebase" where="user.username=currentUser.username" default="{username:currentUser.username,lang:'en', preferredNrOfActions:2}" auto-insert="true" loaded="user.lang=currentUser.lang; currentUser.preferredNrOfActions=user.preferredNrOfActions; " auto-update="true">
+  <div from = "users user" provider="firebase" where="user.username=currentUser.username" default="{username:currentUser.username,lang:'en', preferredNrOfActions:2, actionsActive: [{date:Date.now(),id:'0'},{date:Date.now(),id:'99'}], actionsPending: [{date:Date.now(),id:'3'}]}" auto-insert="true" loaded="user.lang=currentUser.lang; currentUser.preferredNrOfActions=user.preferredNrOfActions; " auto-update="true">
     
 
     <!-- <div from = "userIdCtr userId" provider="firebase" loaded="userId.userIdCtr = user.id? userId.userIdCtr : userId.userIdCtr+1; user.id = user.id? user.id : userId.userIdCtr" auto-update="true"> </div> -->

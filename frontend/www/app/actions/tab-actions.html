@@ -1,4 +1,4 @@
-<ion-view view-title="Your Actions" ng-init="nextTip(user)">
+<ion-view view-title="Your Actions">
 <ion-content class="padding">
 
 <div class="list card">
@@ -27,16 +27,19 @@
 </a>
 </div>
 
-<div class="list card">
-  <div class="item item-divider">Pending actions (1)</div>
-  <a href="#" class="item item-icon-left item-icon-right">
-    <span class="balanced">
-      <b>20</b>
+<div class="list card" ng-if="_.size(user.actionsPending) > 0">
+  <div class="item item-divider">Pending actions ({{_.size(user.actionsPending)}})</div>
+<a class="item item-icon-left item-icon-right" ng-repeat="actionA in user.actionsPending" ng-href="#/tab/current-details/{{$index}}">
+  <span from="actions action"  provider="firebase" where="action.id=actionA.id" >
+    <!-- ng-repeat="(idx, action) in actions" > -->
+    <span class="balanced" >
+      <b>{{action.points}}</b>
     </span>
     <i class="icon ion-leaf balanced"></i>
-    Defrost your freezer in 30 days.
+    {{action.title}}
     <i class="icon ion-chevron-right icon-accessory"></i>
-  </a>
+  </span>
+</a>
 </div>
 <a class="button button-full button-balanced" href="#">
   <i class="icon ion-plus"></i>
