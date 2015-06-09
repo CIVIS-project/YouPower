@@ -14,16 +14,22 @@ describe('models', function() {
   describe('action', function() {
     var dbActions = [];
 
-    beforeEach(function(done) {
+    // clear db before starting
+    before(function() {
       conn.connection.db.dropDatabase();
+    });
 
-      async.map(dummyData.actions, function(action, cb) {
-        models.action.create(action, cb);
-      }, function(err, actions) {
-        _.each(actions, function(action, i) {
-          dbActions[i] = action;
+    beforeEach(function(done) {
+      // reset actions collection
+      conn.connection.db.dropCollection('actions', function() {
+        async.map(dummyData.actions, function(action, cb) {
+          models.action.create(action, cb);
+        }, function(err, actions) {
+          _.each(actions, function(action, i) {
+            dbActions[i] = action;
+          });
+          done(err);
         });
-        done(err);
       });
     });
 
@@ -188,15 +194,16 @@ describe('models', function() {
     var dbUsers = [];
 
     beforeEach(function(done) {
-      conn.connection.db.dropDatabase();
-
-      async.map(dummyData.users, function(user, cb) {
-        models.user.register(user, user.password, cb);
-      }, function(err, users) {
-        _.each(users, function(user, i) {
-          dbUsers[i] = user;
+      // reset users collection
+      conn.connection.db.dropCollection('users', function() {
+        async.map(dummyData.users, function(user, cb) {
+          models.user.register(user, user.password, cb);
+        }, function(err, users) {
+          _.each(users, function(user, i) {
+            dbUsers[i] = user;
+          });
+          done(err);
         });
-        done(err);
       });
     });
 
