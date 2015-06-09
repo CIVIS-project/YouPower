@@ -11,7 +11,7 @@ function TabCtrl($scope,$firebaseArray,$firebaseObject,$ionicHistory, $state, $i
     var userRef = new Firebase(endev.firebaseProvider.path + "users/" + user.$id);
 
     $firebaseObject(userRef).$loaded().then(function(user){
-        if(backToActions && user.actionsActive && _.size(user.actionsActive) >= user.preferredNrOfActions-1) {
+        if(backToActions && user.actionsActive && _.size(user.actionsActive) >= user.preferredNrOfActions) {
 
           $state.go("tab.actions");
         
