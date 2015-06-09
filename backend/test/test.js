@@ -2,11 +2,9 @@
 
 var async = require('async');
 var mongoose = require('mongoose');
-var mockgoose = require('mockgoose');
 var _ = require('underscore');
 
-mockgoose(mongoose);
-mongoose.connect('mongodb://dummy');
+var conn = mongoose.connect('mongodb://localhost/youpower-tests');
 
 var should = require('chai').should();
 var models = require('../models');
@@ -17,7 +15,7 @@ describe('models', function() {
     var dbActions = [];
 
     beforeEach(function(done) {
-      mockgoose.reset();
+      conn.connection.db.dropDatabase();
 
       async.map(dummyData.actions, function(action, cb) {
         models.action.create(action, cb);
@@ -190,7 +188,7 @@ describe('models', function() {
     var dbUsers = [];
 
     beforeEach(function(done) {
-      mockgoose.reset();
+      conn.connection.db.dropDatabase();
 
       async.map(dummyData.users, function(user, cb) {
         models.user.register(user, user.password, cb);
@@ -206,6 +204,22 @@ describe('models', function() {
       models.user.getProfile(dbUsers[0]._id, function(err, user) {
         user.email.should.equal(dbUsers[0].email);
         done(err);
+      });
+    });
+
+    it('should update profile correctly', function(done) {
+      models.user.updateProfile(dbUsers[0], {
+        name: 'new name'
+      }, function(err) {
+        if (err) {
+          return done(err);
+        }
+        models.user.find({_id: dbUsers[0]._id}, false, null, null, function(err, user) {
+          user.profile.name.should.equal('new name');
+          // TODO: date of birth?
+          user.profile.photo.should.equal(dbUsers[0].profile.photo);
+          done(err);
+        });
       });
     });
 

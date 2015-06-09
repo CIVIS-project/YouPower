@@ -92,7 +92,11 @@ exports.updateProfile = function(user, profile, cb) {
   user.profile.dob   = profile.dob   || user.profile.dob;
   user.profile.photo = profile.photo || user.profile.photo;
 
-  user.save(function(err, user) {
+  user.markModified('profile.name');
+  user.markModified('profile.dob');
+  user.markModified('profile.photo');
+
+  user.save(function(err) {
     cb(err, user.profile);
   });
 };

@@ -3,6 +3,8 @@
 This is the backend of the YouPower app.
 
 ## Setup
+
+First set up mongodb on your local machine.
 ```
 cd backend/     # move into correct directory
 npm install     # install dependencies
@@ -15,6 +17,7 @@ Make sure that unit tests pass before pushing your code into the repository:
 ```
 npm test
 ```
+Note that this requires a local instance of mongodb running.
 
 ## Deploying
 

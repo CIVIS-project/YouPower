@@ -55,16 +55,18 @@ exports.users = [
     email: 'testUser@foo.com',
     password: 'foobar1',
     profile: {
-      name: 'my nick'
-      // TODO: more fields
+      name: 'my nick',
+      dob: new Date(42),
+      photo: 'http://dummy'
     }
   },
   {
     email: 'testUser2@foo.com',
     password: 'foobar2',
     profile: {
-      name: 'my nick2'
-      // TODO: more fields
+      name: 'my nick2',
+      dob: new Date(43),
+      photo: 'http://dummy2'
     }
   }
 ];
