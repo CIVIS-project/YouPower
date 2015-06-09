@@ -9,3 +9,4 @@ frontend/**/xcuserdata/
 frontend/xcshareddata/
 .idea/*
 backend/apidoc/**
+backend/coverage/**
