@@ -4,8 +4,14 @@ Each tab's child <ion-nav-view> directive will have its own
 navigation history that also transitions its views in and out.
 -->
 <ion-tabs class="tabs-striped tabs-background-balanced tabs-color-light">
-  <div from = "users user" provider="firebase" where="user.username=currentUser.username" default="{username:currentUser.username, prefferdNrOfActions:2}" auto-insert="true" loaded="user.lang = curretnUser.lang" auto-update="true">
+  
+  <div from = "users user" provider="firebase" where="user.username=currentUser.username" default="{username:currentUser.username,lang:'en', preferdNrOfActions:2}" auto-insert="true" loaded="user.lang=currentUser.lang; currentUser.preferredNrOfActions=user.preferredNrOfActions; " auto-update="true">
+    
 
+    <!-- <div from = "userIdCtr userId" provider="firebase" loaded="userId.userIdCtr = user.id? userId.userIdCtr : userId.userIdCtr+1; user.id = user.id? user.id : userId.userIdCtr" auto-update="true"> </div> -->
+
+    <div from = "userIdCtr userId" provider="firebase" loaded="userId.userIdCtr = userId.userIdCtr+1; user.id = user.id? user.id : userId.userIdCtr" auto-update="true"> </div>
+    
 
   <!-- My Actions Tab -->
   <ion-tab title="My Actions" icon="ion-person" href="#/tab/actions">
@@ -23,18 +29,18 @@ navigation history that also transitions its views in and out.
   </ion-tab>
 
   <!-- Performance Tab -->
-  <ion-tab title="Performance" icon="ion-pie-graph" href="#/tab/performance">
+  <!-- <ion-tab title="Performance" icon="ion-pie-graph" href="#/tab/performance">
     <ion-nav-view name="tab-performance"></ion-nav-view>
   </ion-tab>
 
-  <!-- Challenges Tab -->
+  Challenges Tab
   <ion-tab title="Challenges" icon="ion-flag" href="#/tab/challenges">
     <ion-nav-view name="tab-challenges"></ion-nav-view>
-  </ion-tab>
+  </ion-tab> -->
 
   <!-- Settings Tab -->
-  <ion-tab title="Settings" icon="ion-settings" href="#/tab/settings">
+  <!-- <ion-tab title="Settings" icon="ion-settings" href="#/tab/settings">
     <ion-nav-view name="tab-settings"></ion-nav-view>
-  </ion-tab>
+  </ion-tab> -->
   </div>
 </ion-tabs>

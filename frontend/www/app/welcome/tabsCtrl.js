@@ -1,7 +1,7 @@
-controllers.controller('WelcomeCtrl', WelcomeCtrl);
+controllers.controller('TabsCtrl', TabsCtrl);
 
 
-function WelcomeCtrl($translate, $scope, $rootScope, $state) {
+function TabsCtrl($rootScope) {
 
 	$scope.emailAddress = "jmayer@energyup.eu";
 	
@@ -17,11 +17,7 @@ function WelcomeCtrl($translate, $scope, $rootScope, $state) {
 
 		console.log($rootScope.currentUser.preferredNrOfActions);
 
-		//$state.go('todo.details', { id: $scope.todos[0].Id });
-
-		$state.go('tab.actions');
+		//if $rootScope.currentUser
 	}
 
 }; 
-
-

@@ -16,7 +16,7 @@ var sharedServices = angular.module('starter.sharedServices', []);
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-var starter = angular.module('starter', ['ionic', 'Endev', 'starter.controllers', 'starter.sharedServices', 'pascalprecht.translate'])
+var starter = angular.module('starter', ['ionic', 'ionic.rating', 'Endev', 'starter.controllers', 'starter.sharedServices', 'pascalprecht.translate'])
 
 .run(function($ionicPlatform, $rootScope) {
 
@@ -24,7 +24,9 @@ var starter = angular.module('starter', ['ionic', 'Endev', 'starter.controllers'
 
   $rootScope._=_;
 
-  $rootScope.currentUser = null;
+  $rootScope.currentUser = {};
+
+  //$rootScope.currentUser = {username:"jmayer@energyup.eu"};
 
   $rootScope.getNumber = function(num) {
       return new Array(num);   
@@ -64,16 +66,18 @@ var starter = angular.module('starter', ['ionic', 'Endev', 'starter.controllers'
   .state('tab', {
     url: "/tab",
     abstract: true,
-    templateUrl: "app/tabs.html"
+    templateUrl: "app/tabs/tabs.html",
+    controller: 'TabCtrl'
   })
 
   // Each tab has its own nav history stack:
 
   .state('tab.actions', {
+    cache: false, 
     url: '/actions',
     views: {
       'tab-actions': {
-        templateUrl: 'app/yourActions/tab-actions.html',
+        templateUrl: 'app/actions/tab-actions.html',
         controller: 'ActionsCtrl'
       }
     }
@@ -83,17 +87,17 @@ var starter = angular.module('starter', ['ionic', 'Endev', 'starter.controllers'
     url: '/actions/:id',
     views: {
       'tab-actions': {
-        templateUrl: 'app/yourActions/action.html',
+        templateUrl: 'app/actions/action.html',
         controller: 'ActionCtrl'
       }
     }
   })
 
-  .state('tab.your-actions', {
-    url: '/your-actions/:index',
+  .state('tab.current-details', {
+    url: '/current-details/:index',
     views: {
       'tab-actions': {
-        templateUrl: 'app/yourActions/your-actions.html',
+        templateUrl: 'app/actions/current-details.html',
         controller: 'ActionsCtrl'
       }
     }
@@ -103,7 +107,17 @@ var starter = angular.module('starter', ['ionic', 'Endev', 'starter.controllers'
     url: '/action-completed/:id',
     views: {
       'tab-actions': {
-        templateUrl: 'app/yourActions/action-completed.html',
+        templateUrl: 'app/actions/action-completed.html',
+        controller: 'FormsCtrl'
+      }
+    }
+  })
+
+  .state('tab.action-abandoned', {
+    url: '/action-abandoned/:id',
+    views: {
+      'tab-actions': {
+        templateUrl: 'app/actions/action-abandoned.html',
         controller: 'FormsCtrl'
       }
     }
@@ -129,25 +143,25 @@ var starter = angular.module('starter', ['ionic', 'Endev', 'starter.controllers'
     }
   })
 
-  .state('tab.performance', {
-    url: '/performance',
-    views: {
-      'tab-performance': {
-        templateUrl: 'templates/tab-performance.html',
-        controller: 'PerformanceCtrl'
-      }
-    }
-  })
+  // .state('tab.performance', {
+  //   url: '/performance',
+  //   views: {
+  //     'tab-performance': {
+  //       templateUrl: 'templates/tab-performance.html',
+  //       controller: 'PerformanceCtrl'
+  //     }
+  //   }
+  // })
 
-  .state('tab.challenges', {
-    url: '/challenges',
-    views: {
-      'tab-challenges': {
-        templateUrl: 'templates/tab-challenges.html',
-        controller: 'ChallengesCtrl'
-      }
-    }
-  })
+  // .state('tab.challenges', {
+  //   url: '/challenges',
+  //   views: {
+  //     'tab-challenges': {
+  //       templateUrl: 'templates/tab-challenges.html',
+  //       controller: 'ChallengesCtrl'
+  //     }
+  //   }
+  // })
 
   /*
   .state('tab.chats', {

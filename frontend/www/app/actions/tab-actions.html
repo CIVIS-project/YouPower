@@ -1,7 +1,8 @@
-<ion-view view-title="Your Actions">
+<ion-view view-title="Your Actions" ng-init="nextTip(user)">
 <ion-content class="padding">
 
 <div class="list card">
+  <div class="item item-divider">Past Actions ({{_.size(user.actionsDone)}})</div>
   <a href="#" class="item item-icon-left item-icon-right">
     <i class="icon ion-leaf balanced"></i>
     <span class="balanced">
@@ -13,17 +14,17 @@
 
 <div class="list card">
   <div class="item item-divider">Current Actions ({{_.size(user.actionsActive)}})</div>
-  <a class="item item-icon-left item-icon-right" ng-repeat="actionA in user.actionsActive" ng-href="#/tab/your-actions/{{$index}}">
-     <span from="actions action"  provider="firebase" where="action.id=actionA.id" data-loaded="loadActions(action)" >
-  <!-- ng-repeat="(idx, action) in actions" > -->
+  <a class="item item-icon-left item-icon-right" ng-repeat="actionA in user.actionsActive" ng-href="#/tab/current-details/{{$index}}">
+  <span from="actions action"  provider="firebase" where="action.id=actionA.id" >
+    <!-- ng-repeat="(idx, action) in actions" > -->
     <span class="balanced" >
       <b>{{action.points}}</b>
     </span>
     <i class="icon ion-leaf balanced"></i>
     {{action.title}}
     <i class="icon ion-chevron-right icon-accessory"></i>
-    </span>
-  </a>
+  </span>
+</a>
 </div>
 
 <div class="list card">
@@ -41,5 +42,6 @@
   <i class="icon ion-plus"></i>
   Add actions
 </a>
+
 </ion-content>
 </ion-view>
