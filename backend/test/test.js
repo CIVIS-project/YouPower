@@ -228,6 +228,11 @@ describe('models', function() {
         done(err);
       });
     });
+    it('should return error when getting profile for invalid id', function(done) {
+      models.user.getProfile('foo bar', function(err) {
+        done(err ? null : 'no error returned!');
+      });
+    });
 
     it('should update profile correctly', function(done) {
       models.user.updateProfile(dbUsers[0], {
@@ -271,6 +276,7 @@ describe('models', function() {
 
     it('bogus query should return empty array for multi-find', function(done) {
       models.user.find({'email': 'dasfsada'}, true, null, null, function(err, users) {
+        users.should.be.an.instanceof(Array);
         users.should.be.empty;
         done(err);
       });
