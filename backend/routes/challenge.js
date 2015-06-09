@@ -4,29 +4,31 @@ var express = require('express');
 var auth = require('../middleware/auth');
 var util = require('util');
 var router = express.Router();
-//var Challenge = require('../models/challenge');
+var Challenge = require('../models/challenge');
 
 /**
- * @api {post} /challenge Create new challenge (TODO: implement me)
+ * @api {post} /challenge Create new challenge
  * @apiGroup Challenge
  *
  * @apiParam {String} name Challenge name
  * @apiParam {String} description Challenge description
- * @apiParam {Array} Array of challenge IDs, eg:
+ * @apiParam {Array} List of action IDs, eg:
  *
  * ["555eda2531039c1853352b7f", "555eda2531039c1853352b7f"]
+ * @apiParam {ratings} Rating for a challenge, (1 [least] - 5 [most]), default 0
+
+ *  http://localhost:3000/api/challenge
  */
 router.post('/', function(req, res) {
-  res.status(501).send('Not implemented');
+  Challenge.create(req.body, res.successRes);
 });
 
 /**
- * @api {put} /challenge/rate/:id Create/update user's rating of challenge (TODO: implement me)
+ * @api {put} /challenge/rate/:id Create/update user's rating of challenge
  * @apiGroup Challenge
  *
  * @apiParam {String} id MongoId of challenge
  * @apiParam {Number} rating Rating of challenge (1 [least] - 5 [most])
- * @apiParam {String} [comment] Comment attached to rating
  *
  * @apiExample {curl} Example usage:
  *  curl -i -X PUT \
@@ -45,18 +47,15 @@ router.put('/rate/:id', auth.authenticate(), function(req, res) {
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    res.status(501).send('Not implemented');
-    /*
     Challenge.rate(req.params.id, req.user.email, req.body.rating, req.body.comment,
         function(err, challenge) {
       res.status(err ? 500 : 200).send(err || challenge);
     });
-    */
   }
 });
 
 /**
- * @api {get} /challenge/:id Fetch a challenge by id (TODO: implement me)
+ * @api {get} /challenge/:id Fetch a challenge by id
  * @apiGroup Challenge
  *
  * @apiParam {String} id MongoId of challenge
@@ -65,22 +64,18 @@ router.put('/rate/:id', auth.authenticate(), function(req, res) {
  */
 router.get('/:id', function(req, res) {
   req.checkParams('id', 'Invalid challenge id').isMongoId();
-
   var err;
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    res.status(501).send('Not implemented');
-    /*
     Challenge.get(req.params.id, function(err, challenge) {
       res.status(err ? 500 : 200).send(err || challenge);
     });
-    */
   }
 });
 
 /**
- * @api {delete} /challenge/:id Delete a challenge by id (TODO: implement me)
+ * @api {delete} /challenge/:id Delete a challenge by id
  * @apiGroup Challenge
  *
  * @apiParam {String} id MongoId of challenge
@@ -103,17 +98,14 @@ router.delete('/:id', function(req, res) {
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    res.status(501).send('Not implemented');
-    /*
     Challenge.delete(req.params.id, function(err, challenge) {
       res.status(err ? 500 : 200).send(err || challenge);
     });
-    */
   }
 });
 
 /**
- * @api {get} /challenge Get a list of challenges (TODO: implement me)
+ * @api {get} /challenge Get a list of challenges
  * @apiGroup Challenge
  *
  * @apiParam {Integer} [limit=50] Maximum number of results returned
@@ -143,15 +135,11 @@ router.get('/', function(req, res) {
   req.checkBody('skip').optional().isInt();
 
   req.sanitize('includeReviews').toBoolean();
-
-  res.status(501).send('Not implemented');
-  /*
   Challenge.all(req.body.limit || 50, req.body.skip, req.body.includeRatings,
     function(err, challenge) {
     res.status(501).send('Not implemented');
     res.status(err ? 500 : 200).send(err || challenge);
   });
-  */
 });
 
 /**
@@ -171,29 +159,7 @@ router.get('/search', auth.authenticate(), function(req, res) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
     res.status(501).send('Not implemented');
-    /*
-    var regexpQuery = new RegExp(escapeRegexp(req.query.q));
 
-    var query = User.find({
-      $or: [
-        {'profile.name':  regexpQuery},
-        {'email':         regexpQuery}
-      ]
-    });
-
-    query.select('profile email');
-    query.limit(50);
-
-    query.exec(function(err, users) {
-      if (err) {
-        res.status(500).json(err);
-      } else {
-        res.json({
-          users: users
-        });
-      }
-    });
-    */
   }
 });
 
