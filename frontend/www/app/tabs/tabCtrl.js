@@ -3,7 +3,8 @@ controllers.controller('TabCtrl', TabCtrl);
 
 function TabCtrl($scope,$firebaseArray,$firebaseObject,$ionicHistory, $state, $ionicPopup) {
 
-  $scope.nextTip = function(user,backToActions) {
+  //$scope.nextTip = function(user,backToActions) {
+  $scope.nextTip = function(user, checkNrOfActions) {
     $ionicHistory.nextViewOptions({
       disableBack: true
     });
@@ -11,7 +12,8 @@ function TabCtrl($scope,$firebaseArray,$firebaseObject,$ionicHistory, $state, $i
     var userRef = new Firebase(endev.firebaseProvider.path + "users/" + user.$id);
 
     $firebaseObject(userRef).$loaded().then(function(user){
-        if(backToActions && user.actionsActive && _.size(user.actionsActive) >= user.preferredNrOfActions) {
+        //if(backToActions && user.actionsActive && _.size(user.actionsActive) >= user.preferredNrOfActions) {
+        if(checkNrOfActions && user.actionsActive && _.size(user.actionsActive) >= user.preferredNrOfActions) {
 
           $state.go("tab.actions");
         

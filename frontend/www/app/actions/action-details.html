@@ -39,7 +39,7 @@
     </a>
     <a class="tab-item" href="#">
       <i class="icon ion-chatbox"></i>
-      {{action.comments.length}} Comments
+      {{action.comments? action.comments.length : 0 }} Comments
     </a>
     <a class="tab-item" href="#">
       <i class="icon ion-share"></i>

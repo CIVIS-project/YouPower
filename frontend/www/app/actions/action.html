@@ -16,7 +16,7 @@
 
 				<p><a href="#" class="subdued">{{action.participants}} Participant{{action.participants > 1 ? 's' : ''}}.</a></p>
 				
-				<a class="item item-icon-left" insert-into="user.actionsDoing" ng-click="insert({id:action.id, date: Date.now()});nextTip(user)">
+				<a class="item item-icon-left" insert-into="user.actionsDoing" ng-click="insert({id:action.id, date: Date.now()});nextTip(user,true)">
 					<i class="icon ion-ios-checkmark-outline positive"></i>
 					I already do this. 
 				</a>
@@ -24,11 +24,11 @@
 					<i class="icon ion-leaf balanced"></i>
 					I want to do this.
 				</a>
-				<a class="item item-icon-left" insert-into="user.actionsNotInterested" ng-click="insert({id:action.id, date: Date.now()});nextTip(user)">
+				<a class="item item-icon-left" insert-into="user.actionsNotInterested" ng-click="insert({id:action.id, date: Date.now()});nextTip(user, true)">
 					<i class="icon ion-ios-close-outline assertive"></i>
 					I don't want to do this.
 				</a>
-				<a class="item item-icon-left" insert-into="user.actionsNA" ng-click="insert({id:action.id, date: Date.now()});nextTip(user)">
+				<a class="item item-icon-left" insert-into="user.actionsNA" ng-click="insert({id:action.id, date: Date.now()});nextTip(user,true)">
 					<i class="icon ion-ios-minus-outline energized"></i>
 					This doesn't apply to me. 
 				</a>
