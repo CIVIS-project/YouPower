@@ -24,7 +24,7 @@ var expressValidator = require('express-validator');
 var mongoose = require('mongoose');
 var fs = require('fs');
 
-mongoose.connect(process.env.MONGO_URL || 'mongodb://localhost/civis');
+mongoose.connect(process.env.MONGO_URL || 'mongodb://localhost/youpower');
 var db = mongoose.connection;
 
 var app = express();
