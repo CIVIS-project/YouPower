@@ -205,24 +205,11 @@ describe('models', function() {
 
   describe('user', function() {
     var dbUsers = [];
-    var dbActions = [];
 
     beforeEach(function(done) {
       // reset users collection
-      async.parallel([
-        function(cb) {
-          resetModel('user', function(err, users) {
-            dbUsers = users;
-            cb(err);
-          });
-        },
-        function(cb) {
-          resetModel('action', function(err, actions) {
-            dbActions = actions;
-            cb(err);
-          });
-        }
-      ], function(err) {
+      resetModel('user', function(err, users) {
+        dbUsers = users;
         done(err);
       });
     });
@@ -293,7 +280,31 @@ describe('models', function() {
         done(err);
       });
     });
+  });
 
+  describe('userAction', function() {
+    var dbUsers = [];
+    var dbActions = [];
+
+    beforeEach(function(done) {
+      // reset users collection
+      async.parallel([
+        function(cb) {
+          resetModel('user', function(err, users) {
+            dbUsers = users;
+            cb(err);
+          });
+        },
+        function(cb) {
+          resetModel('action', function(err, actions) {
+            dbActions = actions;
+            cb(err);
+          });
+        }
+      ], function(err) {
+        done(err);
+      });
+    });
     it('should add action to user model', function(done) {
       models.user.startAction(dbUsers[0], dbActions[0]._id, function(err) {
         if (err) {
