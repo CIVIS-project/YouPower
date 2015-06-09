@@ -350,6 +350,11 @@ describe('models', function() {
         done(err ? null : 'no error returned!');
       });
     });
+    it('should return error when trying to add invalid action id', function(done) {
+      models.user.startAction(dbUsers[0], 'foo bar', function(err) {
+        done(err ? null : 'no error returned!');
+      });
+    });
     it('should remove action from inProgress when canceling, add to canceled', function(done) {
       async.series([
         function(cb) {
@@ -402,6 +407,72 @@ describe('models', function() {
           should.exist(user.actions.canceled[dbActions[1]._id]);
           done(err);
         });
+      });
+    });
+    it('should return error when trying to cancel bogus action id', function(done) {
+      models.user.cancelAction(dbUsers[0], dummyData.ids[0], function(err) {
+        done(err ? null : 'no error returned!');
+      });
+    });
+    it('should mark action as complete, add to done', function(done) {
+      async.series([
+        function(cb) {
+          models.user.startAction(dbUsers[0], dbActions[0]._id, cb);
+        },
+        function(cb) {
+          models.user.startAction(dbUsers[0], dbActions[1]._id, cb);
+        },
+        function(cb) {
+          models.user.completeAction(dbUsers[0], dbActions[0]._id, cb);
+        }
+      ], function(err) {
+        if (err) {
+          return done(err);
+        }
+        models.user.find({_id: dbUsers[0]._id}, false, null, null, function(err, user) {
+          should.not.exist(user.actions.inProgress[dbActions[0]]);
+          user.actions.done[dbActions[0]._id].name.should.equal(dbActions[0].name);
+          user.actions.inProgress[dbActions[1]._id].name.should.equal(dbActions[1].name);
+          should.not.exist(user.actions.canceled[dbActions[0]._id]);
+          should.not.exist(user.actions.canceled[dbActions[1]._id]);
+          done(err);
+        });
+      });
+    });
+    it('should return error if completing an action that has not been started', function(done) {
+      var user = dbUsers[0];
+      user.actions.done[dbActions[0]._id] = dbActions[0];
+      user.markModified('actions.done');
+      user.actions.canceled[dbActions[1]._id] = dbActions[1];
+      user.markModified('actions.canceled');
+      user.save(function(err) {
+        if (err) {
+          return done(err);
+        }
+        async.parallel([
+          function(cb) {
+            models.user.completeAction(user, dbActions[0]._id, function(err) {
+              cb(err ? null : 'already completed action was completed without error!');
+            });
+          },
+          function(cb) {
+            models.user.completeAction(user, dbActions[1]._id, function(err) {
+              cb(err ? null : 'canceled action was completed without error!');
+            });
+          }
+        ], function(err) {
+          should.not.exist(user.actions.done[dbActions[1]._id]);
+          should.exist(user.actions.done[dbActions[0]._id]);
+          user.actions.done[dbActions[0]._id].name.should.equal(dbActions[0].name);
+          should.exist(user.actions.canceled[dbActions[1]._id]);
+          user.actions.canceled[dbActions[1]._id].name.should.equal(dbActions[1].name);
+          done(err);
+        });
+      });
+    });
+    it('should return error when trying to complete bogus action id', function(done) {
+      models.user.completeAction(dbUsers[0], dummyData.ids[0], function(err) {
+        done(err ? null : 'no error returned!');
       });
     });
   });
