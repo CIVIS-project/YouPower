@@ -134,7 +134,7 @@ var starter = angular.module('starter', ['ionic', 'ionic.rating', 'Endev', 'star
     url: '/home',
     views: {
       'tab-home': {
-        templateUrl: 'templates/tab-home.html',
+        templateUrl: 'app/home/tab-home.html',
         controller: 'HomeCtrl'
       }
     }

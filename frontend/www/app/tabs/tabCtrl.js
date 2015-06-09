@@ -3,7 +3,7 @@ controllers.controller('TabCtrl', TabCtrl);
 
 function TabCtrl($scope,$firebaseArray,$ionicHistory, $state, $ionicPopup) {
 
-	$scope.nextTip = function(user,backToActions) {
+  $scope.nextTip = function(user,backToActions) {
     $ionicHistory.nextViewOptions({
       disableBack: true
     });
@@ -51,6 +51,16 @@ function TabCtrl($scope,$firebaseArray,$ionicHistory, $state, $ionicPopup) {
       });
     }
       //todo: choose next action
+  }
+
+  $scope.goToAction = function(user,id) {
+    action = _.find(user.actionsActive,function(action){ return action.id == id});
+    if(action) {
+      $state.go("tab.action-details",{type:"Active", index: _.toArray(user.actionsActive).indexOf(action)});
+    } else {
+      $state.go("tab.action",{id:id});
+    }
+
   }
 
 }; 
