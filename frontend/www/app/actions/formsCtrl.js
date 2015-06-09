@@ -4,7 +4,7 @@ controllers.controller('FormsCtrl', FormsCtrl);
 // Inject my dependencies
 //SettingsCtrl.$inject = ['$scope', '$filter', '$translate'];
 
-function FormsCtrl($scope, $timeout, $state, $stateParams, $ionicHistory) { 
+function FormsCtrl($scope, $timeout, $state, $stateParams, $ionicHistory, $firebaseObject) { 
 
 	$scope.actionId = $stateParams.id;
 
@@ -45,6 +45,18 @@ function FormsCtrl($scope, $timeout, $state, $stateParams, $ionicHistory) {
 
 	$scope.goBack= function() {
 		$ionicHistory.goBack();
+	}
+
+	$scope.setPoints = function(points) {
+		userRef = new Firebase(endev.firebaseProvider.path + "users/" + $scope.user.$id);
+		$firebaseObject(userRef).$loaded().then(function(object){
+			object.points = points;
+			object.$save();
+		});
+		
+		// $timeout(function(){
+		// 	$scope.user.points = points;
+		// },100)
 	}  
 
 };

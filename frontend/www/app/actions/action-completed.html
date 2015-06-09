@@ -9,7 +9,7 @@
     Congratulations!
   </div>
   <div class="item item-text-wrap">
-    You earned <b class="balanced text-large"><i class="icon ion-leaf icon-large balanced"></i> {{action.points}}</b> for the action: {{action.title}}<br/>
+    You will earn <b class="balanced text-large"><i class="icon ion-leaf icon-large balanced"></i> {{action.points}}</b> for the action: {{action.title}}<br/>
     You can earn <b class="balanced text-large"><i style="font-size:32px;" class="icon ion-leaf icon-large balanced"></i> {{bonus}} more</b> by filling the form below. We love to hear your feedback.
   </div>
 </div>
@@ -50,8 +50,11 @@
     </div>
   </div>
   
-    <a style="width:50%" class="button button-balanced" remove-from="action.feedback" ng-click="remove(feedback);goBack()">Cancel</a><a class="button button-balanced" style="width:50%" remove-from="user.actionsActive" from="user.actionsActive act" where="act.id=action.id" insert-into="user.actionsDone" loaded="_act={id:action.id, dateStarted:act.date, dateCompleted:Date.now()}" ng-click="insert(_act); remove(act); nextTip(user)"> Done </a>
+    <a style="width:50%" class="button button-balanced" remove-from="action.feedback" ng-click="remove(feedback);goBack()">Cancel</a>
 
+    <a class="button button-balanced" style="width:50%" remove-from="user.actionsActive" from="user.actionsActive act" where="act.id=action.id" insert-into="user.actionsDone" loaded="_act={id:action.id, dateStarted:act.date, dateCompleted:Date.now()}" data-click="setPoints(user.points + bonus); remove(act); insert(_act); nextTip(user)"> Done </a>
+
+    <!--  -->
     <!-- user.points=user.points+bonus;  -->
 
   </div>

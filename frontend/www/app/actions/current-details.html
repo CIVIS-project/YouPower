@@ -11,7 +11,7 @@
     </div>
     <div class="item item-body">
       <ng-include src="'app/actions/actionDescription.html'"></ng-include>
-      <p><a class="subdued">{{action.participants}} Participant{{action.participants > 1 ? 's' : ''}}.</a> You started on {{act.date}}.</p>
+      <p><a class="subdued">{{action.participants}} Participant{{action.participants > 1 ? 's' : ''}}.</a> You started on {{act.date | date: "yyyy-MM-dd"}}.</p>
     </div>
   </div> 
 
