@@ -93,11 +93,11 @@ var starter = angular.module('starter', ['ionic', 'ionic.rating', 'Endev', 'star
     }
   })
 
-  .state('tab.current-details', {
-    url: '/current-details/:index',
+  .state('tab.action-details', {
+    url: '/actions/:type/:index',
     views: {
       'tab-actions': {
-        templateUrl: 'app/actions/current-details.html',
+        templateUrl: 'app/actions/action-details.html',
         controller: 'ActionsCtrl'
       }
     }
