@@ -18,7 +18,7 @@ var sharedServices = angular.module('starter.sharedServices', []);
 // 'starter.controllers' is found in controllers.js
 var starter = angular.module('starter', ['ionic', 'ionic.rating', 'Endev', 'starter.controllers', 'starter.sharedServices', 'pascalprecht.translate'])
 
-.run(function($ionicPlatform, $rootScope, $window,$firebaseArray,$ionicHistory, $state) {
+.run(function($ionicPlatform, $rootScope, $window,$firebaseArray,$ionicHistory, $state, $ionicPopup) {
 
   $rootScope.scale = 5; 
 
@@ -40,7 +40,7 @@ var starter = angular.module('starter', ['ionic', 'ionic.rating', 'Endev', 'star
 
     //TO FIX: the user.actionsActive is not always up to date
     // therefore the size calculation can sometimes be wrong
-    if(backToActions && user.actionsActive && _.size(user.actionsActive) >= user.preferredNrOfActions) {
+    if(backToActions && user.actionsActive && _.size(user.actionsActive) >= user.preferredNrOfActions-1) {
 
       $state.go("tab.actions");
     
@@ -59,7 +59,22 @@ var starter = angular.module('starter', ['ionic', 'ionic.rating', 'Endev', 'star
           !_.find(user.actionsAbandoned,eqalityFn);
         }));
 
-        $state.go("tab.action",{id:possibleActions[0].id});
+        
+        if(_.size(possibleActions)==0) {
+          var alertPopup = $ionicPopup.alert({
+           title: 'No more actions',
+           template: 'You have used all the actions',
+           buttons: [{
+            text: "OK",
+            type: "button-balanced"
+           }]
+         });
+         alertPopup.then(function(res) {
+           $state.go("tab.actions");
+         });
+        }else {
+          $state.go("tab.action",{id:possibleActions[0].id});
+        }
       });
     }
       //todo: choose next action
