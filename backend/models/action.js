@@ -116,6 +116,7 @@ exports.all = function(limit, skip, includeRatings, cb) {
   .skip(skip)
   .limit(limit)
   .exec(function(err, actions) {
+    /* istanbul ignore if */
     if (err) {
       cb(err);
     } else {

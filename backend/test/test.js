@@ -114,6 +114,11 @@ describe('models', function() {
           });
         },
         function(cb) {
+          models.action.rate('foo bar', d.userId, d.rating, d.comment, function(err) {
+            cb(err ? null : 'passing invalid action id did not cause error!');
+          });
+        },
+        function(cb) {
           models.action.rate(dbActions[0]._id, null, d.rating, d.comment, function(err) {
             cb(err ? null : 'missing userId field did not cause error!');
           });
