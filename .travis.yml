@@ -11,7 +11,7 @@ before_script:
   - gulp apidoc
 after_script:
   - "npm run-script coverage"
-  - "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
+  - "cat ./backend/coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
 notifications:
   webhooks:
     urls:
