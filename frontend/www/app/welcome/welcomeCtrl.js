@@ -3,7 +3,8 @@ controllers.controller('WelcomeCtrl', WelcomeCtrl);
 
 function WelcomeCtrl($translate, $scope, $rootScope, $state) {
 
-	$scope.emailAddress = "jmayer@energyup.eu";
+	$scope.emailAddress = "";
+	// $scope.emailAddress = "jmayer@energyup.eu";
 	
 	$scope.changeLanguage = function (langKey) {
 		$translate.use(langKey);

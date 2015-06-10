@@ -39,7 +39,7 @@
     </a>
     <a class="tab-item" href="#">
       <i class="icon ion-chatbox"></i>
-      {{action.comments? action.comments.length : 0 }} Comments
+      {{action.comments? _.size(action.comments) : 0 }} Comment{{_.size(action.comments)> 1 ? 's' : ''}}
     </a>
     <a class="tab-item" href="#">
       <i class="icon ion-share"></i>
