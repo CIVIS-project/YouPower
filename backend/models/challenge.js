@@ -162,8 +162,4 @@ exports.rate = function(id, userId, rating, comment, cb) {
   });
 };
 
-var Challenge = mongoose.model('Challenge', ChallengeSchema);
-
-module.exports = {
-  Challenge: Challenge
-};
+exports.model = Challenge;
