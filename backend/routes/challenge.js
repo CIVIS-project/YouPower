@@ -143,7 +143,7 @@ router.get('/', function(req, res) {
 });
 
 /**
- * @api {get} /challenge/search Search for challenges (TODO: implement me)
+ * @api {get} /challenge/search Search for Challenges by name
  * @apiGroup Challenge
  *
  * @apiParam {String} q Search query
@@ -151,15 +151,16 @@ router.get('/', function(req, res) {
  * @apiExample {curl} Example usage:
  *  curl -i http://localhost:3000/api/challenge/search\?q\=foobar
  */
-router.get('/search', auth.authenticate(), function(req, res) {
+router.get('/search', function(req, res) {
   req.checkQuery('q', 'Invalid query parameter').notEmpty();
 
   var err;
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    res.status(501).send('Not implemented');
-
+    Challenge.search(req.query.q, function(err, challenge) {
+      res.status(err ? 500 : 200).send(err || challenge);
+    });
   }
 });
 

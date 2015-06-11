@@ -87,6 +87,22 @@ exports.get = function(id, cb) {
   });
 };
 
+//Search challenge by name
+exports.search = function(cname, cb) {
+  Challenge.find({
+    name : new RegExp('^' + cname + '$', 'i')
+  }, function(err, challenge) {
+    if (err) {
+      cb(err);
+    } else if (!challenge) {
+      cb('Challenge not found');
+    } else {
+      challenge = challenge.toObject();
+      cb(null, challenge);
+    }
+  });
+};
+
 //Delete a challenge with id
 exports.delete = function(id, cb) {
   Challenge.remove({
@@ -144,4 +160,10 @@ exports.rate = function(id, userId, rating, comment, cb) {
       });
     }
   });
+};
+
+var Challenge = mongoose.model('Challenge', ChallengeSchema);
+
+module.exports = {
+  Challenge: Challenge
 };
