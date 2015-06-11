@@ -39,6 +39,7 @@ describe('models', function() {
         dbActions = actions;
         done(err);
       });
+      dummyData = require('./dummyData');
     });
 
     it('should return all actions without ratings', function(done) {
@@ -96,10 +97,7 @@ describe('models', function() {
           }
 
           var rating = action.ratings[0];
-          rating.userId = rating.userId.toString();
-          delete(rating._id);
-
-          rating.should.deep.equal(d);
+          _.omit(rating, ['_id']).should.deep.equal(_.omit(d, ['_id']));
           done();
         });
       });
@@ -212,6 +210,7 @@ describe('models', function() {
         dbUsers = users;
         done(err);
       });
+      dummyData = require('./dummyData');
     });
 
     it('should return profile', function(done) {
@@ -287,7 +286,7 @@ describe('models', function() {
     var dbActions = [];
 
     beforeEach(function(done) {
-      // reset users collection
+      // reset users and actions collections
       async.parallel([
         function(cb) {
           resetModel('user', function(err, users) {
@@ -304,6 +303,7 @@ describe('models', function() {
       ], function(err) {
         done(err);
       });
+      dummyData = require('./dummyData');
     });
     it('should add action to user model', function(done) {
       models.user.startAction(dbUsers[0], dbActions[0]._id, function(err) {
@@ -495,6 +495,57 @@ describe('models', function() {
     it('should return error when trying to complete bogus action id', function(done) {
       models.user.completeAction(dbUsers[0], dummyData.ids[0], function(err) {
         done(err ? null : 'no error returned!');
+      });
+    });
+  });
+
+  describe('challenge', function() {
+    var dbChallenges = [];
+    var dbUsers = [];
+
+    beforeEach(function(done) {
+      // reset challenges and user collections
+      async.parallel([
+        function(cb) {
+          resetModel('challenge', function(err, challenges) {
+            dbChallenges = challenges;
+            cb(err);
+          });
+        },
+        function(cb) {
+          resetModel('user', function(err, users) {
+            dbUsers = users;
+            cb(err);
+          });
+        }
+      ], function(err) {
+        done(err);
+      });
+    });
+    it('should return all challenges without ratings', function(done) {
+      models.challenge.all(null, null, null, function(err, challenges) {
+        challenges.length.should.equal(dummyData.challenges.length);
+
+        // find an challenge that was added with ratings
+        var testChallenge = _.find(challenges, function(challenge) {
+          return challenge.name === dummyData.challenges[0].name;
+        });
+
+        should.equal(testChallenge.ratings, undefined);
+        done(err);
+      });
+    });
+
+    it('should return all challenges with ratings', function(done) {
+      models.challenge.all(null, null, true, function(err, challenges) {
+        challenges.length.should.equal(dummyData.challenges.length);
+
+        var testChallenge = _.find(challenges, function(challenge) {
+          return challenge.name === dummyData.challenges[0].name;
+        });
+
+        testChallenge.ratings[0].comment.should.equal(dummyData.challenges[0].ratings[0].comment);
+        done(err);
       });
     });
   });
