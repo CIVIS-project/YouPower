@@ -39,6 +39,7 @@ describe('models', function() {
         dbActions = actions;
         done(err);
       });
+      dummyData = require('./dummyData');
     });
 
     it('should return all actions without ratings', function(done) {
@@ -96,10 +97,7 @@ describe('models', function() {
           }
 
           var rating = action.ratings[0];
-          rating.userId = rating.userId.toString();
-          delete(rating._id);
-
-          rating.should.deep.equal(d);
+          _.omit(rating, ['_id']).should.deep.equal(_.omit(d, ['_id']));
           done();
         });
       });
@@ -111,6 +109,11 @@ describe('models', function() {
         function(cb) {
           models.action.rate(dummyData.ids[0], d.userId, d.rating, d.comment, function(err) {
             cb(err ? null : 'passing bogus action id did not cause error!');
+          });
+        },
+        function(cb) {
+          models.action.rate('foo bar', d.userId, d.rating, d.comment, function(err) {
+            cb(err ? null : 'passing invalid action id did not cause error!');
           });
         },
         function(cb) {
@@ -200,32 +203,25 @@ describe('models', function() {
 
   describe('user', function() {
     var dbUsers = [];
-    var dbActions = [];
 
     beforeEach(function(done) {
       // reset users collection
-      async.parallel([
-        function(cb) {
-          resetModel('user', function(err, users) {
-            dbUsers = users;
-            cb(err);
-          });
-        },
-        function(cb) {
-          resetModel('action', function(err, actions) {
-            dbActions = actions;
-            cb(err);
-          });
-        }
-      ], function(err) {
+      resetModel('user', function(err, users) {
+        dbUsers = users;
         done(err);
       });
+      dummyData = require('./dummyData');
     });
 
     it('should return profile', function(done) {
       models.user.getProfile(dbUsers[0]._id, function(err, user) {
         user.email.should.equal(dbUsers[0].email);
         done(err);
+      });
+    });
+    it('should return error when getting profile for invalid id', function(done) {
+      models.user.getProfile('foo bar', function(err) {
+        done(err ? null : 'no error returned!');
       });
     });
 
@@ -271,6 +267,7 @@ describe('models', function() {
 
     it('bogus query should return empty array for multi-find', function(done) {
       models.user.find({'email': 'dasfsada'}, true, null, null, function(err, users) {
+        users.should.be.an.instanceof(Array);
         users.should.be.empty;
         done(err);
       });
@@ -282,7 +279,32 @@ describe('models', function() {
         done(err);
       });
     });
+  });
 
+  describe('userAction', function() {
+    var dbUsers = [];
+    var dbActions = [];
+
+    beforeEach(function(done) {
+      // reset users and actions collections
+      async.parallel([
+        function(cb) {
+          resetModel('user', function(err, users) {
+            dbUsers = users;
+            cb(err);
+          });
+        },
+        function(cb) {
+          resetModel('action', function(err, actions) {
+            dbActions = actions;
+            cb(err);
+          });
+        }
+      ], function(err) {
+        done(err);
+      });
+      dummyData = require('./dummyData');
+    });
     it('should add action to user model', function(done) {
       models.user.startAction(dbUsers[0], dbActions[0]._id, function(err) {
         if (err) {
@@ -338,8 +360,8 @@ describe('models', function() {
           models.user.find({_id: dbUsers[0]._id}, false, null, null, function(err, user) {
             user.actions.inProgress[dbActions[0]._id].name.should.equal(dbActions[0].name);
             user.actions.inProgress[dbActions[1]._id].name.should.equal(dbActions[1].name);
-            should.not.exist(user.actions.done[dbActions[0]]);
-            should.not.exist(user.actions.canceled[dbActions[1]]);
+            should.not.exist(user.actions.done[dbActions[0]._id]);
+            should.not.exist(user.actions.canceled[dbActions[1]._id]);
             done(err);
           });
         });
@@ -348,6 +370,182 @@ describe('models', function() {
     it('should return error when trying to add bogus action id', function(done) {
       models.user.startAction(dbUsers[0], dummyData.ids[0], function(err) {
         done(err ? null : 'no error returned!');
+      });
+    });
+    it('should return error when trying to add invalid action id', function(done) {
+      models.user.startAction(dbUsers[0], 'foo bar', function(err) {
+        done(err ? null : 'no error returned!');
+      });
+    });
+    it('should remove action from inProgress when canceling, add to canceled', function(done) {
+      async.series([
+        function(cb) {
+          models.user.startAction(dbUsers[0], dbActions[0]._id, cb);
+        },
+        function(cb) {
+          models.user.startAction(dbUsers[0], dbActions[1]._id, cb);
+        },
+        function(cb) {
+          models.user.cancelAction(dbUsers[0], dbActions[0]._id, cb);
+        }
+      ], function(err) {
+        if (err) {
+          return done(err);
+        }
+        models.user.find({_id: dbUsers[0]._id}, false, null, null, function(err, user) {
+          should.not.exist(user.actions.inProgress[dbActions[0]]);
+          user.actions.canceled[dbActions[0]._id].name.should.equal(dbActions[0].name);
+          user.actions.inProgress[dbActions[1]._id].name.should.equal(dbActions[1].name);
+          should.not.exist(user.actions.done[dbActions[0]._id]);
+          should.not.exist(user.actions.canceled[dbActions[1]._id]);
+          done(err);
+        });
+      });
+    });
+    it('should return error if removing an action that has not been started', function(done) {
+      var user = dbUsers[0];
+      user.actions.done[dbActions[0]._id] = dbActions[0];
+      user.markModified('actions.done');
+      user.actions.canceled[dbActions[1]._id] = dbActions[1];
+      user.markModified('actions.canceled');
+      user.save(function(err) {
+        if (err) {
+          return done(err);
+        }
+        async.parallel([
+          function(cb) {
+            models.user.cancelAction(user, dbActions[0]._id, function(err) {
+              cb(err ? null : 'completed action was canceled without error!');
+            });
+          },
+          function(cb) {
+            models.user.cancelAction(user, dbActions[1]._id, function(err) {
+              cb(err ? null : 'already canceled action was canceled without error!');
+            });
+          }
+        ], function(err) {
+          should.not.exist(user.actions.canceled[dbActions[0]._id]);
+          should.exist(user.actions.done[dbActions[0]._id]);
+          should.exist(user.actions.canceled[dbActions[1]._id]);
+          done(err);
+        });
+      });
+    });
+    it('should return error when trying to cancel bogus action id', function(done) {
+      models.user.cancelAction(dbUsers[0], dummyData.ids[0], function(err) {
+        done(err ? null : 'no error returned!');
+      });
+    });
+    it('should mark action as complete, add to done', function(done) {
+      async.series([
+        function(cb) {
+          models.user.startAction(dbUsers[0], dbActions[0]._id, cb);
+        },
+        function(cb) {
+          models.user.startAction(dbUsers[0], dbActions[1]._id, cb);
+        },
+        function(cb) {
+          models.user.completeAction(dbUsers[0], dbActions[0]._id, cb);
+        }
+      ], function(err) {
+        if (err) {
+          return done(err);
+        }
+        models.user.find({_id: dbUsers[0]._id}, false, null, null, function(err, user) {
+          should.not.exist(user.actions.inProgress[dbActions[0]]);
+          user.actions.done[dbActions[0]._id].name.should.equal(dbActions[0].name);
+          user.actions.inProgress[dbActions[1]._id].name.should.equal(dbActions[1].name);
+          should.not.exist(user.actions.canceled[dbActions[0]._id]);
+          should.not.exist(user.actions.canceled[dbActions[1]._id]);
+          done(err);
+        });
+      });
+    });
+    it('should return error if completing an action that has not been started', function(done) {
+      var user = dbUsers[0];
+      user.actions.done[dbActions[0]._id] = dbActions[0];
+      user.markModified('actions.done');
+      user.actions.canceled[dbActions[1]._id] = dbActions[1];
+      user.markModified('actions.canceled');
+      user.save(function(err) {
+        if (err) {
+          return done(err);
+        }
+        async.parallel([
+          function(cb) {
+            models.user.completeAction(user, dbActions[0]._id, function(err) {
+              cb(err ? null : 'already completed action was completed without error!');
+            });
+          },
+          function(cb) {
+            models.user.completeAction(user, dbActions[1]._id, function(err) {
+              cb(err ? null : 'canceled action was completed without error!');
+            });
+          }
+        ], function(err) {
+          should.not.exist(user.actions.done[dbActions[1]._id]);
+          should.exist(user.actions.done[dbActions[0]._id]);
+          user.actions.done[dbActions[0]._id].name.should.equal(dbActions[0].name);
+          should.exist(user.actions.canceled[dbActions[1]._id]);
+          user.actions.canceled[dbActions[1]._id].name.should.equal(dbActions[1].name);
+          done(err);
+        });
+      });
+    });
+    it('should return error when trying to complete bogus action id', function(done) {
+      models.user.completeAction(dbUsers[0], dummyData.ids[0], function(err) {
+        done(err ? null : 'no error returned!');
+      });
+    });
+  });
+
+  describe('challenge', function() {
+    var dbChallenges = [];
+    var dbUsers = [];
+
+    beforeEach(function(done) {
+      // reset challenges and user collections
+      async.parallel([
+        function(cb) {
+          resetModel('challenge', function(err, challenges) {
+            dbChallenges = challenges;
+            cb(err);
+          });
+        },
+        function(cb) {
+          resetModel('user', function(err, users) {
+            dbUsers = users;
+            cb(err);
+          });
+        }
+      ], function(err) {
+        done(err);
+      });
+    });
+    it('should return all challenges without ratings', function(done) {
+      models.challenge.all(null, null, null, function(err, challenges) {
+        challenges.length.should.equal(dummyData.challenges.length);
+
+        // find an challenge that was added with ratings
+        var testChallenge = _.find(challenges, function(challenge) {
+          return challenge.name === dummyData.challenges[0].name;
+        });
+
+        should.equal(testChallenge.ratings, undefined);
+        done(err);
+      });
+    });
+
+    it('should return all challenges with ratings', function(done) {
+      models.challenge.all(null, null, true, function(err, challenges) {
+        challenges.length.should.equal(dummyData.challenges.length);
+
+        var testChallenge = _.find(challenges, function(challenge) {
+          return challenge.name === dummyData.challenges[0].name;
+        });
+
+        testChallenge.ratings[0].comment.should.equal(dummyData.challenges[0].ratings[0].comment);
+        done(err);
       });
     });
   });

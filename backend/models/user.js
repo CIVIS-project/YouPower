@@ -80,8 +80,8 @@ exports.find = function(q, multi, limit, skip, cb) {
   query.limit(limit);
   query.skip(skip);
   query.exec(function(err, res) {
-    // return array if multi is true, otherwise return first element if defined, otherwise undefined
-    cb(err, multi ? res : res ? res[0] : undefined);
+    // return array if multi is true, otherwise return first element
+    cb(err, multi ? res : res[0]);
   });
 };
 
@@ -109,8 +109,6 @@ exports.startAction = function(user, actionId, cb) {
   Action.get(actionId, function(err, actionResult) {
     if (err) {
       cb(err);
-    } else if (!actionResult) {
-      cb('Action not found');
     } else {
       // store this action in inProgress list
       user.actions.inProgress[actionId] = {};
