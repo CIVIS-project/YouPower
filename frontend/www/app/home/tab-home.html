@@ -1,0 +1,42 @@
+<ion-view view-title="Household Actions">
+  <ion-content class="padding">
+    <div class="list card">
+      <span ng-repeat="member in user.familyMembers">
+        <span from="users familyMember" where="familyMember.id=member.id" provider="firebase">
+      <div class="item item-divider item-icon-left item-icon-right"><i class="icon ion-person"></i>
+              {{member.name}} ({{_.size(familyMember.actionsActive)}} actions)
+              <b class="balanced" style="float: right; white-space:pre"><i class="icon ion-leaf balanced"></i>         {{familyMember.points ? familyMember.points : 0}}</b></div>
+          <div class="item item-icon-left item-icon-right" ng-repeat="actionA in familyMember.actionsActive" ng-click="goToAction(user,actionA.id)">
+            <span from="actions action"  provider="firebase" where="action.id=actionA.id" >
+              <!-- ng-repeat="(idx, action) in actions" > -->
+              <span class="balanced" >
+                <b>{{action.points}}</b>
+              </span>
+              <i class="icon ion-leaf balanced"></i>
+              {{action.title}}
+            <span class="item-note" from="user.actionsActive act2" where="act2.id=action.id">
+            You are doing this as well
+            </span>
+              <i class="icon ion-chevron-right icon-accessory"></i>
+            </span>
+          </div>
+        </span>
+      </span>
+      <a href="#" class="item item-divider item-icon-left">
+        <i class="icon ion-android-add"></i>
+        Add family member
+      </a>
+    </div>
+<!--     <div class="list card">
+      <div class="item item-divider">Your Energy Consumption</div>
+      <a href="#" class="item item-icon-left item-icon-right">
+        <i class="icon ion-leaf"></i>
+        5 trees needed to offset this month's carbon emission
+        <i class="icon ion-chevron-right icon-accessory"></i>
+      </a>
+      <a href="#" class="item">
+        
+      </a>
+    </div> -->
+  </ion-content>
+</ion-view>

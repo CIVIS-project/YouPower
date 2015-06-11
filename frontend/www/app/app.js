@@ -1,8 +1,14 @@
 // Ionic Starter App
 
+endev.autoStart = false;
+endev.firebaseProvider = {
+  path: "https://youpower.firebaseio.com/"
+};
+
 
 var controllers = angular.module('starter.controllers', []);
 var sharedServices = angular.module('starter.sharedServices', []);
+
 
 
 // angular.module is a global place for creating, registering and retrieving Angular modules
@@ -10,9 +16,29 @@ var sharedServices = angular.module('starter.sharedServices', []);
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-var starter = angular.module('starter', ['ionic', 'starter.controllers', 'starter.sharedServices', 'pascalprecht.translate'])
+var starter = angular.module('starter', ['ionic', 'ionic.rating', 'Endev', 'starter.controllers', 'starter.sharedServices', 'pascalprecht.translate'])
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, $rootScope, $window) {
+
+  $rootScope.scale = 5; 
+
+  $rootScope._=_;
+
+  // Fix for remembaring the user between refresh
+  $rootScope.currentUser = $window.localStorage['username'] ? {username: $window.localStorage['username'], lang: "en"} : {};
+
+  $rootScope.$watch("currentUser.username",function(newValue, oldValue){
+    if(newValue && oldValue !== newValue) {
+      $window.localStorage['username'] = newValue;
+    }
+  })
+
+  //$rootScope.currentUser = {username:"jmayer@energyup.eu"};
+
+  $rootScope.getNumber = function(num) {
+      return new Array(num);   
+  }
+
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -39,7 +65,7 @@ var starter = angular.module('starter', ['ionic', 'starter.controllers', 'starte
 
   .state('welcome', {
     url: "/welcome",
-    templateUrl: "templates/welcome.html",
+    templateUrl: "app/welcome/welcome.html",
     controller: 'WelcomeCtrl'
   })
 
@@ -47,27 +73,59 @@ var starter = angular.module('starter', ['ionic', 'starter.controllers', 'starte
   .state('tab', {
     url: "/tab",
     abstract: true,
-    templateUrl: "app/tabs.html"
+    templateUrl: "app/tabs/tabs.html",
+    controller: 'TabCtrl'
   })
 
   // Each tab has its own nav history stack:
 
   .state('tab.actions', {
+    cache: false, 
     url: '/actions',
     views: {
       'tab-actions': {
-        templateUrl: 'app/yourActions/tab-actions.html',
+        templateUrl: 'app/actions/tab-actions.html',
         controller: 'ActionsCtrl'
       }
     }
   })
 
-  .state('tab.your-actions', {
-    url: '/your-actions',
+  .state('tab.action', {
+    url: '/actions/:id',
     views: {
       'tab-actions': {
-        templateUrl: 'app/yourActions/your-actions.html',
+        templateUrl: 'app/actions/action.html',
+        controller: 'ActionCtrl'
+      }
+    }
+  })
+
+  .state('tab.action-details', {
+    url: '/actions/:type/:index',
+    views: {
+      'tab-actions': {
+        templateUrl: 'app/actions/action-details.html',
         controller: 'ActionsCtrl'
+      }
+    }
+  })
+
+  .state('tab.action-completed', {
+    url: '/action-completed/:id',
+    views: {
+      'tab-actions': {
+        templateUrl: 'app/actions/action-completed.html',
+        controller: 'FormsCtrl'
+      }
+    }
+  })
+
+  .state('tab.action-abandoned', {
+    url: '/action-abandoned/:id',
+    views: {
+      'tab-actions': {
+        templateUrl: 'app/actions/action-abandoned.html',
+        controller: 'FormsCtrl'
       }
     }
   })
@@ -76,7 +134,7 @@ var starter = angular.module('starter', ['ionic', 'starter.controllers', 'starte
     url: '/home',
     views: {
       'tab-home': {
-        templateUrl: 'templates/tab-home.html',
+        templateUrl: 'app/home/tab-home.html',
         controller: 'HomeCtrl'
       }
     }
@@ -92,25 +150,25 @@ var starter = angular.module('starter', ['ionic', 'starter.controllers', 'starte
     }
   })
 
-  .state('tab.performance', {
-    url: '/performance',
-    views: {
-      'tab-performance': {
-        templateUrl: 'templates/tab-performance.html',
-        controller: 'PerformanceCtrl'
-      }
-    }
-  })
+  // .state('tab.performance', {
+  //   url: '/performance',
+  //   views: {
+  //     'tab-performance': {
+  //       templateUrl: 'templates/tab-performance.html',
+  //       controller: 'PerformanceCtrl'
+  //     }
+  //   }
+  // })
 
-  .state('tab.challenges', {
-    url: '/challenges',
-    views: {
-      'tab-challenges': {
-        templateUrl: 'templates/tab-challenges.html',
-        controller: 'ChallengesCtrl'
-      }
-    }
-  })
+  // .state('tab.challenges', {
+  //   url: '/challenges',
+  //   views: {
+  //     'tab-challenges': {
+  //       templateUrl: 'templates/tab-challenges.html',
+  //       controller: 'ChallengesCtrl'
+  //     }
+  //   }
+  // })
 
   /*
   .state('tab.chats', {

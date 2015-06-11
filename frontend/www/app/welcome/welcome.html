@@ -1,0 +1,35 @@
+<ion-view view-title="CIVIS">
+<ion-content class="padding">
+
+<div class="list card">
+  <div class="item item-divider">
+    <h1 class="text-center">  <!-- padding-vertical -->
+      EnergyUP
+    </h1>
+  </div>
+  <h2 class="text-center">
+    <i class="icon ion-earth"></i> Be more <span class="balanced">green.</span><br/>
+    <i class="icon ion-happy-outline"></i> Be more <span class="balanced">social.</span><br/>
+    <i class="icon ion-checkmark-circled"></i> Take actions!
+  </h2>
+</div>
+
+<div class="list card">
+  <div class="item  item-text-wrap">
+    <h3>To test the prototype:</h3> 
+    <p>1. Please use a mobile phone, or adjust your browser (preferrable Chrome) to mobile screen size.</p>
+    <p>2. Use your <i>Email address</i> to create or retrieve an account.</p>
+</div>
+<label class="item item-input">
+  <span class="input-label">Username</span>
+  <input type="text" placeholder="Your Email address" ng-model="emailAddress">
+</label>
+</div>
+
+<div class="button-bar"> <!-- href="#/tab/actions/0"  -->
+  <!-- <a class="button button-balanced" insert-into="users" provider="firebase" ng-click="setCurrentUser({username:emailAddress,lang:'it'});changeLanguage('it');takeActions()">Iniziare!</a> -->
+  <a class="button button-balanced" insert-into="users" provider="firebase" ng-click="setCurrentUser({username:emailAddress,lang:'en'});changeLanguage('en');takeActions()" >Get started!</a>
+</div>
+
+</ion-content>
+</ion-view>

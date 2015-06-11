@@ -1,0 +1,61 @@
+<ion-view view-title="Action Not Completed">
+<ion-content "padding">
+
+<div from="actions action" provider="firebase" where="action.id=actionId" loaded="setBonus(action.points)">
+
+  <div class="list card">
+    <div class="item item-divider item-icon-left item-text-wrap">
+      <i class="icon ion-ios-pulse-strong assertive"></i>
+      Oops!  This action is not for you? 
+    </div>
+    <div class="item item-text-wrap">
+      Sorry to hear that you are going to abandon the action: {{action.title}}
+      <span class="balanced">You are so close to finish!</span> 
+    </br>
+    You still can earn <b class="balanced text-large"><i style="font-size:32px;" class="icon ion-leaf icon-large balanced"></i> {{bonus}}</b> by filling the feedback form. We love to hear from you.
+  </div>
+</div>
+
+<button class="button icon-left ion-leaf button-full button-balanced" ng-click="goForward();">
+ Don't give up! Click to give another try.
+</button>
+
+<div from="action.feedback feedback" where="feedback.userId = user.id" auto-update="true" default="{userId: user.id, date:Date.now(),completed:false}" auto-insert="true" loaded="feedback.date=Date.now()">
+  <div class="list card">
+    <div class="item item-divider item-icon-left item-text-wrap">
+      <i class="icon ion-android-bulb balanced"></i>
+      Feedback Form
+    </div>
+    <div class="item item-text-wrap">
+     Select each of the following that are true to you: 
+    </div>
+    <ion-checkbox class="checkbox-balanced item-text-wrap" data-value="feedback.isNotUseful" ng-model="isNotUseful">This action is not useful.</ion-checkbox>
+    <ion-checkbox class="checkbox-balanced item-text-wrap" data-value="feedback.isEffort" ng-model="isEffort">This action takes too much effort.</ion-checkbox>
+    <ion-checkbox class="checkbox-balanced item-text-wrap" data-value="feedback.isExpensive" ng-model="isExpensive">This action is too expensive.</ion-checkbox>
+    <ion-checkbox class="checkbox-balanced item-text-wrap" data-value="feedback.isNotAppliable" ng-model="isNotAppliable">This action isn't appliable to you or your household any more.</ion-checkbox>
+    <ion-checkbox class="checkbox-balanced item-text-wrap" data-value="feedback.isNotLike" ng-model="isNotLike">You don't like to do this action.</ion-checkbox>
+
+    <div class="item item-text-wrap">
+      Are there any other reasons that made you abandon the action? 
+      <label class="item item-input">
+        <textarea data-value="feedback.otherReasons" placeholder="Please specify so we know how to improve."></textarea>
+      </label>
+    </div>
+
+    <div class="item item-text-wrap">
+      Do you have other comments? 
+      <label class="item item-input">
+        <textarea data-value="feedback.comments" placeholder="Give your comments here."></textarea>
+      </label>
+    </div>
+
+  </div>
+  
+    <button style="width:50%" class="button button-balanced" remove-from="action.feedback" ng-click="remove(feedback);goBack()">Cancel</button><button style="width:50%" class="button button-balanced" remove-from="user.actionsActive" from="user.actionsActive act" where="act.id=action.id" insert-into="user.actionsAbandoned" loaded="_act={id:action.id, dateStarted:act.date, dateAbandoned:Date.now()}" data-click="setPoints(user.points + (feedback.isNotUseful || feedback.isEffort || feedback.isExpensive || feedback.isNotAppliable || feedback.isNotLike || feedback.otherReasons ? bonus : 0)); remove(act); insert(_act); nextTip(user)">Done</button>
+    <!-- user.points=user.points+Math.round(action.points/5); -->
+
+
+</div>
+</div> 
+</ion-content>
+</ion-view>

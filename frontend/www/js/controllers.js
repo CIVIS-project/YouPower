@@ -1,12 +1,4 @@
-controllers.controller('WelcomeCtrl', WelcomeCtrl);
 
-
-function WelcomeCtrl($translate, $scope) {
-
-	$scope.changeLanguage = function (langKey) {
-		$translate.use(langKey);
-	};
-}; 
 
 controllers.controller('HomeCtrl', function($scope) {});
 
