@@ -55,6 +55,7 @@ var starter = angular.module('starter', ['ionic', 'ionic.rating', 'Endev', 'star
   });
 })
 
+
 .config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider, $translateProvider) {
 
   // Ionic uses AngularUI Router which uses the concept of states
@@ -144,8 +145,8 @@ var starter = angular.module('starter', ['ionic', 'ionic.rating', 'Endev', 'star
     url: '/community',
     views: {
       'tab-community': {
-        templateUrl: 'templates/tab-community.html',
-        controller: 'CommunityCtrl'
+        templateUrl: 'app/communities/tab-communities.html',
+        controller: 'CommunitiesCtrl'
       }
     }
   })
@@ -244,8 +245,6 @@ var starter = angular.module('starter', ['ionic', 'ionic.rating', 'Endev', 'star
   .fallbackLanguage('en');
 
 });
-
-
 
 
 

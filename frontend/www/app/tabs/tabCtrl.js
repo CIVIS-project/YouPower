@@ -5,6 +5,7 @@ function TabCtrl($scope,$firebaseArray,$firebaseObject,$ionicHistory, $state, $i
 
   //$scope.nextTip = function(user,backToActions) {
   $scope.nextTip = function(user, checkNrOfActions) {
+    
     $ionicHistory.nextViewOptions({
       disableBack: true
     });

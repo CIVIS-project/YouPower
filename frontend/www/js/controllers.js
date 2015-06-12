@@ -2,7 +2,7 @@
 
 controllers.controller('HomeCtrl', function($scope) {});
 
-controllers.controller('CommunityCtrl', function($scope) {});
+
 
 controllers.controller('PerformanceCtrl', function($scope) {});
 
