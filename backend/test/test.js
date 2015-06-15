@@ -738,5 +738,15 @@ describe('models', function() {
         });
       });
     });
+    it('should return error when adding to bogus community id', function(done) {
+      models.communities.addMember(dummyData.ids[0], dbUsers[0]._id, function(err) {
+        done(err ? null : 'bogus community id member add did not return error!');
+      });
+    });
+    it('should return error when adding to invalid community id', function(done) {
+      models.communities.addMember('foo bar', dbUsers[0]._id, function(err) {
+        done(err ? null : 'invalid community id member add did not return error!');
+      });
+    });
   });
 });
