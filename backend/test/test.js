@@ -652,7 +652,25 @@ describe('models', function() {
 
     it('should return all communities', function(done) {
       models.communities.all(null, null, function(err, communities) {
-        console.log(communities);
+        communities.length.should.equal(2);
+        done(err);
+      });
+    });
+    it('should not create community with missing name', function(done) {
+      var d = dummyData.communities[0];
+      models.communities.create({
+        name: null,
+        challenges: d.challenges,
+        actions: d.actions
+      }, function(err) {
+        done(err ? null : 'creating community with missing name did not cause error!');
+      });
+    });
+    it('should create community with empty challenges & actions', function(done) {
+      var d = dummyData.communities[0];
+      models.communities.create({
+        name: d.name
+      }, function(err) {
         done(err);
       });
     });

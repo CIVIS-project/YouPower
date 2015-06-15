@@ -106,5 +106,14 @@ exports.communities = [
       exports.actions[0]._id,
       exports.actions[1]._id
     ]
+  },
+  {
+    name: 'dummy community 2',
+    challenges: [
+      exports.challenges[2]._id
+    ],
+    actions: [
+      exports.actions[1]._id
+    ]
   }
 ];
