@@ -241,6 +241,22 @@ describe('models', function() {
       });
     });
 
+    it('should update only photo url when only it is specified', function(done) {
+      models.users.updateProfile(dbUsers[0], {
+        photo: 'new url'
+      }, function(err) {
+        if (err) {
+          return done(err);
+        }
+        models.users.find({_id: dbUsers[0]._id}, false, null, null, function(err, user) {
+          user.profile.name.should.equal(dbUsers[0].profile.name);
+          user.profile.photo.should.equal('new url');
+          // TODO: date of birth?
+          done(err);
+        });
+      });
+    });
+
     it('should return error for bogus profile query', function(done) {
       models.users.getProfile(dummyData.ids[0], function(err, user) {
         should.not.exist(user);
