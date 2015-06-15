@@ -624,6 +624,25 @@ describe('models', function() {
         done(err);
       });
     });
+    it('should find challenges by search', function(done) {
+      models.challenges.search('dummy challenge', function(err, challenges) {
+        // manually search dummy challenges for same string
+        var d = [];
+        _.each(dummyData.challenges, function(challenge) {
+          if (challenge.name.indexOf('dummy challenge') === 0) {
+            d.push(challenge);
+          }
+        });
+        challenges.length.should.equal(d.length);
+        done(err);
+      });
+    });
+    it('search should only match from start of string', function(done) {
+      models.challenges.search('ummy challenge', function(err, challenges) {
+        challenges.length.should.equal(0);
+        done(err);
+      });
+    });
   });
 
   describe('community', function() {
