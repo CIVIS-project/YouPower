@@ -51,7 +51,7 @@ exports.create = function(community, cb) {
 
 // get community information
 
-exports.getCommunityInfo = function(id, cb) {
+exports.get = function(id, cb) {
   Community.findOne({
     _id: id
   }, function(err, community) {
@@ -68,36 +68,36 @@ exports.getCommunityInfo = function(id, cb) {
 
 //add member to the Community
 
-exports.addMember = function(user, cb) {
+exports.addMember = function(id, userId, cb) {
   Community.findById({
-  _id: user.id
-}, function(err, community) {
-  if (err) {
-    cb(err);
-  } else if (!community) {
-    cb('Community not found');
-  } else {
-    community.members.push(user);
-    cb(null, community);
-  }
-});
+    _id: id
+  }, function(err, community) {
+    if (err) {
+      cb(err);
+    } else if (!community) {
+      cb('Community not found');
+    } else {
+      community.members.push(userId);
+      community.save(cb);
+    }
+  });
 };
 
 //remove member from  Community
 
-exports.removeMember = function(user, cb) {
+exports.removeMember = function(id, userId, cb) {
   Community.findById({
-  _id: user.id
-}, function(err, community) {
-  if (err) {
-    cb(err);
-  } else if (!community) {
-    cb('Community not found');
-  } else {
-    community.members.remove(user);
-    cb(null, community);
-  }
-});
+    _id: id
+  }, function(err, community) {
+    if (err) {
+      cb(err);
+    } else if (!community) {
+      cb('Community not found');
+    } else {
+      community.members.remove(userId);
+      community.save(cb);
+    }
+  });
 };
 
 //return top actions in community- "actions with rating > 3"- need to verify this
@@ -108,12 +108,12 @@ exports.topActions = function(id, cb) {
   .gt(3)
   .populate('actions')
   .exec(function(err, actions) {
-  if (err) {
-    cb(err);
-  } else {
-    cb(actions);
-  }
-});
+    if (err) {
+      cb(err);
+    } else {
+      cb(actions);
+    }
+  });
 };
 
 // delete community
