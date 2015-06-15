@@ -2,7 +2,7 @@
 
 var express = require('express');
 var router = express.Router();
-var Consumption = require('../models/consumption');
+var Consumption = require('../models').consumption;
 var auth = require('../middleware/auth');
 
 /**

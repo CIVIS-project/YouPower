@@ -4,7 +4,7 @@ var express = require('express');
 var auth = require('../middleware/auth');
 var util = require('util');
 var router = express.Router();
-var Challenge = require('../models/challenge');
+var Challenge = require('../models').challenges;
 
 /**
  * @api {post} /challenge Create new challenge

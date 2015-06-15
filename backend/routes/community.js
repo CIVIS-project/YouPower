@@ -3,7 +3,7 @@
 var express = require('express');
 var util = require('util');
 var router = express.Router();
-var Community = require('../models/community');
+var Community = require('../models').communities;
 
 /**
  * @api {post} /community Create new community

@@ -1,7 +1,7 @@
 'use strict';
 
 var mongoose = require('mongoose');
-var Action = require('./action');
+var Action = require('./').actions;
 var Schema = mongoose.Schema;
 var passportLocalMongoose = require('passport-local-mongoose');
 

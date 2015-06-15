@@ -3,7 +3,7 @@
 var express = require('express');
 var util = require('util');
 var router = express.Router();
-var Household = require('../models/household');
+var Household = require('../models').households;
 
 /**
  * @api {post} /household Create new household

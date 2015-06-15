@@ -123,8 +123,15 @@ exports.delete = function(id, cb) {
   }, cb);
 };
 
-var Community = mongoose.model('Community', CommunitySchema);
-
-module.exports = {
-  Community: Community
+exports.all = function(limit, skip, cb) {
+  Community
+  .find({})
+  .skip(skip)
+  .limit(limit)
+  .select('name _id')
+  .exec(function(err, communities) {
+    cb(err, communities);
+  });
 };
+
+exports.Community = mongoose.model('Community', CommunitySchema);
