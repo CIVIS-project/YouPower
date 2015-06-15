@@ -522,6 +522,7 @@ describe('models', function() {
         done(err);
       });
     });
+
     it('should return all challenges without ratings', function(done) {
       models.challenge.all(null, null, null, function(err, challenges) {
         challenges.length.should.equal(dummyData.challenges.length);
@@ -545,6 +546,81 @@ describe('models', function() {
         });
 
         testChallenge.ratings[0].comment.should.equal(dummyData.challenges[0].ratings[0].comment);
+        done(err);
+      });
+    });
+
+    it('should return first challenge by id', function(done) {
+      models.challenge.get(dbChallenges[0]._id, function(err, challenge) {
+        challenge.name.should.equal(dbChallenges[0].name);
+        done(err);
+      });
+    });
+
+    it('should return no challenge for bogus id', function(done) {
+      models.challenge.get(dummyData.ids[0], function(err) {
+        done(err ? null : 'bogus challenge fetch did return an challenge!');
+      });
+    });
+
+    it('should delete challenge by id', function(done) {
+      models.challenge.delete(dbChallenges[0]._id, function() {
+        models.challenge.get(dbChallenges[0]._id, function(err) {
+          done(err ? null : 'challenge was not deleted successfully');
+        });
+      });
+    });
+
+    it('should add rating to challenge document', function(done) {
+      var d = dummyData.ratings[0];
+
+      // try rating an challenge that has not been rated yet
+      models.challenge.rate(dbChallenges[1]._id, d.userId, d.rating, d.comment, function(err) {
+        if (err) {
+          return done(err);
+        }
+
+        models.challenge.get(dbChallenges[1]._id, function(err, challenge) {
+          if (err) {
+            return done(err);
+          }
+
+          var rating = challenge.ratings[0];
+          _.omit(rating, ['_id']).should.deep.equal(_.omit(d, ['_id']));
+          done();
+        });
+      });
+    });
+
+    it('should refuse invalid ratings', function(done) {
+      var d = dummyData.ratings[0];
+      async.parallel([
+        function(cb) {
+          models.challenge.rate(dummyData.ids[0], d.userId, d.rating, d.comment, function(err) {
+            cb(err ? null : 'passing bogus challenge id did not cause error!');
+          });
+        },
+        function(cb) {
+          models.challenge.rate('foo bar', d.userId, d.rating, d.comment, function(err) {
+            cb(err ? null : 'passing invalid challenge id did not cause error!');
+          });
+        },
+        function(cb) {
+          models.challenge.rate(dbChallenges[0]._id, null, d.rating, d.comment, function(err) {
+            cb(err ? null : 'missing userId field did not cause error!');
+          });
+        },
+        function(cb) {
+          models.challenge.rate(dbChallenges[0]._id, d.userId, null, d.comment, function(err) {
+            cb(err ? null : 'missing rating field did not cause error!');
+          });
+        },
+        function(cb) {
+          models.challenge.rate(dbChallenges[0]._id, d.userId, d.rating, null, function(err) {
+            cb(err ? 'comment field should be optional but wasn\'t!' : null);
+          });
+        }
+      ], function(err) {
         done(err);
       });
     });
