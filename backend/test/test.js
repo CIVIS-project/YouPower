@@ -749,6 +749,16 @@ describe('models', function() {
         });
       });
     });
+    it('should return error when adding to bogus community id', function(done) {
+      models.communities.addMember(dummyData.ids[0], dbUsers[0]._id, function(err) {
+        done(err ? null : 'bogus community id member add did not return error!');
+      });
+    });
+    it('should return error when adding to invalid community id', function(done) {
+      models.communities.addMember('foo bar', dbUsers[0]._id, function(err) {
+        done(err ? null : 'invalid community id member add did not return error!');
+      });
+    });
 
     it('should remove member from community', function(done) {
       // TODO: more thorough testing (remove more than one member etc)
@@ -773,14 +783,14 @@ describe('models', function() {
         });
       });
     });
-    it('should return error when adding to bogus community id', function(done) {
-      models.communities.addMember(dummyData.ids[0], dbUsers[0]._id, function(err) {
-        done(err ? null : 'bogus community id member add did not return error!');
+    it('should return error when removing from bogus community id', function(done) {
+      models.communities.removeMember(dummyData.ids[0], dbUsers[0]._id, function(err) {
+        done(err ? null : 'bogus community id member remove did not return error!');
       });
     });
-    it('should return error when adding to invalid community id', function(done) {
-      models.communities.addMember('foo bar', dbUsers[0]._id, function(err) {
-        done(err ? null : 'invalid community id member add did not return error!');
+    it('should return error when removing from invalid community id', function(done) {
+      models.communities.removeMember('foo bar', dbUsers[0]._id, function(err) {
+        done(err ? null : 'invalid community id member remove did not return error!');
       });
     });
   });
