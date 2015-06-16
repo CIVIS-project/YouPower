@@ -6,11 +6,11 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 //Appliance Schema
-var applianceSchema = new Schema(
-  {
-    appliance: String,
-    quantity: Number
-  });
+var applianceSchema = new Schema({
+  appliance: String,
+  quantity: Number
+});
+
 var HouseSchema = new Schema({
   apartmentId: {
     type: String,
@@ -22,11 +22,12 @@ var HouseSchema = new Schema({
     required: true
   },
   appliancesList: {
-    type:[
+    type: [
       applianceSchema
-    ]
+    ],
+    default: []
   },
-  energyVal:{
+  energyVal: {
     type: String,
     required: true
   },
@@ -42,7 +43,6 @@ var HouseSchema = new Schema({
 var Household = mongoose.model('Household', HouseSchema);
 
 // create household entity
-
 exports.create = function(household, cb) {
   Household.create({
     apartmentId: household.apartmentId,
@@ -54,8 +54,7 @@ exports.create = function(household, cb) {
 };
 
 // get household by id
-
-exports.getApartmentInfo = function(id, cb) {
+exports.get = function(id, cb) {
   Household.findOne({
     _id: id
   }, function(err, household) {
@@ -70,11 +69,10 @@ exports.getApartmentInfo = function(id, cb) {
   });
 };
 
-// find by apartmentID?
-
-exports.getByApartmentID = function(id, cb) {
+// find by apartmentId?
+exports.getByApartmentId = function(id, cb) {
   Household.findOne({
-    apartmentID: id
+    apartmentId: id
   }, function(err, household) {
     if (err) {
       cb(err);
@@ -88,88 +86,83 @@ exports.getByApartmentID = function(id, cb) {
 };
 
 //update address
-
 exports.updateAddress = function(household, cb) {
   Household.findByIdAndUpdate({
-  _id: household.id
-}, function(err, house) {
-  if (err) {
-    cb(err);
-  } else if (!house) {
-    cb('Household not found');
-  } else {
-    house.address = household.address;
-    cb(null, household);
-  }
-});
+    _id: household.id
+  }, function(err, house) {
+    if (err) {
+      cb(err);
+    } else if (!house) {
+      cb('Household not found');
+    } else {
+      house.address = household.address;
+      cb(null, household);
+    }
+  });
 };
 
 //add appliances to the household
-
-exports.addAppliance = function(household, cb) {
+exports.addAppliance = function(household, appliance, cb) {
   Household.findById({
-  _id: household.id
-}, function(err, house) {
-  if (err) {
-    cb(err);
-  } else if (!house) {
-    cb('Household not found');
-  } else {
-    house.appliancesList.push(household);
-    cb(null, household);
-  }
-});
+    _id: household.id
+  }, function(err, house) {
+    if (err) {
+      cb(err);
+    } else if (!house) {
+      cb('Household not found');
+    } else {
+      house.appliancesList.push(appliance);
+      cb(null, household);
+    }
+  });
 };
 
 //remove appliance from household
-
-exports.removeAppliance = function(household, cb) {
+exports.removeAppliance = function(household, applianceId, cb) {
   Household.findById({
-  _id: household.id
-}, function(err, house) {
-  if (err) {
-    cb(err);
-  } else if (!house) {
-    cb('Household not found');
-  } else {
-    house.appliancesList.remove(household);
-    cb(null, household);
-  }
-});
+    _id: household.id
+  }, function(err, house) {
+    if (err) {
+      cb(err);
+    } else if (!house) {
+      cb('Household not found');
+    } else {
+      house.appliancesList.pull({_id: applianceId});
+      cb(null, household);
+    }
+  });
 };
 
 //add member to the household
-
-exports.addMember = function(user, cb) {
+exports.addMember = function(id, userId, cb) {
   Household.findById({
-  _id: user.id
-}, function(err, house) {
-  if (err) {
-    cb(err);
-  } else if (!house) {
-    cb('Household not found');
-  } else {
-    house.members.push(user);
-    cb(null, user);
-  }
-});
+    _id: id
+  }, function(err, household) {
+    if (err) {
+      cb(err);
+    } else if (!household) {
+      cb('Household not found');
+    } else {
+      household.members.push(userId);
+      cb(null, household);
+    }
+  });
 };
 
 //remove member from  household
-
-exports.removeMember = function(user, cb) {
+exports.removeMember = function(id, userId, cb) {
   Household.findById({
-  _id: user.id
-}, function(err, house) {
-  if (err) {
-    cb(err);
-  } else if (!house) {
-    cb('Household not found');
-  } else {
-    house.members.remove(user);
-    cb(null, user);
-  }
-});
+    _id: id
+  }, function(err, household) {
+    if (err) {
+      cb(err);
+    } else if (!household) {
+      cb('Household not found');
+    } else {
+      household.members.remove(userId);
+      cb(null, household);
+    }
+  });
 };
 
 // delete houshold by id

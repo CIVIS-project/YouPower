@@ -136,3 +136,16 @@ exports.households = [
     ]
   }
 ];
+
+exports.appliances = [
+  {
+    _id: newId(),
+    appliance: 'dish washer',
+    quantity: 1
+  },
+  {
+    _id: newId(),
+    appliance: 'tv',
+    quantity: 2
+  }
+];

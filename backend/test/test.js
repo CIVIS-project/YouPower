@@ -853,19 +853,10 @@ describe('models', function() {
         done(err);
       });
     });
-    /*
-    it('should create household with empty challenges & actions', function(done) {
-      var d = dummyData.households[0];
-      models.households.create({
-        name: d.name
-      }, function(err) {
-        done(err);
-      });
-    });
 
     it('should return first household by id', function(done) {
       models.households.get(dbHouseholds[0]._id, function(err, household) {
-        household.name.should.equal(dbHouseholds[0].name);
+        household.apartmentId.should.equal(dbHouseholds[0].apartmentId);
         done(err);
       });
     });
@@ -913,7 +904,7 @@ describe('models', function() {
       });
     });
 
-    it('should remove member from household', function(done) {
+    xit('should remove member from household', function(done) {
       // TODO: more thorough testing (remove more than one member etc)
       async.series([
         function(cb) {
@@ -936,16 +927,73 @@ describe('models', function() {
         });
       });
     });
-    it('should return error when removing from bogus household id', function(done) {
+    it('should return error when removing member from bogus household id', function(done) {
       models.households.removeMember(dummyData.ids[0], dbUsers[0]._id, function(err) {
         done(err ? null : 'bogus household id member remove did not return error!');
       });
     });
-    it('should return error when removing from invalid household id', function(done) {
+    it('should return error when removing member from invalid household id', function(done) {
       models.households.removeMember('foo bar', dbUsers[0]._id, function(err) {
         done(err ? null : 'invalid household id member remove did not return error!');
       });
     });
-  */
+
+    xit('should add appliance to household', function(done) {
+      // TODO: more thorough testing (add more than one appliance etc)
+      models.households.addAppliance(dbHouseholds[0]._id, dummyData.appliances[0], function(err) {
+        if (err) {
+          return done(err);
+        }
+        models.households.get(dbHouseholds[0]._id, function(err, household) {
+          household.appliances[0].name.should.equal(dbUsers[0].appliances[0].name);
+          done(err);
+        });
+      });
+    });
+    it('should return error when adding appliance to bogus household id', function(done) {
+      models.households.addAppliance(dummyData.ids[0], dummyData.appliances[0], function(err) {
+        done(err ? null : 'bogus household id appliance add did not return error!');
+      });
+    });
+    it('should return error when adding appliance to invalid household id', function(done) {
+      models.households.addAppliance('foo bar', dummyData.appliances[0], function(err) {
+        done(err ? null : 'invalid household id appliance add did not return error!');
+      });
+    });
+
+    xit('should remove appliance from household', function(done) {
+      var d = dummyData.appliances[0];
+      // TODO: more thorough testing (remove more than one appliance etc)
+      async.series([
+        function(cb) {
+          models.households.addAppliance(dbHouseholds[0]._id, d, function(err) {
+            cb(err);
+          });
+        },
+        function(cb) {
+          models.households.removeAppliance(dbHouseholds[0]._id, d._id, function(err) {
+            cb(err);
+          });
+        }
+      ], function(err) {
+        if (err) {
+          return done(err);
+        }
+        models.households.get(dbHouseholds[0]._id, function(err, household) {
+          should.not.exist(household.appliances[0]);
+          done(err);
+        });
+      });
+    });
+    it('should return error when removing appliance from bogus household id', function(done) {
+      models.households.removeAppliance(dummyData.ids[0], dbUsers[0]._id, function(err) {
+        done(err ? null : 'bogus household id appliance remove did not return error!');
+      });
+    });
+    it('should return error when removing appliance from invalid household id', function(done) {
+      models.households.removeAppliance('foo bar', dbUsers[0]._id, function(err) {
+        done(err ? null : 'invalid household id appliance remove did not return error!');
+      });
+    });
   });
 });

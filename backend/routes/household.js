@@ -9,14 +9,14 @@ var Household = require('../models').households;
  * @api {post} /household Create new household
  * @apiGroup Household
  *
- * @apiParam {String} apartmentID Energy meter id of the household
+ * @apiParam {String} apartmentId Energy meter id of the household
  * @apiParam {String} address Household address
  * @apiParam {json}   members Member ids and names in the household
  *
  * @apiExample {curl} Example usage:
  *  curl -i -X POST -H "Content-Type: application/json" -d \
  *  '{
- *    "apartmentID": "XYZ",
+ *    "apartmentId": "XYZ",
  *    "appliancesList": [
  *       {
  *       "appliance": "Washing Machine",
@@ -45,7 +45,7 @@ var Household = require('../models').households;
  *   {
  *     "__v": 0,
  *     "_id": "555f0163688305b57c7cef6c",
- *     "apartmentID": "XYZ",
+ *     "apartmentId": "XYZ",
  *     "appliancesList': [
  *       {
  *         "appliance":"Washing Machine",
@@ -87,7 +87,7 @@ router.post('/', function(req, res) {
  *   {
  *     "__v": 8,
  *     "_id": "555ef84b2fd41ffc6e078a34",
- *     "apartmentID": XYZ,
+ *     "apartmentId": XYZ,
  *     "appliancesList': [
  *       {
  *         "appliance":"Washing Machine",
