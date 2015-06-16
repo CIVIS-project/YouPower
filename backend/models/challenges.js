@@ -76,7 +76,7 @@ exports.get = function(id, cb) {
   Challenge.findOne({
     _id: id
   }, function(err, challenge) {
-    /* istanbul ignore if */ // don't unit test db errors
+    /* istanbul ignore if: db errors are hard to unit test */
     if (err) {
       cb(err);
     } else if (!challenge) {
@@ -94,7 +94,7 @@ exports.search = function(cname, cb) {
   Challenge.find({
     name : new RegExp('^' + escapeStringRegexp(cname), 'i')
   }, function(err, challenges) {
-    /* istanbul ignore if */ // don't unit test db errors
+    /* istanbul ignore if: db errors are hard to unit test */
     if (err) {
       cb(err);
     } else {
@@ -118,7 +118,7 @@ exports.all = function(limit, skip, includeRatings, cb) {
   .skip(skip)
   .limit(limit)
   .exec(function(err, challenges) {
-    /* istanbul ignore if */ // don't unit test db errors
+    /* istanbul ignore if: db errors are hard to unit test */
     if (err) {
       cb(err);
     } else {

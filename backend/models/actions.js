@@ -116,7 +116,7 @@ exports.all = function(limit, skip, includeRatings, cb) {
   .skip(skip)
   .limit(limit)
   .exec(function(err, actions) {
-    /* istanbul ignore if */
+    /* istanbul ignore if: db errors are hard to unit test */
     if (err) {
       cb(err);
     } else {
