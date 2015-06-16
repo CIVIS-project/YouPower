@@ -1058,5 +1058,24 @@ describe('models', function() {
         });
       });
     });
+    it('should return household by apartment id', function(done) {
+      models.households.getByApartmentId(dummyData.households[0].apartmentId,
+      function(err, household) {
+        household.address.should.equal(dummyData.households[0].address);
+        done(err);
+      });
+    });
+    it('should return error for bogus apartment id', function(done) {
+      models.households.getByApartmentId(dummyData.ids[0],
+      function(err) {
+        done(err ? null : 'bogus apartment by id fetch did not error!');
+      });
+    });
+    it('should return error for invalid apartment id', function(done) {
+      models.households.getByApartmentId('foo bar',
+      function(err) {
+        done(err ? null : 'invalid id in apartment by id fetch did not error!');
+      });
+    });
   });
 });

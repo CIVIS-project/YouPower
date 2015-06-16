@@ -120,6 +120,7 @@ exports.communities = [
 
 exports.households = [
   {
+    _id: newId(),
     apartmentId: 1234,
     address: 'my address',
     energyVal: '42',
@@ -128,6 +129,7 @@ exports.households = [
     ]
   },
   {
+    _id: newId(),
     apartmentId: 1235,
     address: 'my address 2',
     energyVal: '43',
