@@ -1047,5 +1047,16 @@ describe('models', function() {
         done(err ? null : 'invalid household id appliance remove did not return error!');
       });
     });
+    it('should update address', function(done) {
+      models.households.updateAddress(dbHouseholds[0]._id, 'new address', function(err) {
+        if (err) {
+          return done(err);
+        }
+        models.households.get(dbHouseholds[0]._id, function(err, household) {
+          household.address.should.equal('new address');
+          done(err);
+        });
+      });
+    });
   });
 });

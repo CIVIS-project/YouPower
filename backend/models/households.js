@@ -86,49 +86,42 @@ exports.getByApartmentId = function(id, cb) {
 };
 
 //update address
-exports.updateAddress = function(household, cb) {
-  Household.findByIdAndUpdate({
-    _id: household.id
-  }, function(err, house) {
-    if (err) {
-      cb(err);
-    } else if (!house) {
-      cb('Household not found');
-    } else {
-      house.address = household.address;
-      cb(null, household);
+exports.updateAddress = function(id, newAddress, cb) {
+  Household.findByIdAndUpdate(id, {
+    $set : {
+      address: newAddress
     }
-  });
+  }, cb);
 };
 
 //add appliances to the household
-exports.addAppliance = function(household, appliance, cb) {
+exports.addAppliance = function(id, appliance, cb) {
   Household.findById({
-    _id: household.id
-  }, function(err, house) {
+    _id: id
+  }, function(err, household) {
     if (err) {
       cb(err);
-    } else if (!house) {
+    } else if (!household) {
       cb('Household not found');
     } else {
-      house.appliancesList.push(appliance);
-      cb(null, household);
+      household.appliancesList.push(appliance);
+      household.save(cb);
     }
   });
 };
 
 //remove appliance from household
-exports.removeAppliance = function(household, applianceId, cb) {
+exports.removeAppliance = function(id, applianceId, cb) {
   Household.findById({
-    _id: household.id
-  }, function(err, house) {
+    _id: id
+  }, function(err, household) {
     if (err) {
       cb(err);
-    } else if (!house) {
+    } else if (!household) {
       cb('Household not found');
     } else {
-      house.appliancesList.pull({_id: applianceId});
-      cb(null, household);
+      household.appliancesList.pull({_id: applianceId});
+      household.save(cb);
     }
   });
 };
@@ -144,7 +137,7 @@ exports.addMember = function(id, userId, cb) {
       cb('Household not found');
     } else {
       household.members.push(userId);
-      cb(null, household);
+      household.save(cb);
     }
   });
 };
@@ -160,7 +153,7 @@ exports.removeMember = function(id, userId, cb) {
       cb('Household not found');
     } else {
       household.members.remove(userId);
-      cb(null, household);
+      household.save(cb);
     }
   });
 };
