@@ -956,7 +956,7 @@ describe('models', function() {
       });
     });
 
-    xit('should remove member from household', function(done) {
+    it('should remove member from household', function(done) {
       // TODO: more thorough testing (remove more than one member etc)
       async.series([
         function(cb) {
@@ -990,14 +990,14 @@ describe('models', function() {
       });
     });
 
-    xit('should add appliance to household', function(done) {
+    it('should add appliance to household', function(done) {
       // TODO: more thorough testing (add more than one appliance etc)
       models.households.addAppliance(dbHouseholds[0]._id, dummyData.appliances[0], function(err) {
         if (err) {
           return done(err);
         }
         models.households.get(dbHouseholds[0]._id, function(err, household) {
-          household.appliances[0].name.should.equal(dbUsers[0].appliances[0].name);
+          household.appliancesList[0].appliance.should.equal(dummyData.appliances[0].appliance);
           done(err);
         });
       });
@@ -1013,7 +1013,7 @@ describe('models', function() {
       });
     });
 
-    xit('should remove appliance from household', function(done) {
+    it('should remove appliance from household', function(done) {
       var d = dummyData.appliances[0];
       // TODO: more thorough testing (remove more than one appliance etc)
       async.series([
@@ -1032,7 +1032,7 @@ describe('models', function() {
           return done(err);
         }
         models.households.get(dbHouseholds[0]._id, function(err, household) {
-          should.not.exist(household.appliances[0]);
+          should.not.exist(household.appliancesList[0]);
           done(err);
         });
       });
