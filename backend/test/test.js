@@ -103,20 +103,20 @@ describe('models', function() {
       });
     });
 
-    it('should update rating to action document', function(done) {
+    xit('should update rating to action document', function(done) {
       var d = dummyData.ratings[0];
 
-      models.action.rate(dbActions[1]._id, d.userId, d.rating, d.comment, function(err) {
+      models.actions.rate(dbActions[1]._id, d.userId, d.rating, d.comment, function(err) {
         if (err) {
           return done(err);
         }
         d.comment = 'lorem ipsum';
 
-        models.action.rate(dbActions[1]._id, d.userId, d.rating, d.comment, function(err) {
+        models.actions.rate(dbActions[1]._id, d.userId, d.rating, d.comment, function(err) {
           if (err) {
             return done(err);
           }
-          models.action.get(dbActions[1]._id, function(err, action) {
+          models.actions.get(dbActions[1]._id, function(err, action) {
             if (err) {
               return done(err);
             }
@@ -630,6 +630,32 @@ describe('models', function() {
           var rating = challenge.ratings[0];
           _.omit(rating, ['_id']).should.deep.equal(_.omit(d, ['_id']));
           done();
+        });
+      });
+    });
+
+    xit('should update rating to challenge document', function(done) {
+      var d = dummyData.ratings[0];
+
+      models.challenges.rate(dbChallenges[1]._id, d.userId, d.rating, d.comment, function(err) {
+        if (err) {
+          return done(err);
+        }
+        d.comment = 'lorem ipsum';
+
+        models.challenges.rate(dbChallenges[1]._id, d.userId, d.rating, d.comment, function(err) {
+          if (err) {
+            return done(err);
+          }
+          models.challenges.get(dbChallenges[1]._id, function(err, challenge) {
+            if (err) {
+              return done(err);
+            }
+
+            var rating = challenge.ratings[0];
+            _.omit(rating, ['_id']).should.deep.equal(_.omit(d, ['_id']));
+            done();
+          });
         });
       });
     });
