@@ -12,7 +12,7 @@ var applianceSchema = new Schema(
     quantity: Number
   });
 var HouseSchema = new Schema({
-  apartmentID: {
+  apartmentId: {
     type: String,
     required: true,
     unique: true
@@ -45,11 +45,11 @@ var Household = mongoose.model('Household', HouseSchema);
 
 exports.create = function(household, cb) {
   Household.create({
-    apartmentID: household.apartmentID,
+    apartmentId: household.apartmentId,
     address: household.address,
     appliancesList: household.appliancesList,
     energyVal: household.energyVal,
-    members: household.User.name // need to verify. not really correct
+    members: household.members // need to verify. not really correct
   }, cb);
 };
 
@@ -179,8 +179,4 @@ exports.delete = function(id, cb) {
   }, cb);
 };
 
-var House = mongoose.model('Household', HouseSchema);
-
-module.exports = {
-  House: House
-};
+exports.House = Household;

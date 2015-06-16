@@ -794,4 +794,158 @@ describe('models', function() {
       });
     });
   });
+
+  describe('household', function() {
+    var dbHouseholds = [];
+    var dbUsers = [];
+
+    beforeEach(function(done) {
+      // reset challenges and user collections
+      async.parallel([
+        function(cb) {
+          resetModel('households', function(err, households) {
+            dbHouseholds = households;
+            cb(err);
+          });
+        },
+        function(cb) {
+          resetModel('users', function(err, users) {
+            dbUsers = users;
+            cb(err);
+          });
+        }
+      ], function(err) {
+        done(err);
+      });
+    });
+
+    it('should not create household with missing fields', function(done) {
+      var d = dummyData.households[0];
+      async.parallel([
+        function(cb) {
+          models.households.create({
+            address: d.address,
+            energyVal: d.energyVal,
+            members: d.members
+          }, function(err) {
+            cb(err ? null : 'missing apartmentId did not cause error!');
+          });
+        },
+        function(cb) {
+          models.households.create({
+            apartmentId: d.apartmentId,
+            energyVal: d.energyVal,
+            members: d.members
+          }, function(err) {
+            cb(err ? null : 'missing address did not cause error!');
+          });
+        },
+        function(cb) {
+          models.households.create({
+            apartmentId: d.apartmentId,
+            address: d.address,
+            members: d.members
+          }, function(err) {
+            cb(err ? null : 'missing energyVal did not cause error!');
+          });
+        }
+      ], function(err) {
+        done(err);
+      });
+    });
+    /*
+    it('should create household with empty challenges & actions', function(done) {
+      var d = dummyData.households[0];
+      models.households.create({
+        name: d.name
+      }, function(err) {
+        done(err);
+      });
+    });
+
+    it('should return first household by id', function(done) {
+      models.households.get(dbHouseholds[0]._id, function(err, household) {
+        household.name.should.equal(dbHouseholds[0].name);
+        done(err);
+      });
+    });
+
+    it('should return no household for bogus id', function(done) {
+      models.households.get(dummyData.ids[0], function(err) {
+        done(err ? null : 'bogus household fetch did return a household!');
+      });
+    });
+
+    it('should return no household for invalid id', function(done) {
+      models.households.get('foo bar', function(err) {
+        done(err ? null : 'invalid household fetch did return a household!');
+      });
+    });
+
+    it('should delete household by id', function(done) {
+      models.households.delete(dbHouseholds[0]._id, function() {
+        models.households.get(dbHouseholds[0]._id, function(err) {
+          done(err ? null : 'household was not deleted successfully');
+        });
+      });
+    });
+
+    it('should add member to household', function(done) {
+      // TODO: more thorough testing (add more than one member etc)
+      models.households.addMember(dbHouseholds[0]._id, dbUsers[0]._id, function(err) {
+        if (err) {
+          return done(err);
+        }
+        models.households.get(dbHouseholds[0]._id, function(err, household) {
+          household.members[0].toString().should.equal(dbUsers[0]._id.toString());
+          done(err);
+        });
+      });
+    });
+    it('should return error when adding to bogus household id', function(done) {
+      models.households.addMember(dummyData.ids[0], dbUsers[0]._id, function(err) {
+        done(err ? null : 'bogus household id member add did not return error!');
+      });
+    });
+    it('should return error when adding to invalid household id', function(done) {
+      models.households.addMember('foo bar', dbUsers[0]._id, function(err) {
+        done(err ? null : 'invalid household id member add did not return error!');
+      });
+    });
+
+    it('should remove member from household', function(done) {
+      // TODO: more thorough testing (remove more than one member etc)
+      async.series([
+        function(cb) {
+          models.households.addMember(dbHouseholds[0]._id, dbUsers[0]._id, function(err) {
+            cb(err);
+          });
+        },
+        function(cb) {
+          models.households.removeMember(dbHouseholds[0]._id, dbUsers[0]._id, function(err) {
+            cb(err);
+          });
+        }
+      ], function(err) {
+        if (err) {
+          return done(err);
+        }
+        models.households.get(dbHouseholds[0]._id, function(err, household) {
+          should.not.exist(household.members[0]);
+          done(err);
+        });
+      });
+    });
+    it('should return error when removing from bogus household id', function(done) {
+      models.households.removeMember(dummyData.ids[0], dbUsers[0]._id, function(err) {
+        done(err ? null : 'bogus household id member remove did not return error!');
+      });
+    });
+    it('should return error when removing from invalid household id', function(done) {
+      models.households.removeMember('foo bar', dbUsers[0]._id, function(err) {
+        done(err ? null : 'invalid household id member remove did not return error!');
+      });
+    });
+  */
+  });
 });
