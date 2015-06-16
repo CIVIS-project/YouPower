@@ -103,6 +103,32 @@ describe('models', function() {
       });
     });
 
+    it('should update rating to action document', function(done) {
+      var d = dummyData.ratings[0];
+
+      models.action.rate(dbActions[1]._id, d.userId, d.rating, d.comment, function(err) {
+        if (err) {
+          return done(err);
+        }
+        d.comment = 'lorem ipsum';
+
+        models.action.rate(dbActions[1]._id, d.userId, d.rating, d.comment, function(err) {
+          if (err) {
+            return done(err);
+          }
+          models.action.get(dbActions[1]._id, function(err, action) {
+            if (err) {
+              return done(err);
+            }
+
+            var rating = action.ratings[0];
+            _.omit(rating, ['_id']).should.deep.equal(_.omit(d, ['_id']));
+            done();
+          });
+        });
+      });
+    });
+
     it('should refuse invalid ratings', function(done) {
       var d = dummyData.ratings[0];
       async.parallel([
