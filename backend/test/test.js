@@ -82,16 +82,17 @@ describe('models', function() {
       });
     });
 
-    it('should add rating to action document', function(done) {
+    xit('should add rating to action document', function(done) {
       var d = dummyData.ratings[0];
-
+      var id = dbActions[0]._id;
+      console.log(id);
       // try rating an action that has not been rated yet
-      models.action.rate(dbActions[1]._id, d.userId, d.rating, d.comment, function(err) {
+      models.action.rate(id, d.userId, d.rating, d.comment, function(err) {
         if (err) {
           return done(err);
         }
 
-        models.action.get(dbActions[1]._id, function(err, action) {
+        models.action.get(id, function(err, action) {
           if (err) {
             return done(err);
           }
@@ -105,26 +106,21 @@ describe('models', function() {
 
     it('should update rating to action document', function(done) {
       var d = dummyData.ratings[0];
-
-      models.action.rate(dbActions[1]._id, d.userId, d.rating, d.comment, function(err) {
+      var id = dbActions[0]._id;
+      d.rating = '2';
+      models.action.updateRate(id, d.userId, d.rating, d.comment, function(err) {
         if (err) {
           return done(err);
         }
-        d.comment = 'lorem ipsum';
-
-        models.action.rate(dbActions[1]._id, d.userId, d.rating, d.comment, function(err) {
+        models.action.get(id, function(err, action) {
           if (err) {
             return done(err);
           }
-          models.action.get(dbActions[1]._id, function(err, action) {
-            if (err) {
-              return done(err);
-            }
-
-            var rating = action.ratings[0];
-            _.omit(rating, ['_id']).should.deep.equal(_.omit(d, ['_id']));
-            done();
-          });
+          var rating = action.ratings[0];
+          console.log('After updation');
+          console.log(rating.rating);
+          _.omit(rating, ['_id']).should.deep.equal(_.omit(d, ['_id']));
+          done();
         });
       });
     });
