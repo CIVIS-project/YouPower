@@ -3,7 +3,7 @@
 var auth = require('../middleware/auth');
 var express = require('express');
 var router = express.Router();
-var User = require('../models/user');
+var User = require('../models').users;
 
 /**
  * @api {get} /user/action Get user's action list

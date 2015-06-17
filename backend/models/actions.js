@@ -116,7 +116,7 @@ exports.all = function(limit, skip, includeRatings, cb) {
   .skip(skip)
   .limit(limit)
   .exec(function(err, actions) {
-    /* istanbul ignore if */
+    /* istanbul ignore if: db errors are hard to unit test */
     if (err) {
       cb(err);
     } else {
@@ -139,6 +139,7 @@ exports.all = function(limit, skip, includeRatings, cb) {
   });
 };
 
+/*
 exports.updateRate = function(id, userId, rating, comment, cb) {
   Action.findOne({
     _id: id
@@ -158,6 +159,7 @@ exports.updateRate = function(id, userId, rating, comment, cb) {
     }
   });
 };
+*/
 
 exports.rate = function(id, userId, rating, comment, cb) {
   Action.findOne({
@@ -168,11 +170,13 @@ exports.rate = function(id, userId, rating, comment, cb) {
     } else if (!action) {
       cb('Action not found');
     } else {
+      /*
       action.ratings.addToSet({
         userId: userId,
         rating: rating,
         comment: comment
       });
+      */
 
       action.save(function(err) {
         cb(err);

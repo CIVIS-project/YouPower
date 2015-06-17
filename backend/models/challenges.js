@@ -5,6 +5,7 @@
 var mongoose = require('mongoose');
 var _ = require('underscore');
 var Schema = mongoose.Schema;
+var escapeStringRegexp = require('escape-string-regexp');
 
 var ChallengeSchema = new Schema({
   name: {
@@ -75,6 +76,7 @@ exports.get = function(id, cb) {
   Challenge.findOne({
     _id: id
   }, function(err, challenge) {
+    /* istanbul ignore if: db errors are hard to unit test */
     if (err) {
       cb(err);
     } else if (!challenge) {
@@ -90,15 +92,13 @@ exports.get = function(id, cb) {
 //Search challenge by name
 exports.search = function(cname, cb) {
   Challenge.find({
-    name : new RegExp('^' + cname + '$', 'i')
-  }, function(err, challenge) {
+    name : new RegExp('^' + escapeStringRegexp(cname), 'i')
+  }, function(err, challenges) {
+    /* istanbul ignore if: db errors are hard to unit test */
     if (err) {
       cb(err);
-    } else if (!challenge) {
-      cb('Challenge not found');
     } else {
-      challenge = challenge.toObject();
-      cb(null, challenge);
+      cb(null, challenges);
     }
   });
 };
@@ -118,6 +118,7 @@ exports.all = function(limit, skip, includeRatings, cb) {
   .skip(skip)
   .limit(limit)
   .exec(function(err, challenges) {
+    /* istanbul ignore if: db errors are hard to unit test */
     if (err) {
       cb(err);
     } else {

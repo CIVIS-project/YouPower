@@ -4,7 +4,7 @@ var express = require('express');
 var auth = require('../middleware/auth');
 var util = require('util');
 var router = express.Router();
-var Action = require('../models/action');
+var Action = require('../models').actions;
 
 /**
  * @api {post} /action Create new action

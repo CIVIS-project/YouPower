@@ -93,3 +93,61 @@ exports.challenges = [
     actions: [exports.actions[0]._id, exports.actions[1]._id]
   }
 ];
+
+exports.communities = [
+  {
+    name: 'dummy community 1',
+    challenges: [
+      exports.challenges[0]._id,
+      exports.challenges[1]._id,
+      exports.challenges[2]._id
+    ],
+    actions: [
+      exports.actions[0]._id,
+      exports.actions[1]._id
+    ]
+  },
+  {
+    name: 'dummy community 2',
+    challenges: [
+      exports.challenges[2]._id
+    ],
+    actions: [
+      exports.actions[1]._id
+    ]
+  }
+];
+
+exports.households = [
+  {
+    _id: newId(),
+    apartmentId: 1234,
+    address: 'my address',
+    energyVal: '42',
+    members: [
+      exports.users[0]._id
+    ]
+  },
+  {
+    _id: newId(),
+    apartmentId: 1235,
+    address: 'my address 2',
+    energyVal: '43',
+    members: [
+      exports.users[1]._id
+    ]
+  }
+];
+
+exports.appliances = [
+  {
+    _id: newId(),
+    appliance: 'dish washer',
+    quantity: 1
+  },
+  {
+    _id: newId(),
+    appliance: 'tv',
+    quantity: 2
+  }
+];

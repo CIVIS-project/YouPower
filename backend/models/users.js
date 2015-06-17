@@ -1,7 +1,7 @@
 'use strict';
 
 var mongoose = require('mongoose');
-var Action = require('./action');
+var Action = require('./').actions;
 var Schema = mongoose.Schema;
 var passportLocalMongoose = require('passport-local-mongoose');
 
@@ -34,7 +34,7 @@ var UserSchema = new Schema({
 UserSchema.plugin(passportLocalMongoose, {
   usernameField: 'email',
   // do fewer pbkdf2 hashing iterations when unit testing for performance reasons
-  iterations: process.env.NODE_ENV === 'test' ? 1 : 25000
+  iterations: process.env.NODE_ENV === 'test' ? 1 : /* istanbul ignore next */ 25000
 });
 
 var User = mongoose.model('User', UserSchema);

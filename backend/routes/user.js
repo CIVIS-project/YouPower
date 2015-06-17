@@ -5,7 +5,7 @@ var express = require('express');
 var util = require('util');
 var escapeRegexp = require('escape-string-regexp');
 var router = express.Router();
-var User = require('../models/user');
+var User = require('../models').users;
 
 router.use('/action', require('./userAction'));
 router.use('/challenge', require('./userChallenge'));

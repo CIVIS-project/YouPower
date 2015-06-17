@@ -1,8 +1,8 @@
 'use strict';
 
-exports.action = require('./action');
-exports.challenge = require('./challenge');
-exports.community = require('./community');
-exports.consumption = require('./consumption');
-exports.household = require('./household');
-exports.user = require('./user');
+exports.actions = require('./actions');
+exports.challenges = require('./challenges');
+exports.communities = require('./communities');
+//exports.consumption = require('./consumption');
+exports.households = require('./households');
+exports.users = require('./users');
