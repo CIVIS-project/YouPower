@@ -98,8 +98,8 @@ describe('models', function() {
             return done(err);
           }
 
-          var rating = action.ratings[userId];
-          _.omit(rating, ['_id']).should.deep.equal(_.omit(d, ['_id']));
+          var rating = action.ratings[userId].rating;
+          rating.should.equal(d.rating);
           done();
         });
       });
@@ -654,8 +654,8 @@ describe('models', function() {
               return done(err);
             }
 
-            var rating = challenge.ratings[userId];
-            _.omit(rating, ['_id']).should.deep.equal(_.omit(d, ['_id']));
+            var comment = challenge.ratings[userId].comment;
+            comment.should.equal(d.comment);
             done();
           });
         });

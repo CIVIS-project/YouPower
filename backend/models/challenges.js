@@ -144,7 +144,8 @@ exports.rate = function(id, userId, rating, comment, cb) {
     } else {
       challenge.ratings[userId] = {
         rating: rating || challenge.ratings[userId].rating,
-        comment: comment || challenge.ratings[userId].comment
+        comment: comment || challenge.ratings[userId].comment,
+        date: new Date()
       };
       challenge.markModified('ratings');
       challenge.save(function(err) {
