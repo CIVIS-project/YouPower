@@ -29,20 +29,15 @@ exports.users = [
   }
 ];
 
-exports.ratings = [
-  {
-    _id: newId(),
-    userId: exports.users[0]._id,
-    rating: 4,
-    comment: 'dummy rating comment'
-  },
-  {
-    _id: newId(),
-    userId: exports.users[1]._id,
-    rating: 3,
-    comment: 'another dummy rating comment'
-  },
-];
+exports.ratings = {};
+exports.ratings[exports.users[0]._id] = {
+  rating: 4,
+  comment: 'dummy rating comment'
+};
+exports.ratings[exports.users[1]._id] = {
+  rating: 3,
+  comment: 'another dummy rating comment'
+};
 
 exports.actions = [
   {
@@ -78,7 +73,7 @@ exports.challenges = [
     name: 'dummy challenge name 1',
     description: 'dummy challenge description 1',
     actions: [exports.actions[0]._id],
-    ratings: [exports.ratings[0]]
+    ratings: exports.ratings
   },
   {
     _id: newId(),

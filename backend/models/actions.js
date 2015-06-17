@@ -41,22 +41,8 @@ var ActionSchema = new Schema({
     default: 3
   },
   ratings: {
-    type: [
-      {
-        userId: {
-          type: Schema.Types.ObjectId, // _id of commenter
-          required: true
-        },
-        rating: {
-          type: Number,
-          min: 1,
-          max: 5,
-          required: true
-        },
-        comment: String
-      }
-    ],
-    default: []
+    type: Schema.Types.Mixed,
+    default: {}
   }
 });
 
@@ -81,7 +67,7 @@ exports.create = function(action, cb) {
     category: action.category,
     activation: action.activation,
     description: action.description,
-    ratings: action.ratings || [],
+    ratings: action.ratings || {},
     impact: action.impact,
     effort: action.effort
   }, cb);
@@ -139,29 +125,13 @@ exports.all = function(limit, skip, includeRatings, cb) {
   });
 };
 
-/*
-exports.updateRate = function(id, userId, rating, comment, cb) {
-  Action.findOne({
-    _id: id
-  }, function(err, action) {
-    if (err) {
-      cb(err);
-    } else if (!action) {
-      cb('Action not found');
-    } else {
-      action.ratings.userId = userId;
-      action.ratings.rating = rating;
-      action.ratings.comment = comment;
-      action.markModified('ratings');
-      action.save(function(err) {
-        cb(err, action.ratings);
-      });
-    }
-  });
-};
-*/
-
 exports.rate = function(id, userId, rating, comment, cb) {
+  if (!userId) {
+    return cb('Missing userId');
+  }
+  if (!rating || !_.isNumber(rating)) {
+    return cb('Missing/invalid rating');
+  }
   Action.findOne({
     _id: id
   }, function(err, action) {
@@ -170,14 +140,11 @@ exports.rate = function(id, userId, rating, comment, cb) {
     } else if (!action) {
       cb('Action not found');
     } else {
-      /*
-      action.ratings.addToSet({
-        userId: userId,
-        rating: rating,
-        comment: comment
-      });
-      */
-
+      action.ratings[userId] = {
+        rating: rating || action.ratings[userId].rating,
+        comment: comment || action.ratings[userId].comment
+      };
+      action.markModified('ratings');
       action.save(function(err) {
         cb(err);
       });

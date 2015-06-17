@@ -26,22 +26,8 @@ var ChallengeSchema = new Schema({
   ],
   //ratings for challenges
   ratings: {
-    type: [
-      {
-        userId: {
-          type: Schema.Types.ObjectId, // _id of rater
-          required: true
-        },
-        rating: {
-          type: Number,
-          min: 1,
-          max: 5,
-          required: true
-        },
-        comment: String
-      }
-    ],
-    default: []
+    type: Schema.Types.Mixed,
+    default: {}
   }
 });
 
@@ -67,7 +53,7 @@ exports.create = function(challenge, cb) {
     name: challenge.name,
     description: challenge.description,
     actions: challenge.actions,
-    ratings: challenge.ratings || [],
+    ratings: challenge.ratings || {}
   }, cb);
 };
 
@@ -142,6 +128,12 @@ exports.all = function(limit, skip, includeRatings, cb) {
 };
 
 exports.rate = function(id, userId, rating, comment, cb) {
+  if (!userId) {
+    return cb('Missing userId');
+  }
+  if (!rating || !_.isNumber(rating)) {
+    return cb('Missing/invalid rating');
+  }
   Challenge.findOne({
     _id: id
   }, function(err, challenge) {
@@ -150,12 +142,11 @@ exports.rate = function(id, userId, rating, comment, cb) {
     } else if (!challenge) {
       cb('Challenge not found');
     } else {
-      challenge.ratings.addToSet({
-        userId: userId,
-        rating: rating,
-        comment: comment
-      });
-
+      challenge.ratings[userId] = {
+        rating: rating || challenge.ratings[userId].rating,
+        comment: comment || challenge.ratings[userId].comment
+      };
+      challenge.markModified('ratings');
       challenge.save(function(err) {
         cb(err);
       });
