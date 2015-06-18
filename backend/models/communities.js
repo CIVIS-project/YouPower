@@ -95,7 +95,7 @@ exports.removeMember = function(id, userId, cb) {
   });
 };
 
-//return top actions in community- "actions with rating > 3"- need to verify this
+// return top actions in community NOTE: this is a bit of a mess atm, maybe there's a better way?
 exports.topActions = function(id, limit, cb) {
   // first find members of community
   Community
