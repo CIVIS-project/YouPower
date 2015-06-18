@@ -102,6 +102,7 @@ exports.topActions = function(id, limit, cb) {
   .findOne({_id: id})
   .select('members')
   .exec(function(err, community) {
+    /* istanbul ignore if: db errors are hard to unit test */
     if (err) {
       cb(err);
     } else {
@@ -110,6 +111,7 @@ exports.topActions = function(id, limit, cb) {
       .find({_id: {$in: community.members}})
       .select('actions.inProgress actions.done')
       .exec(function(err, users) {
+        /* istanbul ignore if: db errors are hard to unit test */
         if (err) {
           return cb(err);
         }
@@ -129,6 +131,7 @@ exports.topActions = function(id, limit, cb) {
         .find({_id: {$in: _.keys(actionCounts)}})
         .select('name description impact effort')
         .exec(function(err, actions) {
+          /* istanbul ignore if: db errors are hard to unit test */
           if (err) {
             return cb(err);
           }

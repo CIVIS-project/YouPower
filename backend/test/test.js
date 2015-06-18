@@ -848,7 +848,7 @@ describe('models', function() {
         done(err ? null : 'invalid community id member remove did not return error!');
       });
     });
-    xit('should return top actions', function(done) {
+    it('should return top actions in correct order', function(done) {
       resetModel('actions', function(err, actions) {
         var dbActions = actions;
         if (err) {
@@ -881,8 +881,10 @@ describe('models', function() {
             return done(err);
           }
           models.communities.topActions(dbCommunities[0]._id, null, function(err, actions) {
-            console.log(actions);
-            done();
+            actions.length.should.equal(3);
+            actions[0].name.should.equal(dummyData.actions[1].name);
+            actions[1].name.should.not.equal(actions[2].name);
+            done(err);
           });
         });
       });
