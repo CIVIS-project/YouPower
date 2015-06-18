@@ -64,6 +64,17 @@ exports.actions = [
     description: 'dummy description 2',
     impact: 2,
     effort: 1
+  },
+  {
+    _id: newId(),
+    name: 'dummy name 3',
+    category: 'oneshot',
+    activation: {
+      configurable: false
+    },
+    description: 'dummy description 3',
+    impact: 5,
+    effort: 5
   }
 ];
 

@@ -4,6 +4,10 @@
 
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var _ = require('underscore');
+
+var User = require('./users').User;
+var Action = require('./actions').Action;
 
 //Community Schema
 var CommunitySchema = new Schema({
@@ -17,14 +21,6 @@ var CommunitySchema = new Schema({
     {
       type: Schema.Types.ObjectId,
       ref: 'Challenge',
-      required: true
-    }
-  ],
-  // refer actions schema
-  actions: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: 'Action',
       required: true
     }
   ],
@@ -44,8 +40,7 @@ var Community = mongoose.model('Community', CommunitySchema);
 exports.create = function(community, cb) {
   Community.create({
     name: community.name,
-    challenges: community.challenges,
-    actions: community.actions
+    challenges: community.challenges
   }, cb);
 };
 
@@ -101,17 +96,57 @@ exports.removeMember = function(id, userId, cb) {
 };
 
 //return top actions in community- "actions with rating > 3"- need to verify this
-exports.topActions = function(id, cb) {
+exports.topActions = function(id, limit, cb) {
+  // first find members of community
   Community
-  .find({_id: id})
-  .where('Community.actions.ratings.rating')
-  .gt(3)
-  .populate('actions')
-  .exec(function(err, actions) {
+  .findOne({_id: id})
+  .select('members')
+  .exec(function(err, community) {
     if (err) {
       cb(err);
     } else {
-      cb(actions);
+      // find actions of users that are part of the community
+      User
+      .find({_id: {$in: community.members}})
+      .select('actions.inProgress actions.done')
+      .exec(function(err, users) {
+        if (err) {
+          return cb(err);
+        }
+
+        // get counts for each action
+        var actionCounts = {};
+        _.each(users, function(user) {
+          // combine inProgress and done actions
+          var actions = _.extend(user.actions.inProgress, user.actions.done);
+          _.each(actions, function(action, key) {
+            actionCounts[key] = actionCounts[key] ? actionCounts[key] + 1 : 1;
+          });
+        });
+
+        // finally get details of each action
+        Action
+        .find({_id: {$in: _.keys(actionCounts)}})
+        .select('name description impact effort')
+        .exec(function(err, actions) {
+          if (err) {
+            return cb(err);
+          }
+
+          _.each(actions, function(action, index) {
+            actions[index] = action.toObject();
+            actions[index].cnt = actionCounts[actions[index]._id];
+          });
+
+          actions = _.sortBy(actions, function(action) {
+            return action.cnt * -1; // invert the order
+          });
+
+          actions.slice(0, limit || 10);
+
+          cb(null, actions);
+        });
+      });
     }
   });
 };

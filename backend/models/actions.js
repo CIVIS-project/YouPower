@@ -153,8 +153,4 @@ exports.rate = function(id, userId, rating, comment, cb) {
   });
 };
 
-/*
-exports.allByUser = function(user, cb) {
-  cb(null, []);
-};
-*/
+exports.Action = Action;

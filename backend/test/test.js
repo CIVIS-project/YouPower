@@ -848,6 +848,45 @@ describe('models', function() {
         done(err ? null : 'invalid community id member remove did not return error!');
       });
     });
+    xit('should return top actions', function(done) {
+      resetModel('actions', function(err, actions) {
+        var dbActions = actions;
+        if (err) {
+          return done(err);
+        }
+
+        async.parallel([
+          // add users to community
+          function(cb) {
+            models.communities.addMember(dbCommunities[0]._id, dbUsers[0]._id, cb);
+          },
+          function(cb) {
+            models.communities.addMember(dbCommunities[0]._id, dbUsers[1]._id, cb);
+          },
+          // add some actions to users
+          function(cb) {
+            models.users.startAction(dbUsers[0], dbActions[0]._id, cb);
+          },
+          function(cb) {
+            models.users.startAction(dbUsers[0], dbActions[1]._id, cb);
+          },
+          function(cb) {
+            models.users.startAction(dbUsers[1], dbActions[1]._id, cb);
+          },
+          function(cb) {
+            models.users.startAction(dbUsers[1], dbActions[2]._id, cb);
+          }
+        ], function(err) {
+          if (err) {
+            return done(err);
+          }
+          models.communities.topActions(dbCommunities[0]._id, null, function(err, actions) {
+            console.log(actions);
+            done();
+          });
+        });
+      });
+    });
   });
 
   describe('household', function() {

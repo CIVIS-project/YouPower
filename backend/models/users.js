@@ -181,3 +181,5 @@ exports.completeAction = function(user, actionId, cb) {
     user.save(cb);
   }
 };
+
+exports.User = User;
