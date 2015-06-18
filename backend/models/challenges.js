@@ -143,7 +143,7 @@ exports.rate = function(id, userId, rating, comment, cb) {
       cb('Challenge not found');
     } else {
       challenge.ratings[userId] = {
-        rating: rating || challenge.ratings[userId].rating,
+        rating: rating,
         comment: comment || challenge.ratings[userId].comment,
         date: new Date()
       };

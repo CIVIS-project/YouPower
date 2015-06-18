@@ -141,7 +141,7 @@ exports.rate = function(id, userId, rating, comment, cb) {
       cb('Action not found');
     } else {
       action.ratings[userId] = {
-        rating: rating || action.ratings[userId].rating,
+        rating: rating,
         comment: comment || action.ratings[userId].comment,
         date: new Date()
       };
