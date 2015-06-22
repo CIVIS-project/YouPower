@@ -24,4 +24,5 @@ router.get('/', auth.authenticate(), function(req, res) {
   Consumption.get(req.body, res.successRes);
 });
 
+
 module.exports = router;
