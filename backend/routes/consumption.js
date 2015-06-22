@@ -20,6 +20,8 @@ var auth = require('../middleware/auth');
  *
  * @apiVersion 1.0.0
  */
+
+ //curl "http://civis.cloud.reply.eu/Civis/EnergyPlatform.svc/downloadMyData?userID=387051&token=688b026c-665f-4994-9139-6b21b13fbeee&from=23-Mar-13%207%3A00:00%20PM&to=25-Apr-13%208:30:00%20PM&res=daily"
 router.get('/', auth.authenticate(), function(req, res) {
   Consumption.get(req.body, res.successRes);
 });
