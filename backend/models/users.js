@@ -4,6 +4,8 @@ var mongoose = require('mongoose');
 var Action = require('./').actions;
 var Schema = mongoose.Schema;
 var passportLocalMongoose = require('passport-local-mongoose');
+var escapeStringRegexp = require('escape-string-regexp');
+var _ = require('underscore');
 
 var UserSchema = new Schema({
   token: String,
@@ -72,10 +74,17 @@ exports.getProfile = function(id, cb) {
   });
 };
 
-// TODO: we should NOT allow arbitrary queries in the REST API, only maybe
-// email or profile
 exports.find = function(q, multi, limit, skip, cb) {
-  var query = User.find(q);
+  // pick any key that is present from the list [_id, profile.name, email]
+  var keys = _.keys(q);
+  var key = _.first(_.intersection(keys, ['_id', 'profile.name', 'email']));
+
+  // if searching by _id require exact match, otherwise do a regexp search
+  var filteredQ = {};
+  filteredQ[key] = key === '_id' ? q[key].toString() :
+    new RegExp('^' + escapeStringRegexp(q[key].toString()), 'i');
+
+  var query = User.find(filteredQ);
   query.select('email profile actions');
   query.limit(limit);
   query.skip(skip);
