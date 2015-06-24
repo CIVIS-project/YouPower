@@ -4,6 +4,7 @@ var auth = require('../middleware/auth');
 var express = require('express');
 var router = express.Router();
 var User = require('../models').users;
+var Action = require('../models').actions;
 
 /**
  * @api {get} /user/action Get user's action list
@@ -13,6 +14,32 @@ var User = require('../models').users;
  */
 router.get('/', auth.authenticate(), function(req, res) {
   res.json(req.user.actions);
+});
+
+/**
+ * @api {get} /user/action/suggested Get list of suggested user actions
+ * @apiGroup User Action
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * [
+ *   {
+ *     "__v": 0,
+ *     "_id": "555f0163688305b57c7cef6c",
+ *     "description": "Disabling standby can save up to 10% in total electricity costs.",
+ *     "effort": 2,
+ *     "impact": 2,
+ *     "name": "Disable standby on your devices",
+ *     "ratings": []
+ *   },
+ *   {
+ *     ...
+ *   }
+ * ]
+ *
+ * @apiVersion 1.0.0
+ */
+router.get('/suggested', auth.authenticate(), function(req, res) {
+  Action.getSuggested(req.user.actions, res.successRes);
 });
 
 /**

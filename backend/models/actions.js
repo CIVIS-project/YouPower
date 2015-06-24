@@ -153,4 +153,18 @@ exports.rate = function(id, userId, rating, comment, cb) {
   });
 };
 
+exports.getSuggested = function(userActions, cb) {
+  Action.find({
+    $and: [
+      {_id: {$nin: _.keys(userActions.done)}},
+      {_id: {$nin: _.keys(userActions.canceled)}},
+      {_id: {$nin: _.keys(userActions.inProgress)}}
+    ]
+  })
+  .sort('date')
+  .limit(3)
+  .select('name description impact effort')
+  .exec(cb);
+};
+
 exports.Action = Action;
