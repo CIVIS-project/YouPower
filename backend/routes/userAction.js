@@ -19,6 +19,7 @@ router.get('/', auth.authenticate(), function(req, res) {
 /**
  * @api {get} /user/action/suggested Get list of suggested user actions
  * @apiGroup User Action
+ * @apiDescription Returns top three most recent actions that the user has not tried
  *
  * @apiSuccessExample {json} Success-Response:
  * [
