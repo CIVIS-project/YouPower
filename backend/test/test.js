@@ -222,6 +222,28 @@ describe('models', function() {
         done(err);
       });
     });
+    it('should return remaining actions as suggested actions', function(done) {
+      var userActions = {};
+      userActions.done = {};
+      userActions.done[dbActions[0]._id] = {};
+      models.actions.getSuggested(userActions, function(err, suggestedActions) {
+        suggestedActions.length.should.equal(dbActions.length - 1);
+        done(err);
+      });
+    });
+    it('should not return any actions that the user has tried', function(done) {
+      var userActions = {};
+      userActions.done = {};
+      userActions.inProgress = {};
+      userActions.canceled = {};
+      userActions.done[dbActions[0]._id] = {};
+      userActions.inProgress[dbActions[1]._id] = {};
+      userActions.canceled[dbActions[2]._id] = {};
+      models.actions.getSuggested(userActions, function(err, suggestedActions) {
+        suggestedActions.length.should.equal(dbActions.length - 3);
+        done(err);
+      });
+    });
   });
 
   describe('user', function() {
