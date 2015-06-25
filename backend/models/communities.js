@@ -172,4 +172,4 @@ exports.all = function(limit, skip, cb) {
   });
 };
 
-exports.Community = mongoose.model('Community', CommunitySchema);
+exports.Community = Community;
