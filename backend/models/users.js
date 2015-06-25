@@ -80,6 +80,7 @@ exports.getProfile = function(id, cb) {
   });
 };
 
+//Display user's communities (member of which community?)
 exports.getUserCommunities = function(id, cb) {
   User.findOne({_id: id}, false, function(err, user) {
     if (err) {
@@ -102,6 +103,19 @@ exports.getUserCommunities = function(id, cb) {
           cb(null, communities);
         }
       });
+    }
+  });
+};
+//Display user's actions (in progress)
+exports.getUserActions = function(id, cb) {
+  User.findOne({_id: id}, false, function(err, user) {
+    if (err) {
+      return cb(err);
+    }
+    if (!user) {
+      return cb('User not found');
+    } else {
+      return cb(user.actions.inProgress);
     }
   });
 };
