@@ -2,8 +2,8 @@
   "name": "youpower-backend",
   "version": "0.0.1",
   "description": "YouPower app backend",
-  "main": "index.js",
-  "scripts": {
+  "main": "backend/app.js",
+  "scripts": app
     "start": "MONGOOSE_DISABLE_STABILITY_WARNING=1 node backend/app.js",
     "test": "cd backend && NODE_ENV=test MONGOOSE_DISABLE_STABILITY_WARNING=1 mocha",
     "coverage": "cd backend && NODE_ENV=test MONGOOSE_DISABLE_STABILITY_WARNING=1 istanbul cover _mocha -- -R spec"

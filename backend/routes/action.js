@@ -75,6 +75,7 @@ var Action = require('../models').actions;
  *   }
  */
 router.post('/', function(req, res) {
+  console.log("Here1 req.bod-");
   Action.create(req.body, res.successRes);
 });
 
