@@ -9,6 +9,7 @@ var router = express.Router();
  * @apiGroup Facebook Login
  */
 router.get('/facebook', auth.facebook(), function() {
+	
   // user is redirected to facebook, do nothing here
 });
 
@@ -17,6 +18,7 @@ router.get('/facebook', auth.facebook(), function() {
  * @apiGroup Facebook Login
  */
 router.get('/facebook/callback', auth.facebook(), function(req, res) {
+	
   auth.newUserToken(req.user, function(err, token) {
     res.successRes(err, {
       token: token

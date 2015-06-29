@@ -52,7 +52,6 @@ exports.initialize = function() {
     l.warn('FACEBOOK_CALLBACK_URL');
     l.warn('Disabling Facebook login.');
   } else {
-    
     passport.use(new FacebookStrategy({
       clientID: process.env.FACEBOOK_APP_ID,
       clientSecret: process.env.FACEBOOK_APP_SECRET,
@@ -72,6 +71,7 @@ exports.initialize = function() {
             User.register({
               // TODO: get email via facebook
               email: profile.emails[0].value,
+              //email: mongoose.Types.ObjectId(),
               facebookId: profile.id,
               profile: {
                 name: profile.displayName,
@@ -92,13 +92,12 @@ exports.initialize = function() {
               });
             });
           });
-        } else {
+        } else {console.log("From facebook/callback");
           return done(err, user);
         }
       });
     }));
   }
-
   passport.serializeUser(User.serializeUser());
   passport.deserializeUser(User.deserializeUser());
 
@@ -114,5 +113,5 @@ exports.authenticate = function() {
 };
 
 exports.facebook = function() {
-  return passport.authenticate('facebook', { scope: ['email'],session: false });
+  return passport.authenticate('facebook', { scope: ['email'],session: false});
 };
