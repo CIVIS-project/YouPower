@@ -45,12 +45,14 @@ exports.initialize = function() {
   }));
 
   if (!process.env.FACEBOOK_APP_ID || !process.env.FACEBOOK_APP_SECRET) {
-    l.warn('Facebook login not set up. Please set environment variables:');
+//    if (!process.env.FACEBOOK_APP_ID) {
+    l.warn('Facebook login not set up! Please set environment variables:');
     l.warn('FACEBOOK_APP_ID');
     l.warn('FACEBOOK_APP_SECRET');
     l.warn('FACEBOOK_CALLBACK_URL');
     l.warn('Disabling Facebook login.');
   } else {
+    
     passport.use(new FacebookStrategy({
       clientID: process.env.FACEBOOK_APP_ID,
       clientSecret: process.env.FACEBOOK_APP_SECRET,
@@ -66,10 +68,10 @@ exports.initialize = function() {
           // user does not exist, register new user
           crypto.randomBytes(48, function(ex, buf) {
             var password = buf.toString('hex');
-            console.log(profile);
+            console.log('profile',profile);
             User.register({
               // TODO: get email via facebook
-              email: mongoose.Types.ObjectId(),
+              email: profile.emails[0].value,
               facebookId: profile.id,
               profile: {
                 name: profile.displayName,
@@ -112,5 +114,5 @@ exports.authenticate = function() {
 };
 
 exports.facebook = function() {
-  return passport.authenticate('facebook', {session: false});
+  return passport.authenticate('facebook', { scope: ['email'],session: false });
 };

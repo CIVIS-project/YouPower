@@ -1,7 +1,6 @@
 'use strict';
 
 var winston = require('winston');
-
 winston.loggers.add('default', {
   console: {
     level: 'silly',
@@ -26,7 +25,6 @@ var fs = require('fs');
 
 mongoose.connect(process.env.MONGO_URL || 'mongodb://localhost/youpower');
 var db = mongoose.connection;
-
 var app = express();
 app.set('view engine', 'jade');
 app.set('views', __dirname + '/apidoc');
