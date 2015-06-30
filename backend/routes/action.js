@@ -5,6 +5,31 @@ var auth = require('../middleware/auth');
 var util = require('util');
 var router = express.Router();
 var Action = require('../models').actions;
+var ActionComment = require('../models').actionComments;
+
+/**
+ * @api {post} /action/:actionId/comment Create new action comment
+ * @apiGroup Action Comments
+ *
+ * @apiParam {String} actionId ID of action being commented
+ * @apiParam {String} comment Text contents of comment
+ *
+ * @apiExample {curl} Example usage:
+ *  curl -i -X POST -H "Content-Type: application/json" -H "Authorization: Bearer 3b7..." -d \
+ *  '{
+ *    "comment": "This is an amazing and easy to perform action!"
+ *  }' \
+ *  http://localhost:3000/api/action/555f0163688305b57c7cef6c/comment
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "__v": 0,
+ *     "_id": "555f0163688305b57c7cef6d",
+ *   }
+ */
+router.post('/:actionId/comment', auth.authenticate(), function(req, res) {
+  ActionComment.create(req.params.actionId, req.user, req.body.comment, res.successRes);
+});
 
 /**
  * @api {post} /action Create new action
