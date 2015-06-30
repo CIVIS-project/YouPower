@@ -11,7 +11,7 @@ var BearerStrategy = require('passport-http-bearer');
 var BasicStrategy = require('passport-http').BasicStrategy;
 var FacebookStrategy = require('passport-facebook');
 var User = require('../models').users;
-
+var isConnect=false;
 exports.genToken = function(cb) {
   crypto.randomBytes(48, function(ex, buf) {
     cb(buf.toString('hex'));
@@ -63,35 +63,44 @@ exports.initialize = function() {
         if (err) {
           return done(err);
         } else if (!user) {
-          // TODO: refactor this mess
-          // user does not exist, register new user
-          crypto.randomBytes(48, function(ex, buf) {
-            var password = buf.toString('hex');
-            console.log('profile',profile);
-            User.register({
-              // TODO: get email via facebook
-              email: profile.emails[0].value,
-              //email: mongoose.Types.ObjectId(),
-              facebookId: profile.id,
-              profile: {
-                name: profile.displayName,
-                gender: profile.gender
-              }
-            }, password, function(err) {
-              if (err) {
-                return done(err);
-              }
+          console.log("Everything NOT Perfect");
+            if(isConnect)
+            {
+              console.log("Everything Perfect");
+              isConnect=false;
+            }
 
-              User.find({facebookId: profile.id}, false, null, null, function(err, user) {
+            else {console.log("Everything NOT Perfect2");
+            // TODO: refactor this mess
+            // user does not exist, register new user
+            crypto.randomBytes(48, function(ex, buf) {
+              var password = buf.toString('hex');
+              console.log('profile',profile);
+              User.register({
+                // TODO: get email via facebook
+                email: profile.emails[0].value,
+                //email: mongoose.Types.ObjectId(),
+                facebookId: profile.id,
+                profile: {
+                  name: profile.displayName,
+                  gender: profile.gender
+                }
+              }, password, function(err) {
                 if (err) {
                   return done(err);
-                } else if (!user) {
-                  return done('user not found after registering! should never happen');
                 }
-                return done(null, user);
+
+                User.find({facebookId: profile.id}, false, null, null, function(err, user) {
+                  if (err) {
+                    return done(err);
+                  } else if (!user) {
+                    return done('user not found after registering! should never happen');
+                  }
+                  return done(null, user);
+                });
               });
             });
-          });
+          }
         } else {console.log("From facebook/callback");
           return done(err, user);
         }
@@ -113,5 +122,13 @@ exports.authenticate = function() {
 };
 
 exports.facebook = function() {
+  console.log("isConnect",isConnect);
   return passport.authenticate('facebook', { scope: ['email'],session: false});
+};
+
+exports.connectFb = function(user) {
+  isConnect=true;
+  console.log("connectfb",user,"isConnect",isConnect);
+  return passport.authenticate('facebook', { scope: ['email'],session: false});
+  //return passport.authenticate('facebook', { scope: ['email'],session: false});
 };

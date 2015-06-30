@@ -184,4 +184,17 @@ router.get('/token', auth.basicauth(), function(req, res) {
   });
 });
 
+/**
+ * @api {post} /user/profile/connectfb Update your profile
+ * @apiGroup User
+ *
+ * @apiVersion 1.0.0
+ */
+router.post('/profile/connectfb', auth.authenticate(), function(req, res) {
+    console.log('routes>connectfb');
+    auth.connectFb(req.user);
+  
+});
+
+
 module.exports = router;
