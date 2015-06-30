@@ -13,6 +13,10 @@ router.get('/facebook', auth.facebook(), function() {
   // user is redirected to facebook, do nothing here
 });
 
+router.get('/facebook/connect', auth.connectFb("test"), function() {
+	
+  // user is redirected to facebook, do nothing here
+});
 /**
  * @api {get} /auth/facebook/callback Callback URL for Facebook login
  * @apiGroup Facebook Login

@@ -11,7 +11,7 @@ var BearerStrategy = require('passport-http-bearer');
 var BasicStrategy = require('passport-http').BasicStrategy;
 var FacebookStrategy = require('passport-facebook');
 var User = require('../models').users;
-var isConnect=false;
+
 exports.genToken = function(cb) {
   crypto.randomBytes(48, function(ex, buf) {
     cb(buf.toString('hex'));
@@ -57,20 +57,15 @@ exports.initialize = function() {
       clientSecret: process.env.FACEBOOK_APP_SECRET,
       callbackURL: process.env.FACEBOOK_CALLBACK_URL ||
         'http://localhost:3000/api/auth/facebook/callback',
-      enableProof: false
+      enableProof: false,
+      //passReqToCallback: true
     }, function(accessToken, refreshToken, profile, done) {
+     console.log("REJOICE555");
       User.find({facebookId: profile.id}, false, null, null, function(err, user) {
         if (err) {
           return done(err);
         } else if (!user) {
-          console.log("Everything NOT Perfect");
-            if(isConnect)
-            {
-              console.log("Everything Perfect");
-              isConnect=false;
-            }
-
-            else {console.log("Everything NOT Perfect2");
+          
             // TODO: refactor this mess
             // user does not exist, register new user
             crypto.randomBytes(48, function(ex, buf) {
@@ -100,13 +95,28 @@ exports.initialize = function() {
                 });
               });
             });
-          }
+          
         } else {console.log("From facebook/callback");
           return done(err, user);
         }
       });
+      
     }));
+    passport.use('facebook-authz', new FacebookStrategy({
+    clientID: process.env.FACEBOOK_APP_ID,
+      clientSecret: process.env.FACEBOOK_APP_SECRET,
+      callbackURL: process.env.FACEBOOK_CALLBACK_URL ||
+        'http://localhost:3000/api/auth/facebook/connectfb',
+      enableProof: false,
+      passReqToCallback: true
+  },
+  function(req,accessToken, refreshToken, profile, done) {
+    console.log("REJOICE",req.user);
   }
+));
+  }
+
+
   passport.serializeUser(User.serializeUser());
   passport.deserializeUser(User.deserializeUser());
 
@@ -122,13 +132,13 @@ exports.authenticate = function() {
 };
 
 exports.facebook = function() {
-  console.log("isConnect",isConnect);
   return passport.authenticate('facebook', { scope: ['email'],session: false});
 };
 
 exports.connectFb = function(user) {
-  isConnect=true;
-  console.log("connectfb",user,"isConnect",isConnect);
-  return passport.authenticate('facebook', { scope: ['email'],session: false});
+  console.log("connectFB fn");
+  
+  return passport.authorize('facebook-authz', { scope: ['email'],session: false});
+// return passport.authenticate('facebook', { scope: ['email'],session: false});
   //return passport.authenticate('facebook', { scope: ['email'],session: false});
 };

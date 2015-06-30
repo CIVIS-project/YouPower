@@ -190,9 +190,10 @@ router.get('/token', auth.basicauth(), function(req, res) {
  *
  * @apiVersion 1.0.0
  */
-router.post('/profile/connectfb', auth.authenticate(), function(req, res) {
+router.get('/profile/connectfb', auth.facebook(), function(req, res) {
     console.log('routes>connectfb');
-    auth.connectFb(req.user);
+   //auth.passport.authorize('facebook-authz', { scope: ['email'],session: false});
+    
   
 });
 
