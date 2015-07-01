@@ -50,7 +50,6 @@ exports.get = function(actionId, limit, skip, cb) {
     } else if (!actionComments) {
       cb('Comments not found');
     } else {
-      actionComments = actionComments.toObject();
       cb(null, actionComments);
     }
   });

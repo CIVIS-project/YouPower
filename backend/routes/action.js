@@ -24,8 +24,12 @@ var ActionComment = require('../models').actionComments;
  * @apiSuccessExample {json} Success-Response:
  *   {
  *     "__v": 0,
+ *     "actionId": "555f0163688305b57c7cef6c",
+ *     "name": "Test User",
+ *     "email": "testuser1@test.com",
+ *     "comment": "This is an amazing and easy to perform action!",
+ *     "date": "2015-07-01T12:04:33.599Z",
  *     "_id": "555f0163688305b57c7cef6d",
- *     TODO
  *   }
  */
 router.post('/:actionId/comment', auth.authenticate(), function(req, res) {
@@ -44,15 +48,19 @@ router.post('/:actionId/comment', auth.authenticate(), function(req, res) {
  *  curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer 3b7..." -d \
  *  '{
  *    "limit": "50",
- *    "skip": "150"
+ *    "skip": "0"
  *  }' \
  *  http://localhost:3000/api/action/555f0163688305b57c7cef6c/comments
  *
  * @apiSuccessExample {json} Success-Response:
  *   {
- *     "__v": 0,
  *     "_id": "555f0163688305b57c7cef6d",
- *     TODO
+ *     "actionId": "555f0163688305b57c7cef6c",
+ *     "name": "Test User",
+ *     "email": "testuser1@test.com",
+ *     "comment": "This is an amazing and easy to perform action!",
+ *     "date": "2015-07-01T12:04:33.599Z",
+ *     "__v": 0,
  *   }
  */
 router.get('/:actionId/comments', auth.authenticate(), function(req, res) {
