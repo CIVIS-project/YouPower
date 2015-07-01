@@ -25,10 +25,42 @@ var ActionComment = require('../models').actionComments;
  *   {
  *     "__v": 0,
  *     "_id": "555f0163688305b57c7cef6d",
+ *     TODO
  *   }
  */
 router.post('/:actionId/comment', auth.authenticate(), function(req, res) {
   ActionComment.create(req.params.actionId, req.user, req.body.comment, res.successRes);
+});
+
+/**
+ * @api {get} /action/:actionId/comments Get a list of action comments
+ * @apiGroup Action Comments
+ *
+ * @apiParam {String} actionId ID of action whose comments are requested
+ * @apiParam {Integer} [limit=10] Maximum number of results returned
+ * @apiParam {Integer} [skip=0] Number of results skipped
+ *
+ * @apiExample {curl} Example usage:
+ *  curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer 3b7..." -d \
+ *  '{
+ *    "limit": "50",
+ *    "skip": "150"
+ *  }' \
+ *  http://localhost:3000/api/action/555f0163688305b57c7cef6c/comments
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "__v": 0,
+ *     "_id": "555f0163688305b57c7cef6d",
+ *     TODO
+ *   }
+ */
+router.get('/:actionId/comments', auth.authenticate(), function(req, res) {
+  ActionComment.get(req.params.actionId, req.body.limit || 10, req.body.skip || 0, res.successRes);
+});
+
+router.delete('/:actionId/comments', auth.authenticate(), function(req, res) {
+  ActionComment.delete(req.params.actionId, res.successRes);
 });
 
 /**
