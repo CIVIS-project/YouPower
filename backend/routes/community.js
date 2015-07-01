@@ -14,7 +14,10 @@ var Community = require('../models').communities;
  * @apiParam {Array} actions Actions specific to the community
  *
  * @apiExample {curl} Example usage:
- *  curl -i -X POST -H "Content-Type: application/json" -d \
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
  *  '{
  *    "name": "Otaniemi Community",
  *    "challenges": [
@@ -99,7 +102,11 @@ router.post('/', function(req, res) {
  *
  * @apiParam {String} id MongoId of community
  * @apiExample {curl} Example usage:
- *    curl -i http://localhost:3000/api/community/555ecb997aa6360e40f26451
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/community/555ecb997aa6360e40f26451
  *
  * @apiSuccessExample {json} Success-Response:
  *   {
@@ -157,7 +164,11 @@ router.get('/:id', function(req, res) {
  *
  * @apiParam {String} id MongoId of Community
  * @apiExample {curl} Example usage:
- *    curl -i -X DELETE http://localhost:3000/api/community/555ecb997aa6360e40f26451
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X DELETE -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/community/555ecb997aa6360e40f26451
  *
  * @apiSuccess {Integer} n Number of deleted communities (0 or 1)
  * @apiSuccess {Integer} ok Mongoose internals
@@ -187,9 +198,10 @@ router.delete('/:id', function(req, res) {
  * @apiParam {Array} members List of members in the Community
  *
  * @apiExample {curl} Example usage:
- *  curl -i -X PUT \
- *  -H "Authorization: Bearer 615ea82f7fec0ffaee5..." \
- *  -H "Content-Type: application/json" -d \
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X PUT -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
  *  '{
  *    "_id": "testUser1",
  *    "name": "Jack",
@@ -215,9 +227,10 @@ router.put('/join/:id', function(req, res) {
  * @apiParam {Array} members List of members in the community
  *
  * @apiExample {curl} Example usage:
- *  curl -i -X PUT \
- *  -H "Authorization: Bearer 615ea82f7fec0ffaee5..." \
- *  -H "Content-Type: application/json" -d \
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X PUT -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
  *  '{
  *    "_id": "testUser1",
  *    "name": "Jane",
@@ -247,9 +260,10 @@ router.put('/leave/:id', function(req, res) {
  * @apiParam {Array} actions List of top actions in the community, actions with high rating
  *
  * @apiExample {curl} Example usage:
- *  curl -i -X PUT \
- *  -H "Authorization: Bearer 615ea82f7fec0ffaee5..." \
- *  -H "Content-Type: application/json" -d \
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X PUT -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
  *  '{
  *    "_id": "315ea82f7fec0ffaee5",
  *   }' \
