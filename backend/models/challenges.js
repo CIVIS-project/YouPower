@@ -150,7 +150,7 @@ exports.rate = function(id, user, rating, comment, cb) {
       };
       challenge.markModified('ratings');
       challenge.save(function(err) {
-        cb(err);
+        cb(err, challenge);
       });
     }
   });

@@ -24,7 +24,7 @@ var Challenge = require('../models').challenges;
  *  '{
  *    "name": "Test challenge",
  *    "description": "Test description",
- *    "actions": ["555eda2531039c1853352b7f", "555eda2531039c1853352b7f"]
+ *    "actions": ["555eda2531039c1853352b7f", "555eda2531039c1853352b7c"]
  *  }' \
  *  http://localhost:3000/api/challenge
  *
@@ -58,9 +58,31 @@ router.post('/', auth.authenticate(), function(req, res) {
  *  curl -i -X PUT -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
  *  '{
  *    "rating": 4,
- *    "comment": "This challenge is awesome!"
+ *    "comment": "This challenge is really awesome!"
  *  }' \
  *  http://localhost:3000/api/challenge/rate/555ef84b2fd41ffc6e078a34
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "_id": "5593ea61caed58c705a25278",
+ *     "name": "Test challenge",
+ *     "description": "Test description",
+ *     "__v": 0,
+ *     "ratings": {
+ *       "5593ccfa9255daa130890164": {
+ *         "rating": 4,
+ *         "name": "Test User",
+ *         "comment": "This challenge is really awesome!",
+ *         "date": "2015-07-01T13:39:51.678Z"
+ *       }
+ *     },
+ *     "actions": [
+ *       "555eda2531039c1853352b7c",
+ *       "555eda2531039c1853352b7f"
+ *     ],
+ *     "avgRating": 4,
+ *     "numRatings": 1
+ *   }
  */
 router.put('/rate/:id', auth.authenticate(), function(req, res) {
   req.checkParams('id', 'Invalid challenge id').isMongoId();
@@ -69,10 +91,7 @@ router.put('/rate/:id', auth.authenticate(), function(req, res) {
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    Challenge.rate(req.params.id, req.user, req.body.rating, req.body.comment,
-        function(err, challenge) {
-      res.status(err ? 500 : 200).send(err || challenge);
-    });
+    Challenge.rate(req.params.id, req.user, req.body.rating, req.body.comment, res.successRes);
   }
 });
 
@@ -82,7 +101,33 @@ router.put('/rate/:id', auth.authenticate(), function(req, res) {
  *
  * @apiParam {String} id MongoId of challenge
  * @apiExample {curl} Example usage:
- *    curl -i http://localhost:3000/api/challenge/555ecb997aa6360e40f26451
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/challenge/555ecb997aa6360e40f26451
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "_id": "5593ea61caed58c705a25278",
+ *     "name": "Test challenge",
+ *     "description": "Test description",
+ *     "__v": 0,
+ *     "ratings": {
+ *       "5593ccfa9255daa130890164": {
+ *         "rating": 4,
+ *         "name": "Test User",
+ *         "comment": "This challenge is awesome!",
+ *         "date": "2015-07-01T13:39:51.678Z"
+ *       }
+ *     },
+ *     "actions": [
+ *       "555eda2531039c1853352b7c",
+ *       "555eda2531039c1853352b7f"
+ *     ],
+ *     "avgRating": 4,
+ *     "numRatings": 1
+ *   }
  */
 router.get('/:id', function(req, res) {
   req.checkParams('id', 'Invalid challenge id').isMongoId();
@@ -102,7 +147,11 @@ router.get('/:id', function(req, res) {
  *
  * @apiParam {String} id MongoId of challenge
  * @apiExample {curl} Example usage:
- *    curl -i -X DELETE http://localhost:3000/api/challenge/555ecb997aa6360e40f26451
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X DELETE -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/challenge/555ecb997aa6360e40f26451
  *
  * @apiSuccess {Integer} n Number of deleted challenges (0 or 1)
  * @apiSuccess {Integer} ok Mongoose internals
@@ -135,7 +184,11 @@ router.delete('/:id', function(req, res) {
  * @apiParam {Boolean} [includeRatings=false] Include individual user ratings of challenge
  *
  * @apiExample {curl} Example usage:
- *    curl -i http://localhost:3000/api/challenge
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/challenge
  *
  * @apiSuccessExample {json} Success-Response:
  *   [
@@ -171,7 +224,11 @@ router.get('/', function(req, res) {
  * @apiParam {String} q Search query
  *
  * @apiExample {curl} Example usage:
- *  curl -i http://localhost:3000/api/challenge/search\?q\=foobar
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/challenge/search\?q\=foobar
  */
 router.get('/search', function(req, res) {
   req.checkQuery('q', 'Invalid query parameter').notEmpty();
