@@ -18,7 +18,19 @@ router.use('/challenge', require('./userChallenge'));
  * @apiParam {String} name User's nickname
  * @apiParam {String} password User's password
  *
- * @apiVersion 1.0.0
+ * @apiExample {curl} Example usage:
+ *  curl -i -X POST -H "Content-Type: application/json" -d \
+ *  '{
+ *    "email": "testuser@test.com",
+ *    "name": "Test User",
+ *    "password": "topsecret"
+ *  }' \
+ *  http://localhost:3000/api/user/register
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "token": "2af38938a7e2aa3daa429278a8f4..."
+ *   }
  */
 router.post('/register', function(req, res) {
   req.checkBody('email').notEmpty();

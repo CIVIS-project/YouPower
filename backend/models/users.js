@@ -82,7 +82,7 @@ exports.find = function(q, multi, limit, skip, cb) {
   // if searching by _id require exact match, otherwise do a regexp search
   var filteredQ = {};
   filteredQ[key] = key === '_id' ? q[key].toString() :
-    new RegExp('^' + escapeStringRegexp(q[key].toString()), 'i');
+    new RegExp('^' + escapeStringRegexp(String(q[key])), 'i');
 
   var query = User.find(filteredQ);
   query.select('email profile actions');
