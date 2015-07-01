@@ -19,7 +19,10 @@ router.use('/challenge', require('./userChallenge'));
  * @apiParam {String} password User's password
  *
  * @apiExample {curl} Example usage:
- *  curl -i -X POST -H "Content-Type: application/json" -d \
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
  *  '{
  *    "email": "testuser@test.com",
  *    "name": "Test User",
@@ -71,6 +74,31 @@ router.post('/register', function(req, res) {
  * @api {get} /user/profile Get your profile
  * @apiGroup User
  *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/user/profile
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "email": "testuser1@test.com",
+ *     "profile": {
+ *       "name": "Test User"
+ *     },
+ *     "actions": {
+ *       "done": {},
+ *       "inProgress": {},
+ *       "canceled": {}
+ *     },
+ *     "energyConsumption": {},
+ *     "topActions": [],
+ *     "topChallenges": [],
+ *     "topCommunities": [],
+ *     "topFriends": []
+ *   }
+ *
  * @apiVersion 1.0.0
  */
 router.get('/profile', auth.authenticate(), function(req, res) {
@@ -116,7 +144,11 @@ router.get('/profile/:id', auth.authenticate(), function(req, res) {
  * @apiParam {String} q Search query
  *
  * @apiExample {curl} Example usage:
- *  curl -i http://localhost:3000/api/user/search\?q\=foobar
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/user/search\?q\=foobar
  *
  * @apiSuccessExample {json} Success-Response:
  *   {
