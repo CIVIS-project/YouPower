@@ -56,9 +56,10 @@ exports.get = function(actionId, limit, skip, cb) {
   });
 };
 
-exports.delete = function(id, cb) {
+exports.delete = function(actionId, id, cb) {
   // TODO: check that user is authorized to do this (email matches or is admin)
   ActionComment.remove({
+    actionId: actionId,
     _id: id
   }, cb);
 };

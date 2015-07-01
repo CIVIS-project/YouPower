@@ -59,8 +59,26 @@ router.get('/:actionId/comments', auth.authenticate(), function(req, res) {
   ActionComment.get(req.params.actionId, req.body.limit || 10, req.body.skip || 0, res.successRes);
 });
 
-router.delete('/:actionId/comments', auth.authenticate(), function(req, res) {
-  ActionComment.delete(req.params.actionId, res.successRes);
+/**
+ * @api {delete} /action/:actionId/comment/:commentId Delete a comment
+ * @apiGroup Action Comments
+ *
+ * @apiParam {String} actionId ID of action whose comment will be deleted
+ * @apiParam {String} commentId ID of comment to be deleted
+ *
+ * @apiExample {curl} Example usage:
+ *  curl -i -X DELETE -H "Authorization: Bearer 3b7..." \
+ *  http://localhost:3000/api/action/555f0163688305b57c7cef6c/comment/555f0163688305b57c7cef6d
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "__v": 0,
+ *     "_id": "555f0163688305b57c7cef6d",
+ *     TODO
+ *   }
+ */
+router.delete('/:actionId/comment/:commentId', auth.authenticate(), function(req, res) {
+  ActionComment.delete(req.params.actionId, req.params.commentId, res.successRes);
 });
 
 /**
