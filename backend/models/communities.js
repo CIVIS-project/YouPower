@@ -6,8 +6,8 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var _ = require('underscore');
 
-var User = require('./users').User;
-var Action = require('./actions').Action;
+var User = require('./users');
+var Action = require('./actions');
 
 //Community Schema
 var CommunitySchema = new Schema({
@@ -107,7 +107,7 @@ exports.topActions = function(id, limit, cb) {
       cb(err);
     } else {
       // find actions of users that are part of the community
-      User
+      User.model
       .find({_id: {$in: community.members}})
       .select('actions.inProgress actions.done')
       .exec(function(err, users) {
@@ -127,7 +127,7 @@ exports.topActions = function(id, limit, cb) {
         });
 
         // finally get details of each action
-        Action
+        Action.model
         .find({_id: {$in: _.keys(actionCounts)}})
         .select('name description impact effort')
         .exec(function(err, actions) {
@@ -172,4 +172,4 @@ exports.all = function(limit, skip, cb) {
   });
 };
 
-exports.Community = mongoose.model('Community', CommunitySchema);
+exports.model = Community;

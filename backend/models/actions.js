@@ -167,4 +167,4 @@ exports.getSuggested = function(userActions, cb) {
   .exec(cb);
 };
 
-exports.Action = Action;
+exports.model = Action;

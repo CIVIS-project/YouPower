@@ -28,7 +28,7 @@ exports.newUserToken = function(user, cb) {
 };
 
 exports.initialize = function() {
-  passport.use(new BasicStrategy(User.authenticate()));
+  passport.use(new BasicStrategy(User.model.authenticate()));
   passport.use(new BearerStrategy(function(token, done) {
     if (!token) {
       return done('No token provided');
