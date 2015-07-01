@@ -166,4 +166,4 @@ exports.delete = function(id, cb) {
   }, cb);
 };
 
-exports.House = Household;
+exports.model = Household;

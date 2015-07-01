@@ -1,7 +1,7 @@
 'use strict';
 
 var mongoose = require('mongoose');
-var Action = require('./').actions;
+var Action = require('./actions');
 var Schema = mongoose.Schema;
 var passportLocalMongoose = require('passport-local-mongoose');
 var escapeStringRegexp = require('escape-string-regexp');
@@ -191,4 +191,4 @@ exports.completeAction = function(user, actionId, cb) {
   }
 };
 
-exports.User = User;
+exports.model = User;
