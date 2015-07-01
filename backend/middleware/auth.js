@@ -34,7 +34,7 @@ exports.initialize = function() {
       return done('No token provided');
     }
 
-    User.find({token: token}, false, null, null, function(err, user) {
+    User.model.findOne({token: token}, function(err, user) {
       if (err) {
         return done(err);
       } else if (!user) {
@@ -58,7 +58,7 @@ exports.initialize = function() {
         'http://localhost:3000/api/auth/facebook/callback',
       enableProof: false
     }, function(accessToken, refreshToken, profile, done) {
-      User.find({facebookId: profile.id}, false, null, null, function(err, user) {
+      User.findOne({facebookId: profile.id}, function(err, user) {
         if (err) {
           return done(err);
         } else if (!user) {
@@ -80,7 +80,7 @@ exports.initialize = function() {
                 return done(err);
               }
 
-              User.find({facebookId: profile.id}, false, null, null, function(err, user) {
+              User.findOne({facebookId: profile.id}, function(err, user) {
                 if (err) {
                   return done(err);
                 } else if (!user) {
