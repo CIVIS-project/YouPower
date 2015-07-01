@@ -12,14 +12,35 @@ var Challenge = require('../models').challenges;
  *
  * @apiParam {String} name Challenge name
  * @apiParam {String} description Challenge description
- * @apiParam {Array} List of action IDs, eg:
+ * @apiParam {Array} actions List of action IDs
  *
- * ["555eda2531039c1853352b7f", "555eda2531039c1853352b7f"]
  * @apiParam {ratings} Rating for a challenge, (1 [least] - 5 [most]), default 0
 
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
+ *  '{
+ *    "name": "Test challenge",
+ *    "description": "Test description",
+ *    "actions": ["555eda2531039c1853352b7f", "555eda2531039c1853352b7f"]
+ *  }' \
  *  http://localhost:3000/api/challenge
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "__v": 0,
+ *     "name": "Test challenge",
+ *     "description": "Test description",
+ *     "_id": "5593ea61caed58c705a25278",
+ *     "actions": [
+ *       "555eda2531039c1853352b7f",
+ *       "555eda2531039c1853352b7c"
+ *     ]
+ *   }
  */
-router.post('/', function(req, res) {
+router.post('/', auth.authenticate(), function(req, res) {
   Challenge.create(req.body, res.successRes);
 });
 
@@ -31,9 +52,10 @@ router.post('/', function(req, res) {
  * @apiParam {Number} rating Rating of challenge (1 [least] - 5 [most])
  *
  * @apiExample {curl} Example usage:
- *  curl -i -X PUT \
- *  -H "Authorization: Bearer 615ea82f7fec0ffaee5..." \
- *  -H "Content-Type: application/json" -d \
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X PUT -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
  *  '{
  *    "rating": 4,
  *    "comment": "This challenge is awesome!"
@@ -47,7 +69,7 @@ router.put('/rate/:id', auth.authenticate(), function(req, res) {
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    Challenge.rate(req.params.id, req.user.email, req.body.rating, req.body.comment,
+    Challenge.rate(req.params.id, req.user, req.body.rating, req.body.comment,
         function(err, challenge) {
       res.status(err ? 500 : 200).send(err || challenge);
     });

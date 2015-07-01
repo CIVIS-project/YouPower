@@ -127,9 +127,9 @@ exports.all = function(limit, skip, includeRatings, cb) {
   });
 };
 
-exports.rate = function(id, userId, rating, comment, cb) {
-  if (!userId) {
-    return cb('Missing userId');
+exports.rate = function(id, user, rating, comment, cb) {
+  if (!user || !user._id || !user.profile || !user.profile.name) {
+    return cb('Missing/invalid user');
   }
   if (!rating || !_.isNumber(rating)) {
     return cb('Missing/invalid rating');
@@ -142,9 +142,10 @@ exports.rate = function(id, userId, rating, comment, cb) {
     } else if (!challenge) {
       cb('Challenge not found');
     } else {
-      challenge.ratings[userId] = {
+      challenge.ratings[user._id] = {
         rating: rating,
-        comment: comment || challenge.ratings[userId].comment,
+        name: user.profile.name,
+        comment: comment || challenge.ratings[user._id].comment,
         date: new Date()
       };
       challenge.markModified('ratings');

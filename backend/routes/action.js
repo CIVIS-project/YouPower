@@ -201,7 +201,7 @@ router.put('/rate/:id', auth.authenticate(), function(req, res) {
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    Action.rate(req.params.id, req.user._id, req.body.rating, req.body.comment, res.successRes);
+    Action.rate(req.params.id, req.user, req.body.rating, req.body.comment, res.successRes);
   }
 });
 

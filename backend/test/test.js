@@ -84,11 +84,11 @@ describe('models', function() {
     });
 
     it('should add rating to unrated action document', function(done) {
-      var userId = dummyData.users[0]._id;
-      var d = dummyData.ratings[userId];
+      var user = dummyData.users[0];
+      var d = dummyData.ratings[user._id];
       var id = dbActions[0]._id;
       // try rating an action that has not been rated yet
-      models.actions.rate(id, userId, d.rating, d.comment, function(err) {
+      models.actions.rate(id, user, d.rating, d.comment, function(err) {
         if (err) {
           return done(err);
         }
@@ -98,7 +98,7 @@ describe('models', function() {
             return done(err);
           }
 
-          var rating = action.ratings[userId].rating;
+          var rating = action.ratings[user._id].rating;
           rating.should.equal(d.rating);
           done();
         });
@@ -106,11 +106,11 @@ describe('models', function() {
     });
 
     it('should update rating to action document', function(done) {
-      var userId = dummyData.users[0]._id;
-      var d = dummyData.ratings[userId];
+      var user = dummyData.users[0];
+      var d = dummyData.ratings[user._id];
       var id = dbActions[0]._id;
       var newRating = 2;
-      models.actions.rate(id, userId, newRating, d.comment, function(err) {
+      models.actions.rate(id, user, newRating, d.comment, function(err) {
         if (err) {
           return done(err);
         }
@@ -118,7 +118,7 @@ describe('models', function() {
           if (err) {
             return done(err);
           }
-          var rating = action.ratings[userId].rating;
+          var rating = action.ratings[user._id].rating;
           rating.should.equal(newRating);
           done();
         });
@@ -126,31 +126,31 @@ describe('models', function() {
     });
 
     it('should refuse invalid ratings', function(done) {
-      var userId = dummyData.users[0]._id;
-      var d = dummyData.ratings[userId];
+      var user = dummyData.users[0];
+      var d = dummyData.ratings[user._id];
       async.parallel([
         function(cb) {
-          models.actions.rate(dummyData.ids[0], userId, d.rating, d.comment, function(err) {
+          models.actions.rate(dummyData.ids[0], user, d.rating, d.comment, function(err) {
             cb(err ? null : 'passing bogus action id did not cause error!');
           });
         },
         function(cb) {
-          models.actions.rate('foo bar', userId, d.rating, d.comment, function(err) {
+          models.actions.rate('foo bar', user, d.rating, d.comment, function(err) {
             cb(err ? null : 'passing invalid action id did not cause error!');
           });
         },
         function(cb) {
           models.actions.rate(dbActions[0]._id, null, d.rating, d.comment, function(err) {
-            cb(err ? null : 'missing userId field did not cause error!');
+            cb(err ? null : 'missing user parameter did not cause error!');
           });
         },
         function(cb) {
-          models.actions.rate(dbActions[0]._id, userId, null, d.comment, function(err) {
+          models.actions.rate(dbActions[0]._id, user, null, d.comment, function(err) {
             cb(err ? null : 'missing rating field did not cause error!');
           });
         },
         function(cb) {
-          models.actions.rate(dbActions[0]._id, userId, d.rating, null, function(err) {
+          models.actions.rate(dbActions[0]._id, user, d.rating, null, function(err) {
             cb(err ? 'comment field should be optional but wasn\'t!' : null);
           });
         }
@@ -599,7 +599,7 @@ describe('models', function() {
     });
 
     it('should return all challenges with ratings', function(done) {
-      var userId = dummyData.users[0]._id;
+      var user = dummyData.users[0];
       models.challenges.all(null, null, true, function(err, challenges) {
         challenges.length.should.equal(dummyData.challenges.length);
 
@@ -607,8 +607,8 @@ describe('models', function() {
           return challenge.name === 'dummy challenge name 1';
         });
 
-        testChallenge.ratings[userId].comment
-          .should.equal(dummyData.challenges[0].ratings[userId].comment);
+        testChallenge.ratings[user._id].comment
+          .should.equal(dummyData.challenges[0].ratings[user._id].comment);
         done(err);
       });
     });
@@ -635,12 +635,12 @@ describe('models', function() {
     });
 
     it('should add rating to unrated challenge document', function(done) {
-      var userId = dummyData.users[0]._id;
-      var d = dummyData.ratings[userId];
+      var user = dummyData.users[0];
+      var d = dummyData.ratings[user._id];
       var id = dbChallenges[1]._id; // mustn't contain any ratings
 
       // try rating an challenge that has not been rated yet
-      models.challenges.rate(id, userId, d.rating, d.comment, function(err) {
+      models.challenges.rate(id, user, d.rating, d.comment, function(err) {
         if (err) {
           return done(err);
         }
@@ -650,7 +650,7 @@ describe('models', function() {
             return done(err);
           }
 
-          var rating = challenge.ratings[userId].rating;
+          var rating = challenge.ratings[user._id].rating;
           rating.should.equal(d.rating);
           done();
         });
@@ -658,16 +658,16 @@ describe('models', function() {
     });
 
     it('should update rating to challenge document', function(done) {
-      var userId = dummyData.users[0]._id;
-      var d = dummyData.ratings[userId];
+      var user = dummyData.users[0];
+      var d = dummyData.ratings[user._id];
 
-      models.challenges.rate(dbChallenges[1]._id, userId, d.rating, d.comment, function(err) {
+      models.challenges.rate(dbChallenges[1]._id, user, d.rating, d.comment, function(err) {
         if (err) {
           return done(err);
         }
         d.comment = 'lorem ipsum';
 
-        models.challenges.rate(dbChallenges[1]._id, userId, d.rating, d.comment, function(err) {
+        models.challenges.rate(dbChallenges[1]._id, user, d.rating, d.comment, function(err) {
           if (err) {
             return done(err);
           }
@@ -676,7 +676,7 @@ describe('models', function() {
               return done(err);
             }
 
-            var comment = challenge.ratings[userId].comment;
+            var comment = challenge.ratings[user._id].comment;
             comment.should.equal(d.comment);
             done();
           });
@@ -685,31 +685,31 @@ describe('models', function() {
     });
 
     it('should refuse invalid ratings', function(done) {
-      var userId = dummyData.users[0]._id;
-      var d = dummyData.ratings[userId];
+      var user = dummyData.users[0];
+      var d = dummyData.ratings[user._id];
       async.parallel([
         function(cb) {
-          models.challenges.rate(dummyData.ids[0], userId, d.rating, d.comment, function(err) {
+          models.challenges.rate(dummyData.ids[0], user, d.rating, d.comment, function(err) {
             cb(err ? null : 'passing bogus challenge id did not cause error!');
           });
         },
         function(cb) {
-          models.challenges.rate('foo bar', userId, d.rating, d.comment, function(err) {
+          models.challenges.rate('foo bar', user, d.rating, d.comment, function(err) {
             cb(err ? null : 'passing invalid challenge id did not cause error!');
           });
         },
         function(cb) {
           models.challenges.rate(dbChallenges[0]._id, null, d.rating, d.comment, function(err) {
-            cb(err ? null : 'missing userId field did not cause error!');
+            cb(err ? null : 'missing user parameter did not cause error!');
           });
         },
         function(cb) {
-          models.challenges.rate(dbChallenges[0]._id, userId, null, d.comment, function(err) {
+          models.challenges.rate(dbChallenges[0]._id, user, null, d.comment, function(err) {
             cb(err ? null : 'missing rating field did not cause error!');
           });
         },
         function(cb) {
-          models.challenges.rate(dbChallenges[0]._id, userId, d.rating, null, function(err) {
+          models.challenges.rate(dbChallenges[0]._id, user, d.rating, null, function(err) {
             cb(err ? 'comment field should be optional but wasn\'t!' : null);
           });
         }
