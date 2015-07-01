@@ -237,7 +237,7 @@ router.put('/rate/:id', auth.authenticate(), function(req, res) {
  *     ]
  *   }
  */
-router.get('/:id', auth,authenticate(), function(req, res) {
+router.get('/:id', auth.authenticate(), function(req, res) {
   req.checkParams('id', 'Invalid action id').isMongoId();
 
   var err;
