@@ -15,7 +15,10 @@ var ActionComment = require('../models').actionComments;
  * @apiParam {String} comment Text contents of comment
  *
  * @apiExample {curl} Example usage:
- *  curl -i -X POST -H "Content-Type: application/json" -H "Authorization: Bearer 3b7..." -d \
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
  *  '{
  *    "comment": "This is an amazing and easy to perform action!"
  *  }' \
@@ -45,7 +48,10 @@ router.post('/:actionId/comment', auth.authenticate(), function(req, res) {
  * @apiParam {Integer} [skip=0] Number of results skipped
  *
  * @apiExample {curl} Example usage:
- *  curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer 3b7..." -d \
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
  *  '{
  *    "limit": "50",
  *    "skip": "0"
@@ -53,6 +59,7 @@ router.post('/:actionId/comment', auth.authenticate(), function(req, res) {
  *  http://localhost:3000/api/action/555f0163688305b57c7cef6c/comments
  *
  * @apiSuccessExample {json} Success-Response:
+ * [
  *   {
  *     "_id": "555f0163688305b57c7cef6d",
  *     "actionId": "555f0163688305b57c7cef6c",
@@ -61,7 +68,9 @@ router.post('/:actionId/comment', auth.authenticate(), function(req, res) {
  *     "comment": "This is an amazing and easy to perform action!",
  *     "date": "2015-07-01T12:04:33.599Z",
  *     "__v": 0,
- *   }
+ *   },
+ *   ...
+ * ]
  */
 router.get('/:actionId/comments', auth.authenticate(), function(req, res) {
   ActionComment.get(req.params.actionId, req.body.limit || 10, req.body.skip || 0, res.successRes);
@@ -75,14 +84,16 @@ router.get('/:actionId/comments', auth.authenticate(), function(req, res) {
  * @apiParam {String} commentId ID of comment to be deleted
  *
  * @apiExample {curl} Example usage:
- *  curl -i -X DELETE -H "Authorization: Bearer 3b7..." \
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X DELETE -H "Authorization: Bearer $API_TOKEN" \
  *  http://localhost:3000/api/action/555f0163688305b57c7cef6c/comment/555f0163688305b57c7cef6d
  *
  * @apiSuccessExample {json} Success-Response:
  *   {
- *     "__v": 0,
- *     "_id": "555f0163688305b57c7cef6d",
- *     TODO
+ *     "ok":1,
+ *     "n":1
  *   }
  */
 router.delete('/:actionId/comment/:commentId', auth.authenticate(), function(req, res) {
@@ -137,7 +148,10 @@ router.delete('/:actionId/comment/:commentId', auth.authenticate(), function(req
  * (1 [least] - 5 [most])
  *
  * @apiExample {curl} Example usage:
- *  curl -i -X POST -H "Content-Type: application/json" -d \
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
  *  '{
  *    "name": "Disable standby on your devices",
  *    "description": "Disabling standby can save up to 10% in total electricity costs.",
@@ -157,7 +171,7 @@ router.delete('/:actionId/comment/:commentId', auth.authenticate(), function(req
  *     "ratings": []
  *   }
  */
-router.post('/', function(req, res) {
+router.post('/', auth.authenticate(), function(req, res) {
   Action.create(req.body, res.successRes);
 });
 
@@ -170,9 +184,10 @@ router.post('/', function(req, res) {
  * @apiParam {String} [comment] Comment attached to rating
  *
  * @apiExample {curl} Example usage:
- *  curl -i -X PUT \
- *  -H "Authorization: Bearer 615ea82f7fec0ffaee5..." \
- *  -H "Content-Type: application/json" -d \
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X PUT -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
  *  '{
  *    "rating": 4,
  *    "comment": "This tip is awesome!"
@@ -196,7 +211,11 @@ router.put('/rate/:id', auth.authenticate(), function(req, res) {
  *
  * @apiParam {String} id MongoId of action
  * @apiExample {curl} Example usage:
- *    curl -i http://localhost:3000/api/action/555ecb997aa6360e40f26451
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X PUT -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/action/555ecb997aa6360e40f26451
  *
  * @apiSuccessExample {json} Success-Response:
  *   {
@@ -218,7 +237,7 @@ router.put('/rate/:id', auth.authenticate(), function(req, res) {
  *     ]
  *   }
  */
-router.get('/:id', function(req, res) {
+router.get('/:id', auth,authenticate(), function(req, res) {
   req.checkParams('id', 'Invalid action id').isMongoId();
 
   var err;
@@ -235,7 +254,11 @@ router.get('/:id', function(req, res) {
  *
  * @apiParam {String} id MongoId of action
  * @apiExample {curl} Example usage:
- *    curl -i -X DELETE http://localhost:3000/api/action/555ecb997aa6360e40f26451
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X DELETE -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/action/555ecb997aa6360e40f26451
  *
  * @apiSuccess {Integer} n Number of deleted actions (0 or 1)
  * @apiSuccess {Integer} ok Mongoose internals
@@ -266,7 +289,11 @@ router.delete('/:id', function(req, res) {
  * @apiParam {Boolean} [includeRatings=false] Include individual user ratings of action
  *
  * @apiExample {curl} Example usage:
- *    curl -i http://localhost:3000/api/action
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/action
  *
  * @apiSuccessExample {json} Success-Response:
  *   [
@@ -299,7 +326,11 @@ router.get('/', function(req, res) {
  * @apiParam {String} q Search query
  *
  * @apiExample {curl} Example usage:
- *  curl -i http://localhost:3000/api/action/search\?q\=foobar
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/action/search\?q\=foobar
  */
 router.get('/search', auth.authenticate(), function(req, res) {
   req.checkQuery('q', 'Invalid query parameter').notEmpty();
