@@ -36,7 +36,11 @@ var ChallengeComment = require('../models').challengeComments;
  *   }
  */
 router.post('/:challengeId/comment', auth.authenticate(), function(req, res) {
-  ChallengeComment.create(req.params.challengeId, req.user, req.body.comment, res.successRes);
+  var challengeComment = req.body;
+  challengeComment.actionId = req.params.actionId;
+  challengeComment.name = req.user.profile.name;
+  challengeComment.email = req.user.email;
+  ChallengeComment.create(challengeComment, res.successRes);
 });
 
 /**

@@ -29,12 +29,12 @@ var CommunityCommentSchema = new Schema({
 
 var CommunityComment = mongoose.model('CommunityComment', CommunityCommentSchema);
 
-exports.create = function(communityId, user, comment, cb) {
+exports.create = function(communityComment, cb) {
   CommunityComment.create({
-    communityId: communityId,
-    name: user.profile.name,
-    email: user.email,
-    comment: comment,
+    communityId: communityComment.communityId,
+    name: communityComment.name,
+    email: communityComment.email,
+    comment: communityComment.comment,
     date: new Date()
   }, cb);
 };

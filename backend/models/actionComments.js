@@ -29,12 +29,12 @@ var ActionCommentSchema = new Schema({
 
 var ActionComment = mongoose.model('ActionComment', ActionCommentSchema);
 
-exports.create = function(actionId, user, comment, cb) {
+exports.create = function(actionComment, cb) {
   ActionComment.create({
-    actionId: actionId,
-    name: user.profile.name,
-    email: user.email,
-    comment: comment,
+    actionId: actionComment.actionId,
+    name: actionComment.name,
+    email: actionComment.email,
+    comment: actionComment.comment,
     date: new Date()
   }, cb);
 };

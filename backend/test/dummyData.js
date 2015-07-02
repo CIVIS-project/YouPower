@@ -169,3 +169,27 @@ exports.appliances = [
     quantity: 2
   }
 ];
+
+exports.actionComments = [
+  {
+    _id: newId(),
+    actionId: exports.actions[0]._id,
+    name: 'myUser1',
+    email: 'dummy@mail.com',
+    comment: 'Hello world!'
+  },
+  {
+    _id: newId(),
+    actionId: exports.actions[0]._id,
+    name: 'myUser2',
+    email: 'dummy2@mail.com',
+    comment: 'Hello world again!'
+  },
+  {
+    _id: newId(),
+    actionId: exports.actions[1]._id,
+    name: 'myUser3',
+    email: 'dummy3@mail.com',
+    comment: 'Another action'
+  }
+];

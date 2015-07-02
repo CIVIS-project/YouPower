@@ -36,7 +36,11 @@ var CommunityComment = require('../models').communityComments;
  *   }
  */
 router.post('/:communityId/comment', auth.authenticate(), function(req, res) {
-  CommunityComment.create(req.params.communityId, req.user, req.body.comment, res.successRes);
+  var communityComment = req.body;
+  communityComment.actionId = req.params.actionId;
+  communityComment.name = req.user.profile.name;
+  communityComment.email = req.user.email;
+  CommunityComment.create(communityComment, res.successRes);
 });
 
 /**

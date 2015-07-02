@@ -246,6 +246,78 @@ describe('models', function() {
     });
   });
 
+  describe('actionComments', function() {
+    var dbActionComments = [];
+
+    // clear db before starting
+    before(function() {
+      conn.connection.db.dropDatabase();
+    });
+
+    beforeEach(function(done) {
+      // reset actions collection
+      resetModel('actionComments', function(err, actionComments) {
+        dbActionComments = actionComments;
+        done(err);
+      });
+      dummyData = require('./dummyData');
+    });
+
+    it('should get all dummy comments for first action', function(done) {
+      var numFirstActionComments = _.filter(dummyData.actionComments, function(ac) {
+        return ac.actionId === dummyData.actions[0]._id;
+      }).length;
+
+      models.actionComments.get(
+          dummyData.actions[0]._id, null, null, function(err, actionComments) {
+        actionComments.length.should.equal(numFirstActionComments);
+        done(err);
+      });
+    });
+    it('should create a comment', function(done) {
+      var d = dummyData.actionComments[0];
+      models.actionComments.create({
+        actionId: d.actionId,
+        name: 'foo bar',
+        email: d.email,
+        comment: 'foo baz'
+      }, function(err, actionComment) {
+        actionComment.name.should.equal('foo bar');
+        actionComment.comment.should.equal('foo baz');
+        done(err);
+      });
+    });
+    it('should not create a comment with missing name', function(done) {
+      var d = dummyData.actionComments[0];
+      models.actionComments.create({
+        actionId: d.actionId,
+        name: null,
+        email: d.email,
+        comment: d.comment
+      }, function(err) {
+        done(err ? null : 'no error returned!');
+      });
+    });
+    it('should not create a comment with missing comment field', function(done) {
+      var d = dummyData.actionComments[0];
+      models.actionComments.create({
+        actionId: d.actionId,
+        name: d.name,
+        email: d.email,
+        comment: null
+      }, function(err) {
+        done(err ? null : 'no error returned!');
+      });
+    });
+    it('should delete a comment', function(done) {
+      var d = dbActionComments[0];
+      models.actionComments.delete(d.actionId, d._id, function(err, status) {
+        status.result.n.should.equal(1);
+        done(err);
+      });
+    });
+  });
+
   describe('user', function() {
     var dbUsers = [];
 

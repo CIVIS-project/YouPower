@@ -29,12 +29,12 @@ var ChallengeCommentSchema = new Schema({
 
 var ChallengeComment = mongoose.model('ChallengeComment', ChallengeCommentSchema);
 
-exports.create = function(challengeId, user, comment, cb) {
+exports.create = function(challengeComment, cb) {
   ChallengeComment.create({
-    challengeId: challengeId,
-    name: user.profile.name,
-    email: user.email,
-    comment: comment,
+    challengeId: challengeComment.challengeId,
+    name: challengeComment.name,
+    email: challengeComment.email,
+    comment: challengeComment.comment,
     date: new Date()
   }, cb);
 };
