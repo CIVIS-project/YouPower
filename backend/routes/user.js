@@ -124,7 +124,7 @@ router.get('/profile', auth.authenticate(), function(req, res) {
  *
  * @apiSuccessExample {json} Success-Response:
  * {
- *   "dob": "1990-11-24T22:00:00.000Z",
+ *   "dob": "1990-11-25T00:00:00.000Z",
  *   "name": "New Name"
  * }
  */
