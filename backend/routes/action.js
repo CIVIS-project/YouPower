@@ -190,9 +190,31 @@ router.post('/', auth.authenticate(), function(req, res) {
  *  curl -i -X PUT -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
  *  '{
  *    "rating": 4,
- *    "comment": "This tip is awesome!"
+ *    "comment": "This tip is really awesome!"
  *  }' \
  *  http://localhost:3000/api/action/rate/555ef84b2fd41ffc6e078a34
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "_id": "5594dbeadfbb985d0ac150c4",
+ *     "name": "Disable standby on your devices",
+ *     "description": "Disabling standby can save up to 10% in total electricity costs.",
+ *     "__v": 0,
+ *     "ratings": {
+ *       "5593ccfa9255daa130890164": {
+ *         "date": "2015-07-02T06:37:39.845Z",
+ *         "comment": "This tip is really awesome!",
+ *         "name": "Test User",
+ *         "rating": 4
+ *       }
+ *     },
+ *     "effort": 2,
+ *     "impact": 2,
+ *     "activation": {
+ *       "configurable": false
+ *     },
+ *     "category": "oneshot"
+ *   }
  */
 router.put('/rate/:id', auth.authenticate(), function(req, res) {
   req.checkParams('id', 'Invalid action id').isMongoId();

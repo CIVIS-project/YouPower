@@ -148,7 +148,7 @@ exports.rate = function(id, user, rating, comment, cb) {
       };
       action.markModified('ratings');
       action.save(function(err) {
-        cb(err);
+        cb(err, action);
       });
     }
   });
