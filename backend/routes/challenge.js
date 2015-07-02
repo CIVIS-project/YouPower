@@ -5,6 +5,101 @@ var auth = require('../middleware/auth');
 var util = require('util');
 var router = express.Router();
 var Challenge = require('../models').challenges;
+var ChallengeComment = require('../models').challengeComments;
+
+/**
+ * @api {post} /challenge/:challengeId/comment Create new challenge comment
+ * @apiGroup Challenge Comments
+ *
+ * @apiParam {String} challengeId ID of challenge being commented
+ * @apiParam {String} comment Text contents of comment
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
+ *  '{
+ *    "comment": "This is an amazing and easy to perform challenge!"
+ *  }' \
+ *  http://localhost:3000/api/challenge/555f0163688305b57c7cef6c/comment
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "__v": 0,
+ *     "challengeId": "555f0163688305b57c7cef6c",
+ *     "name": "Test User",
+ *     "email": "testuser1@test.com",
+ *     "comment": "This is an amazing and easy to perform challenge!",
+ *     "date": "2015-07-01T12:04:33.599Z",
+ *     "_id": "555f0163688305b57c7cef6d",
+ *   }
+ */
+router.post('/:challengeId/comment', auth.authenticate(), function(req, res) {
+  ChallengeComment.create(req.params.challengeId, req.user, req.body.comment, res.successRes);
+});
+
+/**
+ * @api {get} /challenge/:challengeId/comments Get a list of challenge comments
+ * @apiGroup Challenge Comments
+ *
+ * @apiParam {String} challengeId ID of challenge whose comments are requested
+ * @apiParam {Integer} [limit=10] Maximum number of results returned
+ * @apiParam {Integer} [skip=0] Number of results skipped
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
+ *  '{
+ *    "limit": "50",
+ *    "skip": "0"
+ *  }' \
+ *  http://localhost:3000/api/challenge/555f0163688305b57c7cef6c/comments
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * [
+ *   {
+ *     "_id": "555f0163688305b57c7cef6d",
+ *     "challengeId": "555f0163688305b57c7cef6c",
+ *     "name": "Test User",
+ *     "email": "testuser1@test.com",
+ *     "comment": "This is an amazing and easy to perform challenge!",
+ *     "date": "2015-07-01T12:04:33.599Z",
+ *     "__v": 0,
+ *   },
+ *   ...
+ * ]
+ */
+router.get('/:challengeId/comments', auth.authenticate(), function(req, res) {
+  ChallengeComment.get(
+      req.params.challengeId, req.body.limit || 10, req.body.skip || 0, res.successRes);
+});
+
+/**
+ * @api {delete} /challenge/:challengeId/comment/:commentId Delete a comment
+ * @apiGroup Challenge Comments
+ *
+ * @apiParam {String} challengeId ID of challenge whose comment will be deleted
+ * @apiParam {String} commentId ID of comment to be deleted
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X DELETE -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/challenge/555f0163688305b57c7cef6c/comment/555f0163688305b57c7cef6d
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "ok":1,
+ *     "n":1
+ *   }
+ */
+router.delete('/:challengeId/comment/:commentId', auth.authenticate(), function(req, res) {
+  ChallengeComment.delete(req.params.challengeId, req.params.commentId, res.successRes);
+});
 
 /**
  * @api {post} /challenge Create new challenge
