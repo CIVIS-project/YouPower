@@ -36,7 +36,11 @@ var CommunitySchema = new Schema({
       type: Schema.Types.ObjectId,
       ref: 'User'
     }
-  ]
+  ],
+  date: {
+    type: Date,
+    required: true
+  }
 });
 
 var Community = mongoose.model('Community', CommunitySchema);
@@ -46,7 +50,8 @@ var Community = mongoose.model('Community', CommunitySchema);
 exports.create = function(community, cb) {
   Community.create({
     name: community.name,
-    challenges: community.challenges
+    challenges: community.challenges,
+    date: new Date()
   }, cb);
 };
 

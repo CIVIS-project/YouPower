@@ -61,36 +61,35 @@ var Community = require('../models').communities;
  *     "name": "Otaniemi Community",
  *     "challenges": [
  *       {
- *       "id": "555eda2531039c1853352b7f",
- *       "name": "Reduce energy consumption by 10%"
+ *         "id": "555eda2531039c1853352b7f",
+ *         "name": "Reduce energy consumption by 10%"
  *       },
  *       {
- *        "id": "455eda2531039c1853335b7f",
- *       "name": "Save for 2 solar panels for the area"
+ *         "id": "455eda2531039c1853335b7f",
+ *         "name": "Save for 2 solar panels for the area"
  *       }
- *    ],
+ *     ],
  *     "actions": [
  *       {
- *       "id": "345eda2531039c1853352b7f",
- *       "name": "Use the clothes washer/dryer only once per week"
+ *         "id": "345eda2531039c1853352b7f",
+ *         "name": "Use the clothes washer/dryer only once per week"
  *       },
  *       {
- *        "id": "7645eda34531039c1853352b7f",
- *       "name": "Turn off lights during the day in Summer"
+ *         "id": "7645eda34531039c1853352b7f",
+ *         "name": "Turn off lights during the day in Summer"
  *       }
- *    ],
+ *     ],
  *     "members": [
- *        "User":
- *         {
- *          "_id": "testUser1",
- *          "name": "Jane",
- *        },
- *       "User" :
- *        {
+ *       "User": {
+ *         "_id": "testUser1",
+ *         "name": "Jane",
+ *       },
+ *       "User": {
  *         "_id": "testUser2",
  *         "name": "Jack",
  *       }
- *     ]
+ *     ],
+ *     "date": "2015-07-01T12:04:33.599Z"
  *   }
  */
 router.post('/', auth.authenticate(), function(req, res) {
@@ -144,7 +143,8 @@ router.post('/', auth.authenticate(), function(req, res) {
  *         "name": "Jack",
  *       },
  *       ...
- *     ]
+ *     ],
+ *     "date": "2015-07-01T12:04:33.599Z"
  *   }
  */
 
