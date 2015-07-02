@@ -168,6 +168,7 @@ router.delete('/:actionId/comment/:commentId', auth.authenticate(), function(req
  *     "effort": 2,
  *     "impact": 2,
  *     "name": "Disable standby on your devices",
+ *     "date": "2015-07-01T12:04:33.599Z",
  *     "ratings": []
  *   }
  */
@@ -210,6 +211,7 @@ router.post('/', auth.authenticate(), function(req, res) {
  *     },
  *     "effort": 2,
  *     "impact": 2,
+ *     "date": "2015-07-01T12:04:33.599Z",
  *     "activation": {
  *       "configurable": false
  *     },
@@ -247,6 +249,7 @@ router.put('/rate/:id', auth.authenticate(), function(req, res) {
  *     "description": "Disabling standby can save up to 10% in total electricity costs.",
  *     "effort": 3,
  *     "impact": 2,
+ *     "date": "2015-07-01T12:04:33.599Z",
  *     "name": "Disable standby on your devices",
  *     "numRatings": 4,
  *     "ratings": [
@@ -326,6 +329,7 @@ router.delete('/:id', function(req, res) {
  *       "description": "Disabling standby can save up to 10% in total electricity costs.",
  *       "effort": 3,
  *       "impact": 2,
+ *       "date": "2015-07-01T12:04:33.599Z",
  *       "name": "Disable standby on your devices",
  *       "numRatings": 4
  *     },

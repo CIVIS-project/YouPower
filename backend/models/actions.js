@@ -43,6 +43,10 @@ var ActionSchema = new Schema({
   ratings: {
     type: Schema.Types.Mixed,
     default: {}
+  },
+  date: {
+    type: Date,
+    required: true
   }
 });
 
@@ -69,7 +73,8 @@ exports.create = function(action, cb) {
     description: action.description,
     ratings: action.ratings || {},
     impact: action.impact,
-    effort: action.effort
+    effort: action.effort,
+    date: new Date()
   }, cb);
 };
 
