@@ -5,6 +5,105 @@ var util = require('util');
 var auth = require('../middleware/auth');
 var router = express.Router();
 var Community = require('../models').communities;
+var CommunityComment = require('../models').communityComments;
+
+/**
+ * @api {post} /community/:communityId/comment Create new community comment
+ * @apiGroup Community Comments
+ *
+ * @apiParam {String} communityId ID of community being commented
+ * @apiParam {String} comment Text contents of comment
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
+ *  '{
+ *    "comment": "This is a fun community!"
+ *  }' \
+ *  http://localhost:3000/api/community/555f0163688305b57c7cef6c/comment
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "__v": 0,
+ *     "communityId": "555f0163688305b57c7cef6c",
+ *     "name": "Test User",
+ *     "email": "testuser1@test.com",
+ *     "comment": "This is a fun community!",
+ *     "date": "2015-07-01T12:04:33.599Z",
+ *     "_id": "555f0163688305b57c7cef6d",
+ *   }
+ */
+router.post('/:communityId/comment', auth.authenticate(), function(req, res) {
+  var communityComment = req.body;
+  communityComment.actionId = req.params.actionId;
+  communityComment.name = req.user.profile.name;
+  communityComment.email = req.user.email;
+  CommunityComment.create(communityComment, res.successRes);
+});
+
+/**
+ * @api {get} /community/:communityId/comments Get a list of community comments
+ * @apiGroup Community Comments
+ *
+ * @apiParam {String} communityId ID of community whose comments are requested
+ * @apiParam {Integer} [limit=10] Maximum number of results returned
+ * @apiParam {Integer} [skip=0] Number of results skipped
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
+ *  '{
+ *    "limit": "50",
+ *    "skip": "0"
+ *  }' \
+ *  http://localhost:3000/api/community/555f0163688305b57c7cef6c/comments
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * [
+ *   {
+ *     "_id": "555f0163688305b57c7cef6d",
+ *     "communityId": "555f0163688305b57c7cef6c",
+ *     "name": "Test User",
+ *     "email": "testuser1@test.com",
+ *     "comment": "This is a fun community!",
+ *     "date": "2015-07-01T12:04:33.599Z",
+ *     "__v": 0,
+ *   },
+ *   ...
+ * ]
+ */
+router.get('/:communityId/comments', auth.authenticate(), function(req, res) {
+  CommunityComment.get(
+      req.params.communityId, req.body.limit || 10, req.body.skip || 0, res.successRes);
+});
+
+/**
+ * @api {delete} /community/:communityId/comment/:commentId Delete a comment
+ * @apiGroup Community Comments
+ *
+ * @apiParam {String} communityId ID of community whose comment will be deleted
+ * @apiParam {String} commentId ID of comment to be deleted
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X DELETE -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/community/555f0163688305b57c7cef6c/comment/555f0163688305b57c7cef6d
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "ok":1,
+ *     "n":1
+ *   }
+ */
+router.delete('/:communityId/comment/:commentId', auth.authenticate(), function(req, res) {
+  CommunityComment.delete(req.params.communityId, req.params.commentId, res.successRes);
+});
 
 /**
  * @api {post} /community Create new community
