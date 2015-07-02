@@ -111,7 +111,22 @@ router.get('/profile', auth.authenticate(), function(req, res) {
  * @apiParam {Date} [dob] Your date of birth
  * @apiParam {String} [photo] Profile photo
  *
- * @apiVersion 1.0.0
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/profile
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
+ *  '{
+ *    "name": "New Name",
+ *    "dob": "11 25 1990"
+ *  }' \
+ *  http://localhost:3000/api/user/profile
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ *   "dob": "1990-11-24T22:00:00.000Z",
+ *   "name": "New Name"
+ * }
  */
 router.post('/profile', auth.authenticate(), function(req, res) {
   req.checkBody('name').optional().notEmpty();

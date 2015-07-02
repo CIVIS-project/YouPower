@@ -239,6 +239,7 @@ router.put('/leave/:id', auth.authenticate(), function(req, res) {
   }
 });
 
+// TODO: verify that this one works
 /**
  * @api {get} /community/top/:id Display top actions from community
  * @apiGroup Community
