@@ -243,3 +243,18 @@ exports.communityComments = [
     comment: 'Another community'
   }
 ];
+
+exports.feedback = [
+  {
+    _id: newId(),
+    name: 'My Name',
+    email: 'my@email.com',
+    comment: 'Hello world!'
+  },
+  {
+    _id: newId(),
+    name: 'My Other Name',
+    email: 'myother@email.com',
+    comment: 'Hello other world!'
+  }
+];
