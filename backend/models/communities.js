@@ -111,6 +111,8 @@ exports.topActions = function(id, limit, cb) {
     /* istanbul ignore if: db errors are hard to unit test */
     if (err) {
       cb(err);
+    } else if (!community) {
+      cb('community not found!');
     } else {
       // find actions of users that are part of the community
       User.model

@@ -253,20 +253,18 @@ router.put('/leave/:id', function(req, res) {
 });
 
 /**
- * @api {put} /community/top/:id Display top actions from community
+ * @api {get} /community/top/:id Display top actions from community
  * @apiGroup Community
  *
  * @apiParam {String} id MongoId of action
+ * @apiParam {Integer} [limit=10] Count limit
  * @apiParam {Array} actions List of top actions in the community, actions with high rating
  *
  * @apiExample {curl} Example usage:
  *  # Get API token via /api/user/token
  *  export API_TOKEN=fc35e6b2f27e0f5ef...
  *
- *  curl -i -X PUT -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
- *  '{
- *    "_id": "315ea82f7fec0ffaee5",
- *   }' \
+ *  curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" \
  *  http://localhost:3000/api/community/top/315ea82f7fec0ffaee5
  */
 router.get('/top/:id', function(req, res) {
@@ -276,7 +274,7 @@ router.get('/top/:id', function(req, res) {
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    Community.topActions(req.id, res.successRes);
+    Community.topActions(req.params.id, req.body.limit, res.successRes);
   }
 });
 
