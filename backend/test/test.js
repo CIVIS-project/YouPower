@@ -274,6 +274,17 @@ describe('models', function() {
         done(err);
       });
     });
+    it('should return error for bogus actionId', function(done) {
+      models.actionComments.get(dummyData.ids[0], null, null, function(err) {
+        done(err ? null : 'no error returned!');
+      });
+    });
+    it('should return error for invalid actionId', function(done) {
+      models.actionComments.get('foo', null, null, function(err, actionComments) {
+        should.not.exist(actionComments);
+        done(err ? null : 'no error returned!');
+      });
+    });
     it('should create a comment', function(done) {
       var d = dummyData.actionComments[0];
       models.actionComments.create({

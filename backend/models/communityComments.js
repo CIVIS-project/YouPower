@@ -47,7 +47,7 @@ exports.get = function(communityId, limit, skip, cb) {
   .exec(function(err, communityComments) {
     if (err) {
       cb(err);
-    } else if (!communityComments) {
+    } else if (communityComments && !communityComments.length) {
       cb('Comments not found');
     } else {
       cb(null, communityComments);

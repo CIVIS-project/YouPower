@@ -47,7 +47,7 @@ exports.get = function(challengeId, limit, skip, cb) {
   .exec(function(err, challengeComments) {
     if (err) {
       cb(err);
-    } else if (!challengeComments) {
+    } else if (challengeComments && !challengeComments.length) {
       cb('Comments not found');
     } else {
       cb(null, challengeComments);

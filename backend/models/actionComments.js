@@ -47,7 +47,7 @@ exports.get = function(actionId, limit, skip, cb) {
   .exec(function(err, actionComments) {
     if (err) {
       cb(err);
-    } else if (!actionComments) {
+    } else if (actionComments && !actionComments.length) {
       cb('Comments not found');
     } else {
       cb(null, actionComments);
