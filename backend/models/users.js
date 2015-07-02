@@ -13,7 +13,8 @@ var UserSchema = new Schema({
   profile: {
     name: String,
     dob: Date,
-    photo: String
+    photo: String,
+    gender: String
   },
   actions: {
     // NOTE: mixed type schemas below,
