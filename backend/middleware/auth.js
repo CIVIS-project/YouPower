@@ -44,67 +44,15 @@ exports.initialize = function() {
     });
   }));
 
-  /*if (!process.env.FACEBOOK_APP_ID || !process.env.FACEBOOK_APP_SECRET) {
+  if (!process.env.FACEBOOK_APP_ID || !process.env.FACEBOOK_APP_SECRET) {
 //    if (!process.env.FACEBOOK_APP_ID) {
     l.warn('Facebook login not set up! Please set environment variables:');
     l.warn('FACEBOOK_APP_ID');
     l.warn('FACEBOOK_APP_SECRET');
     l.warn('FACEBOOK_CALLBACK_URL');
     l.warn('Disabling Facebook login.');
-  } else {
-
-    passport.use(new FacebookStrategy({
-      clientID: process.env.FACEBOOK_APP_ID,
-      clientSecret: process.env.FACEBOOK_APP_SECRET,
-      callbackURL: process.env.FACEBOOK_CALLBACK_URL ||
-        'http://localhost:3000/api/auth/facebook/callback',
-      enableProof: false,
-      //passReqToCallback: true
-    }, function(accessToken, refreshToken, profile, done) {
-     console.log("REJOICE555");
-      User.find({facebookId: profile.id}, false, null, null, function(err, user) {
-        if (err) {
-          return done(err);
-        } else if (!user) {
-          
-            // TODO: refactor this mess
-            // user does not exist, register new user
-            crypto.randomBytes(48, function(ex, buf) {
-              var password = buf.toString('hex');
-              console.log('profile',profile);
-              User.register({
-                // TODO: get email via facebook
-                email: profile.emails[0].value,
-                //email: mongoose.Types.ObjectId(),
-                facebookId: profile.id,
-                profile: {
-                  name: profile.displayName,
-                  gender: profile.gender
-                }
-              }, password, function(err) {
-                if (err) {
-                  return done(err);
-                }
-
-                User.find({facebookId: profile.id}, false, null, null, function(err, user) {
-                  if (err) {
-                    return done(err);
-                  } else if (!user) {
-                    return done('user not found after registering! should never happen');
-                  }
-                  return done(null, user);
-                });
-              });
-            });
-          
-        } else {console.log("From facebook/callback");
-          return done(err, user);
-        }
-      });
-      
-    }));
-   
-  }*/
+  } else 
+  {
   passport.use(new FacebookStrategy({
     clientID: process.env.FACEBOOK_APP_ID,
     clientSecret: process.env.FACEBOOK_APP_SECRET,
@@ -197,7 +145,7 @@ passport.use('facebook-authz', new FacebookStrategy({
             });
   }
 ));
-
+}
   passport.serializeUser(User.serializeUser());
   passport.deserializeUser(User.deserializeUser());
 
