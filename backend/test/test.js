@@ -1393,4 +1393,29 @@ describe('models', function() {
       });
     });
   });
+
+  describe('feedback', function() {
+    var dbFeedback = [];
+
+    // clear db before starting
+    before(function() {
+      conn.connection.db.dropDatabase();
+    });
+
+    beforeEach(function(done) {
+      // reset actions collection
+      resetModel('feedback', function(err, actions) {
+        dbFeedback = actions;
+        done(err);
+      });
+      dummyData = require('./dummyData');
+    });
+
+    it('should return all feedback', function(done) {
+      models.feedback.all(null, null, function(err, feedback) {
+        feedback.length.should.equal(dummyData.feedback.length);
+        done(err);
+      });
+    });
+  });
 });
