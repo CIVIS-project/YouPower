@@ -2,6 +2,7 @@
 
 var express = require('express');
 var util = require('util');
+var auth = require('../middleware/auth');
 var router = express.Router();
 var Community = require('../models').communities;
 
@@ -92,7 +93,7 @@ var Community = require('../models').communities;
  *     ]
  *   }
  */
-router.post('/', function(req, res) {
+router.post('/', auth.authenticate(), function(req, res) {
   Community.create(req.body, res.successRes);
 });
 
@@ -147,7 +148,7 @@ router.post('/', function(req, res) {
  *   }
  */
 
-router.get('/:id', function(req, res) {
+router.get('/:id', auth.authenticate(), function(req, res) {
   req.checkParams('id', 'Invalid community id').isMongoId();
 
   var err;
@@ -179,7 +180,7 @@ router.get('/:id', function(req, res) {
  *     "ok": 1
  *   }
  */
-router.delete('/:id', function(req, res) {
+router.delete('/:id', auth.authenticate(), function(req, res) {
   req.checkParams('id', 'Invalid Community id').isMongoId();
 
   var err;
@@ -191,64 +192,50 @@ router.delete('/:id', function(req, res) {
 });
 
 /**
- * @api {put} /community/join/:id Add member to Community
+ * @api {put} /community/join/:id Join community
  * @apiGroup Community
  *
- * @apiParam {String} id MongoId of Community
- * @apiParam {Array} members List of members in the Community
+ * @apiParam {String} id MongoId of community
  *
  * @apiExample {curl} Example usage:
  *  # Get API token via /api/user/token
  *  export API_TOKEN=fc35e6b2f27e0f5ef...
  *
- *  curl -i -X PUT -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
- *  '{
- *    "_id": "testUser1",
- *    "name": "Jack",
- *  }' \
+ *  curl -i -X PUT -H "Authorization: Bearer $API_TOKEN" \
  *  http://localhost:3000/api/community/join/555ef84b2fd41ffef6e078a34
  */
-router.put('/join/:id', function(req, res) {
+router.put('/join/:id', auth.authenticate(), function(req, res) {
   req.checkParams('id', 'Invalid Community id').isMongoId();
 
   var err;
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    Community.addmember(req.body, res.successRes);
+    Community.addMember(req.params.id, req.user._id, res.successRes);
   }
 });
 
 /**
- * @api {put} /community/leave/:id Remove member from community
+ * @api {put} /community/leave/:id Leave community
  * @apiGroup Community
  *
- * @apiParam {String} id MongoId of action
- * @apiParam {Array} members List of members in the community
+ * @apiParam {String} id MongoId of community
  *
  * @apiExample {curl} Example usage:
  *  # Get API token via /api/user/token
  *  export API_TOKEN=fc35e6b2f27e0f5ef...
  *
- *  curl -i -X PUT -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
- *  '{
- *    "_id": "testUser1",
- *    "name": "Jane",
- *   }'
- * '{
- *    "_id": "testUser2",
- *    "name": "Jack",
- *  }' \
+ *  curl -i -X PUT -H "Authorization: Bearer $API_TOKEN" -d \
  *  http://localhost:3000/api/community/leave/555ef84b2fd41ffef6e078a34
  */
-router.put('/leave/:id', function(req, res) {
+router.put('/leave/:id', auth.authenticate(), function(req, res) {
   req.checkParams('id', 'Invalid Community id').isMongoId();
 
   var err;
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    Community.removeMember(req.body, res.successRes);
+    Community.removeMember(req.params.id, req.user._id, res.successRes);
   }
 });
 
@@ -267,7 +254,7 @@ router.put('/leave/:id', function(req, res) {
  *  curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" \
  *  http://localhost:3000/api/community/top/315ea82f7fec0ffaee5
  */
-router.get('/top/:id', function(req, res) {
+router.get('/top/:id', auth.authenticate(), function(req, res) {
   req.checkParams('id', 'Invalid Community id').isMongoId();
 
   var err;

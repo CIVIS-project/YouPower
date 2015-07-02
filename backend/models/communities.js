@@ -34,7 +34,7 @@ var CommunitySchema = new Schema({
   members: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'User',
+      ref: 'User'
     }
   ]
 });
@@ -78,7 +78,9 @@ exports.addMember = function(id, userId, cb) {
     } else if (!community) {
       cb('Community not found');
     } else {
-      community.members.push(userId);
+      if (community.members.indexOf(userId) === -1) {
+        community.members.push(userId);
+      }
       community.save(cb);
     }
   });
