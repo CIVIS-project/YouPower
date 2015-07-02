@@ -21,35 +21,35 @@ var Community = require('../models').communities;
  *  '{
  *    "name": "Otaniemi Community",
  *    "challenges": [
- *       {
- *       "id": "555eda2531039c1853352b7f",
- *       "name": "Reduce energy consumption by 10%"
- *       },
- *       {
+ *      {
+ *        "id": "555eda2531039c1853352b7f",
+ *        "name": "Reduce energy consumption by 10%"
+ *      },
+ *      {
  *        "id": "455eda2531039c1853335b7f",
- *       "name": "Save for 2 solar panels for the area"
- *       }
+ *        "name": "Save for 2 solar panels for the area"
+ *      }
  *    ],
  *    "actions": [
- *       {
- *       "id": "345eda2531039c1853352b7f",
- *       "name": "Use the clothes washer/dryer only once per week"
- *       },
- *       {
+ *      {
+ *        "id": "345eda2531039c1853352b7f",
+ *        "name": "Use the clothes washer/dryer only once per week"
+ *      },
+ *      {
  *        "id": "7645eda34531039c1853352b7f",
- *       "name": "Turn off lights during the day in Summer"
- *       }
+ *        "name": "Turn off lights during the day in Summer"
+ *      }
  *    ],
  *    "members": [
- *       {
- *         "_id": "testUser1",
- *         "name": "Jane",
- *       },
- *        {
- *         "_id": "testUser2",
- *         "name": "Jack",
- *       }
- *     ]
+ *      {
+ *        "_id": "testUser1",
+ *        "name": "Jane"
+ *      },
+ *      {
+ *        "_id": "testUser2",
+ *        "name": "Jack"
+ *      }
+ *    ]
  *  }' \
  *  http://localhost:3000/api/community
  *

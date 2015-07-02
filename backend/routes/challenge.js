@@ -218,7 +218,7 @@ router.get('/', function(req, res) {
 });
 
 /**
- * @api {get} /challenge/search Search for Challenges by name
+ * @api {get} /challenge/search Search for Challenges by name (TODO: implement me)
  * @apiGroup Challenge
  *
  * @apiParam {String} q Search query
