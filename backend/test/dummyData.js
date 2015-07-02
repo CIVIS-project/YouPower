@@ -104,9 +104,18 @@ exports.communities = [
   {
     name: 'dummy community 1',
     challenges: [
-      exports.challenges[0]._id,
-      exports.challenges[1]._id,
-      exports.challenges[2]._id
+      {
+        id: exports.challenges[0]._id,
+        name: exports.challenges[0].name
+      },
+      {
+        id: exports.challenges[1]._id,
+        name: exports.challenges[1].name
+      },
+      {
+        id: exports.challenges[2]._id,
+        name: exports.challenges[2].name
+      }
     ],
     actions: [
       exports.actions[0]._id,
@@ -116,7 +125,10 @@ exports.communities = [
   {
     name: 'dummy community 2',
     challenges: [
-      exports.challenges[2]._id
+      {
+        id: exports.challenges[2]._id,
+        name: exports.challenges[2].name
+      }
     ],
     actions: [
       exports.actions[1]._id

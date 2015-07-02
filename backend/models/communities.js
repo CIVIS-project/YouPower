@@ -19,9 +19,15 @@ var CommunitySchema = new Schema({
   //refer challenge schema
   challenges: [
     {
-      type: Schema.Types.ObjectId,
-      ref: 'Challenge',
-      required: true
+      id: {
+        type: Schema.Types.ObjectId,
+        ref: 'Challenge',
+        required: true
+      },
+      name: {
+        type: String,
+        required: true
+      }
     }
   ],
   // refer user schema
