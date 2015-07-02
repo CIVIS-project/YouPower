@@ -36,7 +36,11 @@ var ActionComment = require('../models').actionComments;
  *   }
  */
 router.post('/:actionId/comment', auth.authenticate(), function(req, res) {
-  ActionComment.create(req.params.actionId, req.user, req.body.comment, res.successRes);
+  var actionComment = req.body;
+  actionComment.actionId = req.params.actionId;
+  actionComment.name = req.user.profile.name;
+  actionComment.email = req.user.email;
+  ActionComment.create(actionComment, res.successRes);
 });
 
 /**

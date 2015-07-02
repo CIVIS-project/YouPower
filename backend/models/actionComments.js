@@ -29,12 +29,12 @@ var ActionCommentSchema = new Schema({
 
 var ActionComment = mongoose.model('ActionComment', ActionCommentSchema);
 
-exports.create = function(actionId, user, comment, cb) {
+exports.create = function(actionComment, cb) {
   ActionComment.create({
-    actionId: actionId,
-    name: user.profile.name,
-    email: user.email,
-    comment: comment,
+    actionId: actionComment.actionId,
+    name: actionComment.name,
+    email: actionComment.email,
+    comment: actionComment.comment,
     date: new Date()
   }, cb);
 };
@@ -47,7 +47,7 @@ exports.get = function(actionId, limit, skip, cb) {
   .exec(function(err, actionComments) {
     if (err) {
       cb(err);
-    } else if (!actionComments) {
+    } else if (actionComments && !actionComments.length) {
       cb('Comments not found');
     } else {
       cb(null, actionComments);
@@ -56,7 +56,6 @@ exports.get = function(actionId, limit, skip, cb) {
 };
 
 exports.delete = function(actionId, id, cb) {
-  // TODO: check that user is authorized to do this (email matches or is admin)
   ActionComment.remove({
     actionId: actionId,
     _id: id

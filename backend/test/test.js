@@ -246,6 +246,89 @@ describe('models', function() {
     });
   });
 
+  describe('actionComments', function() {
+    var dbActionComments = [];
+
+    // clear db before starting
+    before(function() {
+      conn.connection.db.dropDatabase();
+    });
+
+    beforeEach(function(done) {
+      // reset actions collection
+      resetModel('actionComments', function(err, actionComments) {
+        dbActionComments = actionComments;
+        done(err);
+      });
+      dummyData = require('./dummyData');
+    });
+
+    it('should get all dummy comments for first action', function(done) {
+      var numFirstActionComments = _.filter(dummyData.actionComments, function(ac) {
+        return ac.actionId === dummyData.actions[0]._id;
+      }).length;
+
+      models.actionComments.get(
+          dummyData.actions[0]._id, null, null, function(err, actionComments) {
+        actionComments.length.should.equal(numFirstActionComments);
+        done(err);
+      });
+    });
+    it('should return error for bogus actionId', function(done) {
+      models.actionComments.get(dummyData.ids[0], null, null, function(err) {
+        done(err ? null : 'no error returned!');
+      });
+    });
+    it('should return error for invalid actionId', function(done) {
+      models.actionComments.get('foo', null, null, function(err, actionComments) {
+        should.not.exist(actionComments);
+        done(err ? null : 'no error returned!');
+      });
+    });
+    it('should create a comment', function(done) {
+      var d = dummyData.actionComments[0];
+      models.actionComments.create({
+        actionId: d.actionId,
+        name: 'foo bar',
+        email: d.email,
+        comment: 'foo baz'
+      }, function(err, actionComment) {
+        actionComment.name.should.equal('foo bar');
+        actionComment.comment.should.equal('foo baz');
+        done(err);
+      });
+    });
+    it('should not create a comment with missing name', function(done) {
+      var d = dummyData.actionComments[0];
+      models.actionComments.create({
+        actionId: d.actionId,
+        name: null,
+        email: d.email,
+        comment: d.comment
+      }, function(err) {
+        done(err ? null : 'no error returned!');
+      });
+    });
+    it('should not create a comment with missing comment field', function(done) {
+      var d = dummyData.actionComments[0];
+      models.actionComments.create({
+        actionId: d.actionId,
+        name: d.name,
+        email: d.email,
+        comment: null
+      }, function(err) {
+        done(err ? null : 'no error returned!');
+      });
+    });
+    it('should delete a comment', function(done) {
+      var d = dbActionComments[0];
+      models.actionComments.delete(d.actionId, d._id, function(err, status) {
+        status.result.n.should.equal(1);
+        done(err);
+      });
+    });
+  });
+
   describe('user', function() {
     var dbUsers = [];
 
@@ -738,6 +821,89 @@ describe('models', function() {
     });
   });
 
+  describe('challengeComments', function() {
+    var dbChallengeComments = [];
+
+    // clear db before starting
+    before(function() {
+      conn.connection.db.dropDatabase();
+    });
+
+    beforeEach(function(done) {
+      // reset challenges collection
+      resetModel('challengeComments', function(err, challengeComments) {
+        dbChallengeComments = challengeComments;
+        done(err);
+      });
+      dummyData = require('./dummyData');
+    });
+
+    it('should get all dummy comments for first challenge', function(done) {
+      var numFirstChallengeComments = _.filter(dummyData.challengeComments, function(ac) {
+        return ac.challengeId === dummyData.challenges[0]._id;
+      }).length;
+
+      models.challengeComments.get(
+          dummyData.challenges[0]._id, null, null, function(err, challengeComments) {
+        challengeComments.length.should.equal(numFirstChallengeComments);
+        done(err);
+      });
+    });
+    it('should return error for bogus challengeId', function(done) {
+      models.challengeComments.get(dummyData.ids[0], null, null, function(err) {
+        done(err ? null : 'no error returned!');
+      });
+    });
+    it('should return error for invalid challengeId', function(done) {
+      models.challengeComments.get('foo', null, null, function(err, challengeComments) {
+        should.not.exist(challengeComments);
+        done(err ? null : 'no error returned!');
+      });
+    });
+    it('should create a comment', function(done) {
+      var d = dummyData.challengeComments[0];
+      models.challengeComments.create({
+        challengeId: d.challengeId,
+        name: 'foo bar',
+        email: d.email,
+        comment: 'foo baz'
+      }, function(err, challengeComment) {
+        challengeComment.name.should.equal('foo bar');
+        challengeComment.comment.should.equal('foo baz');
+        done(err);
+      });
+    });
+    it('should not create a comment with missing name', function(done) {
+      var d = dummyData.challengeComments[0];
+      models.challengeComments.create({
+        challengeId: d.challengeId,
+        name: null,
+        email: d.email,
+        comment: d.comment
+      }, function(err) {
+        done(err ? null : 'no error returned!');
+      });
+    });
+    it('should not create a comment with missing comment field', function(done) {
+      var d = dummyData.challengeComments[0];
+      models.challengeComments.create({
+        challengeId: d.challengeId,
+        name: d.name,
+        email: d.email,
+        comment: null
+      }, function(err) {
+        done(err ? null : 'no error returned!');
+      });
+    });
+    it('should delete a comment', function(done) {
+      var d = dbChallengeComments[0];
+      models.challengeComments.delete(d.challengeId, d._id, function(err, status) {
+        status.result.n.should.equal(1);
+        done(err);
+      });
+    });
+  });
+
   describe('community', function() {
     var dbCommunities = [];
     var dbUsers = [];
@@ -909,6 +1075,89 @@ describe('models', function() {
             done(err);
           });
         });
+      });
+    });
+  });
+
+  describe('communityComments', function() {
+    var dbCommunityComments = [];
+
+    // clear db before starting
+    before(function() {
+      conn.connection.db.dropDatabase();
+    });
+
+    beforeEach(function(done) {
+      // reset communities collection
+      resetModel('communityComments', function(err, communityComments) {
+        dbCommunityComments = communityComments;
+        done(err);
+      });
+      dummyData = require('./dummyData');
+    });
+
+    it('should get all dummy comments for first community', function(done) {
+      var numFirstCommunityComments = _.filter(dummyData.communityComments, function(ac) {
+        return ac.communityId === dummyData.communities[0]._id;
+      }).length;
+
+      models.communityComments.get(
+          dummyData.communities[0]._id, null, null, function(err, communityComments) {
+        communityComments.length.should.equal(numFirstCommunityComments);
+        done(err);
+      });
+    });
+    it('should return error for bogus communityId', function(done) {
+      models.communityComments.get(dummyData.ids[0], null, null, function(err) {
+        done(err ? null : 'no error returned!');
+      });
+    });
+    it('should return error for invalid communityId', function(done) {
+      models.communityComments.get('foo', null, null, function(err, communityComments) {
+        should.not.exist(communityComments);
+        done(err ? null : 'no error returned!');
+      });
+    });
+    it('should create a comment', function(done) {
+      var d = dummyData.communityComments[0];
+      models.communityComments.create({
+        communityId: d.communityId,
+        name: 'foo bar',
+        email: d.email,
+        comment: 'foo baz'
+      }, function(err, communityComment) {
+        communityComment.name.should.equal('foo bar');
+        communityComment.comment.should.equal('foo baz');
+        done(err);
+      });
+    });
+    it('should not create a comment with missing name', function(done) {
+      var d = dummyData.communityComments[0];
+      models.communityComments.create({
+        communityId: d.communityId,
+        name: null,
+        email: d.email,
+        comment: d.comment
+      }, function(err) {
+        done(err ? null : 'no error returned!');
+      });
+    });
+    it('should not create a comment with missing comment field', function(done) {
+      var d = dummyData.communityComments[0];
+      models.communityComments.create({
+        communityId: d.communityId,
+        name: d.name,
+        email: d.email,
+        comment: null
+      }, function(err) {
+        done(err ? null : 'no error returned!');
+      });
+    });
+    it('should delete a comment', function(done) {
+      var d = dbCommunityComments[0];
+      models.communityComments.delete(d.communityId, d._id, function(err, status) {
+        status.result.n.should.equal(1);
+        done(err);
       });
     });
   });
