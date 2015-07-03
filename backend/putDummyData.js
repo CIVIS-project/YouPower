@@ -1,3 +1,5 @@
+'use strict';
+
 var mongoose = require('mongoose');
 var dummyData = require('test/dummyData');
 var models = require('models');
