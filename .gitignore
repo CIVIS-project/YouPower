@@ -2,3 +2,4 @@ node_modules
 npm-debug.log
 backend/apidoc
 backend/coverage
+*.swp
