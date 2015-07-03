@@ -47,6 +47,7 @@
     "passport-http": "^0.2.2",
     "passport-http-bearer": "^1.0.1",
     "passport-local-mongoose": "^1.0.0",
+    "prompt": "^0.2.14",
     "request": "^2.55.0",
     "serve-favicon": "~2.2.0",
     "underscore": "^1.8.3",
