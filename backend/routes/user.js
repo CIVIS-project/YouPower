@@ -165,8 +165,9 @@ router.get('/profilePicture/:userId', auth.authenticate(), function(req, res) {
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    var picPath = process.env.HOME + '/.youpower/profilePictures/' + req.query.userId + '.png';
+    var picPath = process.env.HOME + '/.youpower/profilePictures/' + req.params.userId + '.png';
     fs.exists(picPath, function(exists) {
+      console.log(picPath + ' ' + (exists ? 'exists' : 'does not exist'));
       var stream = fs.createReadStream(exists ? picPath : defaultPath);
       stream.pipe(res);
     });
@@ -181,29 +182,25 @@ router.get('/profilePicture/:userId', auth.authenticate(), function(req, res) {
  *  # Get API token via /api/user/profile
  *  export API_TOKEN=fc35e6b2f27e0f5ef...
  *
- *  curl -i -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
- *  '{
- *    "name": "New Name",
- *    "dob": "11 25 1990"
- *  }' \
- *  http://localhost:3000/api/user/profile
+ *  curl -i -X POST -H "Content-Type: image/png" -H "Authorization: Bearer $API_TOKEN" \
+ *  --data-binary @/path/to/picture.png \
+ *  http://localhost:3000/api/user/profilePicture
  *
  * @apiSuccessExample {json} Success-Response:
  * {
- *   "dob": "1990-11-25T00:00:00.000Z",
- *   "name": "New Name"
+ *   "status": "ok"
  * }
  */
-router.post('/profile', auth.authenticate(), function(req, res) {
-  req.checkBody('name').optional().notEmpty();
-  req.checkBody('photo').optional().notEmpty();
-
-  var err;
-  if ((err = req.validationErrors())) {
-    res.status(500).send('There have been validation errors: ' + util.inspect(err));
-  } else {
-    User.updateProfile(req.user, req.body, res.successRes);
-  }
+router.post('/profilePicture', auth.authenticate(), function(req, res) {
+  var picPath = process.env.HOME + '/.youpower/profilePictures/' + req.user._id + '.png';
+  var stream = fs.createWriteStream(picPath);
+  req.pipe(stream);
+  stream.on('close', function() {
+    res.successRes(null, {msg: 'success!'});
+  });
+  stream.on('error', function(err) {
+    res.successRes(err);
+  });
 });
 
 /**

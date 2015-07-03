@@ -22,6 +22,9 @@ var bodyParser = require('body-parser');
 var expressValidator = require('express-validator');
 var mongoose = require('mongoose');
 var fs = require('fs');
+var mkdirp = require('mkdirp');
+
+mkdirp(process.env.HOME + '/.youpower/profilePictures');
 
 mongoose.connect(process.env.MONGO_URL || 'mongodb://localhost/youpower');
 var db = mongoose.connection;
@@ -41,6 +44,7 @@ var port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.raw());
 app.use(expressValidator());
 app.use(require('./middleware/auth').initialize());
 app.use('/api', require('./routes'));
