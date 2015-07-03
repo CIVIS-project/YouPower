@@ -3,8 +3,12 @@
 var auth = require('../middleware/auth');
 var express = require('express');
 var util = require('util');
+var fs = require('fs');
+var path = require('path');
 var router = express.Router();
 var User = require('../models').users;
+
+var defaultPath = path.dirname(require.main.filename) + '/res/missingProfile.png';
 
 router.use('/action', require('./userAction'));
 router.use('/challenge', require('./userChallenge'));
@@ -110,6 +114,68 @@ router.get('/profile', auth.authenticate(), function(req, res) {
  * @apiParam {String} [name] Your nickname
  * @apiParam {Date} [dob] Your date of birth
  * @apiParam {String} [photo] Profile photo
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/profile
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
+ *  '{
+ *    "name": "New Name",
+ *    "dob": "11 25 1990"
+ *  }' \
+ *  http://localhost:3000/api/user/profile
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ *   "dob": "1990-11-25T00:00:00.000Z",
+ *   "name": "New Name"
+ * }
+ */
+router.post('/profile', auth.authenticate(), function(req, res) {
+  req.checkBody('name').optional().notEmpty();
+  req.checkBody('photo').optional().notEmpty();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    User.updateProfile(req.user, req.body, res.successRes);
+  }
+});
+
+/**
+ * @api {get} /user/profilePicture/:userId Get user's profile picture
+ * @apiGroup User
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/profile
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Authorization: Bearer $API_TOKEN"
+ *  http://localhost:3000/api/user/profilePicture/:userId
+ *
+ * @apiSuccessExample {binary} Success-Response:
+ * <image data>
+ */
+router.get('/profilePicture/:userId', auth.authenticate(), function(req, res) {
+  req.checkParams('userId').notEmpty();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    var picPath = process.env.HOME + '/.youpower/profilePictures/' + req.query.userId + '.png';
+    fs.exists(picPath, function(exists) {
+      var stream = fs.createReadStream(exists ? picPath : defaultPath);
+      stream.pipe(res);
+    });
+  }
+});
+
+/**
+ * @api {post} /user/profilePicture Update your profile picture
+ * @apiGroup User
  *
  * @apiExample {curl} Example usage:
  *  # Get API token via /api/user/profile
