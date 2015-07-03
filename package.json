@@ -39,6 +39,7 @@
     "express": "^4.12.3",
     "express-validator": "^2.10.0",
     "jade": "^1.9.2",
+    "mkdirp": "^0.5.1",
     "moment": "^2.10.3",
     "mongoose": "^4.0.5",
     "morgan": "~1.5.0",

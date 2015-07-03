@@ -3,8 +3,12 @@
 var auth = require('../middleware/auth');
 var express = require('express');
 var util = require('util');
+var fs = require('fs');
+var path = require('path');
 var router = express.Router();
 var User = require('../models').users;
+
+var defaultPath = path.dirname(require.main.filename) + '/res/missingProfile.png';
 
 router.use('/action', require('./userAction'));
 router.use('/challenge', require('./userChallenge'));
@@ -138,6 +142,65 @@ router.post('/profile', auth.authenticate(), function(req, res) {
   } else {
     User.updateProfile(req.user, req.body, res.successRes);
   }
+});
+
+/**
+ * @api {get} /user/profilePicture/:userId Get user's profile picture
+ * @apiGroup User
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/profile
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Authorization: Bearer $API_TOKEN"
+ *  http://localhost:3000/api/user/profilePicture/:userId
+ *
+ * @apiSuccessExample {binary} Success-Response:
+ * <image data>
+ */
+router.get('/profilePicture/:userId', auth.authenticate(), function(req, res) {
+  req.checkParams('userId').notEmpty();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    var picPath = process.env.HOME + '/.youpower/profilePictures/' + req.params.userId + '.png';
+    fs.exists(picPath, function(exists) {
+      console.log(picPath + ' ' + (exists ? 'exists' : 'does not exist'));
+      var stream = fs.createReadStream(exists ? picPath : defaultPath);
+      stream.pipe(res);
+    });
+  }
+});
+
+/**
+ * @api {post} /user/profilePicture Update your profile picture
+ * @apiGroup User
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/profile
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X POST -H "Content-Type: image/png" -H "Authorization: Bearer $API_TOKEN" \
+ *  --data-binary @/path/to/picture.png \
+ *  http://localhost:3000/api/user/profilePicture
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ *   "status": "ok"
+ * }
+ */
+router.post('/profilePicture', auth.authenticate(), function(req, res) {
+  var picPath = process.env.HOME + '/.youpower/profilePictures/' + req.user._id + '.png';
+  var stream = fs.createWriteStream(picPath);
+  req.pipe(stream);
+  stream.on('close', function() {
+    res.successRes(null, {msg: 'success!'});
+  });
+  stream.on('error', function(err) {
+    res.successRes(err);
+  });
 });
 
 /**
