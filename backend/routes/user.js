@@ -167,7 +167,6 @@ router.get('/profilePicture/:userId', auth.authenticate(), function(req, res) {
   } else {
     var picPath = process.env.HOME + '/.youpower/profilePictures/' + req.params.userId + '.png';
     fs.exists(picPath, function(exists) {
-      console.log(picPath + ' ' + (exists ? 'exists' : 'does not exist'));
       var stream = fs.createReadStream(exists ? picPath : defaultPath);
       stream.pipe(res);
     });
