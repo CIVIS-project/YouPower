@@ -6,6 +6,7 @@ var auth = require('../middleware/auth');
 var router = express.Router();
 var Community = require('../models').communities;
 var CommunityComment = require('../models').communityComments;
+var fs = require('fs');
 
 /**
  * @api {post} /community/:communityId/comment Create new community comment
@@ -191,10 +192,8 @@ router.delete('/:communityId/comment/:commentId', auth.authenticate(), function(
  *     "date": "2015-07-01T12:04:33.599Z"
  *   }
  */
-router.post('/', auth.authenticate(),function(req, res) {
-  console.log('router 1');
+router.post('/', auth.authenticate(), function(req, res) {
   Community.create(req.body, res.successRes);
-  console.log('router 12');
 });
 
 /**
@@ -364,6 +363,41 @@ router.get('/top/:id', auth.authenticate(), function(req, res) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
     Community.topActions(req.params.id, req.body.limit, res.successRes);
+  }
+});
+
+/**
+ * @api {post} /community/communityPicture Update your Community picture
+ * @apiGroup Community
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/profile
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X POST -H "Content-Type: image/png" -H "Authorization: Bearer $API_TOKEN" \
+ *  --data-binary @/path/to/picture.png \
+ *  http://localhost:3000/api/community/communityPicture/:id
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ *   "status": "ok"
+ * }
+ */
+router.post('/communityPicture/:id', auth.authenticate(), function(req, res) {
+  req.checkParams('id', 'Invalid Community id').isMongoId();
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    var picPath = process.env.HOME + '/.youpower/communityPicture/' + req.params.id + '.png';
+    var stream = fs.createWriteStream(picPath);
+    req.pipe(stream);
+    stream.on('close', function() {
+      res.successRes(null, {msg: 'success!'});
+    });
+    stream.on('error', function(err) {
+      res.successRes(err);
+    });
   }
 });
 
