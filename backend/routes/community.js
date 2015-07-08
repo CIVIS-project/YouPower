@@ -181,18 +181,20 @@ router.delete('/:communityId/comment/:commentId', auth.authenticate(), function(
  *     "members": [
  *       "User": {
  *         "_id": "testUser1",
- *         "name": "Jane",
+ *         "name": "Jane"
  *       },
  *       "User": {
  *         "_id": "testUser2",
- *         "name": "Jack",
+ *         "name": "Jack"
  *       }
  *     ],
  *     "date": "2015-07-01T12:04:33.599Z"
  *   }
  */
-router.post('/', auth.authenticate(), function(req, res) {
+router.post('/', auth.authenticate(),function(req, res) {
+  console.log('router 1');
   Community.create(req.body, res.successRes);
+  console.log('router 12');
 });
 
 /**
