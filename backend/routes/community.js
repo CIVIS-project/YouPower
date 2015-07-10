@@ -367,7 +367,7 @@ router.get('/top/:id', auth.authenticate(), function(req, res) {
 });
 
 /**
- * @api {post} /community/communityPicture Update your Community picture
+ * @api {post} /community/communityPicture/:id Update your Community picture
  * @apiGroup Community
  *
  * @apiExample {curl} Example usage:
