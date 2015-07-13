@@ -31,6 +31,7 @@ var ChallengeComment = mongoose.model('ChallengeComment', ChallengeCommentSchema
 
 exports.create = function(challengeComment, cb) {
   ChallengeComment.create({
+    _id: challengeComment._id,
     challengeId: challengeComment.challengeId,
     name: challengeComment.name,
     email: challengeComment.email,

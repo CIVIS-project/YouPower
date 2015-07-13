@@ -50,6 +50,7 @@ var includeRatingStats = function(challenge) {
 //Create challenge
 exports.create = function(challenge, cb) {
   Challenge.create({
+    _id: challenge._id,
     name: challenge.name,
     description: challenge.description,
     actions: challenge.actions,

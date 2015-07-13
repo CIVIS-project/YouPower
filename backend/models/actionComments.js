@@ -31,6 +31,7 @@ var ActionComment = mongoose.model('ActionComment', ActionCommentSchema);
 
 exports.create = function(actionComment, cb) {
   ActionComment.create({
+    _id: actionComment._id,
     actionId: actionComment.actionId,
     name: actionComment.name,
     email: actionComment.email,

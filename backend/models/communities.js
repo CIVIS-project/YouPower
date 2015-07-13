@@ -49,6 +49,7 @@ var Community = mongoose.model('Community', CommunitySchema);
 
 exports.create = function(community, cb) {
   Community.create({
+    _id: community._id,
     name: community.name,
     challenges: community.challenges,
     members: community.members,

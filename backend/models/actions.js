@@ -67,6 +67,7 @@ var includeRatingStats = function(action) {
 
 exports.create = function(action, cb) {
   Action.create({
+    _id: action._id,
     name: action.name,
     category: action.category,
     activation: action.activation,

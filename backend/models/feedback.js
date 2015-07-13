@@ -26,6 +26,7 @@ var Feedback = mongoose.model('Feedback', FeedbackSchema);
 
 exports.create = function(feedback, cb) {
   Feedback.create({
+    _id: feedback._id,
     name: feedback.name,
     email: feedback.email,
     comment: feedback.comment,

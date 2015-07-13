@@ -31,6 +31,7 @@ var CommunityComment = mongoose.model('CommunityComment', CommunityCommentSchema
 
 exports.create = function(communityComment, cb) {
   CommunityComment.create({
+    _id: communityComment._id,
     communityId: communityComment.communityId,
     name: communityComment.name,
     email: communityComment.email,
