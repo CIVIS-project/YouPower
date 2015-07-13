@@ -10,7 +10,6 @@ var BearerStrategy = require('passport-http-bearer');
 var BasicStrategy = require('passport-http').BasicStrategy;
 var FacebookStrategy = require('passport-facebook');
 var User = require('../models').users;
-var FB = require('fb');
 
 exports.genToken = function(cb) {
   crypto.randomBytes(48, function(ex, buf) {
