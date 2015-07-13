@@ -106,7 +106,8 @@ exports.initialize = function() {
     passport.use('facebook-authz', new FacebookStrategy({
       clientID: process.env.FACEBOOK_APP_ID,
       clientSecret: process.env.FACEBOOK_APP_SECRET,
-      callbackURL: 'http://localhost:3000/api/auth/facebook/callbackfb'
+      callbackURL: 'http://localhost:3000/api/auth/facebook/callbackfb',
+      profileFields: ['id', 'displayName', 'gender', 'email', 'birthday']
     },
     function(accessToken, refreshToken, profile, done) {
       var tk = 'token come here';
