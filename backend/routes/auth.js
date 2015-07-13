@@ -10,7 +10,7 @@ var passport = require('passport');
  * @apiGroup Facebook Login
  */
 router.get('/facebook', passport.authenticate('facebook',
-	{scope :['user_friends', 'email'], session: false}));
+	{scope :['user_friends', 'user_birthday', 'email', 'publish_actions'], session: false}));
 
 /**
  * @api {get} /auth/facebook/callback Callback URL for Facebook login

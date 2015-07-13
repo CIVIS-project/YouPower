@@ -10,6 +10,7 @@ var BearerStrategy = require('passport-http-bearer');
 var BasicStrategy = require('passport-http').BasicStrategy;
 var FacebookStrategy = require('passport-facebook');
 var User = require('../models').users;
+var FB = require('fb');
 
 exports.genToken = function(cb) {
   crypto.randomBytes(48, function(ex, buf) {
@@ -54,6 +55,7 @@ exports.initialize = function() {
     clientID: process.env.FACEBOOK_APP_ID,
     clientSecret: process.env.FACEBOOK_APP_SECRET,
     callbackURL: 'http://localhost:3000/api/auth/facebook/callback',
+    profileFields: ['id', 'displayName', 'gender', 'email', 'birthday'],
     enableProof: false
   },
   function(accessToken, refreshToken, profile, done) {
@@ -64,6 +66,9 @@ exports.initialize = function() {
         if (err) {
           return done(err);
         } else if (user) {
+          user.accessToken = accessToken;
+          user.markModified('accessToken');
+          user.save();
           return done(err, user);
         } else {
           // TODO: refactor this mess
@@ -76,9 +81,11 @@ exports.initialize = function() {
                   email: profile.emails[0].value,
                   //email: mongoose.Types.ObjectId(),
                   facebookId: profile.id,
+                  accessToken:accessToken,
                   profile: {
                   name: profile.displayName,
-                  gender: profile.gender
+                  gender: profile.gender,
+                  dob: profile._json.birthday
                 }
                 }, password, function(err, user) {
                   if (err) {
@@ -110,10 +117,12 @@ exports.initialize = function() {
           return done(err, 'The given user does not exist');
         } else {
           user.facebookId  = profile.id;
+          user.accessToken  = accessToken;
           user.profile.gender   = profile.gender;
 
           user.markModified('profile.gender');
           user.markModified('facebookId');
+          user.markModified('accessToken');
           user.save();
           //console.log("USERUPDATED",user);
           return done(null, 'Facebook account successfully connected');

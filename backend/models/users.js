@@ -10,6 +10,7 @@ var _ = require('underscore');
 var UserSchema = new Schema({
   token: String,
   facebookId: String,
+  accessToken: String,
   profile: {
     name: String,
     dob: Date,
