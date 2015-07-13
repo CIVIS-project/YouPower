@@ -256,7 +256,6 @@ describe('models', function() {
 
     beforeEach(function(done) {
       // reset actions collection
-      console.log(dummyData.actionComments);
       resetModel('actionComments', function(err, actionComments) {
         dbActionComments = actionComments;
         done(err);
