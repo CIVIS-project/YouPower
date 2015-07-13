@@ -11,6 +11,7 @@ var models = require('../models');
 var dummyData = require ('./dummyData');
 
 var resetModel = function(modelName, cb) {
+  dummyData = require('./dummyData');
   var resModels = [];
   conn.connection.db.dropCollection(modelName, function() {
     async.map(dummyData[modelName], function(model, cb) {
@@ -35,7 +36,6 @@ describe('models', function() {
 
     beforeEach(function(done) {
       // reset actions collection
-      dummyData = require('./dummyData');
       resetModel('actions', function(err, actions) {
         dbActions = actions;
         done(err);
@@ -256,10 +256,11 @@ describe('models', function() {
 
     beforeEach(function(done) {
       // reset actions collection
-      dummyData = require('./dummyData');
+      console.log(dummyData.actionComments);
       resetModel('actionComments', function(err, actionComments) {
         dbActionComments = actionComments;
         done(err);
+        process.exit();
       });
     });
 
@@ -334,7 +335,6 @@ describe('models', function() {
 
     beforeEach(function(done) {
       // reset users collection
-      dummyData = require('./dummyData');
       resetModel('users', function(err, users) {
         dbUsers = users;
         done(err);
@@ -431,7 +431,6 @@ describe('models', function() {
 
     beforeEach(function(done) {
       // reset users and actions collections
-      dummyData = require('./dummyData');
       async.parallel([
         function(cb) {
           resetModel('users', function(err, users) {
@@ -831,7 +830,6 @@ describe('models', function() {
 
     beforeEach(function(done) {
       // reset challenges collection
-      dummyData = require('./dummyData');
       resetModel('challengeComments', function(err, challengeComments) {
         dbChallengeComments = challengeComments;
         done(err);
@@ -1089,7 +1087,6 @@ describe('models', function() {
 
     beforeEach(function(done) {
       // reset communities collection
-      dummyData = require('./dummyData');
       resetModel('communityComments', function(err, communityComments) {
         dbCommunityComments = communityComments;
         done(err);
@@ -1404,7 +1401,6 @@ describe('models', function() {
 
     beforeEach(function(done) {
       // reset actions collection
-      dummyData = require('./dummyData');
       resetModel('feedback', function(err, actions) {
         dbFeedback = actions;
         done(err);
