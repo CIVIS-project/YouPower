@@ -65,7 +65,7 @@ var includeRatingStats = function(action) {
   action.numRatings = cnt;
 };
 
-exports.create = function(action, cb) {//console.log("Here2");
+exports.create = function(action, cb) {
   Action.create({
     name: action.name,
     category: action.category,

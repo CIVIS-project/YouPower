@@ -35,11 +35,11 @@ describe('models', function() {
 
     beforeEach(function(done) {
       // reset actions collection
+      dummyData = require('./dummyData');
       resetModel('actions', function(err, actions) {
         dbActions = actions;
         done(err);
       });
-      dummyData = require('./dummyData');
     });
 
     it('should return all actions without ratings', function(done) {
@@ -256,11 +256,11 @@ describe('models', function() {
 
     beforeEach(function(done) {
       // reset actions collection
+      dummyData = require('./dummyData');
       resetModel('actionComments', function(err, actionComments) {
         dbActionComments = actionComments;
         done(err);
       });
-      dummyData = require('./dummyData');
     });
 
     it('should get all dummy comments for first action', function(done) {
@@ -334,11 +334,11 @@ describe('models', function() {
 
     beforeEach(function(done) {
       // reset users collection
+      dummyData = require('./dummyData');
       resetModel('users', function(err, users) {
         dbUsers = users;
         done(err);
       });
-      dummyData = require('./dummyData');
     });
 
     it('should return profile', function(done) {
@@ -431,6 +431,7 @@ describe('models', function() {
 
     beforeEach(function(done) {
       // reset users and actions collections
+      dummyData = require('./dummyData');
       async.parallel([
         function(cb) {
           resetModel('users', function(err, users) {
@@ -447,7 +448,6 @@ describe('models', function() {
       ], function(err) {
         done(err);
       });
-      dummyData = require('./dummyData');
     });
     it('should add action to user model', function(done) {
       models.users.startAction(dbUsers[0], dbActions[0]._id, function(err) {
@@ -831,11 +831,11 @@ describe('models', function() {
 
     beforeEach(function(done) {
       // reset challenges collection
+      dummyData = require('./dummyData');
       resetModel('challengeComments', function(err, challengeComments) {
         dbChallengeComments = challengeComments;
         done(err);
       });
-      dummyData = require('./dummyData');
     });
 
     it('should get all dummy comments for first challenge', function(done) {
@@ -1089,11 +1089,11 @@ describe('models', function() {
 
     beforeEach(function(done) {
       // reset communities collection
+      dummyData = require('./dummyData');
       resetModel('communityComments', function(err, communityComments) {
         dbCommunityComments = communityComments;
         done(err);
       });
-      dummyData = require('./dummyData');
     });
 
     it('should get all dummy comments for first community', function(done) {
@@ -1404,11 +1404,11 @@ describe('models', function() {
 
     beforeEach(function(done) {
       // reset actions collection
+      dummyData = require('./dummyData');
       resetModel('feedback', function(err, actions) {
         dbFeedback = actions;
         done(err);
       });
-      dummyData = require('./dummyData');
     });
 
     it('should return all feedback', function(done) {
