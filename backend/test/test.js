@@ -8,7 +8,7 @@ var conn = mongoose.connect('mongodb://localhost/youpower-tests');
 
 var should = require('chai').should();
 var models = require('../models');
-var dummyData = require ('./dummyData');
+var dummyData = require('./dummyData');
 
 var resetModel = function(modelName, cb) {
   dummyData = require('./dummyData');
@@ -259,7 +259,6 @@ describe('models', function() {
       resetModel('actionComments', function(err, actionComments) {
         dbActionComments = actionComments;
         done(err);
-        process.exit();
       });
     });
 
