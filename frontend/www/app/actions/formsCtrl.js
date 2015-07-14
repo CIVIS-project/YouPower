@@ -1,23 +1,23 @@
 
-controllers.controller('FormsCtrl', FormsCtrl); 
+angular.module('civis.youpower.actions').controller('FormsCtrl', FormsCtrl);
 
 // Inject my dependencies
 //SettingsCtrl.$inject = ['$scope', '$filter', '$translate'];
 
-function FormsCtrl($scope, $timeout, $state, $stateParams, $ionicHistory, $firebaseObject, $ionicPopup) { 
+function FormsCtrl($scope, $timeout, $state, $stateParams, $ionicHistory, $firebaseObject, $ionicPopup) {
 
 	$scope.actionId = $stateParams.id;
 
 	$scope._act;
 
-	$scope.bonus; 
+	$scope.bonus;
 
 
 	$scope.setBonus=function(points){
 		$scope.bonus=Math.round(points/5);
 	};
 
-	//ionic rating 
+	//ionic rating
 	$scope.rating = 4;
 	$scope.data = {
 		rating : 0,
@@ -26,7 +26,7 @@ function FormsCtrl($scope, $timeout, $state, $stateParams, $ionicHistory, $fireb
 
 	$scope.$watch('data.rating', function() {
 		console.log('New value: '+$scope.data.rating);
-	});  
+	});
 
 
 	$scope.goForward= function() {
@@ -34,7 +34,7 @@ function FormsCtrl($scope, $timeout, $state, $stateParams, $ionicHistory, $fireb
 			disableBack: true
 		});
 		$state.go('tab.actions');
-	} 
+	}
 
 
 	$scope.goBack= function() {
@@ -81,7 +81,7 @@ function FormsCtrl($scope, $timeout, $state, $stateParams, $ionicHistory, $fireb
 	       	$state.go("tab.actions");
 	       }
 	     });
-	}  
+	}
 };
 
 

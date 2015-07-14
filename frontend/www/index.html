@@ -14,30 +14,32 @@
     <script src="cordova.js"></script>
 
     <script src="lib/angular-translate/angular-translate.js"></script>
+    <script src="lib/angular-resource/angular-resource.js"></script>
     <script src="lib/firebase/firebase.js"></script>
     <script src="lib/angularfire/dist/angularfire.js"></script>
     <script src="lib/underscore/underscore.js"></script>
-    <script src="lib/endev/dist/endev.js"></script>
 
 
     <!-- your app's js -->
     <script src="app/app.js"></script>
     <!-- inject:js -->
-    <script src="js/controllers.js"></script>
-    <script src="app/actions/actionCtrl.js"></script>
-    <script src="app/actions/actionsCtrl.js"></script>
-    <script src="app/actions/formsCtrl.js"></script>
-    <script src="app/communities/communitiesCtrl.js"></script>
     <script src="app/settings/settingsCtrl.js"></script>
+    <script src="app/shared/actions.js"></script>
+    <script src="app/shared/authService.js"></script>
     <script src="app/shared/personalProfile-service.js"></script>
     <script src="app/shared/rating.js"></script>
     <script src="app/shared/translations.js"></script>
-    <script src="app/tabs/tabCtrl.js"></script>
-    <script src="app/welcome/test.js"></script>
+    <script src="app/shared/user.js"></script>
     <script src="app/welcome/welcomeCtrl.js"></script>
+    <script src="app/app/AppCtrl.js"></script>
+    <script src="app/communities/communitiesCtrl.js"></script>
+    <script src="app/actions/actionCtrl.js"></script>
+    <script src="app/actions/actionsCtrl.js"></script>
+    <script src="app/actions/actionsListCtrl.js"></script>
+    <script src="app/actions/formsCtrl.js"></script>
     <!-- endinject -->
   </head>
-  <body ng-app="starter">
+  <body ng-app="civis.youpower">
     <!--
       The nav bar that will be updated as we navigate between views.
     -->
@@ -52,4 +54,3 @@
     -->
     <ion-nav-view></ion-nav-view>
   </body>
-</html>

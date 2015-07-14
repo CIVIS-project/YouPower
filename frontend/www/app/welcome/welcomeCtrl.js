@@ -1,28 +1,22 @@
-controllers.controller('WelcomeCtrl', WelcomeCtrl);
+angular.module('civis.youpower.welcome').controller('WelcomeCtrl', WelcomeCtrl);
 
 
-function WelcomeCtrl($translate, $scope, $rootScope, $state) {
+function WelcomeCtrl($translate, $scope, $rootScope, $state,AuthService) {
 
-	$scope.emailAddress = "";
+	$scope.loginData = {}
 	// $scope.emailAddress = "jmayer@energyup.eu";
-	
+
 	$scope.changeLanguage = function (langKey) {
 		$translate.use(langKey);
 	};
 
-	$scope.setCurrentUser = function(user) {
-		$rootScope.currentUser = user; 
-	}
+  $scope.login = function() {
+    AuthService.login($scope.loginData.emailAddress, $scope.loginData.password)
+    .then(function(){
+      $state.go('main.actions');
+    })
+  }
 
-	$scope.takeActions =function() {
-
-		console.log($rootScope.currentUser.preferredNrOfActions);
-
-		//$state.go('todo.details', { id: $scope.todos[0].Id });
-
-		$state.go('tab.actions');
-	}
-
-}; 
+};
 
 

@@ -1,5 +1,5 @@
 
-sharedServices.factory('PersonalProfile', function() {
+angular.module('civis.youpower.services',[]).factory('PersonalProfile', function() {
 
 	var personalData = {
 		username: "jmayer@youpower.eu",
@@ -7,24 +7,24 @@ sharedServices.factory('PersonalProfile', function() {
 		firstname: "Jone",
 		//lastname: "Walson",
 		nickname: "Jonny",
-		gender: 0, 
+		gender: 0,
 		birthday: new Date (1985, 12-1 ,27),
 		language: 0,
 	}
 
 	return {
-		personalData: personalData, 
+		personalData: personalData,
 		getPwdDate: function() {
 			var diff = Math.abs(new Date().getTime() - personalData.pwdUpdatedOn.getTime());
 			diff = Math.ceil(diff / (1000 * 3600 * 24)); //diff in days
-			if (diff < 31*1.7) { 
+			if (diff < 31*1.7) {
 				return "Updated " + diff + " days ago";
 			}else if (diff < 365*1.7){
 				return "Updated about " + Math.round(diff/30) + " months ago";
-			}else return "Updated about " + Math.round(diff/365) + " years ago"; 
-		}, 
+			}else return "Updated about " + Math.round(diff/365) + " years ago";
+		},
 		getFullName: function() {
-			var name = ""; 
+			var name = "";
 			if (personalData.firstname) {name += personalData.firstname;}
 			if (personalData.lastname) {name += " " + personalData.lastname;}
 			if (personalData.nickname){
@@ -39,6 +39,6 @@ sharedServices.factory('PersonalProfile', function() {
 			}
 		},
 	}
-}); 
+});
 
 

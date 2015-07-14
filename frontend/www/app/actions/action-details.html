@@ -1,24 +1,22 @@
-<ion-view view-title="{{actionsType}} Actions ({{_.size(user['actions' + actionsType])}})">
+<ion-view view-title="{{actionsType}} Actions ({{actionsByType().length}})">
 <ion-content>
 <ion-slide-box active-slide="slideIdx" does-continue="false" show-pager="false">
-<ion-slide ng-repeat="act in user['actions' + actionsType] track by $index">
-
-<div from="actions action"  provider="firebase" where="action.id=act.id">
+<ion-slide ng-repeat="action in actionsByType() track by $index">
 
   <div class="list card">
     <div class="item item-divider item-text-wrap">
-      {{$parent.$index + 1}}. {{action.title}}
+      {{$index + 1}}. {{action.title}}
     </div>
     <div class="item item-body">
       <ng-include src="'app/actions/actionDescription.html'"></ng-include>
       <p><a class="subdued">{{action.participants}} Participant{{action.participants > 1 ? 's' : ''}}.</a> You started on {{act.date | date: "yyyy-MM-dd"}}.</p>
     </div>
-  </div> 
+  </div>
 
   <div class="list card" ng-if="actionsType == 'Active'">
     <div class="item item-icon-left item-divider item-text-wrap">
       How are you doing?
-      <i class="icon ion-ios-chatbubble-outline balanced" style="font-size:35px;"></i> 
+      <i class="icon ion-ios-chatbubble-outline balanced" style="font-size:35px;"></i>
     </div>
 
     <a class="item item-icon-left item-text-wrap" ng-click="actionCompleted(action)">
@@ -35,7 +33,7 @@
   <div class="item item-divider tabs tabs-secondary tabs-icon-left">
     <a class="tab-item" href="#">
       <i class="icon ion-thumbsup"></i>
-      {{action.like}} Like 
+      {{action.like}} Like
     </a>
     <a class="tab-item" href="#">
       <i class="icon ion-chatbox"></i>
@@ -50,7 +48,6 @@
     <img ng-src="img/{{comment.name}}.jpg"><h3>{{comment.name}}</h3>
     <p>{{comment.description}}</p>
   </div>
-</div>
 </div>
 </ion-slide>
 </ion-slide-box>

@@ -1,6 +1,4 @@
-
-
-controllers.controller('CommunitiesCtrl', CommunitiesCtrl);
+angular.module('civis.youpower.communities',[]).controller('CommunitiesCtrl', CommunitiesCtrl);
 
 
 function CommunitiesCtrl($scope) {

@@ -1,16 +1,24 @@
 
-controllers.controller('ActionCtrl', ActionCtrl); 
+angular.module('civis.youpower.actions').controller('ActionCtrl', ActionCtrl);
 
-// Inject my dependencies
-//SettingsCtrl.$inject = ['$scope', '$filter', '$translate'];
+function ActionCtrl($scope, $stateParams, $state, Actions, User) {
 
-function ActionCtrl($scope, $timeout, $state, $stateParams, $filter, $ionicSlideBoxDelegate, $firebaseArray,$ionicHistory) { 
+  Actions.get({id:$stateParams.id}).then(function(data){
+    $scope.action = data;
+  })
 
-	$scope.id = $stateParams.id;
+  $scope.addAction = function(){
+    User.startAction({id:$scope.action.id}).then(function(){
+      // We do this so we don't need to refresh the whole user every time.
+      if(!$scope.currentUser.actions.inProgress) $scope.currentUser.actions.inProgress = [];
+      $scope.currentUser.actions.inProgress.push($scope.action);
+      $state.go('main.actions.index');
+    });
+  };
 
-	$scope.now = function(){
-		return Date.now().toString();
-	}
+  $scope.skipAction = function(reason){
+    // TODO: not implemented on backend
+  }
 
 };
 
