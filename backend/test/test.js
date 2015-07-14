@@ -4,7 +4,7 @@ var async = require('async');
 var mongoose = require('mongoose');
 var _ = require('underscore');
 
-var conn = mongoose.connect('mongodb://localhost/youpower-tests');
+var conn = mongoose.connect(process.env.MONGO_TEST_URL || 'mongodb://localhost/youpower-tests');
 
 var should = require('chai').should();
 var models = require('../models');
