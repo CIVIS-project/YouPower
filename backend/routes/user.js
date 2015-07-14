@@ -8,6 +8,7 @@ var router = express.Router();
 var User = require('../models').users;
 
 router.use('/action', require('./userAction'));
+router.use('/community', require('./community'));
 router.use('/challenge', require('./userChallenge'));
 
 /**
