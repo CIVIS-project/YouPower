@@ -13,7 +13,8 @@ function WelcomeCtrl($translate, $scope, $rootScope, $state,AuthService) {
   $scope.login = function() {
     AuthService.login($scope.loginData.emailAddress, $scope.loginData.password)
     .then(function(){
-      $state.go('main.actions');
+      // $state.go('main.actions');
+      $state.go('main.actions.index');
     })
   }
 

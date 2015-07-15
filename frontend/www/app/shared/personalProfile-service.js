@@ -2,7 +2,7 @@
 angular.module('civis.youpower.services',[]).factory('PersonalProfile', function() {
 
 	var personalData = {
-		username: "jmayer@youpower.eu",
+		username: "jmayer@energyup.eu",
 		pwdUpdatedOn: new Date (2014, 3-1 ,3),
 		firstname: "Jone",
 		//lastname: "Walson",
