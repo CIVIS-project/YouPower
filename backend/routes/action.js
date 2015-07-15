@@ -6,6 +6,7 @@ var util = require('util');
 var router = express.Router();
 var Action = require('../models').actions;
 var ActionComment = require('../models').actionComments;
+var Log = require('../models').logs;
 
 /**
  * @api {post} /action/:actionId/comment Create new action comment
@@ -41,6 +42,13 @@ router.post('/:actionId/comment', auth.authenticate(), function(req, res) {
   actionComment.name = req.user.profile.name;
   actionComment.email = req.user.email;
   ActionComment.create(actionComment, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Action Comments',
+    type: 'create',
+    data: actionComment
+  });
 });
 
 /**
@@ -78,6 +86,17 @@ router.post('/:actionId/comment', auth.authenticate(), function(req, res) {
  */
 router.get('/:actionId/comments', auth.authenticate(), function(req, res) {
   ActionComment.get(req.params.actionId, req.body.limit || 10, req.body.skip || 0, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Action Comments',
+    type: 'get',
+    data: {
+      actionId: req.params.actionId,
+      limit: req.body.limit,
+      skip: req.body.skip
+    }
+  });
 });
 
 /**
@@ -102,6 +121,13 @@ router.get('/:actionId/comments', auth.authenticate(), function(req, res) {
  */
 router.delete('/:actionId/comment/:commentId', auth.authenticate(), function(req, res) {
   ActionComment.delete(req.params.actionId, req.params.commentId, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Action Comments',
+    type: 'delete',
+    data: req.params
+  });
 });
 
 /**
@@ -178,6 +204,13 @@ router.delete('/:actionId/comment/:commentId', auth.authenticate(), function(req
  */
 router.post('/', auth.authenticate(), function(req, res) {
   Action.create(req.body, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Action',
+    type: 'create',
+    data: req.body
+  });
 });
 
 /**
@@ -230,6 +263,17 @@ router.put('/rate/:id', auth.authenticate(), function(req, res) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
     Action.rate(req.params.id, req.user, req.body.rating, req.body.comment, res.successRes);
+
+    Log.create({
+      userId: req.user._id,
+      category: 'Action',
+      type: 'rate',
+      data: {
+        actionId: req.params.id,
+        rating: req.body.rating,
+        comment: req.body.comment
+      }
+    });
   }
 });
 
@@ -274,6 +318,15 @@ router.get('/:id', auth.authenticate(), function(req, res) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
     Action.get(req.params.id, res.successRes);
+
+    Log.create({
+      userId: req.user._id,
+      category: 'Action',
+      type: 'get',
+      data: {
+        actionId: req.params.id
+      }
+    });
   }
 });
 
@@ -306,6 +359,15 @@ router.delete('/:id', function(req, res) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
     Action.delete(req.params.id, res.successRes);
+
+    Log.create({
+      userId: req.user._id,
+      category: 'Action',
+      type: 'delete',
+      data: {
+        actionId: req.params.id
+      }
+    });
   }
 });
 
@@ -347,6 +409,13 @@ router.get('/', function(req, res) {
   req.sanitize('includeReviews').toBoolean();
 
   Action.all(req.body.limit || 50, req.body.skip, req.body.includeRatings, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Action',
+    type: 'all',
+    data: req.body
+  });
 });
 
 /**
@@ -391,6 +460,14 @@ router.get('/search', auth.authenticate(), function(req, res) {
           users: users
         });
       }
+    });
+
+    // TODO!
+    Log.create({
+      userId: req.user._id,
+      category: 'Action',
+      type: 'search',
+      data: req.body
     });
     */
   }

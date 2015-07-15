@@ -3,7 +3,9 @@
 var express = require('express');
 var util = require('util');
 var router = express.Router();
+var auth = require('../middleware/auth');
 var Household = require('../models').households;
+var Log = require('../models').logs;
 
 /**
  * @api {post} /household Create new household
@@ -71,8 +73,15 @@ var Household = require('../models').households;
  *     ]
  *   }
  */
-router.post('/', function(req, res) {
+router.post('/', auth.authenticate(), function(req, res) {
   Household.create(req.body, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Household',
+    type: 'create',
+    data: req.body
+  });
 });
 
 /**
@@ -113,7 +122,7 @@ router.post('/', function(req, res) {
  *   }
  */
 
-router.get('/:id', function(req, res) {
+router.get('/:id', auth.authenticate(), function(req, res) {
   req.checkParams('id', 'Invalid household id').isMongoId();
 
   var err;
@@ -121,6 +130,13 @@ router.get('/:id', function(req, res) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
     Household.getApartmentInfo(req.params.id, res.successRes);
+
+    Log.create({
+      userId: req.user._id,
+      category: 'Household',
+      type: 'get',
+      data: req.params
+    });
   }
 });
 
@@ -141,7 +157,7 @@ router.get('/:id', function(req, res) {
  *     "ok": 1
  *   }
  */
-router.delete('/:id', function(req, res) {
+router.delete('/:id', auth.authenticate(), function(req, res) {
   req.checkParams('id', 'Invalid household id').isMongoId();
 
   var err;
@@ -149,6 +165,13 @@ router.delete('/:id', function(req, res) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
     Household.delete(req.params.id, res.successRes);
+
+    Log.create({
+      userId: req.user._id,
+      category: 'Household',
+      type: 'delete',
+      data: req.params
+    });
   }
 });
 
@@ -168,7 +191,7 @@ router.delete('/:id', function(req, res) {
  *  }' \
  *  http://localhost:3000/api/household/555ef84b2fd41ffef6e078a34
  */
-router.put('/:id', function(req, res) {
+router.put('/:id', auth.authenticate(), function(req, res) {
   req.checkParams('id', 'Invalid household id').isMongoId();
 
   var err;
@@ -176,6 +199,13 @@ router.put('/:id', function(req, res) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
     Household.updateAddress(req.body, res.successRes);
+
+    Log.create({
+      userId: req.user._id,
+      category: 'Household',
+      type: 'update',
+      data: req.body
+    });
   }
 });
 
@@ -196,7 +226,7 @@ router.put('/:id', function(req, res) {
  *  }' \
  *  http://localhost:3000/api/household/add/555ef84b2fd41ffef6e078a34
  */
-router.put('/add/:id', function(req, res) {
+router.put('/add/:id', auth.authenticate(), function(req, res) {
   req.checkParams('id', 'Invalid household id').isMongoId();
 
   var err;
@@ -204,6 +234,13 @@ router.put('/add/:id', function(req, res) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
     Household.addAppliance(req.body, res.successRes);
+
+    Log.create({
+      userId: req.user._id,
+      category: 'Household',
+      type: 'addAppliance',
+      data: req.body
+    });
   }
 });
 
@@ -224,7 +261,7 @@ router.put('/add/:id', function(req, res) {
  *  }' \
  *  http://localhost:3000/api/household/remove/555ef84b2fd41ffef6e078a34
  */
-router.put('/remove/:id', function(req, res) {
+router.put('/remove/:id', auth.authenticate(), function(req, res) {
   req.checkParams('id', 'Invalid household id').isMongoId();
 
   var err;
@@ -232,6 +269,13 @@ router.put('/remove/:id', function(req, res) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
     Household.removeAppliance(req.body, res.successRes);
+
+    Log.create({
+      userId: req.user._id,
+      category: 'Household',
+      type: 'removeAppliance',
+      data: req.body
+    });
   }
 });
 
@@ -256,7 +300,7 @@ router.put('/remove/:id', function(req, res) {
  *  }' \
  *  http://localhost:3000/api/household/addmember/555ef84b2fd41ffef6e078a34
  */
-router.put('/addmember/:id', function(req, res) {
+router.put('/addmember/:id', auth.authenticate(), function(req, res) {
   req.checkParams('id', 'Invalid household id').isMongoId();
 
   var err;
@@ -264,6 +308,13 @@ router.put('/addmember/:id', function(req, res) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
     Household.addmember(req.body, res.successRes);
+
+    Log.create({
+      userId: req.user._id,
+      category: 'Household',
+      type: 'addMember',
+      data: req.body
+    });
   }
 });
 
@@ -288,7 +339,7 @@ router.put('/addmember/:id', function(req, res) {
  *  }' \
  *  http://localhost:3000/api/household/removemember/555ef84b2fd41ffef6e078a34
  */
-router.put('/removemember/:id', function(req, res) {
+router.put('/removemember/:id', auth.authenticate(), function(req, res) {
   req.checkParams('id', 'Invalid household id').isMongoId();
 
   var err;
@@ -296,6 +347,13 @@ router.put('/removemember/:id', function(req, res) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
     Household.removeMember(req.body, res.successRes);
+
+    Log.create({
+      userId: req.user._id,
+      category: 'Household',
+      type: 'removeMember',
+      data: req.body
+    });
   }
 });
 

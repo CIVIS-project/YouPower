@@ -258,3 +258,26 @@ exports.feedback = [
     comment: 'Hello other world!'
   }
 ];
+
+exports.logs = [
+  {
+    _id: newId(),
+    userId: newId(),
+    category: 'dummyCategory',
+    type: 'dummyType',
+    data: {
+      hello: 'world'
+    },
+    date: new Date(42)
+  },
+  {
+    _id: newId(),
+    userId: newId(),
+    category: 'dummyCategory2',
+    type: 'dummyType2',
+    data: {
+      hello: 'world2'
+    },
+    date: new Date(43)
+  }
+];

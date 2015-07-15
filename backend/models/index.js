@@ -9,4 +9,5 @@ exports.communityComments = require('./communityComments');
 //exports.consumption = require('./consumption');
 exports.feedback = require('./feedback');
 exports.households = require('./households');
+exports.logs = require('./logs');
 exports.users = require('./users');

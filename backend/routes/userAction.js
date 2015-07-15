@@ -5,6 +5,7 @@ var express = require('express');
 var router = express.Router();
 var User = require('../models').users;
 var Action = require('../models').actions;
+var Log = require('../models').logs;
 
 /**
  * @api {get} /user/action Get user's action list
@@ -14,6 +15,13 @@ var Action = require('../models').actions;
  */
 router.get('/', auth.authenticate(), function(req, res) {
   res.json(req.user.actions);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'User Action',
+    type: 'get',
+    data: {}
+  });
 });
 
 /**
@@ -41,6 +49,13 @@ router.get('/', auth.authenticate(), function(req, res) {
  */
 router.get('/suggested', auth.authenticate(), function(req, res) {
   Action.getSuggested(req.user.actions, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'User Action',
+    type: 'getSuggested',
+    data: {}
+  });
 });
 
 /**
@@ -53,6 +68,13 @@ router.get('/suggested', auth.authenticate(), function(req, res) {
  */
 router.post('/start/:actionId', auth.authenticate(), function(req, res) {
   User.startAction(req.user, req.params.actionId, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'User Action',
+    type: 'start',
+    data: req.params
+  });
 });
 
 /**
@@ -66,6 +88,13 @@ router.post('/start/:actionId', auth.authenticate(), function(req, res) {
  */
 router.post('/cancel/:actionId', auth.authenticate(), function(req, res) {
   User.cancelAction(req.user, req.params.actionId, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'User Action',
+    type: 'cancel',
+    data: req.params
+  });
 });
 
 /**
@@ -79,6 +108,13 @@ router.post('/cancel/:actionId', auth.authenticate(), function(req, res) {
  */
 router.post('/complete/:actionId', auth.authenticate(), function(req, res) {
   User.completeAction(req.user, req.params.actionId, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'User Action',
+    type: 'complete',
+    data: req.params
+  });
 });
 
 module.exports = router;
