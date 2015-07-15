@@ -4,6 +4,7 @@ var auth = require('../middleware/auth');
 //var util = require('util');
 var express = require('express');
 var router = express.Router();
+var Log = require('../models').log;
 //var User = require('../models/user').User;
 //var Challenge = require('../models/challenge');
 
@@ -15,6 +16,13 @@ var router = express.Router();
  */
 router.get('/', auth.authenticate(), function(req, res) {
   res.json(req.user.challenges);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'User Challenge',
+    type: 'get',
+    data: {}
+  });
 });
 
 /**
@@ -26,6 +34,7 @@ router.get('/', auth.authenticate(), function(req, res) {
  * @apiVersion 1.0.0
  */
 router.post('/start/:challengeId', auth.authenticate(), function(req, res) {
+  // TODO!!
   res.status(501).send('Not implemented');
   /*
   Challenge.get(req.params.challengeId, function(err, challengeResult) {
@@ -56,6 +65,12 @@ router.post('/start/:challengeId', auth.authenticate(), function(req, res) {
         }
       });
     }
+  });
+  Log.create({
+    userId: req.user._id,
+    category: 'User Challenge',
+    type: 'start',
+    data: req.params
   });
   */
 });
@@ -97,6 +112,7 @@ router.post('/cancel/:challengeId', auth.authenticate(), function(req, res) {
         res.json({user: user});
       }
     });
+    Log.create(...
   }
   */
 });
