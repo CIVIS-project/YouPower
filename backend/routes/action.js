@@ -88,10 +88,10 @@ router.get('/:actionId/comments', auth.authenticate(), function(req, res) {
   ActionComment.get(req.params.actionId, req.body.limit || 10, req.body.skip || 0, res.successRes);
 
   Log.create({
+    userId: req.user._id,
     category: 'Action Comments',
     type: 'get',
     data: {
-      userId: req.user._id,
       actionId: req.params.actionId,
       limit: req.body.limit,
       skip: req.body.skip

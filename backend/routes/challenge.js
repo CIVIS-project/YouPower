@@ -89,11 +89,11 @@ router.get('/:challengeId/comments', auth.authenticate(), function(req, res) {
       req.params.challengeId, req.body.limit || 10, req.body.skip || 0, res.successRes);
 
   Log.create({
+    userId: req.user._id,
     category: 'Challenge Comments',
     type: 'get',
     data: {
-      userId: req.user._id,
-      actionId: req.params.challengeId,
+      challengeId: req.params.challengeId,
       limit: req.body.limit,
       skip: req.body.skip
     }
@@ -230,7 +230,7 @@ router.put('/rate/:id', auth.authenticate(), function(req, res) {
       category: 'Challenge',
       type: 'rate',
       data: {
-        actionId: req.params.id,
+        challengeId: req.params.id,
         rating: req.body.rating,
         comment: req.body.comment
       }
@@ -287,7 +287,7 @@ router.get('/:id', function(req, res) {
       category: 'Challenge',
       type: 'get',
       data: {
-        actionId: req.params.id
+        challengeId: req.params.id
       }
     });
   }
@@ -330,7 +330,7 @@ router.delete('/:id', function(req, res) {
       category: 'Challenge',
       type: 'delete',
       data: {
-        actionId: req.params.id
+        challengeId: req.params.id
       }
     });
   }

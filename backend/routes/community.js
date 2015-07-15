@@ -7,6 +7,7 @@ var router = express.Router();
 var Community = require('../models').communities;
 var CommunityComment = require('../models').communityComments;
 var fs = require('fs');
+var Log = require('../models').log;
 
 /**
  * @api {post} /community/:communityId/comment Create new community comment
@@ -42,6 +43,13 @@ router.post('/:communityId/comment', auth.authenticate(), function(req, res) {
   communityComment.name = req.user.profile.name;
   communityComment.email = req.user.email;
   CommunityComment.create(communityComment, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Community Comments',
+    type: 'create',
+    data: communityComment
+  });
 });
 
 /**
@@ -80,6 +88,17 @@ router.post('/:communityId/comment', auth.authenticate(), function(req, res) {
 router.get('/:communityId/comments', auth.authenticate(), function(req, res) {
   CommunityComment.get(
       req.params.communityId, req.body.limit || 10, req.body.skip || 0, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Community Comments',
+    type: 'get',
+    data: {
+      communityId: req.params.communityId,
+      limit: req.body.limit,
+      skip: req.body.skip
+    }
+  });
 });
 
 /**
@@ -104,6 +123,13 @@ router.get('/:communityId/comments', auth.authenticate(), function(req, res) {
  */
 router.delete('/:communityId/comment/:commentId', auth.authenticate(), function(req, res) {
   CommunityComment.delete(req.params.communityId, req.params.commentId, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Community Comments',
+    type: 'delete',
+    data: req.params
+  });
 });
 
 /**
@@ -194,6 +220,13 @@ router.delete('/:communityId/comment/:commentId', auth.authenticate(), function(
  */
 router.post('/', auth.authenticate(), function(req, res) {
   Community.create(req.body, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Community',
+    type: 'create',
+    data: req.body
+  });
 });
 
 /**
@@ -256,6 +289,15 @@ router.get('/:id', auth.authenticate(), function(req, res) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
     Community.getCommunityInfo(req.params.id, res.successRes);
+
+    Log.create({
+      userId: req.user._id,
+      category: 'Community',
+      type: 'get',
+      data: {
+        actionId: req.params.id
+      }
+    });
   }
 });
 
@@ -288,6 +330,15 @@ router.delete('/:id', auth.authenticate(), function(req, res) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
     Community.delete(req.params.id, res.successRes);
+
+    Log.create({
+      userId: req.user._id,
+      category: 'Community',
+      type: 'delete',
+      data: {
+        communityId: req.params.id
+      }
+    });
   }
 });
 
@@ -312,6 +363,13 @@ router.put('/join/:id', auth.authenticate(), function(req, res) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
     Community.addMember(req.params.id, req.user._id, res.successRes);
+
+    Log.create({
+      userId: req.user._id,
+      category: 'Community',
+      type: 'join',
+      data: req.params
+    });
   }
 });
 
@@ -336,6 +394,13 @@ router.put('/leave/:id', auth.authenticate(), function(req, res) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
     Community.removeMember(req.params.id, req.user._id, res.successRes);
+
+    Log.create({
+      userId: req.user._id,
+      category: 'Community',
+      type: 'leave',
+      data: req.params
+    });
   }
 });
 
@@ -363,6 +428,16 @@ router.get('/top/:id', auth.authenticate(), function(req, res) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
     Community.topActions(req.params.id, req.body.limit, res.successRes);
+
+    Log.create({
+      userId: req.user._id,
+      category: 'Community',
+      type: 'top',
+      data: {
+        communityId: req.params.id,
+        limit: req.body.limit
+      }
+    });
   }
 });
 
