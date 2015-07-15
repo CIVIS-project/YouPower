@@ -41,9 +41,12 @@ exports.create = function(log, cb) {
     date: new Date()
   }, function(err, doc) {
     if (err) {
-      console.log('error while logging:');
-      console.log(log);
-      console.log('this should never happen! fix your logging code to include required fields.');
+      /* istanbul ignore if: suppress messages when unit testing */
+      if (process.env.NODE_ENV !== 'test') {
+        console.log('error while logging:');
+        console.log(log);
+        console.log('this should never happen! fix your logging code to include required fields.');
+      }
     }
     if (cb) {
       cb(err, doc);

@@ -6,7 +6,7 @@ var util = require('util');
 var router = express.Router();
 var Action = require('../models').actions;
 var ActionComment = require('../models').actionComments;
-var Log = require('../models').log;
+var Log = require('../models').logs;
 
 /**
  * @api {post} /action/:actionId/comment Create new action comment

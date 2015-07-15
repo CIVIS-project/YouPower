@@ -1398,9 +1398,9 @@ describe('models', function() {
     });
 
     beforeEach(function(done) {
-      // reset actions collection
-      resetModel('feedback', function(err, actions) {
-        dbFeedback = actions;
+      // reset feedback collection
+      resetModel('feedback', function(err, feedback) {
+        dbFeedback = feedback;
         done(err);
       });
     });
@@ -1408,6 +1408,72 @@ describe('models', function() {
     it('should return all feedback', function(done) {
       models.feedback.all(null, null, function(err, feedback) {
         feedback.length.should.equal(dummyData.feedback.length);
+        done(err);
+      });
+    });
+  });
+
+  describe('log', function() {
+    // clear db before starting
+    before(function() {
+      conn.connection.db.dropDatabase();
+    });
+
+    beforeEach(function(done) {
+      // reset logs collection
+      resetModel('logs', function(err) {
+        done(err);
+      });
+    });
+
+    it('should refuse adding log entry with missing fields', function(done) {
+      async.parallel([
+        function(cb) {
+          models.logs.create({
+            userId: null,
+            category: dummyData.logs[0].category,
+            type: dummyData.logs[0].type,
+            data: dummyData.logs[0].data
+          }, function(err) {
+            cb(err ? null : 'no error returned!');
+          });
+        }, function(cb) {
+          models.logs.create({
+            userId: dummyData.logs[0].userId,
+            category: null,
+            type: dummyData.logs[0].type,
+            data: dummyData.logs[0].data
+          }, function(err) {
+            cb(err ? null : 'no error returned!');
+          });
+        },
+        function(cb) {
+          models.logs.create({
+            userId: dummyData.logs[0].category,
+            category: dummyData.logs[0].category,
+            type: null,
+            data: dummyData.logs[0].data
+          }, function(err) {
+            cb(err ? null : 'no error returned!');
+          });
+        }, function(cb) {
+          models.logs.create({
+            userId: dummyData.logs[0].category,
+            category: dummyData.logs[0].category,
+            type: dummyData.logs[0].type,
+            data: null
+          }, function(err) {
+            cb(err ? null : 'no error returned!');
+          });
+        }
+      ], function(err) {
+        done(err);
+      });
+    });
+
+    it('should return all logs', function(done) {
+      models.logs.all(null, null, function(err, log) {
+        log.length.should.equal(dummyData.logs.length);
         done(err);
       });
     });

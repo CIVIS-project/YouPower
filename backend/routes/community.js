@@ -7,7 +7,7 @@ var router = express.Router();
 var Community = require('../models').communities;
 var CommunityComment = require('../models').communityComments;
 var fs = require('fs');
-var Log = require('../models').log;
+var Log = require('../models').logs;
 
 /**
  * @api {post} /community/:communityId/comment Create new community comment

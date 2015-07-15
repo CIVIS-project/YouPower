@@ -5,7 +5,7 @@ var util = require('util');
 var router = express.Router();
 var auth = require('../middleware/auth');
 var Household = require('../models').households;
-var Log = require('../models').log;
+var Log = require('../models').logs;
 
 /**
  * @api {post} /household Create new household

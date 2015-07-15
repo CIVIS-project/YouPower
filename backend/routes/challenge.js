@@ -6,7 +6,7 @@ var util = require('util');
 var router = express.Router();
 var Challenge = require('../models').challenges;
 var ChallengeComment = require('../models').challengeComments;
-var Log = require('../models').log;
+var Log = require('../models').logs;
 
 /**
  * @api {post} /challenge/:challengeId/comment Create new challenge comment

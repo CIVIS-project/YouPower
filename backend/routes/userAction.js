@@ -5,7 +5,7 @@ var express = require('express');
 var router = express.Router();
 var User = require('../models').users;
 var Action = require('../models').actions;
-var Log = require('../models').log;
+var Log = require('../models').logs;
 
 /**
  * @api {get} /user/action Get user's action list

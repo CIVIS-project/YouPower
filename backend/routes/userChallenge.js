@@ -4,7 +4,7 @@ var auth = require('../middleware/auth');
 //var util = require('util');
 var express = require('express');
 var router = express.Router();
-var Log = require('../models').log;
+var Log = require('../models').logs;
 //var User = require('../models/user').User;
 //var Challenge = require('../models/challenge');
 
