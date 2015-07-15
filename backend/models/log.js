@@ -2,7 +2,6 @@
 
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var _ = require('underscore');
 
 /*
  * Logging model for usage statistics and metrics
@@ -40,7 +39,16 @@ exports.create = function(log, cb) {
     type: log.type,
     data: log.data,
     date: new Date()
-  }, cb || _.noop);
+  }, function(err, doc) {
+    if (err) {
+      console.log('error while logging:');
+      console.log(log);
+      console.log('this should never happen! fix your logging code to include required fields.');
+    }
+    if (cb) {
+      cb(err, doc);
+    }
+  });
 };
 
 exports.all = function(limit, skip, cb) {
