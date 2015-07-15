@@ -6,6 +6,7 @@ var util = require('util');
 var router = express.Router();
 var Challenge = require('../models').challenges;
 var ChallengeComment = require('../models').challengeComments;
+var Log = require('../models').log;
 
 /**
  * @api {post} /challenge/:challengeId/comment Create new challenge comment
@@ -41,6 +42,13 @@ router.post('/:challengeId/comment', auth.authenticate(), function(req, res) {
   challengeComment.name = req.user.profile.name;
   challengeComment.email = req.user.email;
   ChallengeComment.create(challengeComment, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Challenge Comments',
+    type: 'create',
+    data: challengeComment
+  });
 });
 
 /**
@@ -79,6 +87,17 @@ router.post('/:challengeId/comment', auth.authenticate(), function(req, res) {
 router.get('/:challengeId/comments', auth.authenticate(), function(req, res) {
   ChallengeComment.get(
       req.params.challengeId, req.body.limit || 10, req.body.skip || 0, res.successRes);
+
+  Log.create({
+    category: 'Challenge Comments',
+    type: 'get',
+    data: {
+      userId: req.user._id,
+      actionId: req.params.challengeId,
+      limit: req.body.limit,
+      skip: req.body.skip
+    }
+  });
 });
 
 /**
@@ -103,6 +122,13 @@ router.get('/:challengeId/comments', auth.authenticate(), function(req, res) {
  */
 router.delete('/:challengeId/comment/:commentId', auth.authenticate(), function(req, res) {
   ChallengeComment.delete(req.params.challengeId, req.params.commentId, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Challenge Comments',
+    type: 'delete',
+    data: req.params
+  });
 });
 
 /**
@@ -141,6 +167,13 @@ router.delete('/:challengeId/comment/:commentId', auth.authenticate(), function(
  */
 router.post('/', auth.authenticate(), function(req, res) {
   Challenge.create(req.body, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Challenge',
+    type: 'create',
+    data: req.body
+  });
 });
 
 /**
@@ -191,6 +224,17 @@ router.put('/rate/:id', auth.authenticate(), function(req, res) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
     Challenge.rate(req.params.id, req.user, req.body.rating, req.body.comment, res.successRes);
+
+    Log.create({
+      userId: req.user._id,
+      category: 'Challenge',
+      type: 'rate',
+      data: {
+        actionId: req.params.id,
+        rating: req.body.rating,
+        comment: req.body.comment
+      }
+    });
   }
 });
 
@@ -237,6 +281,15 @@ router.get('/:id', function(req, res) {
     Challenge.get(req.params.id, function(err, challenge) {
       res.status(err ? 500 : 200).send(err || challenge);
     });
+
+    Log.create({
+      userId: req.user._id,
+      category: 'Challenge',
+      type: 'get',
+      data: {
+        actionId: req.params.id
+      }
+    });
   }
 });
 
@@ -270,6 +323,15 @@ router.delete('/:id', function(req, res) {
   } else {
     Challenge.delete(req.params.id, function(err, challenge) {
       res.status(err ? 500 : 200).send(err || challenge);
+    });
+
+    Log.create({
+      userId: req.user._id,
+      category: 'Challenge',
+      type: 'delete',
+      data: {
+        actionId: req.params.id
+      }
     });
   }
 });
@@ -309,10 +371,14 @@ router.get('/', function(req, res) {
   req.checkBody('skip').optional().isInt();
 
   req.sanitize('includeReviews').toBoolean();
-  Challenge.all(req.body.limit || 50, req.body.skip, req.body.includeRatings,
-    function(err, challenge) {
-    res.status(501).send('Not implemented');
-    res.status(err ? 500 : 200).send(err || challenge);
+
+  Challenge.all(req.body.limit || 50, req.body.skip, req.body.includeRatings, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Challenge',
+    type: 'all',
+    data: req.body
   });
 });
 
@@ -336,8 +402,13 @@ router.get('/search', function(req, res) {
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    Challenge.search(req.query.q, function(err, challenge) {
-      res.status(err ? 500 : 200).send(err || challenge);
+    Challenge.search(req.query.q, res.successRes);
+
+    Log.create({
+      userId: req.user._id,
+      category: 'Challenge',
+      type: 'search',
+      data: req.query
     });
   }
 });

@@ -38,7 +38,7 @@ exports.create = function(log, cb) {
     userId: log.userId,
     category: log.category,
     type: log.type,
-    message: log.message,
+    data: log.data,
     date: new Date()
   }, cb || _.noop);
 };
