@@ -11,6 +11,46 @@ exports.communityids = [
   '2574583f48522ec71b132494'
 ];
 
+exports.users = [
+  {
+    _id: newId(),
+    email: 'testUser@foo.com',
+    password: 'foobar1',
+    profile: {
+      name: 'my nick',
+      dob: new Date(42),
+      photo: 'http://dummy'
+    },
+
+    communities: [
+      exports.communityids[0]
+    ]
+  },
+  {
+    _id: newId(),
+    email: 'testUser2@foo.com',
+    password: 'foobar2',
+    profile: {
+      name: 'my nick2',
+      dob: new Date(43),
+      photo: 'http://dummy2'
+    },
+    communities: [
+      exports.communityids[1]
+    ]
+  }
+];
+
+exports.ratings = {};
+exports.ratings[exports.users[0]._id] = {
+  rating: 4,
+  comment: 'dummy rating comment'
+};
+exports.ratings[exports.users[1]._id] = {
+  rating: 3,
+  comment: 'another dummy rating comment'
+};
+
 exports.actions = [
   {
     _id: newId(),
@@ -50,47 +90,6 @@ exports.actions = [
   }
 ];
 
-exports.users = [
-  {
-    _id: newId(),
-    email: 'testUser@foo.com',
-    password: 'foobar1',
-    profile: {
-      name: 'my nick',
-      dob: new Date(42),
-      photo: 'http://dummy'
-    },
-
-    communities: [
-      exports.communityids[0]
-    ]
-  },
-  {
-    _id: newId(),
-    email: 'testUser2@foo.com',
-    password: 'foobar2',
-    profile: {
-      name: 'my nick2',
-      dob: new Date(43),
-      photo: 'http://dummy2'
-    },
-    communities: [
-      exports.communityids[1]
-    ]
-  }
-];
-
-exports.ratings = {};
-exports.ratings[exports.users[0]._id] = {
-  rating: 4,
-  comment: 'dummy rating comment'
-};
-
-exports.ratings[exports.users[1]._id] = {
-  rating: 3,
-  comment: 'another dummy rating comment'
-};
-
 exports.challenges = [
   {
     _id: newId(),
@@ -123,8 +122,10 @@ exports.communities = [
       exports.challenges[2]._id
     ],
     members: [
-      exports.users[0]._id
-    ]
+      exports.users[0]._id,
+      exports.users[1]._id
+    ],
+    ratings: exports.ratings
   },
   {
     _id: newId(),

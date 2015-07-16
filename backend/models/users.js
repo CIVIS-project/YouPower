@@ -116,7 +116,7 @@ exports.getUserActions = function(id, cb) {
     if (!user) {
       return cb('User not found');
     } else {
-      console.log(user.actions);
+      console.log(user.actions.inp);
       return cb(null, user);
     }
   });

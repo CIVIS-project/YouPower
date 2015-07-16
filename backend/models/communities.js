@@ -29,6 +29,7 @@ var CommunitySchema = new Schema({
     {
       type: Schema.Types.ObjectId,
       ref: 'User',
+      required: true
     }
   ],
   ratings: {
@@ -57,7 +58,9 @@ var includeRatingStats = function(community) {
 exports.create = function(community, cb) {
   Community.create({
     name: community.name,
-    challenges: community.challenges
+    challenges: community.challenges,
+    members: community.members,
+    ratings: community.ratings
   }, cb);
 };
 
@@ -183,7 +186,6 @@ exports.all = function(limit, skip, includeRatings, cb) {
   .find({})
   .skip(skip)
   .limit(limit)
-  .select('name _id')
   .exec(function(err, communities) {
     /* istanbul ignore if: db errors are hard to unit test */
     if (err) {
