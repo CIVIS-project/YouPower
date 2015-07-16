@@ -644,6 +644,52 @@ describe('models', function() {
         done(err ? null : 'no error returned!');
       });
     });
+    it('should add pending action', function(done) {
+      models.users.setActionState(dbUsers[0], dbActions[0]._id,
+          'pending', new Date(42), done);
+    });
+    it('should not add pending action with missing/invalid postponed field', function(done) {
+      async.parallel([
+        function(cb) {
+          models.users.setActionState(dbUsers[0], dbActions[0]._id,
+              'pending', null, function(err) {
+            cb(err ? null : 'missing postponed field did not cause error!');
+          });
+        },
+        function(cb) {
+          models.users.setActionState(dbUsers[0], dbActions[0]._id,
+              'pending', 'foo bar', function(err) {
+            cb(err ? null : 'invalid postponed field did not cause error!');
+          });
+        }
+      ], function(err) {
+        done(err);
+      });
+    });
+    it('should add alreadyDoing action', function(done) {
+      models.users.setActionState(dbUsers[0], dbActions[0]._id,
+          'alreadyDoing', null, function() {
+        models.users.find({_id: dbUsers[0]._id}, false, null, null, function(err, user) {
+          should.exist(user.actions.done[dbActions[0]._id]);
+          should.exist(user.actions.done[dbActions[0]._id].doneDate);
+          user.actions.done[dbActions[0]._id].alreadyDoing.should.equal(true);
+          done(err);
+        });
+      });
+    });
+    it('should add na action', function(done) {
+      models.users.setActionState(dbUsers[0], dbActions[0]._id, 'na', null, function() {
+        models.users.find({_id: dbUsers[0]._id}, false, null, null, function(err, user) {
+          should.exist(user.actions.na[dbActions[0]._id]);
+          done(err);
+        });
+      });
+    });
+    it('should not add action with invalid state', function(done) {
+      models.users.setActionState(dbUsers[0], dbActions[0]._id, 'foo', null, function(err) {
+        done(err ? null : 'no error returned!');
+      });
+    });
   });
 
   describe('challenge', function() {

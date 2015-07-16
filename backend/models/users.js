@@ -147,9 +147,6 @@ exports.setActionState = function(user, actionId, state, postponed, cb) {
     if (err) {
       return cb(err);
     }
-    if (!actionResult) {
-      return cb('action not found!');
-    }
 
     // get old UA, if any
     var userAction = getUA(user, actionId);
