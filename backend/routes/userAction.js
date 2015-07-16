@@ -59,7 +59,7 @@ router.get('/suggested', auth.authenticate(), function(req, res) {
 });
 
 /**
- * @api {post} /user/action/state/:actionId Change state for user action
+ * @api {post} /user/action/:actionId Change state for user action
  * @apiGroup User Action
  * @apiDescription Used to start/stop actions for a user.
  *
@@ -71,7 +71,7 @@ router.get('/suggested', auth.authenticate(), function(req, res) {
  *
  * @apiVersion 1.0.0
  */
-router.post('/state/:actionId', auth.authenticate(), function(req, res) {
+router.post('/:actionId', auth.authenticate(), function(req, res) {
   User.setActionState(req.user, req.params.actionId,
       req.params.state, req.params.postponed, res.successRes);
 
