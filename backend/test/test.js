@@ -454,7 +454,7 @@ describe('models', function() {
       });
     });
     it('should add action to user model', function(done) {
-      models.users.startAction(dbUsers[0], dbActions[0]._id, function(err) {
+      models.users.setActionState(dbUsers[0], dbActions[0]._id, 'inProgress', null, function(err) {
         if (err) {
           return done(err);
         }
@@ -468,10 +468,12 @@ describe('models', function() {
     it('should add multiple actions to user model', function(done) {
       async.parallel([
         function(cb) {
-          models.users.startAction(dbUsers[0], dbActions[0]._id, cb);
+          models.users.setActionState(dbUsers[0], dbActions[0]._id,
+              'inProgress', null, cb);
         },
         function(cb) {
-          models.users.startAction(dbUsers[0], dbActions[1]._id, cb);
+          models.users.setActionState(dbUsers[0], dbActions[1]._id,
+              'inProgress', null, cb);
         }
       ], function(err) {
         if (err) {
@@ -496,10 +498,12 @@ describe('models', function() {
         }
         async.parallel([
           function(cb) {
-            models.users.startAction(dbUsers[0], dbActions[0]._id, cb);
+            models.users.setActionState(dbUsers[0], dbActions[0]._id,
+                'inProgress', null, cb);
           },
           function(cb) {
-            models.users.startAction(dbUsers[0], dbActions[1]._id, cb);
+            models.users.setActionState(dbUsers[0], dbActions[1]._id,
+                'inProgress', null, cb);
           }
         ], function(err) {
           if (err) {
@@ -516,25 +520,25 @@ describe('models', function() {
       });
     });
     it('should return error when trying to add bogus action id', function(done) {
-      models.users.startAction(dbUsers[0], dummyData.ids[0], function(err) {
+      models.users.setActionState(dbUsers[0], dummyData.ids[0], 'inProgress', null, function(err) {
         done(err ? null : 'no error returned!');
       });
     });
     it('should return error when trying to add invalid action id', function(done) {
-      models.users.startAction(dbUsers[0], 'foo bar', function(err) {
+      models.users.setActionState(dbUsers[0], 'foo bar', 'inProgress', null, function(err) {
         done(err ? null : 'no error returned!');
       });
     });
     it('should remove action from inProgress when canceling, add to canceled', function(done) {
       async.series([
         function(cb) {
-          models.users.startAction(dbUsers[0], dbActions[0]._id, cb);
+          models.users.setActionState(dbUsers[0], dbActions[0]._id, 'inProgress', null, cb);
         },
         function(cb) {
-          models.users.startAction(dbUsers[0], dbActions[1]._id, cb);
+          models.users.setActionState(dbUsers[0], dbActions[1]._id, 'inProgress', null, cb);
         },
         function(cb) {
-          models.users.cancelAction(dbUsers[0], dbActions[0]._id, cb);
+          models.users.setActionState(dbUsers[0], dbActions[0]._id, 'canceled', null, cb);
         }
       ], function(err) {
         if (err) {
@@ -550,7 +554,8 @@ describe('models', function() {
         });
       });
     });
-    it('should return error if removing an action that has not been started', function(done) {
+    // this is probably not relevant anymore?
+    xit('should return error if removing an action that has not been started', function(done) {
       var user = dbUsers[0];
       user.actions.done[dbActions[0]._id] = dbActions[0];
       user.markModified('actions.done');
@@ -562,12 +567,12 @@ describe('models', function() {
         }
         async.parallel([
           function(cb) {
-            models.users.cancelAction(user, dbActions[0]._id, function(err) {
+            models.users.setActionState(user, dbActions[0]._id, 'canceled', null, function(err) {
               cb(err ? null : 'completed action was canceled without error!');
             });
           },
           function(cb) {
-            models.users.cancelAction(user, dbActions[1]._id, function(err) {
+            models.users.setActionState(user, dbActions[1]._id, 'canceled', null, function(err) {
               cb(err ? null : 'already canceled action was canceled without error!');
             });
           }
@@ -580,20 +585,20 @@ describe('models', function() {
       });
     });
     it('should return error when trying to cancel bogus action id', function(done) {
-      models.users.cancelAction(dbUsers[0], dummyData.ids[0], function(err) {
+      models.users.setActionState(dbUsers[0], dummyData.ids[0], 'canceled', null, function(err) {
         done(err ? null : 'no error returned!');
       });
     });
     it('should mark action as complete, add to done', function(done) {
       async.series([
         function(cb) {
-          models.users.startAction(dbUsers[0], dbActions[0]._id, cb);
+          models.users.setActionState(dbUsers[0], dbActions[0]._id, 'inProgress', null, cb);
         },
         function(cb) {
-          models.users.startAction(dbUsers[0], dbActions[1]._id, cb);
+          models.users.setActionState(dbUsers[0], dbActions[1]._id, 'inProgress', null, cb);
         },
         function(cb) {
-          models.users.completeAction(dbUsers[0], dbActions[0]._id, cb);
+          models.users.setActionState(dbUsers[0], dbActions[0]._id, 'done', null, cb);
         }
       ], function(err) {
         if (err) {
@@ -609,7 +614,8 @@ describe('models', function() {
         });
       });
     });
-    it('should return error if completing an action that has not been started', function(done) {
+    // this is probably not relevant anymore?
+    xit('should return error if completing an action that has not been started', function(done) {
       var user = dbUsers[0];
       user.actions.done[dbActions[0]._id] = dbActions[0];
       user.markModified('actions.done');
@@ -621,12 +627,12 @@ describe('models', function() {
         }
         async.parallel([
           function(cb) {
-            models.users.completeAction(user, dbActions[0]._id, function(err) {
+            models.users.setActionState(user, dbActions[0]._id, 'done', null, function(err) {
               cb(err ? null : 'already completed action was completed without error!');
             });
           },
           function(cb) {
-            models.users.completeAction(user, dbActions[1]._id, function(err) {
+            models.users.setActionState(user, dbActions[1]._id, 'done', null, function(err) {
               cb(err ? null : 'canceled action was completed without error!');
             });
           }
@@ -641,7 +647,53 @@ describe('models', function() {
       });
     });
     it('should return error when trying to complete bogus action id', function(done) {
-      models.users.completeAction(dbUsers[0], dummyData.ids[0], function(err) {
+      models.users.setActionState(dbUsers[0], dummyData.ids[0], 'done', null, function(err) {
+        done(err ? null : 'no error returned!');
+      });
+    });
+    it('should add pending action', function(done) {
+      models.users.setActionState(dbUsers[0], dbActions[0]._id,
+          'pending', new Date(42), done);
+    });
+    it('should not add pending action with missing/invalid postponed field', function(done) {
+      async.parallel([
+        function(cb) {
+          models.users.setActionState(dbUsers[0], dbActions[0]._id,
+              'pending', null, function(err) {
+            cb(err ? null : 'missing postponed field did not cause error!');
+          });
+        },
+        function(cb) {
+          models.users.setActionState(dbUsers[0], dbActions[0]._id,
+              'pending', 'foo bar', function(err) {
+            cb(err ? null : 'invalid postponed field did not cause error!');
+          });
+        }
+      ], function(err) {
+        done(err);
+      });
+    });
+    it('should add alreadyDoing action', function(done) {
+      models.users.setActionState(dbUsers[0], dbActions[0]._id,
+          'alreadyDoing', null, function() {
+        models.users.find({_id: dbUsers[0]._id}, false, null, null, function(err, user) {
+          should.exist(user.actions.done[dbActions[0]._id]);
+          should.exist(user.actions.done[dbActions[0]._id].doneDate);
+          user.actions.done[dbActions[0]._id].alreadyDoing.should.equal(true);
+          done(err);
+        });
+      });
+    });
+    it('should add na action', function(done) {
+      models.users.setActionState(dbUsers[0], dbActions[0]._id, 'na', null, function() {
+        models.users.find({_id: dbUsers[0]._id}, false, null, null, function(err, user) {
+          should.exist(user.actions.na[dbActions[0]._id]);
+          done(err);
+        });
+      });
+    });
+    it('should not add action with invalid state', function(done) {
+      models.users.setActionState(dbUsers[0], dbActions[0]._id, 'foo', null, function(err) {
         done(err ? null : 'no error returned!');
       });
     });
@@ -1083,16 +1135,16 @@ describe('models', function() {
           },
           // add some actions to users
           function(cb) {
-            models.users.startAction(dbUsers[0], dbActions[0]._id, cb);
+            models.users.setActionState(dbUsers[0], dbActions[0]._id, 'inProgress', null, cb);
           },
           function(cb) {
-            models.users.startAction(dbUsers[0], dbActions[1]._id, cb);
+            models.users.setActionState(dbUsers[0], dbActions[1]._id, 'inProgress', null, cb);
           },
           function(cb) {
-            models.users.startAction(dbUsers[1], dbActions[1]._id, cb);
+            models.users.setActionState(dbUsers[1], dbActions[1]._id, 'inProgress', null, cb);
           },
           function(cb) {
-            models.users.startAction(dbUsers[1], dbActions[2]._id, cb);
+            models.users.setActionState(dbUsers[1], dbActions[2]._id, 'inProgress', null, cb);
           }
         ], function(err) {
           if (err) {
