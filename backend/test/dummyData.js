@@ -6,6 +6,11 @@ exports.ids = [
   '5562c1d46b1083a13e5b7843'
 ];
 
+exports.communityids = [
+  '2574583f48522ec71b132493',
+  '2574583f48522ec71b132494'
+];
+
 exports.users = [
   {
     _id: newId(),
@@ -15,7 +20,11 @@ exports.users = [
       name: 'my nick',
       dob: new Date(42),
       photo: 'http://dummy'
-    }
+    },
+
+    communities: [
+      exports.communityids[0]
+    ]
   },
   {
     _id: newId(),
@@ -25,7 +34,10 @@ exports.users = [
       name: 'my nick2',
       dob: new Date(43),
       photo: 'http://dummy2'
-    }
+    },
+    communities: [
+      exports.communityids[1]
+    ]
   }
 ];
 
@@ -118,10 +130,11 @@ exports.communities = [
         name: exports.challenges[2].name
       }
     ],
-    actions: [
-      exports.actions[0]._id,
-      exports.actions[1]._id
-    ]
+    members: [
+      exports.users[0]._id,
+      exports.users[1]._id
+    ],
+    ratings: exports.ratings
   },
   {
     _id: newId(),
@@ -132,8 +145,8 @@ exports.communities = [
         name: exports.challenges[2].name
       }
     ],
-    actions: [
-      exports.actions[1]._id
+    members: [
+      exports.users[1]._id
     ]
   }
 ];

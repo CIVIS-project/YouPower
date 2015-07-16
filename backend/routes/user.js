@@ -11,6 +11,7 @@ var User = require('../models').users;
 var defaultPath = path.dirname(require.main.filename) + '/res/missingProfile.png';
 
 router.use('/action', require('./userAction'));
+router.use('/community', require('./community'));
 router.use('/challenge', require('./userChallenge'));
 
 /**
@@ -105,6 +106,40 @@ router.post('/register', function(req, res) {
  */
 router.get('/profile', auth.authenticate(), function(req, res) {
   User.getProfile(req.user._id, res.successRes);
+});
+
+/**
+ * @apiDefine Authorization
+ * @apiHeader {String} Authorization Authorization token
+ * @apiHeaderExample {String} Authorization-Example:
+ *   "Authorization: Bearer 615ea82f7fec0ffaee5..."
+ */
+
+/**
+ * @api {get} /user/communities Get the list of your communities
+ * @apiGroup User
+ *
+ * @apiVersion 1.0.0
+ */
+router.get('/communities', auth.authenticate(), function(req, res) {
+  User.getUserCommunities(req.user._id, res.successRes);
+});
+
+/**
+ * @apiDefine Authorization
+ * @apiHeader {String} Authorization Authorization token
+ * @apiHeaderExample {String} Authorization-Example:
+ *   "Authorization: Bearer 615ea82f7fec0ffaee5..."
+ */
+
+/**
+ * @api {get} /user/actions Get the list of your actions in progress
+ * @apiGroup User
+ *
+ * @apiVersion 1.0.0
+ */
+router.get('/actions', auth.authenticate(), function(req, res) {
+  User.getUserActions(req.user._id, res.successRes);
 });
 
 /**

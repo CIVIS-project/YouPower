@@ -1,7 +1,8 @@
 'use strict';
 
 var mongoose = require('mongoose');
-var Action = require('./actions');
+var Action = require('./').actions;
+var Community = require('./communities').Community;
 var Schema = mongoose.Schema;
 var passportLocalMongoose = require('passport-local-mongoose');
 var escapeStringRegexp = require('escape-string-regexp');
@@ -49,7 +50,13 @@ var UserSchema = new Schema({
       type: Object,
       default: {}
     }
-  }
+  },
+  communities: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Community',
+    }
+  ]
 });
 UserSchema.plugin(passportLocalMongoose, {
   usernameField: 'email',
@@ -69,7 +76,6 @@ exports.register = function(userInfo, password, cb) {
 exports.create = function(userInfo, cb) { // alias for unit tests
   exports.register(userInfo, userInfo.password, cb);
 };
-
 exports.getProfile = function(id, cb) {
   User.findOne({_id: id}, false, function(err, user) {
     if (err) {
@@ -89,6 +95,48 @@ exports.getProfile = function(id, cb) {
       topCommunities: [], // TODO
       topFriends: [] // TODO
     });
+  });
+};
+
+//Display user's communities (member of which community?)
+exports.getUserCommunities = function(id, cb) {
+  User.findOne({_id: id} , function(err, user) {
+    if (err) {
+      return cb(err);
+    }
+    if (!user) {
+      return cb('User not found');
+    } else {
+      Community.find({_id: {$in : user.communities}}, function(err, communities) {
+        if (err) {
+          return cb(err);
+        }
+        if (!communities) {
+          return cb('Community not found');
+        } else {
+          // convert every returned action into a raw object (remove mongoose magic)
+          for (var i = 0; i < communities.length; i++) {
+            communities[i] = communities[i].toObject();
+            console.log(communities);
+          }
+          cb(null, communities);
+        }
+      });
+    }
+  });
+};
+//Display user's actions (in progress)
+exports.getUserActions = function(id, cb) {
+  User.findOne({_id: id} , function(err, user) {
+    if (err) {
+      return cb(err);
+    }
+    if (!user) {
+      return cb('User not found');
+    } else {
+      console.log(user.actions.inp);
+      return cb(null, user);
+    }
   });
 };
 
