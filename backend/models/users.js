@@ -19,20 +19,37 @@ var UserSchema = new Schema({
   actions: {
     // NOTE: mixed type schemas below,
     // http://mongoosejs.com/docs/schematypes.html#mixed
-    done: {
+
+    // user has postponed action
+    pending: {
       type: Object,
       default: {}
     },
+
+    // user is performing action
     inProgress: {
       type: Object,
       default: {}
     },
+
+    // user is done performing action
+    done: {
+      type: Object,
+      default: {}
+    },
+
+    // user has canceled an action that they were performing
     canceled: {
       type: Object,
       default: {}
+    },
+
+    // user has specified that the action is not applicable to them
+    na: {
+      type: Object,
+      default: {}
     }
-  },
-  energyPlatformID: Number
+  }
 });
 UserSchema.plugin(passportLocalMongoose, {
   usernameField: 'email',
@@ -115,81 +132,75 @@ exports.updateProfile = function(user, profile, cb) {
   });
 };
 
-exports.startAction = function(user, actionId, cb) {
+// fetch user action by id
+var getUA = function(user, actionId) {
+  return user.actions.pending[actionId] ||
+    user.actions.inProgress[actionId] ||
+    user.actions.done[actionId] ||
+    user.actions.canceled[actionId] ||
+    user.actions.na[actionId] ||
+    {};
+};
+
+exports.setActionState = function(user, actionId, state, postponed, cb) {
   Action.get(actionId, function(err, actionResult) {
     if (err) {
-      cb(err);
-    } else {
-      // store this action in inProgress list
-      user.actions.inProgress[actionId] = {};
-      var action = user.actions.inProgress[actionId];
-
-      action.id = actionId;
-      action.name = actionResult.name;
-      action.description = actionResult.description;
-      action.effort = actionResult.effort;
-      action.impact = actionResult.impact;
-      action.activation = actionResult.activation;
-      action.category = actionResult.category;
-      action.startedDate = new Date();
-
-      // get rid of the action in other lists
-      delete(user.actions.done[actionId]);
-      delete(user.actions.canceled[actionId]);
-
-      // must be manually marked as modified due to mixed type schemas
-      user.markModified('actions.inProgress');
-      user.markModified('actions.done');
-      user.markModified('actions.canceled');
-      user.save(cb);
+      return cb(err);
     }
-  });
-};
+    if (!actionResult) {
+      return cb('action not found!');
+    }
 
-exports.cancelAction = function(user, actionId, cb) {
-  var action = user.actions.inProgress[actionId];
+    // get old UA, if any
+    var userAction = getUA(user, actionId);
 
-  if (!action) {
-    cb('Action not in progress');
-  } else {
-    // store this action in canceled list
-    user.actions.canceled[actionId] = action;
+    // update the UA with new data
+    userAction.id = actionId;
+    userAction.name = actionResult.name;
+    userAction.description = actionResult.description;
+    userAction.effort = actionResult.effort;
+    userAction.impact = actionResult.impact;
+    userAction.category = actionResult.category;
 
-    action.canceledDate = new Date();
-
-    // get rid of the action in other lists
+    // temporarily get rid of the UA from all UA lists
+    delete(user.actions.pending[actionId]);
+    delete(user.actions.inProgress[actionId]);
     delete(user.actions.done[actionId]);
-    delete(user.actions.inProgress[actionId]);
-
-    // must be manually marked as modified due to mixed type schemas
-    user.markModified('actions.inProgress');
-    user.markModified('actions.done');
-    user.markModified('actions.canceled');
-    user.save(cb);
-  }
-};
-
-exports.completeAction = function(user, actionId, cb) {
-  var action = user.actions.inProgress[actionId];
-
-  if (!action) {
-    cb('Action not in progress');
-  } else {
-    // store this action in done list
-    user.actions.done[actionId] = action;
-
-    action.doneDate = new Date();
-
-    // get rid of the action in other lists
     delete(user.actions.canceled[actionId]);
-    delete(user.actions.inProgress[actionId]);
+    delete(user.actions.na[actionId]);
+
+    // state-specific logic
+    if (state === 'pending') {
+      if (!postponed || !_.isDate(postponed)) {
+        return cb('please provide a valid date in "postponed" field');
+      }
+      userAction.postponed = postponed;
+    } else if (state === 'inProgress') {
+      userAction.startedDate = new Date();
+    } else if (state === 'alreadyDoing') {
+      userAction.doneDate = new Date();
+      userAction.alreadyDoing = true;
+      state = 'done';
+    } else if (state === 'done') {
+      userAction.doneDate = new Date();
+    } else if (state === 'canceled') {
+      userAction.cancelDate = new Date();
+    } else if (state === 'na') {
+      userAction.naDate = new Date();
+    } else {
+      return cb('invalid value in "state" field');
+    }
+
+    user.actions[state][actionId] = userAction;
 
     // must be manually marked as modified due to mixed type schemas
+    user.markModified('actions.pending');
     user.markModified('actions.inProgress');
     user.markModified('actions.done');
     user.markModified('actions.canceled');
+    user.markModified('actions.na');
     user.save(cb);
-  }
+  });
 };
 
 exports.model = User;

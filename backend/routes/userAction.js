@@ -59,60 +59,26 @@ router.get('/suggested', auth.authenticate(), function(req, res) {
 });
 
 /**
- * @api {post} /user/action/start/:actionId Start an action for current user
+ * @api {post} /user/action/state/:actionId Change state for user action
  * @apiGroup User Action
+ * @apiDescription Used to start/stop actions for a user.
  *
  * @apiParam {String} actionId Action's MongoId
+ * @apiParam {String} state Can be one of: 'pending', 'inProgress', 'alreadyDoing',
+ * 'done', 'canceled', 'na'.
+ * @apiParam {Date} postponed Must be provided if state is 'pending'. Specifies
+ * at which time the user will be reminded of the action again.
  *
  * @apiVersion 1.0.0
  */
-router.post('/start/:actionId', auth.authenticate(), function(req, res) {
-  User.startAction(req.user, req.params.actionId, res.successRes);
+router.post('/state/:actionId', auth.authenticate(), function(req, res) {
+  User.setActionState(req.user, req.params.actionId,
+      req.params.state, req.params.postponed, res.successRes);
 
   Log.create({
     userId: req.user._id,
     category: 'User Action',
-    type: 'start',
-    data: req.params
-  });
-});
-
-/**
- * @api {post} /user/action/cancel/:actionId Cancel an action for current user
- * @apiGroup User Action
- * @apiDescription Note: action must be currently in progress.
- *
- * @apiParam {String} actionId Action's MongoId
- *
- * @apiVersion 1.0.0
- */
-router.post('/cancel/:actionId', auth.authenticate(), function(req, res) {
-  User.cancelAction(req.user, req.params.actionId, res.successRes);
-
-  Log.create({
-    userId: req.user._id,
-    category: 'User Action',
-    type: 'cancel',
-    data: req.params
-  });
-});
-
-/**
- * @api {post} /user/action/complete/:actionId Complete an action for current user
- * @apiGroup User Action
- * @apiDescription Note: action must be currently in progress.
- *
- * @apiParam {String} actionId Action's MongoId
- *
- * @apiVersion 1.0.0
- */
-router.post('/complete/:actionId', auth.authenticate(), function(req, res) {
-  User.completeAction(req.user, req.params.actionId, res.successRes);
-
-  Log.create({
-    userId: req.user._id,
-    category: 'User Action',
-    type: 'complete',
+    type: 'update',
     data: req.params
   });
 });
