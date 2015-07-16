@@ -34,16 +34,35 @@ var CommunitySchema = new Schema({
   members: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'User'
+      ref: 'User',
+      required: true
     }
   ],
+  ratings: {
+    type: Schema.Types.Mixed,
+    default: {}
+  },
   date: {
     type: Date,
     required: true
+
   }
 });
-
 var Community = mongoose.model('Community', CommunitySchema);
+
+//rate communities
+var includeRatingStats = function(community) {
+  var cnt = 0;
+  var sum = 0;
+
+  _.each(community.ratings, function(rating) {
+    sum += rating.rating;
+    cnt++;
+  });
+
+  community.avgRating = cnt ? sum / cnt : 0;
+  community.numRatings = cnt;
+};
 
 // create community entity
 
@@ -52,6 +71,7 @@ exports.create = function(community, cb) {
     name: community.name,
     challenges: community.challenges,
     members: community.members,
+    ratings: community.ratings,
     date: new Date()
   }, cb);
 };
@@ -177,14 +197,61 @@ exports.delete = function(id, cb) {
   }, cb);
 };
 
-exports.all = function(limit, skip, cb) {
+exports.all = function(limit, skip, includeRatings, cb) {
   Community
   .find({})
   .skip(skip)
   .limit(limit)
-  .select('name _id')
   .exec(function(err, communities) {
-    cb(err, communities);
+    /* istanbul ignore if: db errors are hard to unit test */
+    if (err) {
+      cb(err);
+    } else {
+      // convert every returned community into a raw object (remove mongoose magic)
+      for (var i = 0; i < communities.length; i++) {
+        communities[i] = communities[i].toObject();
+      }
+
+      // calculate rating stats for each action
+      _.each(communities, includeRatingStats);
+
+      // get rid of ratings
+      if (!includeRatings) {
+        _.each(communities, function(community) {
+          community.ratings = undefined;
+        });
+      }
+      cb(null, communities);
+    }
+  });
+};
+
+// Users can rate community and give feedback in comment
+exports.rate = function(id, userId, rating, comment, cb) {
+  if (!userId) {
+    return cb('Missing userId');
+  }
+  if (!rating || !_.isNumber(rating)) {
+    return cb('Missing/invalid rating');
+  }
+  Community.findOne({
+    _id: id
+  }, function(err, community) {
+    if (err) {
+      cb(err);
+    } else if (!community) {
+      cb('Community not found');
+    } else {
+      community.ratings[userId] = {
+        rating: rating,
+        comment: comment || community.ratings[userId].comment,
+        date: new Date()
+      };
+      community.markModified('ratings');
+      community.save(function(err) {
+        cb(err);
+      });
+    }
   });
 };
 

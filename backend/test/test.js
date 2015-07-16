@@ -50,7 +50,6 @@ describe('models', function() {
         var testAction = _.find(actions, function(action) {
           return action.name === dummyData.actions[0].name;
         });
-
         should.equal(testAction.ratings, undefined);
         done(err);
       });
@@ -59,13 +58,11 @@ describe('models', function() {
     it('should return all actions with ratings', function(done) {
       models.actions.all(null, null, true, function(err, actions) {
         actions.length.should.equal(dummyData.actions.length);
-
         var testAction = _.find(actions, function(action) {
           return action.name === dummyData.actions[0].name;
         });
-
         testAction.ratings[dummyData.users[0]._id]
-          .should.deep.equal(dummyData.actions[0].ratings[dummyData.users[0]._id]);
+        .should.deep.equal(dummyData.actions[0].ratings[dummyData.users[0]._id]);
         done(err);
       });
     });
@@ -418,6 +415,16 @@ describe('models', function() {
     it('bogus query should return undefined for non multi-find', function(done) {
       models.users.find({'email': 'dasfsada'}, false, null, null, function(err, user) {
         should.not.exist(user);
+        done(err);
+      });
+    });
+
+    it('should return the complete actions list for a user', function(done) {
+      models.users.getUserActions(dbUsers[0]._id, function(err, user) {
+        //Is there a way to combine all of the action types?
+        user.actions.inProgress.should.deep.equal(dbUsers[0].actions.inProgress);
+        user.actions.done.should.deep.equal(dbUsers[0].actions.done);
+        user.actions.canceled.should.deep.equal(dbUsers[0].actions.canceled);
         done(err);
       });
     });
@@ -922,10 +929,11 @@ describe('models', function() {
       ], function(err) {
         done(err);
       });
+      dummyData = require('./dummyData');
     });
 
     it('should return all communities', function(done) {
-      models.communities.all(null, null, function(err, communities) {
+      models.communities.all(null, null, true, function(err, communities) {
         communities.length.should.equal(2);
         done(err);
       });
@@ -945,6 +953,32 @@ describe('models', function() {
       models.communities.create({
         name: d.name
       }, function(err) {
+        done(err);
+      });
+    });
+
+    it('should return all communities without ratings', function(done) {
+      models.communities.all(null, null, null, function(err, communities) {
+        communities.length.should.equal(dummyData.communities.length);
+
+        // find a community that was added with ratings
+        var testCommunity = _.find(communities, function(community) {
+          return community.name === dummyData.communities[0].name;
+        });
+
+        should.equal(testCommunity.ratings, undefined);
+        done(err);
+      });
+    });
+
+    it('should return all communities with ratings', function(done) {
+      models.communities.all(null, null, true, function(err, communities) {
+        communities.length.should.equal(dummyData.communities.length);
+        var testCommunity = _.find(communities, function(community) {
+          return community.name === dummyData.communities[0].name;
+        });
+        testCommunity.ratings[dummyData.users[0]._id]
+        .should.deep.equal(dummyData.communities[0].ratings[dummyData.users[0]._id]);
         done(err);
       });
     });
@@ -1017,7 +1051,7 @@ describe('models', function() {
           return done(err);
         }
         models.communities.get(dbCommunities[0]._id, function(err, community) {
-          should.not.exist(community.members[0]);
+          community.members[0].should.not.equal(dbUsers[0]._id);
           done(err);
         });
       });
