@@ -3,9 +3,12 @@
 var auth = require('../middleware/auth');
 var express = require('express');
 var util = require('util');
-var escapeRegexp = require('escape-string-regexp');
+var fs = require('fs');
+var path = require('path');
 var router = express.Router();
 var User = require('../models').users;
+
+var defaultPath = path.dirname(require.main.filename) + '/res/missingProfile.png';
 
 router.use('/action', require('./userAction'));
 router.use('/community', require('./community'));
@@ -19,7 +22,21 @@ router.use('/challenge', require('./userChallenge'));
  * @apiParam {String} name User's nickname
  * @apiParam {String} password User's password
  *
- * @apiVersion 1.0.0
+ * @apiExample {curl} Example usage:
+ *  # NOTE: this is the only API call which does not require authentication!
+ *
+ *  curl -i -X POST -H "Content-Type: application/json" -d \
+ *  '{
+ *    "email": "testuser@test.com",
+ *    "name": "Test User",
+ *    "password": "topsecret"
+ *  }' \
+ *  http://localhost:3000/api/user/register
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "token": "2af38938a7e2aa3daa429278a8f4..."
+ *   }
  */
 router.post('/register', function(req, res) {
   req.checkBody('email').notEmpty();
@@ -59,6 +76,31 @@ router.post('/register', function(req, res) {
 /**
  * @api {get} /user/profile Get your profile
  * @apiGroup User
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/user/profile
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "email": "testuser1@test.com",
+ *     "profile": {
+ *       "name": "Test User"
+ *     },
+ *     "actions": {
+ *       "done": {},
+ *       "inProgress": {},
+ *       "canceled": {}
+ *     },
+ *     "energyConsumption": {},
+ *     "topActions": [],
+ *     "topChallenges": [],
+ *     "topCommunities": [],
+ *     "topFriends": []
+ *   }
  *
  * @apiVersion 1.0.0
  */
@@ -108,7 +150,22 @@ router.get('/actions', auth.authenticate(), function(req, res) {
  * @apiParam {Date} [dob] Your date of birth
  * @apiParam {String} [photo] Profile photo
  *
- * @apiVersion 1.0.0
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/profile
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
+ *  '{
+ *    "name": "New Name",
+ *    "dob": "11 25 1990"
+ *  }' \
+ *  http://localhost:3000/api/user/profile
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ *   "dob": "1990-11-25T00:00:00.000Z",
+ *   "name": "New Name"
+ * }
  */
 router.post('/profile', auth.authenticate(), function(req, res) {
   req.checkBody('name').optional().notEmpty();
@@ -123,56 +180,132 @@ router.post('/profile', auth.authenticate(), function(req, res) {
 });
 
 /**
- * @api {get} /user/profile/:id Get another user's profile
+ * @api {get} /user/profilePicture/:userId Get user's profile picture
  * @apiGroup User
  *
- * @apiVersion 1.0.0
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/profile
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Authorization: Bearer $API_TOKEN"
+ *  http://localhost:3000/api/user/profilePicture/:userId
+ *
+ * @apiSuccessExample {binary} Success-Response:
+ * <image data>
  */
-router.get('/profile/:id', auth.authenticate(), function(req, res) {
-  User.getProfile(req.params.id, res.successRes);
+router.get('/profilePicture/:userId', auth.authenticate(), function(req, res) {
+  req.checkParams('userId').notEmpty();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    var picPath = process.env.HOME + '/.youpower/profilePictures/' + req.params.userId + '.png';
+    fs.exists(picPath, function(exists) {
+      var stream = fs.createReadStream(exists ? picPath : defaultPath);
+      stream.pipe(res);
+    });
+  }
+});
+
+/**
+ * @api {post} /user/profilePicture Update your profile picture
+ * @apiGroup User
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/profile
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X POST -H "Content-Type: image/png" -H "Authorization: Bearer $API_TOKEN" \
+ *  --data-binary @/path/to/picture.png \
+ *  http://localhost:3000/api/user/profilePicture
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ *   "status": "ok"
+ * }
+ */
+router.post('/profilePicture', auth.authenticate(), function(req, res) {
+  var picPath = process.env.HOME + '/.youpower/profilePictures/' + req.user._id + '.png';
+  var stream = fs.createWriteStream(picPath);
+  req.pipe(stream);
+  stream.on('close', function() {
+    res.successRes(null, {msg: 'success!'});
+  });
+  stream.on('error', function(err) {
+    res.successRes(err);
+  });
+});
+
+/**
+ * @api {get} /user/profile/:userId Get another user's profile
+ * @apiGroup User
+ *
+ * @apiParam {String} userId userId of desired user
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/user/profile/555f0163688305b57c7cef6c
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ *   "email": "testuser1@test.com",
+ *   "profile": {
+ *     "name": "Test User"
+ *   },
+ *   "actions": {
+ *     "done": {},
+ *     "inProgress": {},
+ *     "canceled": {}
+ *   },
+ *   "energyConsumption": {},
+ *   "topActions": [],
+ *   "topChallenges": [],
+ *   "topCommunities": [],
+ *   "topFriends": []
+ *  }
+ */
+router.get('/profile/:userId', auth.authenticate(), function(req, res) {
+  User.getProfile(req.params.userId, res.successRes);
 });
 
 /**
  * @api {get} /user/search Search for users
  * @apiGroup User
  *
- * @apiParam {String} q Search query
+ * @apiParam {String} [email] Search by email TODO: do we allow this?
+ * @apiParam {String} [name] Search by name
  *
  * @apiExample {curl} Example usage:
- *  curl -i http://localhost:3000/api/user/search\?q\=foobar
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
+ *  '{
+ *    "email": "test"
+ *  }' \
+ *  http://localhost:3000/api/user/search
  *
  * @apiSuccessExample {json} Success-Response:
- *   {
- *     "users": [
- *       {
- *         "_id": "5562c1d46b1083a13e5b7843",
- *         "email": "testUser@foo.com",
- *         "profile": {
- *           ...
- *         }
- *       },
- *       ...
- *     ]
- *   }
+ *   [
+ *     {
+ *       "_id": "5562c1d46b1083a13e5b7843",
+ *       "email": "testUser@foo.com",
+ *       "profile": {
+ *         "name": "Test User",
+ *         ...
+ *       }
+ *     },
+ *     ...
+ *   ]
  *
  * @apiVersion 1.0.0
  */
 router.get('/search', auth.authenticate(), function(req, res) {
-  req.checkQuery('q', 'Invalid query parameter').notEmpty();
-
-  var err;
-  if ((err = req.validationErrors())) {
-    res.status(500).send('There have been validation errors: ' + util.inspect(err));
-  } else {
-    var regexpQuery = new RegExp(escapeRegexp(req.query.q));
-
-    User.find({
-      $or: [
-        {'profile.name':  regexpQuery},
-        {'email':        regexpQuery}
-      ]
-    }, true, 50, null, res.successRes);
-  }
+  User.find(req.body, true, 50, null, res.successRes);
 });
 
 /**
@@ -182,6 +315,13 @@ router.get('/search', auth.authenticate(), function(req, res) {
  * @apiHeader {String} Authorization HTTP Basic Authentication credentials
  * @apiHeaderExample {String} Authorization-Example:
  *   "Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ=="
+ *
+ * @apiExample {curl} Example usage:
+ *  # NOTE: exceptionally uses your email:password, replace them in the export command below!
+ *  export HTTP_BASIC=$(echo -n "testuser1@test.com:topsecret" | base64)
+ *
+ *  curl -i -X POST -H "Authorization: Basic $HTTP_BASIC" \
+ *  http://localhost:3000/api/user/token
  *
  * @apiSuccessExample {json} Success-Response:
  *   {
@@ -205,6 +345,13 @@ router.post('/token', auth.basicauth(), function(req, res) {
  * @apiHeader {String} Authorization HTTP Basic Authentication credentials
  * @apiHeaderExample {String} Authorization-Example:
  *   "Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ=="
+ *
+ * @apiExample {curl} Example usage:
+ *  # NOTE: exceptionally uses your email:password, replace them in the export command below!
+ *  export HTTP_BASIC=$(echo -n "testuser1@test.com:topsecret" | base64)
+ *
+ *  curl -i -X GET -H "Authorization: Basic $HTTP_BASIC" \
+ *  http://localhost:3000/api/user/token
  *
  * @apiSuccessExample {json} Success-Response:
  *   {

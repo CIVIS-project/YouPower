@@ -50,5 +50,22 @@ We will try to keep every single API path documented like this.
 Current API documentation of latest master available here:
 https://gentle-coast-9691.herokuapp.com/
 
+## Metrics
+Most REST API calls are logged into the DB. The logs can be read using the
+`metricsViewer.js` tool. It takes the following options:
+
+    -c   Colorize output
+    -e   Ellipsize long lines (only show first row)
+    -h   Show help
+
+Run it as
+
+    node metricsViewer.js
+
+It defaults to a local mongodb instance (named youpower), you can change this
+by setting the `MONGO_URL` environment variable as such:
+
+    MONGO_URL=mongodb://somewhere.else.com/youpower node metricsViewer.js
+
 ## TODO:
 - OAuth 2.0 instead of HTTP basic auth (eg. OAuth2orize)

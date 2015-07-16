@@ -2,8 +2,135 @@
 
 var express = require('express');
 var util = require('util');
+var auth = require('../middleware/auth');
 var router = express.Router();
 var Community = require('../models').communities;
+var CommunityComment = require('../models').communityComments;
+var fs = require('fs');
+var Log = require('../models').logs;
+
+/**
+ * @api {post} /community/:communityId/comment Create new community comment
+ * @apiGroup Community Comments
+ *
+ * @apiParam {String} communityId ID of community being commented
+ * @apiParam {String} comment Text contents of comment
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
+ *  '{
+ *    "comment": "This is a fun community!"
+ *  }' \
+ *  http://localhost:3000/api/community/555f0163688305b57c7cef6c/comment
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "__v": 0,
+ *     "communityId": "555f0163688305b57c7cef6c",
+ *     "name": "Test User",
+ *     "email": "testuser1@test.com",
+ *     "comment": "This is a fun community!",
+ *     "date": "2015-07-01T12:04:33.599Z",
+ *     "_id": "555f0163688305b57c7cef6d",
+ *   }
+ */
+router.post('/:communityId/comment', auth.authenticate(), function(req, res) {
+  var communityComment = req.body;
+  communityComment.actionId = req.params.actionId;
+  communityComment.name = req.user.profile.name;
+  communityComment.email = req.user.email;
+  CommunityComment.create(communityComment, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Community Comments',
+    type: 'create',
+    data: communityComment
+  });
+});
+
+/**
+ * @api {get} /community/:communityId/comments Get a list of community comments
+ * @apiGroup Community Comments
+ *
+ * @apiParam {String} communityId ID of community whose comments are requested
+ * @apiParam {Integer} [limit=10] Maximum number of results returned
+ * @apiParam {Integer} [skip=0] Number of results skipped
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
+ *  '{
+ *    "limit": "50",
+ *    "skip": "0"
+ *  }' \
+ *  http://localhost:3000/api/community/555f0163688305b57c7cef6c/comments
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * [
+ *   {
+ *     "_id": "555f0163688305b57c7cef6d",
+ *     "communityId": "555f0163688305b57c7cef6c",
+ *     "name": "Test User",
+ *     "email": "testuser1@test.com",
+ *     "comment": "This is a fun community!",
+ *     "date": "2015-07-01T12:04:33.599Z",
+ *     "__v": 0,
+ *   },
+ *   ...
+ * ]
+ */
+router.get('/:communityId/comments', auth.authenticate(), function(req, res) {
+  CommunityComment.get(
+      req.params.communityId, req.body.limit || 10, req.body.skip || 0, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Community Comments',
+    type: 'get',
+    data: {
+      communityId: req.params.communityId,
+      limit: req.body.limit,
+      skip: req.body.skip
+    }
+  });
+});
+
+/**
+ * @api {delete} /community/:communityId/comment/:commentId Delete a comment
+ * @apiGroup Community Comments
+ *
+ * @apiParam {String} communityId ID of community whose comment will be deleted
+ * @apiParam {String} commentId ID of comment to be deleted
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X DELETE -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/community/555f0163688305b57c7cef6c/comment/555f0163688305b57c7cef6d
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "ok":1,
+ *     "n":1
+ *   }
+ */
+router.delete('/:communityId/comment/:commentId', auth.authenticate(), function(req, res) {
+  CommunityComment.delete(req.params.communityId, req.params.commentId, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Community Comments',
+    type: 'delete',
+    data: req.params
+  });
+});
 
 /**
  * @api {post} /community Create new community
@@ -14,39 +141,42 @@ var Community = require('../models').communities;
  * @apiParam {Array} actions Actions specific to the community
  *
  * @apiExample {curl} Example usage:
- *  curl -i -X POST -H "Content-Type: application/json" -d \
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
  *  '{
  *    "name": "Otaniemi Community",
  *    "challenges": [
- *       {
- *       "id": "555eda2531039c1853352b7f",
- *       "name": "Reduce energy consumption by 10%"
- *       },
- *       {
+ *      {
+ *        "id": "555eda2531039c1853352b7f",
+ *        "name": "Reduce energy consumption by 10%"
+ *      },
+ *      {
  *        "id": "455eda2531039c1853335b7f",
- *       "name": "Save for 2 solar panels for the area"
- *       }
+ *        "name": "Save for 2 solar panels for the area"
+ *      }
  *    ],
  *    "actions": [
- *       {
- *       "id": "345eda2531039c1853352b7f",
- *       "name": "Use the clothes washer/dryer only once per week"
- *       },
- *       {
+ *      {
+ *        "id": "345eda2531039c1853352b7f",
+ *        "name": "Use the clothes washer/dryer only once per week"
+ *      },
+ *      {
  *        "id": "7645eda34531039c1853352b7f",
- *       "name": "Turn off lights during the day in Summer"
- *       }
+ *        "name": "Turn off lights during the day in Summer"
+ *      }
  *    ],
  *    "members": [
- *       {
- *         "_id": "testUser1",
- *         "name": "Jane",
- *       },
- *        {
- *         "_id": "testUser2",
- *         "name": "Jack",
- *       }
- *     ]
+ *      {
+ *        "_id": "testUser1",
+ *        "name": "Jane"
+ *      },
+ *      {
+ *        "_id": "testUser2",
+ *        "name": "Jack"
+ *      }
+ *    ]
  *  }' \
  *  http://localhost:3000/api/community
  *
@@ -57,40 +187,46 @@ var Community = require('../models').communities;
  *     "name": "Otaniemi Community",
  *     "challenges": [
  *       {
- *       "id": "555eda2531039c1853352b7f",
- *       "name": "Reduce energy consumption by 10%"
+ *         "id": "555eda2531039c1853352b7f",
+ *         "name": "Reduce energy consumption by 10%"
  *       },
  *       {
- *        "id": "455eda2531039c1853335b7f",
- *       "name": "Save for 2 solar panels for the area"
+ *         "id": "455eda2531039c1853335b7f",
+ *         "name": "Save for 2 solar panels for the area"
  *       }
- *    ],
+ *     ],
  *     "actions": [
  *       {
- *       "id": "345eda2531039c1853352b7f",
- *       "name": "Use the clothes washer/dryer only once per week"
+ *         "id": "345eda2531039c1853352b7f",
+ *         "name": "Use the clothes washer/dryer only once per week"
  *       },
  *       {
- *        "id": "7645eda34531039c1853352b7f",
- *       "name": "Turn off lights during the day in Summer"
+ *         "id": "7645eda34531039c1853352b7f",
+ *         "name": "Turn off lights during the day in Summer"
  *       }
- *    ],
+ *     ],
  *     "members": [
- *        "User":
- *         {
- *          "_id": "testUser1",
- *          "name": "Jane",
- *        },
- *       "User" :
- *        {
+ *       "User": {
+ *         "_id": "testUser1",
+ *         "name": "Jane"
+ *       },
+ *       "User": {
  *         "_id": "testUser2",
- *         "name": "Jack",
+ *         "name": "Jack"
  *       }
- *     ]
+ *     ],
+ *     "date": "2015-07-01T12:04:33.599Z"
  *   }
  */
-router.post('/', function(req, res) {
+router.post('/', auth.authenticate(), function(req, res) {
   Community.create(req.body, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Community',
+    type: 'create',
+    data: req.body
+  });
 });
 
 /**
@@ -99,7 +235,11 @@ router.post('/', function(req, res) {
  *
  * @apiParam {String} id MongoId of community
  * @apiExample {curl} Example usage:
- *    curl -i http://localhost:3000/api/community/555ecb997aa6360e40f26451
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/community/555ecb997aa6360e40f26451
  *
  * @apiSuccessExample {json} Success-Response:
  *   {
@@ -136,11 +276,12 @@ router.post('/', function(req, res) {
  *         "name": "Jack",
  *       },
  *       ...
- *     ]
+ *     ],
+ *     "date": "2015-07-01T12:04:33.599Z"
  *   }
  */
 
-router.get('/:id', function(req, res) {
+router.get('/:id', auth.authenticate(), function(req, res) {
   req.checkParams('id', 'Invalid community id').isMongoId();
 
   var err;
@@ -148,6 +289,15 @@ router.get('/:id', function(req, res) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
     Community.getCommunityInfo(req.params.id, res.successRes);
+
+    Log.create({
+      userId: req.user._id,
+      category: 'Community',
+      type: 'get',
+      data: {
+        actionId: req.params.id
+      }
+    });
   }
 });
 
@@ -157,7 +307,11 @@ router.get('/:id', function(req, res) {
  *
  * @apiParam {String} id MongoId of Community
  * @apiExample {curl} Example usage:
- *    curl -i -X DELETE http://localhost:3000/api/community/555ecb997aa6360e40f26451
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X DELETE -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/community/555ecb997aa6360e40f26451
  *
  * @apiSuccess {Integer} n Number of deleted communities (0 or 1)
  * @apiSuccess {Integer} ok Mongoose internals
@@ -168,7 +322,7 @@ router.get('/:id', function(req, res) {
  *     "ok": 1
  *   }
  */
-router.delete('/:id', function(req, res) {
+router.delete('/:id', auth.authenticate(), function(req, res) {
   req.checkParams('id', 'Invalid Community id').isMongoId();
 
   var err;
@@ -176,93 +330,149 @@ router.delete('/:id', function(req, res) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
     Community.delete(req.params.id, res.successRes);
+
+    Log.create({
+      userId: req.user._id,
+      category: 'Community',
+      type: 'delete',
+      data: {
+        communityId: req.params.id
+      }
+    });
   }
 });
 
 /**
- * @api {put} /community/join/:id Add member to Community
+ * @api {put} /community/join/:id Join community
  * @apiGroup Community
  *
- * @apiParam {String} id MongoId of Community
- * @apiParam {Array} members List of members in the Community
+ * @apiParam {String} id MongoId of community
  *
  * @apiExample {curl} Example usage:
- *  curl -i -X PUT \
- *  -H "Authorization: Bearer 615ea82f7fec0ffaee5..." \
- *  -H "Content-Type: application/json" -d \
- *  '{
- *    "_id": "testUser1",
- *    "name": "Jack",
- *  }' \
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X PUT -H "Authorization: Bearer $API_TOKEN" \
  *  http://localhost:3000/api/community/join/555ef84b2fd41ffef6e078a34
  */
-router.put('/join/:id', function(req, res) {
+router.put('/join/:id', auth.authenticate(), function(req, res) {
   req.checkParams('id', 'Invalid Community id').isMongoId();
 
   var err;
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    Community.addmember(req.body, res.successRes);
+    Community.addMember(req.params.id, req.user._id, res.successRes);
+
+    Log.create({
+      userId: req.user._id,
+      category: 'Community',
+      type: 'join',
+      data: req.params
+    });
   }
 });
 
 /**
- * @api {put} /community/leave/:id Remove member from community
+ * @api {put} /community/leave/:id Leave community
  * @apiGroup Community
  *
- * @apiParam {String} id MongoId of action
- * @apiParam {Array} members List of members in the community
+ * @apiParam {String} id MongoId of community
  *
  * @apiExample {curl} Example usage:
- *  curl -i -X PUT \
- *  -H "Authorization: Bearer 615ea82f7fec0ffaee5..." \
- *  -H "Content-Type: application/json" -d \
- *  '{
- *    "_id": "testUser1",
- *    "name": "Jane",
- *   }'
- * '{
- *    "_id": "testUser2",
- *    "name": "Jack",
- *  }' \
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X PUT -H "Authorization: Bearer $API_TOKEN" -d \
  *  http://localhost:3000/api/community/leave/555ef84b2fd41ffef6e078a34
  */
-router.put('/leave/:id', function(req, res) {
+router.put('/leave/:id', auth.authenticate(), function(req, res) {
   req.checkParams('id', 'Invalid Community id').isMongoId();
 
   var err;
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    Community.removeMember(req.body, res.successRes);
+    Community.removeMember(req.params.id, req.user._id, res.successRes);
+
+    Log.create({
+      userId: req.user._id,
+      category: 'Community',
+      type: 'leave',
+      data: req.params
+    });
   }
 });
 
+// TODO: verify that this one works
 /**
- * @api {put} /community/top/:id Display top actions from community
+ * @api {get} /community/top/:id Display top actions from community
  * @apiGroup Community
  *
  * @apiParam {String} id MongoId of action
+ * @apiParam {Integer} [limit=10] Count limit
  * @apiParam {Array} actions List of top actions in the community, actions with high rating
  *
  * @apiExample {curl} Example usage:
- *  curl -i -X PUT \
- *  -H "Authorization: Bearer 615ea82f7fec0ffaee5..." \
- *  -H "Content-Type: application/json" -d \
- *  '{
- *    "_id": "315ea82f7fec0ffaee5",
- *   }' \
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" \
  *  http://localhost:3000/api/community/top/315ea82f7fec0ffaee5
  */
-router.get('/top/:id', function(req, res) {
+router.get('/top/:id', auth.authenticate(), function(req, res) {
   req.checkParams('id', 'Invalid Community id').isMongoId();
 
   var err;
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    Community.topActions(req.id, res.successRes);
+    Community.topActions(req.params.id, req.body.limit, res.successRes);
+
+    Log.create({
+      userId: req.user._id,
+      category: 'Community',
+      type: 'top',
+      data: {
+        communityId: req.params.id,
+        limit: req.body.limit
+      }
+    });
+  }
+});
+
+/**
+ * @api {post} /community/communityPicture/:id Update your Community picture
+ * @apiGroup Community
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/profile
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X POST -H "Content-Type: image/png" -H "Authorization: Bearer $API_TOKEN" \
+ *  --data-binary @/path/to/picture.png \
+ *  http://localhost:3000/api/community/communityPicture/:id
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ *   "status": "ok"
+ * }
+ */
+router.post('/communityPicture/:id', auth.authenticate(), function(req, res) {
+  req.checkParams('id', 'Invalid Community id').isMongoId();
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    var picPath = process.env.HOME + '/.youpower/communityPicture/' + req.params.id + '.png';
+    var stream = fs.createWriteStream(picPath);
+    req.pipe(stream);
+    stream.on('close', function() {
+      res.successRes(null, {msg: 'success!'});
+    });
+    stream.on('error', function(err) {
+      res.successRes(err);
+    });
   }
 });
 

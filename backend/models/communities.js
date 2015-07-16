@@ -6,8 +6,8 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var _ = require('underscore');
 
-var User = require('./users').User;
-var Action = require('./actions').Action;
+var User = require('./users');
+var Action = require('./actions');
 
 //Community Schema
 var CommunitySchema = new Schema({
@@ -19,15 +19,22 @@ var CommunitySchema = new Schema({
   //refer challenge schema
   challenges: [
     {
-      type: Schema.Types.ObjectId,
-      ref: 'Challenge',
-      required: true
+      id: {
+        type: Schema.Types.ObjectId,
+        ref: 'Challenge',
+        required: true
+      },
+      name: {
+        type: String,
+        required: true
+      }
     }
   ],
   // refer user schema
   members: [
     {
       type: Schema.Types.ObjectId,
+<<<<<<< HEAD
       ref: 'User',
       required: true
     }
@@ -35,6 +42,14 @@ var CommunitySchema = new Schema({
   ratings: {
     type: Schema.Types.Mixed,
     default: {}
+=======
+      ref: 'User'
+    }
+  ],
+  date: {
+    type: Date,
+    required: true
+>>>>>>> master
   }
 });
 var Community = mongoose.model('Community', CommunitySchema);
@@ -60,7 +75,11 @@ exports.create = function(community, cb) {
     name: community.name,
     challenges: community.challenges,
     members: community.members,
+<<<<<<< HEAD
     ratings: community.ratings
+=======
+    date: new Date()
+>>>>>>> master
   }, cb);
 };
 
@@ -92,7 +111,9 @@ exports.addMember = function(id, userId, cb) {
     } else if (!community) {
       cb('Community not found');
     } else {
-      community.members.push(userId);
+      if (community.members.indexOf(userId) === -1) {
+        community.members.push(userId);
+      }
       community.save(cb);
     }
   });
@@ -125,9 +146,11 @@ exports.topActions = function(id, limit, cb) {
     /* istanbul ignore if: db errors are hard to unit test */
     if (err) {
       cb(err);
+    } else if (!community) {
+      cb('community not found!');
     } else {
       // find actions of users that are part of the community
-      User
+      User.model
       .find({_id: {$in: community.members}})
       .select('actions.inProgress actions.done')
       .exec(function(err, users) {
@@ -147,7 +170,7 @@ exports.topActions = function(id, limit, cb) {
         });
 
         // finally get details of each action
-        Action
+        Action.model
         .find({_id: {$in: _.keys(actionCounts)}})
         .select('name description impact effort')
         .exec(function(err, actions) {
@@ -239,4 +262,8 @@ exports.rate = function(id, userId, rating, comment, cb) {
   });
 };
 
+<<<<<<< HEAD
 exports.Community = Community;
+=======
+exports.model = Community;
+>>>>>>> master

@@ -43,6 +43,10 @@ var ActionSchema = new Schema({
   ratings: {
     type: Schema.Types.Mixed,
     default: {}
+  },
+  date: {
+    type: Date,
+    required: true
   }
 });
 
@@ -69,7 +73,8 @@ exports.create = function(action, cb) {
     description: action.description,
     ratings: action.ratings || {},
     impact: action.impact,
-    effort: action.effort
+    effort: action.effort,
+    date: new Date()
   }, cb);
 };
 
@@ -125,9 +130,9 @@ exports.all = function(limit, skip, includeRatings, cb) {
   });
 };
 
-exports.rate = function(id, userId, rating, comment, cb) {
-  if (!userId) {
-    return cb('Missing userId');
+exports.rate = function(id, user, rating, comment, cb) {
+  if (!user || !user._id || !user.profile || !user.profile.name) {
+    return cb('Missing/invalid user');
   }
   if (!rating || !_.isNumber(rating)) {
     return cb('Missing/invalid rating');
@@ -140,17 +145,32 @@ exports.rate = function(id, userId, rating, comment, cb) {
     } else if (!action) {
       cb('Action not found');
     } else {
-      action.ratings[userId] = {
+      action.ratings[user._id] = {
         rating: rating,
-        comment: comment || action.ratings[userId].comment,
+        name: user.profile.name,
+        comment: comment || action.ratings[user._id].comment,
         date: new Date()
       };
       action.markModified('ratings');
       action.save(function(err) {
-        cb(err);
+        cb(err, action);
       });
     }
   });
 };
 
-exports.Action = Action;
+exports.getSuggested = function(userActions, cb) {
+  Action.find({
+    $and: [
+      {_id: {$nin: _.keys(userActions.done)}},
+      {_id: {$nin: _.keys(userActions.canceled)}},
+      {_id: {$nin: _.keys(userActions.inProgress)}}
+    ]
+  })
+  .sort('date')
+  .limit(3)
+  .select('name description impact effort')
+  .exec(cb);
+};
+
+exports.model = Action;

@@ -117,9 +117,18 @@ exports.communities = [
     _id: newId(),
     name: 'dummy community 1',
     challenges: [
-      exports.challenges[0]._id,
-      exports.challenges[1]._id,
-      exports.challenges[2]._id
+      {
+        id: exports.challenges[0]._id,
+        name: exports.challenges[0].name
+      },
+      {
+        id: exports.challenges[1]._id,
+        name: exports.challenges[1].name
+      },
+      {
+        id: exports.challenges[2]._id,
+        name: exports.challenges[2].name
+      }
     ],
     members: [
       exports.users[0]._id,
@@ -131,7 +140,10 @@ exports.communities = [
     _id: newId(),
     name: 'dummy community 2',
     challenges: [
-      exports.challenges[2]._id
+      {
+        id: exports.challenges[2]._id,
+        name: exports.challenges[2].name
+      }
     ],
     members: [
       exports.users[1]._id
@@ -170,5 +182,115 @@ exports.appliances = [
     _id: newId(),
     appliance: 'tv',
     quantity: 2
+  }
+];
+
+exports.actionComments = [
+  {
+    _id: newId(),
+    actionId: exports.actions[0]._id,
+    name: 'myUser1',
+    email: 'dummy@mail.com',
+    comment: 'Hello world!'
+  },
+  {
+    _id: newId(),
+    actionId: exports.actions[0]._id,
+    name: 'myUser2',
+    email: 'dummy2@mail.com',
+    comment: 'Hello world again!'
+  },
+  {
+    _id: newId(),
+    actionId: exports.actions[1]._id,
+    name: 'myUser3',
+    email: 'dummy3@mail.com',
+    comment: 'Another action'
+  }
+];
+
+exports.challengeComments = [
+  {
+    _id: newId(),
+    challengeId: exports.challenges[0]._id,
+    name: 'myUser1',
+    email: 'dummy@mail.com',
+    comment: 'Hello world!'
+  },
+  {
+    _id: newId(),
+    challengeId: exports.challenges[0]._id,
+    name: 'myUser2',
+    email: 'dummy2@mail.com',
+    comment: 'Hello world again!'
+  },
+  {
+    _id: newId(),
+    challengeId: exports.challenges[1]._id,
+    name: 'myUser3',
+    email: 'dummy3@mail.com',
+    comment: 'Another challenge'
+  }
+];
+
+exports.communityComments = [
+  {
+    _id: newId(),
+    communityId: exports.communities[0]._id,
+    name: 'myUser1',
+    email: 'dummy@mail.com',
+    comment: 'Hello world!'
+  },
+  {
+    _id: newId(),
+    communityId: exports.communities[0]._id,
+    name: 'myUser2',
+    email: 'dummy2@mail.com',
+    comment: 'Hello world again!'
+  },
+  {
+    _id: newId(),
+    communityId: exports.communities[1]._id,
+    name: 'myUser3',
+    email: 'dummy3@mail.com',
+    comment: 'Another community'
+  }
+];
+
+exports.feedback = [
+  {
+    _id: newId(),
+    name: 'My Name',
+    email: 'my@email.com',
+    comment: 'Hello world!'
+  },
+  {
+    _id: newId(),
+    name: 'My Other Name',
+    email: 'myother@email.com',
+    comment: 'Hello other world!'
+  }
+];
+
+exports.logs = [
+  {
+    _id: newId(),
+    userId: newId(),
+    category: 'dummyCategory',
+    type: 'dummyType',
+    data: {
+      hello: 'world'
+    },
+    date: new Date(42)
+  },
+  {
+    _id: newId(),
+    userId: newId(),
+    category: 'dummyCategory2',
+    type: 'dummyType2',
+    data: {
+      hello: 'world2'
+    },
+    date: new Date(43)
   }
 ];

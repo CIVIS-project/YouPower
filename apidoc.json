@@ -1,7 +1,7 @@
 {
   "name": "CIVIS backend API",
   "version": "0.1.0",
-  "description": "Documentation for the backend API calls. Note that almost every call (except registering new users and fetching an API token) requires user authentication using a HTTP bearer token in the Authorization header as such: \"Authorization: Bearer 615ea82f7fec0ffaee5...\"",
+  "description": "Documentation for the backend API calls. Note that most calls require authentication, with HTTP headers such as: \"Authorization: Bearer 615ea82f7fec0ffaee5...\".",
   "title": "CIVIS backend API documentation",
   "url": "/api",
   "template": {

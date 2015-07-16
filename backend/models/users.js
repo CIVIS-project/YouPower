@@ -1,8 +1,12 @@
 'use strict';
 
 var mongoose = require('mongoose');
+<<<<<<< HEAD
 var Action = require('./').actions;
 var Community = require('./communities').Community;
+=======
+var Action = require('./actions');
+>>>>>>> master
 var Schema = mongoose.Schema;
 var passportLocalMongoose = require('passport-local-mongoose');
 var escapeStringRegexp = require('escape-string-regexp');
@@ -14,7 +18,8 @@ var UserSchema = new Schema({
   profile: {
     name: String,
     dob: Date,
-    photo: String
+    photo: String,
+    gender: String
   },
   actions: {
     // NOTE: mixed type schemas below,
@@ -130,7 +135,7 @@ exports.find = function(q, multi, limit, skip, cb) {
   // if searching by _id require exact match, otherwise do a regexp search
   var filteredQ = {};
   filteredQ[key] = key === '_id' ? q[key].toString() :
-    new RegExp('^' + escapeStringRegexp(q[key].toString()), 'i');
+    new RegExp('^' + escapeStringRegexp(String(q[key])), 'i');
 
   var query = User.find(filteredQ);
   query.select('email profile actions');
@@ -239,4 +244,4 @@ exports.completeAction = function(user, actionId, cb) {
   }
 };
 
-exports.User = User;
+exports.model = User;

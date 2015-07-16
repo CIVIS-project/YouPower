@@ -4,13 +4,14 @@ var async = require('async');
 var mongoose = require('mongoose');
 var _ = require('underscore');
 
-var conn = mongoose.connect('mongodb://localhost/youpower-tests');
+var conn = mongoose.connect(process.env.MONGO_TEST_URL || 'mongodb://localhost/youpower-tests');
 
 var should = require('chai').should();
 var models = require('../models');
-var dummyData = require ('./dummyData');
+var dummyData = require('./dummyData');
 
 var resetModel = function(modelName, cb) {
+  dummyData = require('./dummyData');
   var resModels = [];
   conn.connection.db.dropCollection(modelName, function() {
     async.map(dummyData[modelName], function(model, cb) {
@@ -39,7 +40,6 @@ describe('models', function() {
         dbActions = actions;
         done(err);
       });
-      dummyData = require('./dummyData');
     });
 
     it('should return all actions without ratings', function(done) {
@@ -81,11 +81,11 @@ describe('models', function() {
     });
 
     it('should add rating to unrated action document', function(done) {
-      var userId = dummyData.users[0]._id;
-      var d = dummyData.ratings[userId];
+      var user = dummyData.users[0];
+      var d = dummyData.ratings[user._id];
       var id = dbActions[0]._id;
       // try rating an action that has not been rated yet
-      models.actions.rate(id, userId, d.rating, d.comment, function(err) {
+      models.actions.rate(id, user, d.rating, d.comment, function(err) {
         if (err) {
           return done(err);
         }
@@ -95,7 +95,7 @@ describe('models', function() {
             return done(err);
           }
 
-          var rating = action.ratings[userId].rating;
+          var rating = action.ratings[user._id].rating;
           rating.should.equal(d.rating);
           done();
         });
@@ -103,11 +103,11 @@ describe('models', function() {
     });
 
     it('should update rating to action document', function(done) {
-      var userId = dummyData.users[0]._id;
-      var d = dummyData.ratings[userId];
+      var user = dummyData.users[0];
+      var d = dummyData.ratings[user._id];
       var id = dbActions[0]._id;
       var newRating = 2;
-      models.actions.rate(id, userId, newRating, d.comment, function(err) {
+      models.actions.rate(id, user, newRating, d.comment, function(err) {
         if (err) {
           return done(err);
         }
@@ -115,7 +115,7 @@ describe('models', function() {
           if (err) {
             return done(err);
           }
-          var rating = action.ratings[userId].rating;
+          var rating = action.ratings[user._id].rating;
           rating.should.equal(newRating);
           done();
         });
@@ -123,31 +123,31 @@ describe('models', function() {
     });
 
     it('should refuse invalid ratings', function(done) {
-      var userId = dummyData.users[0]._id;
-      var d = dummyData.ratings[userId];
+      var user = dummyData.users[0];
+      var d = dummyData.ratings[user._id];
       async.parallel([
         function(cb) {
-          models.actions.rate(dummyData.ids[0], userId, d.rating, d.comment, function(err) {
+          models.actions.rate(dummyData.ids[0], user, d.rating, d.comment, function(err) {
             cb(err ? null : 'passing bogus action id did not cause error!');
           });
         },
         function(cb) {
-          models.actions.rate('foo bar', userId, d.rating, d.comment, function(err) {
+          models.actions.rate('foo bar', user, d.rating, d.comment, function(err) {
             cb(err ? null : 'passing invalid action id did not cause error!');
           });
         },
         function(cb) {
           models.actions.rate(dbActions[0]._id, null, d.rating, d.comment, function(err) {
-            cb(err ? null : 'missing userId field did not cause error!');
+            cb(err ? null : 'missing user parameter did not cause error!');
           });
         },
         function(cb) {
-          models.actions.rate(dbActions[0]._id, userId, null, d.comment, function(err) {
+          models.actions.rate(dbActions[0]._id, user, null, d.comment, function(err) {
             cb(err ? null : 'missing rating field did not cause error!');
           });
         },
         function(cb) {
-          models.actions.rate(dbActions[0]._id, userId, d.rating, null, function(err) {
+          models.actions.rate(dbActions[0]._id, user, d.rating, null, function(err) {
             cb(err ? 'comment field should be optional but wasn\'t!' : null);
           });
         }
@@ -219,6 +219,110 @@ describe('models', function() {
         done(err);
       });
     });
+    it('should return remaining actions as suggested actions', function(done) {
+      var userActions = {};
+      userActions.done = {};
+      userActions.done[dbActions[0]._id] = {};
+      models.actions.getSuggested(userActions, function(err, suggestedActions) {
+        suggestedActions.length.should.equal(dbActions.length - 1);
+        done(err);
+      });
+    });
+    it('should not return any actions that the user has tried', function(done) {
+      var userActions = {};
+      userActions.done = {};
+      userActions.inProgress = {};
+      userActions.canceled = {};
+      userActions.done[dbActions[0]._id] = {};
+      userActions.inProgress[dbActions[1]._id] = {};
+      userActions.canceled[dbActions[2]._id] = {};
+      models.actions.getSuggested(userActions, function(err, suggestedActions) {
+        suggestedActions.length.should.equal(dbActions.length - 3);
+        done(err);
+      });
+    });
+  });
+
+  describe('actionComments', function() {
+    var dbActionComments = [];
+
+    // clear db before starting
+    before(function() {
+      conn.connection.db.dropDatabase();
+    });
+
+    beforeEach(function(done) {
+      // reset actions collection
+      resetModel('actionComments', function(err, actionComments) {
+        dbActionComments = actionComments;
+        done(err);
+      });
+    });
+
+    it('should get all dummy comments for first action', function(done) {
+      var numFirstActionComments = _.filter(dummyData.actionComments, function(ac) {
+        return ac.actionId === dummyData.actions[0]._id;
+      }).length;
+
+      models.actionComments.get(
+          dummyData.actions[0]._id, null, null, function(err, actionComments) {
+        actionComments.length.should.equal(numFirstActionComments);
+        done(err);
+      });
+    });
+    it('should return error for bogus actionId', function(done) {
+      models.actionComments.get(dummyData.ids[0], null, null, function(err) {
+        done(err ? null : 'no error returned!');
+      });
+    });
+    it('should return error for invalid actionId', function(done) {
+      models.actionComments.get('foo', null, null, function(err, actionComments) {
+        should.not.exist(actionComments);
+        done(err ? null : 'no error returned!');
+      });
+    });
+    it('should create a comment', function(done) {
+      var d = dummyData.actionComments[0];
+      models.actionComments.create({
+        actionId: d.actionId,
+        name: 'foo bar',
+        email: d.email,
+        comment: 'foo baz'
+      }, function(err, actionComment) {
+        actionComment.name.should.equal('foo bar');
+        actionComment.comment.should.equal('foo baz');
+        done(err);
+      });
+    });
+    it('should not create a comment with missing name', function(done) {
+      var d = dummyData.actionComments[0];
+      models.actionComments.create({
+        actionId: d.actionId,
+        name: null,
+        email: d.email,
+        comment: d.comment
+      }, function(err) {
+        done(err ? null : 'no error returned!');
+      });
+    });
+    it('should not create a comment with missing comment field', function(done) {
+      var d = dummyData.actionComments[0];
+      models.actionComments.create({
+        actionId: d.actionId,
+        name: d.name,
+        email: d.email,
+        comment: null
+      }, function(err) {
+        done(err ? null : 'no error returned!');
+      });
+    });
+    it('should delete a comment', function(done) {
+      var d = dbActionComments[0];
+      models.actionComments.delete(d.actionId, d._id, function(err, status) {
+        status.result.n.should.equal(1);
+        done(err);
+      });
+    });
   });
 
   describe('user', function() {
@@ -230,7 +334,6 @@ describe('models', function() {
         dbUsers = users;
         done(err);
       });
-      dummyData = require('./dummyData');
     });
 
     it('should return profile', function(done) {
@@ -349,7 +452,6 @@ describe('models', function() {
       ], function(err) {
         done(err);
       });
-      dummyData = require('./dummyData');
     });
     it('should add action to user model', function(done) {
       models.users.startAction(dbUsers[0], dbActions[0]._id, function(err) {
@@ -584,7 +686,7 @@ describe('models', function() {
     });
 
     it('should return all challenges with ratings', function(done) {
-      var userId = dummyData.users[0]._id;
+      var user = dummyData.users[0];
       models.challenges.all(null, null, true, function(err, challenges) {
         challenges.length.should.equal(dummyData.challenges.length);
 
@@ -592,8 +694,8 @@ describe('models', function() {
           return challenge.name === 'dummy challenge name 1';
         });
 
-        testChallenge.ratings[userId].comment
-          .should.equal(dummyData.challenges[0].ratings[userId].comment);
+        testChallenge.ratings[user._id].comment
+          .should.equal(dummyData.challenges[0].ratings[user._id].comment);
         done(err);
       });
     });
@@ -620,12 +722,12 @@ describe('models', function() {
     });
 
     it('should add rating to unrated challenge document', function(done) {
-      var userId = dummyData.users[0]._id;
-      var d = dummyData.ratings[userId];
+      var user = dummyData.users[0];
+      var d = dummyData.ratings[user._id];
       var id = dbChallenges[1]._id; // mustn't contain any ratings
 
       // try rating an challenge that has not been rated yet
-      models.challenges.rate(id, userId, d.rating, d.comment, function(err) {
+      models.challenges.rate(id, user, d.rating, d.comment, function(err) {
         if (err) {
           return done(err);
         }
@@ -635,7 +737,7 @@ describe('models', function() {
             return done(err);
           }
 
-          var rating = challenge.ratings[userId].rating;
+          var rating = challenge.ratings[user._id].rating;
           rating.should.equal(d.rating);
           done();
         });
@@ -643,16 +745,16 @@ describe('models', function() {
     });
 
     it('should update rating to challenge document', function(done) {
-      var userId = dummyData.users[0]._id;
-      var d = dummyData.ratings[userId];
+      var user = dummyData.users[0];
+      var d = dummyData.ratings[user._id];
 
-      models.challenges.rate(dbChallenges[1]._id, userId, d.rating, d.comment, function(err) {
+      models.challenges.rate(dbChallenges[1]._id, user, d.rating, d.comment, function(err) {
         if (err) {
           return done(err);
         }
         d.comment = 'lorem ipsum';
 
-        models.challenges.rate(dbChallenges[1]._id, userId, d.rating, d.comment, function(err) {
+        models.challenges.rate(dbChallenges[1]._id, user, d.rating, d.comment, function(err) {
           if (err) {
             return done(err);
           }
@@ -661,7 +763,7 @@ describe('models', function() {
               return done(err);
             }
 
-            var comment = challenge.ratings[userId].comment;
+            var comment = challenge.ratings[user._id].comment;
             comment.should.equal(d.comment);
             done();
           });
@@ -670,31 +772,31 @@ describe('models', function() {
     });
 
     it('should refuse invalid ratings', function(done) {
-      var userId = dummyData.users[0]._id;
-      var d = dummyData.ratings[userId];
+      var user = dummyData.users[0];
+      var d = dummyData.ratings[user._id];
       async.parallel([
         function(cb) {
-          models.challenges.rate(dummyData.ids[0], userId, d.rating, d.comment, function(err) {
+          models.challenges.rate(dummyData.ids[0], user, d.rating, d.comment, function(err) {
             cb(err ? null : 'passing bogus challenge id did not cause error!');
           });
         },
         function(cb) {
-          models.challenges.rate('foo bar', userId, d.rating, d.comment, function(err) {
+          models.challenges.rate('foo bar', user, d.rating, d.comment, function(err) {
             cb(err ? null : 'passing invalid challenge id did not cause error!');
           });
         },
         function(cb) {
           models.challenges.rate(dbChallenges[0]._id, null, d.rating, d.comment, function(err) {
-            cb(err ? null : 'missing userId field did not cause error!');
+            cb(err ? null : 'missing user parameter did not cause error!');
           });
         },
         function(cb) {
-          models.challenges.rate(dbChallenges[0]._id, userId, null, d.comment, function(err) {
+          models.challenges.rate(dbChallenges[0]._id, user, null, d.comment, function(err) {
             cb(err ? null : 'missing rating field did not cause error!');
           });
         },
         function(cb) {
-          models.challenges.rate(dbChallenges[0]._id, userId, d.rating, null, function(err) {
+          models.challenges.rate(dbChallenges[0]._id, user, d.rating, null, function(err) {
             cb(err ? 'comment field should be optional but wasn\'t!' : null);
           });
         }
@@ -718,6 +820,88 @@ describe('models', function() {
     it('search should only match from start of string', function(done) {
       models.challenges.search('ummy challenge', function(err, challenges) {
         challenges.length.should.equal(0);
+        done(err);
+      });
+    });
+  });
+
+  describe('challengeComments', function() {
+    var dbChallengeComments = [];
+
+    // clear db before starting
+    before(function() {
+      conn.connection.db.dropDatabase();
+    });
+
+    beforeEach(function(done) {
+      // reset challenges collection
+      resetModel('challengeComments', function(err, challengeComments) {
+        dbChallengeComments = challengeComments;
+        done(err);
+      });
+    });
+
+    it('should get all dummy comments for first challenge', function(done) {
+      var numFirstChallengeComments = _.filter(dummyData.challengeComments, function(ac) {
+        return ac.challengeId === dummyData.challenges[0]._id;
+      }).length;
+
+      models.challengeComments.get(
+          dummyData.challenges[0]._id, null, null, function(err, challengeComments) {
+        challengeComments.length.should.equal(numFirstChallengeComments);
+        done(err);
+      });
+    });
+    it('should return error for bogus challengeId', function(done) {
+      models.challengeComments.get(dummyData.ids[0], null, null, function(err) {
+        done(err ? null : 'no error returned!');
+      });
+    });
+    it('should return error for invalid challengeId', function(done) {
+      models.challengeComments.get('foo', null, null, function(err, challengeComments) {
+        should.not.exist(challengeComments);
+        done(err ? null : 'no error returned!');
+      });
+    });
+    it('should create a comment', function(done) {
+      var d = dummyData.challengeComments[0];
+      models.challengeComments.create({
+        challengeId: d.challengeId,
+        name: 'foo bar',
+        email: d.email,
+        comment: 'foo baz'
+      }, function(err, challengeComment) {
+        challengeComment.name.should.equal('foo bar');
+        challengeComment.comment.should.equal('foo baz');
+        done(err);
+      });
+    });
+    it('should not create a comment with missing name', function(done) {
+      var d = dummyData.challengeComments[0];
+      models.challengeComments.create({
+        challengeId: d.challengeId,
+        name: null,
+        email: d.email,
+        comment: d.comment
+      }, function(err) {
+        done(err ? null : 'no error returned!');
+      });
+    });
+    it('should not create a comment with missing comment field', function(done) {
+      var d = dummyData.challengeComments[0];
+      models.challengeComments.create({
+        challengeId: d.challengeId,
+        name: d.name,
+        email: d.email,
+        comment: null
+      }, function(err) {
+        done(err ? null : 'no error returned!');
+      });
+    });
+    it('should delete a comment', function(done) {
+      var d = dbChallengeComments[0];
+      models.challengeComments.delete(d.challengeId, d._id, function(err, status) {
+        status.result.n.should.equal(1);
         done(err);
       });
     });
@@ -921,6 +1105,88 @@ describe('models', function() {
             done(err);
           });
         });
+      });
+    });
+  });
+
+  describe('communityComments', function() {
+    var dbCommunityComments = [];
+
+    // clear db before starting
+    before(function() {
+      conn.connection.db.dropDatabase();
+    });
+
+    beforeEach(function(done) {
+      // reset communities collection
+      resetModel('communityComments', function(err, communityComments) {
+        dbCommunityComments = communityComments;
+        done(err);
+      });
+    });
+
+    it('should get all dummy comments for first community', function(done) {
+      var numFirstCommunityComments = _.filter(dummyData.communityComments, function(ac) {
+        return ac.communityId === dummyData.communities[0]._id;
+      }).length;
+
+      models.communityComments.get(
+          dummyData.communities[0]._id, null, null, function(err, communityComments) {
+        communityComments.length.should.equal(numFirstCommunityComments);
+        done(err);
+      });
+    });
+    it('should return error for bogus communityId', function(done) {
+      models.communityComments.get(dummyData.ids[0], null, null, function(err) {
+        done(err ? null : 'no error returned!');
+      });
+    });
+    it('should return error for invalid communityId', function(done) {
+      models.communityComments.get('foo', null, null, function(err, communityComments) {
+        should.not.exist(communityComments);
+        done(err ? null : 'no error returned!');
+      });
+    });
+    it('should create a comment', function(done) {
+      var d = dummyData.communityComments[0];
+      models.communityComments.create({
+        communityId: d.communityId,
+        name: 'foo bar',
+        email: d.email,
+        comment: 'foo baz'
+      }, function(err, communityComment) {
+        communityComment.name.should.equal('foo bar');
+        communityComment.comment.should.equal('foo baz');
+        done(err);
+      });
+    });
+    it('should not create a comment with missing name', function(done) {
+      var d = dummyData.communityComments[0];
+      models.communityComments.create({
+        communityId: d.communityId,
+        name: null,
+        email: d.email,
+        comment: d.comment
+      }, function(err) {
+        done(err ? null : 'no error returned!');
+      });
+    });
+    it('should not create a comment with missing comment field', function(done) {
+      var d = dummyData.communityComments[0];
+      models.communityComments.create({
+        communityId: d.communityId,
+        name: d.name,
+        email: d.email,
+        comment: null
+      }, function(err) {
+        done(err ? null : 'no error returned!');
+      });
+    });
+    it('should delete a comment', function(done) {
+      var d = dbCommunityComments[0];
+      models.communityComments.delete(d.communityId, d._id, function(err, status) {
+        status.result.n.should.equal(1);
+        done(err);
       });
     });
   });
@@ -1153,6 +1419,96 @@ describe('models', function() {
       models.households.getByApartmentId('foo bar',
       function(err) {
         done(err ? null : 'invalid id in apartment by id fetch did not error!');
+      });
+    });
+  });
+
+  describe('feedback', function() {
+    var dbFeedback = [];
+
+    // clear db before starting
+    before(function() {
+      conn.connection.db.dropDatabase();
+    });
+
+    beforeEach(function(done) {
+      // reset feedback collection
+      resetModel('feedback', function(err, feedback) {
+        dbFeedback = feedback;
+        done(err);
+      });
+    });
+
+    it('should return all feedback', function(done) {
+      models.feedback.all(null, null, function(err, feedback) {
+        feedback.length.should.equal(dummyData.feedback.length);
+        done(err);
+      });
+    });
+  });
+
+  describe('log', function() {
+    // clear db before starting
+    before(function() {
+      conn.connection.db.dropDatabase();
+    });
+
+    beforeEach(function(done) {
+      // reset logs collection
+      resetModel('logs', function(err) {
+        done(err);
+      });
+    });
+
+    it('should refuse adding log entry with missing fields', function(done) {
+      async.parallel([
+        function(cb) {
+          models.logs.create({
+            userId: null,
+            category: dummyData.logs[0].category,
+            type: dummyData.logs[0].type,
+            data: dummyData.logs[0].data
+          }, function(err) {
+            cb(err ? null : 'no error returned!');
+          });
+        }, function(cb) {
+          models.logs.create({
+            userId: dummyData.logs[0].userId,
+            category: null,
+            type: dummyData.logs[0].type,
+            data: dummyData.logs[0].data
+          }, function(err) {
+            cb(err ? null : 'no error returned!');
+          });
+        },
+        function(cb) {
+          models.logs.create({
+            userId: dummyData.logs[0].category,
+            category: dummyData.logs[0].category,
+            type: null,
+            data: dummyData.logs[0].data
+          }, function(err) {
+            cb(err ? null : 'no error returned!');
+          });
+        }, function(cb) {
+          models.logs.create({
+            userId: dummyData.logs[0].category,
+            category: dummyData.logs[0].category,
+            type: dummyData.logs[0].type,
+            data: null
+          }, function(err) {
+            cb(err ? null : 'no error returned!');
+          });
+        }
+      ], function(err) {
+        done(err);
+      });
+    });
+
+    it('should return all logs', function(done) {
+      models.logs.all(null, null, function(err, log) {
+        log.length.should.equal(dummyData.logs.length);
+        done(err);
       });
     });
   });

@@ -2,7 +2,6 @@
 
 var winston = require('winston');
 var l = winston.loggers.get('default');
-var mongoose = require('mongoose');
 var crypto = require('crypto');
 
 var passport = require('passport');
@@ -28,13 +27,13 @@ exports.newUserToken = function(user, cb) {
 };
 
 exports.initialize = function() {
-  passport.use(new BasicStrategy(User.authenticate()));
+  passport.use(new BasicStrategy(User.model.authenticate()));
   passport.use(new BearerStrategy(function(token, done) {
     if (!token) {
       return done('No token provided');
     }
 
-    User.find({token: token}, false, null, null, function(err, user) {
+    User.model.findOne({token: token}, function(err, user) {
       if (err) {
         return done(err);
       } else if (!user) {
@@ -45,58 +44,83 @@ exports.initialize = function() {
   }));
 
   if (!process.env.FACEBOOK_APP_ID || !process.env.FACEBOOK_APP_SECRET) {
-    l.warn('Facebook login not set up. Please set environment variables:');
+    l.warn('Facebook login not set up! Please set environment variables:');
     l.warn('FACEBOOK_APP_ID');
     l.warn('FACEBOOK_APP_SECRET');
     l.warn('FACEBOOK_CALLBACK_URL');
     l.warn('Disabling Facebook login.');
   } else {
     passport.use(new FacebookStrategy({
-      clientID: process.env.FACEBOOK_APP_ID,
-      clientSecret: process.env.FACEBOOK_APP_SECRET,
-      callbackURL: process.env.FACEBOOK_CALLBACK_URL ||
-        'http://localhost:3000/api/auth/facebook/callback',
-      enableProof: false
-    }, function(accessToken, refreshToken, profile, done) {
+    clientID: process.env.FACEBOOK_APP_ID,
+    clientSecret: process.env.FACEBOOK_APP_SECRET,
+    callbackURL: 'http://localhost:3000/api/auth/facebook/callback',
+    enableProof: false
+  },
+  function(accessToken, refreshToken, profile, done) {
+    //console.log("profile",profile);
+    //console.log("profile",profile);
+    process.nextTick(function() {
       User.find({facebookId: profile.id}, false, null, null, function(err, user) {
         if (err) {
           return done(err);
-        } else if (!user) {
+        } else if (user) {
+          return done(err, user);
+        } else {
           // TODO: refactor this mess
           // user does not exist, register new user
           crypto.randomBytes(48, function(ex, buf) {
-            var password = buf.toString('hex');
-            console.log(profile);
-            User.register({
-              // TODO: get email via facebook
-              email: mongoose.Types.ObjectId(),
-              facebookId: profile.id,
-              profile: {
-                name: profile.displayName,
-                gender: profile.gender
-              }
-            }, password, function(err) {
-              if (err) {
-                return done(err);
-              }
-
-              User.find({facebookId: profile.id}, false, null, null, function(err, user) {
-                if (err) {
-                  return done(err);
-                } else if (!user) {
-                  return done('user not found after registering! should never happen');
+              var password = buf.toString('hex');
+              //console.log('profile',profile);
+              User.register({
+                  // TODO: get email via facebook
+                  email: profile.emails[0].value,
+                  //email: mongoose.Types.ObjectId(),
+                  facebookId: profile.id,
+                  profile: {
+                  name: profile.displayName,
+                  gender: profile.gender
                 }
-                return done(null, user);
-              });
+                }, password, function(err, user) {
+                  if (err) {
+                    return done(err);
+                  }
+                  return done(null, user);
+
+                });
             });
-          });
+        }
+      });
+
+    });
+  }
+));
+
+    //Code for connecting fb account with existing account
+    passport.use('facebook-authz', new FacebookStrategy({
+      clientID: process.env.FACEBOOK_APP_ID,
+      clientSecret: process.env.FACEBOOK_APP_SECRET,
+      callbackURL: 'http://localhost:3000/api/auth/facebook/callbackfb'
+    },
+    function(accessToken, refreshToken, profile, done) {
+      var tk = 'token come here';
+      User.find({token: tk}, false, null, null, function(err, user) {
+        if (err) {
+          return done(err);
+        } else if (!user) {
+          return done(err, 'The given user does not exist');
         } else {
-          return done(err, user);
+          user.facebookId  = profile.id;
+          user.profile.gender   = profile.gender;
+
+          user.markModified('profile.gender');
+          user.markModified('facebookId');
+          user.save();
+          //console.log("USERUPDATED",user);
+          return done(null, 'Facebook account successfully connected');
         }
       });
     }));
   }
-
   passport.serializeUser(User.serializeUser());
   passport.deserializeUser(User.deserializeUser());
 
@@ -109,8 +133,4 @@ exports.basicauth = function() {
 
 exports.authenticate = function() {
   return passport.authenticate('bearer', {session: false});
-};
-
-exports.facebook = function() {
-  return passport.authenticate('facebook', {session: false});
 };

@@ -5,6 +5,130 @@ var auth = require('../middleware/auth');
 var util = require('util');
 var router = express.Router();
 var Action = require('../models').actions;
+var ActionComment = require('../models').actionComments;
+var Log = require('../models').logs;
+
+/**
+ * @api {post} /action/:actionId/comment Create new action comment
+ * @apiGroup Action Comments
+ *
+ * @apiParam {String} actionId ID of action being commented
+ * @apiParam {String} comment Text contents of comment
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
+ *  '{
+ *    "comment": "This is an amazing and easy to perform action!"
+ *  }' \
+ *  http://localhost:3000/api/action/555f0163688305b57c7cef6c/comment
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "__v": 0,
+ *     "actionId": "555f0163688305b57c7cef6c",
+ *     "name": "Test User",
+ *     "email": "testuser1@test.com",
+ *     "comment": "This is an amazing and easy to perform action!",
+ *     "date": "2015-07-01T12:04:33.599Z",
+ *     "_id": "555f0163688305b57c7cef6d",
+ *   }
+ */
+router.post('/:actionId/comment', auth.authenticate(), function(req, res) {
+  var actionComment = req.body;
+  actionComment.actionId = req.params.actionId;
+  actionComment.name = req.user.profile.name;
+  actionComment.email = req.user.email;
+  ActionComment.create(actionComment, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Action Comments',
+    type: 'create',
+    data: actionComment
+  });
+});
+
+/**
+ * @api {get} /action/:actionId/comments Get a list of action comments
+ * @apiGroup Action Comments
+ *
+ * @apiParam {String} actionId ID of action whose comments are requested
+ * @apiParam {Integer} [limit=10] Maximum number of results returned
+ * @apiParam {Integer} [skip=0] Number of results skipped
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
+ *  '{
+ *    "limit": "50",
+ *    "skip": "0"
+ *  }' \
+ *  http://localhost:3000/api/action/555f0163688305b57c7cef6c/comments
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * [
+ *   {
+ *     "_id": "555f0163688305b57c7cef6d",
+ *     "actionId": "555f0163688305b57c7cef6c",
+ *     "name": "Test User",
+ *     "email": "testuser1@test.com",
+ *     "comment": "This is an amazing and easy to perform action!",
+ *     "date": "2015-07-01T12:04:33.599Z",
+ *     "__v": 0,
+ *   },
+ *   ...
+ * ]
+ */
+router.get('/:actionId/comments', auth.authenticate(), function(req, res) {
+  ActionComment.get(req.params.actionId, req.body.limit || 10, req.body.skip || 0, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Action Comments',
+    type: 'get',
+    data: {
+      actionId: req.params.actionId,
+      limit: req.body.limit,
+      skip: req.body.skip
+    }
+  });
+});
+
+/**
+ * @api {delete} /action/:actionId/comment/:commentId Delete a comment
+ * @apiGroup Action Comments
+ *
+ * @apiParam {String} actionId ID of action whose comment will be deleted
+ * @apiParam {String} commentId ID of comment to be deleted
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X DELETE -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/action/555f0163688305b57c7cef6c/comment/555f0163688305b57c7cef6d
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "ok":1,
+ *     "n":1
+ *   }
+ */
+router.delete('/:actionId/comment/:commentId', auth.authenticate(), function(req, res) {
+  ActionComment.delete(req.params.actionId, req.params.commentId, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Action Comments',
+    type: 'delete',
+    data: req.params
+  });
+});
 
 /**
  * @api {post} /action Create new action
@@ -54,7 +178,10 @@ var Action = require('../models').actions;
  * (1 [least] - 5 [most])
  *
  * @apiExample {curl} Example usage:
- *  curl -i -X POST -H "Content-Type: application/json" -d \
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
  *  '{
  *    "name": "Disable standby on your devices",
  *    "description": "Disabling standby can save up to 10% in total electricity costs.",
@@ -71,11 +198,19 @@ var Action = require('../models').actions;
  *     "effort": 2,
  *     "impact": 2,
  *     "name": "Disable standby on your devices",
+ *     "date": "2015-07-01T12:04:33.599Z",
  *     "ratings": []
  *   }
  */
-router.post('/', function(req, res) {
+router.post('/', auth.authenticate(), function(req, res) {
   Action.create(req.body, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Action',
+    type: 'create',
+    data: req.body
+  });
 });
 
 /**
@@ -87,14 +222,38 @@ router.post('/', function(req, res) {
  * @apiParam {String} [comment] Comment attached to rating
  *
  * @apiExample {curl} Example usage:
- *  curl -i -X PUT \
- *  -H "Authorization: Bearer 615ea82f7fec0ffaee5..." \
- *  -H "Content-Type: application/json" -d \
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X PUT -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
  *  '{
  *    "rating": 4,
- *    "comment": "This tip is awesome!"
+ *    "comment": "This tip is really awesome!"
  *  }' \
  *  http://localhost:3000/api/action/rate/555ef84b2fd41ffc6e078a34
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "_id": "5594dbeadfbb985d0ac150c4",
+ *     "name": "Disable standby on your devices",
+ *     "description": "Disabling standby can save up to 10% in total electricity costs.",
+ *     "__v": 0,
+ *     "ratings": {
+ *       "5593ccfa9255daa130890164": {
+ *         "date": "2015-07-02T06:37:39.845Z",
+ *         "comment": "This tip is really awesome!",
+ *         "name": "Test User",
+ *         "rating": 4
+ *       }
+ *     },
+ *     "effort": 2,
+ *     "impact": 2,
+ *     "date": "2015-07-01T12:04:33.599Z",
+ *     "activation": {
+ *       "configurable": false
+ *     },
+ *     "category": "oneshot"
+ *   }
  */
 router.put('/rate/:id', auth.authenticate(), function(req, res) {
   req.checkParams('id', 'Invalid action id').isMongoId();
@@ -103,7 +262,18 @@ router.put('/rate/:id', auth.authenticate(), function(req, res) {
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    Action.rate(req.params.id, req.user._id, req.body.rating, req.body.comment, res.successRes);
+    Action.rate(req.params.id, req.user, req.body.rating, req.body.comment, res.successRes);
+
+    Log.create({
+      userId: req.user._id,
+      category: 'Action',
+      type: 'rate',
+      data: {
+        actionId: req.params.id,
+        rating: req.body.rating,
+        comment: req.body.comment
+      }
+    });
   }
 });
 
@@ -113,7 +283,11 @@ router.put('/rate/:id', auth.authenticate(), function(req, res) {
  *
  * @apiParam {String} id MongoId of action
  * @apiExample {curl} Example usage:
- *    curl -i http://localhost:3000/api/action/555ecb997aa6360e40f26451
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X PUT -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/action/555ecb997aa6360e40f26451
  *
  * @apiSuccessExample {json} Success-Response:
  *   {
@@ -123,6 +297,7 @@ router.put('/rate/:id', auth.authenticate(), function(req, res) {
  *     "description": "Disabling standby can save up to 10% in total electricity costs.",
  *     "effort": 3,
  *     "impact": 2,
+ *     "date": "2015-07-01T12:04:33.599Z",
  *     "name": "Disable standby on your devices",
  *     "numRatings": 4,
  *     "ratings": [
@@ -135,7 +310,7 @@ router.put('/rate/:id', auth.authenticate(), function(req, res) {
  *     ]
  *   }
  */
-router.get('/:id', function(req, res) {
+router.get('/:id', auth.authenticate(), function(req, res) {
   req.checkParams('id', 'Invalid action id').isMongoId();
 
   var err;
@@ -143,6 +318,15 @@ router.get('/:id', function(req, res) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
     Action.get(req.params.id, res.successRes);
+
+    Log.create({
+      userId: req.user._id,
+      category: 'Action',
+      type: 'get',
+      data: {
+        actionId: req.params.id
+      }
+    });
   }
 });
 
@@ -152,7 +336,11 @@ router.get('/:id', function(req, res) {
  *
  * @apiParam {String} id MongoId of action
  * @apiExample {curl} Example usage:
- *    curl -i -X DELETE http://localhost:3000/api/action/555ecb997aa6360e40f26451
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X DELETE -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/action/555ecb997aa6360e40f26451
  *
  * @apiSuccess {Integer} n Number of deleted actions (0 or 1)
  * @apiSuccess {Integer} ok Mongoose internals
@@ -171,6 +359,15 @@ router.delete('/:id', function(req, res) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
     Action.delete(req.params.id, res.successRes);
+
+    Log.create({
+      userId: req.user._id,
+      category: 'Action',
+      type: 'delete',
+      data: {
+        actionId: req.params.id
+      }
+    });
   }
 });
 
@@ -183,7 +380,11 @@ router.delete('/:id', function(req, res) {
  * @apiParam {Boolean} [includeRatings=false] Include individual user ratings of action
  *
  * @apiExample {curl} Example usage:
- *    curl -i http://localhost:3000/api/action
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/action
  *
  * @apiSuccessExample {json} Success-Response:
  *   [
@@ -194,6 +395,7 @@ router.delete('/:id', function(req, res) {
  *       "description": "Disabling standby can save up to 10% in total electricity costs.",
  *       "effort": 3,
  *       "impact": 2,
+ *       "date": "2015-07-01T12:04:33.599Z",
  *       "name": "Disable standby on your devices",
  *       "numRatings": 4
  *     },
@@ -207,6 +409,13 @@ router.get('/', function(req, res) {
   req.sanitize('includeReviews').toBoolean();
 
   Action.all(req.body.limit || 50, req.body.skip, req.body.includeRatings, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Action',
+    type: 'all',
+    data: req.body
+  });
 });
 
 /**
@@ -216,7 +425,11 @@ router.get('/', function(req, res) {
  * @apiParam {String} q Search query
  *
  * @apiExample {curl} Example usage:
- *  curl -i http://localhost:3000/api/action/search\?q\=foobar
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/action/search\?q\=foobar
  */
 router.get('/search', auth.authenticate(), function(req, res) {
   req.checkQuery('q', 'Invalid query parameter').notEmpty();
@@ -247,6 +460,14 @@ router.get('/search', auth.authenticate(), function(req, res) {
           users: users
         });
       }
+    });
+
+    // TODO!
+    Log.create({
+      userId: req.user._id,
+      category: 'Action',
+      type: 'search',
+      data: req.body
     });
     */
   }
