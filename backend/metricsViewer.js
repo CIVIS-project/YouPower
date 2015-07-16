@@ -14,13 +14,13 @@ if (yargs.h) {
 }
 
 var zeropad = function(number, length) {
-    var str = '' + number;
+  var str = '' + number;
 
-    while (str.length < length) {
-        str = '0' + str;
-    }
+  while (str.length < length) {
+    str = '0' + str;
+  }
 
-    return str;
+  return str;
 };
 
 var mongoose = require('mongoose');
@@ -45,12 +45,12 @@ db.once('open', function() {
         var userId = String(line.userId);
         var data = JSON.stringify(line.data);
 
-        var date = line.date.getFullYear() + '-'
-          + zeropad(line.date.getMonth(), 2) + '-'
-          + zeropad(line.date.getDate(), 2) + ' '
-          + zeropad(line.date.getHours(), 2) + ':'
-          + zeropad(line.date.getMinutes(), 2) + ':'
-          + zeropad(line.date.getSeconds(), 2) + ' ';
+        var date = line.date.getFullYear() + '-' +
+            zeropad(line.date.getMonth(), 2) + '-' +
+            zeropad(line.date.getDate(), 2) + ' ' +
+            zeropad(line.date.getHours(), 2) + ':' +
+            zeropad(line.date.getMinutes(), 2) + ':' +
+            zeropad(line.date.getSeconds(), 2) + ' ';
 
         var s = date + category + ' ' + type + ': ' + userId + ', ' + data;
 
@@ -64,8 +64,7 @@ db.once('open', function() {
 
           // then comes the rest of the data, ellpsized if needed
           if (yargs.e && s.length > process.stdout.columns) {
-            process.stdout.write(s.substr(coloredLen, process.stdout.columns
-                  - coloredLen - 3));
+            process.stdout.write(s.substr(coloredLen, process.stdout.columns - coloredLen - 3));
             process.stdout.write('...');
           } else {
             process.stdout.write(s.substr(coloredLen));
