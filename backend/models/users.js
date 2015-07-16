@@ -1,12 +1,8 @@
 'use strict';
 
 var mongoose = require('mongoose');
-<<<<<<< HEAD
 var Action = require('./').actions;
 var Community = require('./communities').Community;
-=======
-var Action = require('./actions');
->>>>>>> master
 var Schema = mongoose.Schema;
 var passportLocalMongoose = require('passport-local-mongoose');
 var escapeStringRegexp = require('escape-string-regexp');

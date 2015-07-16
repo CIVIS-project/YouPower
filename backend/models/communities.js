@@ -34,7 +34,6 @@ var CommunitySchema = new Schema({
   members: [
     {
       type: Schema.Types.ObjectId,
-<<<<<<< HEAD
       ref: 'User',
       required: true
     }
@@ -42,14 +41,11 @@ var CommunitySchema = new Schema({
   ratings: {
     type: Schema.Types.Mixed,
     default: {}
-=======
-      ref: 'User'
-    }
-  ],
+  },
   date: {
     type: Date,
     required: true
->>>>>>> master
+
   }
 });
 var Community = mongoose.model('Community', CommunitySchema);
@@ -75,11 +71,8 @@ exports.create = function(community, cb) {
     name: community.name,
     challenges: community.challenges,
     members: community.members,
-<<<<<<< HEAD
-    ratings: community.ratings
-=======
+    ratings: community.ratings,
     date: new Date()
->>>>>>> master
   }, cb);
 };
 
@@ -262,8 +255,4 @@ exports.rate = function(id, userId, rating, comment, cb) {
   });
 };
 
-<<<<<<< HEAD
-exports.Community = Community;
-=======
 exports.model = Community;
->>>>>>> master
