@@ -87,9 +87,9 @@ router.post('/comment/:commentId/picture', auth.authenticate(), function(req, re
         return res.successRes(err);
       }
 
-      ActionComment.setHasPicture(req.params.commentId, true, function(err) {;
+      ActionComment.setHasPicture(req.params.commentId, true, function(err) {
         res.successRes(err, {msg: 'success!'});
-      })
+      });
     });
   });
 });
