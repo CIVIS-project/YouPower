@@ -4,7 +4,8 @@ This is the backend of the YouPower app.
 
 ## Setup
 
-First set up mongodb on your local machine.
+First set up mongodb on your local machine. Also install `graphicsmagick` on your
+machine. (needed for resizing profile pictures). Then:
 ```
 cd backend/     # move into correct directory
 npm install     # install dependencies
