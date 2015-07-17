@@ -5,6 +5,7 @@ var express = require('express');
 var util = require('util');
 var fs = require('fs');
 var path = require('path');
+var gm = require('gm');
 var router = express.Router();
 var User = require('../models').users;
 
@@ -222,18 +223,22 @@ router.get('/profilePicture/:userId', auth.authenticate(), function(req, res) {
  *
  * @apiSuccessExample {json} Success-Response:
  * {
- *   "status": "ok"
+ *   "msg": "success"
  * }
  */
 router.post('/profilePicture', auth.authenticate(), function(req, res) {
   var picPath = process.env.HOME + '/.youpower/profilePictures/' + req.user._id + '.png';
-  var stream = fs.createWriteStream(picPath);
-  req.pipe(stream);
-  stream.on('close', function() {
-    res.successRes(null, {msg: 'success!'});
-  });
-  stream.on('error', function(err) {
-    res.successRes(err);
+
+  gm(req)
+  .size({bufferStream: true}, function(err) {
+    if (err) {
+      return res.successRes(err);
+    }
+
+    this.resize(256);
+    this.write(picPath, function(err) {
+      res.successRes(err, {msg: 'success!'});
+    });
   });
 });
 

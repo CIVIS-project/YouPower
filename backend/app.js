@@ -16,6 +16,18 @@ if (process.env.NODE_ENV === 'test') {
   l.warn('===========================================================\n');
 }
 
+// verify that graphicsmagick is installed
+var which = require('which');
+try {
+  which.sync('gm');
+} catch (e) {
+  console.log(e);
+  console.log('\nERROR: could not find graphicsmagick binary!');
+  console.log('Please install graphicsmagick, for example on Ubuntu:');
+  console.log('$ sudo apt-get install graphicsmagick');
+  process.exit();
+}
+
 var express = require('express');
 
 var bodyParser = require('body-parser');
@@ -25,6 +37,7 @@ var fs = require('fs');
 var mkdirp = require('mkdirp');
 
 mkdirp(process.env.HOME + '/.youpower/profilePictures');
+mkdirp(process.env.HOME + '/.youpower/commentPictures');
 
 mongoose.connect(process.env.MONGO_URL || 'mongodb://localhost/youpower');
 var db = mongoose.connection;
