@@ -223,7 +223,7 @@ router.get('/profilePicture/:userId', auth.authenticate(), function(req, res) {
  *
  * @apiSuccessExample {json} Success-Response:
  * {
- *   "status": "ok"
+ *   "msg": "success"
  * }
  */
 router.post('/profilePicture', auth.authenticate(), function(req, res) {

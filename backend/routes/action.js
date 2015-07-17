@@ -3,6 +3,8 @@
 var express = require('express');
 var auth = require('../middleware/auth');
 var util = require('util');
+var gm = require('gm');
+var fs = require('fs');
 var router = express.Router();
 var Action = require('../models').actions;
 var ActionComment = require('../models').actionComments;
@@ -48,6 +50,66 @@ router.post('/:actionId/comment', auth.authenticate(), function(req, res) {
     category: 'Action Comments',
     type: 'create',
     data: actionComment
+  });
+});
+
+/**
+ * @api {post} /action/comment/:commentId/picture Attach picture to comment
+ * @apiGroup Action Comments
+ *
+ * @apiParam {String} commentId ID of comment
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X POST -H "Content-Type: image/png" -H "Authorization: Bearer $API_TOKEN" \
+ *  --data-binary @/path/to/picture.png \
+ *  http://localhost:3000/api/action/comment/555f0163688305b57c7cef6c/picture
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *   "msg": "success"
+ *   }
+ */
+router.post('/comment/:commentId/picture', auth.authenticate(), function(req, res) {
+  var picPath = process.env.HOME + '/.youpower/commentPictures/' + req.params.commentId + '.png';
+
+  gm(req)
+  .size({bufferStream: true}, function(err) {
+    if (err) {
+      return res.successRes(err);
+    }
+
+    this.resize(512);
+    this.write(picPath, function(err) {
+      res.successRes(err, {msg: 'success!'});
+    });
+  });
+});
+
+/**
+ * @api {get} /action/comment/:commentId/picture Get comment picture
+ * @apiGroup Action Comments
+ *
+ * @apiParam {String} commentId ID of comment
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Content-Type: image/png" -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/action/comment/555f0163688305b57c7cef6c/picture
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * <image data>
+ */
+router.get('/comment/:commentId/picture', auth.authenticate(), function(req, res) {
+  var picPath = process.env.HOME + '/.youpower/commentPictures/' + req.params.commentId + '.png';
+  var stream = fs.createReadStream(picPath);
+  stream.pipe(res);
+  stream.on('error', function(err) {
+    res.successRes(err);
   });
 });
 
