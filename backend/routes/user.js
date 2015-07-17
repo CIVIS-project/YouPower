@@ -230,7 +230,7 @@ router.post('/profilePicture', auth.authenticate(), function(req, res) {
   var picPath = process.env.HOME + '/.youpower/profilePictures/' + req.user._id + '.png';
 
   gm(req)
-  .size({bufferStream: true}, function(err, size) {
+  .size({bufferStream: true}, function(err) {
     if (err) {
       return res.successRes(err);
     }

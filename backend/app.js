@@ -20,7 +20,7 @@ if (process.env.NODE_ENV === 'test') {
 var which = require('which');
 try {
   which.sync('gm');
-} catch(e) {
+} catch (e) {
   console.log(e);
   console.log('\nERROR: could not find graphicsmagick binary!');
   console.log('Please install graphicsmagick, for example on Ubuntu:');
