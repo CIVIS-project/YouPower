@@ -83,7 +83,13 @@ router.post('/comment/:commentId/picture', auth.authenticate(), function(req, re
 
     this.resize(512);
     this.write(picPath, function(err) {
-      res.successRes(err, {msg: 'success!'});
+      if (err) {
+        return res.successRes(err);
+      }
+
+      ActionComment.setHasPicture(req.params.commentId, true, function(err) {;
+        res.successRes(err, {msg: 'success!'});
+      })
     });
   });
 });

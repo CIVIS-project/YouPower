@@ -24,6 +24,10 @@ var ActionCommentSchema = new Schema({
   date: {
     type: Date,
     required: true
+  },
+  hasPicture: {
+    type: Boolean,
+    default: false
   }
 });
 
@@ -37,6 +41,21 @@ exports.create = function(actionComment, cb) {
     comment: actionComment.comment,
     date: new Date()
   }, cb);
+};
+
+exports.setHasPicture = function(commentId, value, cb) {
+  ActionComment.findOne({_id: commentId})
+  .exec(function(err, actionComment) {
+    if (err) {
+      return cb(err);
+    }
+    if (!actionComment) {
+      return cb('actionComment not found!');
+    }
+
+    actionComment.hasPicture = value;
+    actionComment.save(cb);
+  });
 };
 
 exports.get = function(actionId, limit, skip, cb) {
