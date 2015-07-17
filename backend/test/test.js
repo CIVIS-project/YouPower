@@ -323,6 +323,22 @@ describe('models', function() {
         done(err);
       });
     });
+    it('should set hasPictures field', function(done) {
+      var d = dbActionComments[0];
+      models.actionComments.setHasPicture(d._id, true, function(err) {
+        done(err);
+      });
+    });
+    it('should not set hasPictures field for bogus commentId', function(done) {
+      models.actionComments.setHasPicture(dummyData.ids[0], true, function(err) {
+        done(err ? null : 'no error returned!');
+      });
+    });
+    it('should not set hasPictures field for invalid commentId', function(done) {
+      models.actionComments.setHasPicture('foo bar', true, function(err) {
+        done(err ? null : 'no error returned!');
+      });
+    });
   });
 
   describe('user', function() {
