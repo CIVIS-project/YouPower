@@ -462,31 +462,30 @@ describe('models', function() {
         user.inProgress.should.deep.equal(dbUsers[0].actions.inProgress);
         user.done.should.deep.equal(dbUsers[0].actions.done);
         user.pending.should.deep.equal(dbUsers[0].actions.pending);
-        user.canceled.should.deep.equal(dbUsers[0].actions.canceled);
-        //user.declined.should.deep.equal(dbUsers[0].actions.declined);
+        user.declined.should.deep.equal(dbUsers[0].actions.declined);
         user.na.should.deep.equal(dbUsers[0].actions.na);
         done(err);
       });
     });
 
     it('should return only actions \'In Progress\'', function(done) {
-      models.users.getUserActions(dbUsers[0]._id, 'In Progress' , function(err, user) {
+      models.users.getUserActions(dbUsers[0]._id, 'progress' , function(err, user) {
         //Is there a way to combine all of the action types?
         user.should.deep.equal(dbUsers[0].actions.inProgress);
         done(err);
       });
     });
 
-    it('should return only actions \'Canceled\'', function(done) {
-      models.users.getUserActions(dbUsers[0]._id, 'Canceled' , function(err, user) {
+    it('should return only actions \'Declined / Canceled\'', function(done) {
+      models.users.getUserActions(dbUsers[0]._id, 'declined' , function(err, user) {
         //Is there a way to combine all of the action types?
-        user.should.deep.equal(dbUsers[0].actions.canceled);
+        user.should.deep.equal(dbUsers[0].actions.declined);
         done(err);
       });
     });
 
     it('should return only \'Pending\' actions' , function(done) {
-      models.users.getUserActions(dbUsers[0]._id, 'Pending' , function(err, user) {
+      models.users.getUserActions(dbUsers[0]._id, 'pending' , function(err, user) {
         //Is there a way to combine all of the action types?
         user.should.deep.equal(dbUsers[0].actions.pending);
         done(err);
@@ -494,7 +493,7 @@ describe('models', function() {
     });
 
     it('should return only \'Done\' actions', function(done) {
-      models.users.getUserActions(dbUsers[0]._id, 'Done' , function(err, user) {
+      models.users.getUserActions(dbUsers[0]._id, 'done' , function(err, user) {
         //Is there a way to combine all of the action types?
         user.should.deep.equal(dbUsers[0].actions.done);
         done(err);
@@ -502,15 +501,9 @@ describe('models', function() {
     });
 
     it('should return only actions \'Not applicable\'', function(done) {
-      models.users.getUserActions(dbUsers[0]._id, 'NA' , function(err, user) {
+      models.users.getUserActions(dbUsers[0]._id, 'na' , function(err, user) {
         //Is there a way to combine all of the action types?
-<<<<<<< HEAD
         user.should.deep.equal(dbUsers[0].actions.na);
-=======
-        user.actions.inProgress.should.deep.equal(dbUsers[0].actions.inProgress);
-        user.actions.done.should.deep.equal(dbUsers[0].actions.done);
-        user.actions.declined.should.deep.equal(dbUsers[0].actions.declined);
->>>>>>> 2688bded142fb215ce473f4582d450c8186b51fb
         done(err);
       });
     });

@@ -138,17 +138,15 @@ exports.getUserActions = function(id, type, cb) {
     } else {
       switch (type)
       {
-        case 'In Progress':
+        case 'progress':
           return cb(null, user.actions.inProgress);
-        case 'Pending':
+        case 'pending':
           return cb(null, user.actions.pending);
-        case 'Done':
+        case 'done':
           return cb(null, user.actions.done);
-        case 'Canceled':
-          return cb(null, user.actions.canceled);
-        case 'Declined':
+        case 'declined':
           return cb(null, user.actions.declined);
-        case 'NA':
+        case 'na':
           return cb(null, user.actions.na);
         default:
           return cb(null, user.actions);
