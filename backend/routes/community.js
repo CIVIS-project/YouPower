@@ -470,9 +470,7 @@ router.post('/communityPicture/:communityId', auth.authenticate(), function(req,
   }
 
   var imgPath = path.join(common.getUserHome(), '.youpower', 'communityPictures');
-  common.uploadPicture(req, 512, imgPath, req.params.communityId, function(err) {
-    res.successRes(err, {msg: 'success!'});
-  });
+  common.uploadPicture(req, 512, imgPath, req.params.communityId, res.successRes);
 });
 
 /**

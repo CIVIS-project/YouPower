@@ -3,9 +3,9 @@
 var auth = require('../middleware/auth');
 var express = require('express');
 var util = require('util');
+var common = require('./common');
 var fs = require('fs');
 var path = require('path');
-var gm = require('gm');
 var router = express.Router();
 var User = require('../models').users;
 
@@ -195,18 +195,16 @@ router.post('/profile', auth.authenticate(), function(req, res) {
  * <image data>
  */
 router.get('/profilePicture/:userId', auth.authenticate(), function(req, res) {
-  req.checkParams('userId').notEmpty();
+  var imgPath = path.join(common.getUserHome(), '.youpower', 'profilePictures',
+      req.params.userId + '.png');
 
-  var err;
-  if ((err = req.validationErrors())) {
-    res.status(500).send('There have been validation errors: ' + util.inspect(err));
-  } else {
-    var picPath = process.env.HOME + '/.youpower/profilePictures/' + req.params.userId + '.png';
-    fs.exists(picPath, function(exists) {
-      var stream = fs.createReadStream(exists ? picPath : defaultPath);
-      stream.pipe(res);
+  fs.exists(imgPath, function(exists) {
+    var stream = fs.createReadStream(exists ? imgPath : defaultPath);
+    stream.pipe(res);
+    stream.on('error', function(err) {
+      res.successRes(err);
     });
-  }
+  });
 });
 
 /**
@@ -227,19 +225,8 @@ router.get('/profilePicture/:userId', auth.authenticate(), function(req, res) {
  * }
  */
 router.post('/profilePicture', auth.authenticate(), function(req, res) {
-  var picPath = process.env.HOME + '/.youpower/profilePictures/' + req.user._id + '.png';
-
-  gm(req)
-  .size({bufferStream: true}, function(err) {
-    if (err) {
-      return res.successRes(err);
-    }
-
-    this.resize(256);
-    this.write(picPath, function(err) {
-      res.successRes(err, {msg: 'success!'});
-    });
-  });
+  var imgPath = path.join(common.getUserHome(), '.youpower', 'profilePictures');
+  common.uploadPicture(req, 256, imgPath, req.user._id, res.successRes);
 });
 
 /**

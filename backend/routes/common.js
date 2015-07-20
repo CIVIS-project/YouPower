@@ -4,7 +4,7 @@ var path = require('path');
 var gm = require('gm');
 
 exports.savePicture = function(stream, maxSize, imgPath, name, cb) {
-  var picPath = path.join(imgPath, name + '.png');
+  var fullPath = path.join(imgPath, name + '.png');
 
   gm(stream)
   .size({bufferStream: true}, function(err, size) {
@@ -16,8 +16,8 @@ exports.savePicture = function(stream, maxSize, imgPath, name, cb) {
     if (size.width > maxSize || size.height > maxSize) {
       this.resize(maxSize);
     }
-    this.write(picPath, function(err) {
-      cb(err);
+    this.write(fullPath, function(err) {
+      cb(err, err ? {} : {msg: 'success!'});
     });
   });
 };

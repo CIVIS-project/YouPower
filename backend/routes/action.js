@@ -110,8 +110,10 @@ router.post('/comment/:commentId/picture', auth.authenticate(), function(req, re
  * <image data>
  */
 router.get('/comment/:commentId/picture', auth.authenticate(), function(req, res) {
-  var picPath = process.env.HOME + '/.youpower/commentPictures/' + req.params.commentId + '.png';
-  var stream = fs.createReadStream(picPath);
+  var imgPath = path.join(common.getUserHome(), '.youpower', 'commentPictures');
+  imgPath += req.params.commentId + '.png';
+
+  var stream = fs.createReadStream(imgPath);
   stream.pipe(res);
   stream.on('error', function(err) {
     res.successRes(err);
