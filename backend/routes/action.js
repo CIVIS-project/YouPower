@@ -3,7 +3,8 @@
 var express = require('express');
 var auth = require('../middleware/auth');
 var util = require('util');
-var gm = require('gm');
+var path = require('path');
+var common = require('./common');
 var fs = require('fs');
 var router = express.Router();
 var Action = require('../models').actions;
@@ -73,23 +74,21 @@ router.post('/:actionId/comment', auth.authenticate(), function(req, res) {
  *   }
  */
 router.post('/comment/:commentId/picture', auth.authenticate(), function(req, res) {
-  var picPath = process.env.HOME + '/.youpower/commentPictures/' + req.params.commentId + '.png';
+  req.checkParams('commentId', 'Invalid commentId').isMongoId();
 
-  gm(req)
-  .size({bufferStream: true}, function(err) {
+  var err;
+  if ((err = req.validationErrors())) {
+    return res.successRes('There have been validation errors: ' + util.inspect(err));
+  }
+
+  var imgPath = path.join(common.getUserHome(), '.youpower', 'actionCommentPictures');
+  common.uploadPicture(req, 512, imgPath, req.params.commentId, function(err) {
     if (err) {
       return res.successRes(err);
     }
 
-    this.resize(512);
-    this.write(picPath, function(err) {
-      if (err) {
-        return res.successRes(err);
-      }
-
-      ActionComment.setHasPicture(req.params.commentId, true, function(err) {
-        res.successRes(err, {msg: 'success!'});
-      });
+    ActionComment.setHasPicture(req.params.commentId, true, function(err) {
+      res.successRes(err, {msg: 'success!'});
     });
   });
 });
@@ -111,12 +110,12 @@ router.post('/comment/:commentId/picture', auth.authenticate(), function(req, re
  * <image data>
  */
 router.get('/comment/:commentId/picture', auth.authenticate(), function(req, res) {
-  var picPath = process.env.HOME + '/.youpower/commentPictures/' + req.params.commentId + '.png';
-  var stream = fs.createReadStream(picPath);
+  var imgPath = path.join(common.getUserHome(), '.youpower', 'actionCommentPictures');
+  imgPath += req.params.commentId + '.png';
+
+  var stream = fs.createReadStream(imgPath);
   stream.pipe(res);
-  stream.on('error', function(err) {
-    res.successRes(err);
-  });
+  stream.on('error', res.successRes);
 });
 
 /**
@@ -542,6 +541,62 @@ router.get('/search', auth.authenticate(), function(req, res) {
 });
 
 /**
+ * @api {post} /action/:actionId/picture Attach picture to action
+ * @apiGroup Action
+ *
+ * @apiParam {String} actionId ID of action
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X POST -H "Content-Type: image/png" -H "Authorization: Bearer $API_TOKEN" \
+ *  --data-binary @/path/to/picture.png \
+ *  http://localhost:3000/api/action/555f0163688305b57c7cef6c/picture
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *   "msg": "success"
+ *   }
+ */
+router.post('/:actionId/picture', auth.authenticate(), function(req, res) {
+  req.checkParams('actionId', 'Invalid actionId').isMongoId();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    return res.successRes('There have been validation errors: ' + util.inspect(err));
+  }
+
+  var imgPath = path.join(common.getUserHome(), '.youpower', 'actionPictures');
+  common.uploadPicture(req, 512, imgPath, req.params.actionId, res.successRes);
+});
+
+/**
+ * @api {get} /action/:actionId/picture Get action picture
+ * @apiGroup Action
+ *
+ * @apiParam {String} actionId ID of comment
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Content-Type: image/png" -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/action/555f0163688305b57c7cef6c/picture
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * <image data>
+ */
+router.get('/:actionId/picture', auth.authenticate(), function(req, res) {
+  var imgPath = path.join(common.getUserHome(), '.youpower', 'actionPictures');
+  imgPath += req.params.actionId + '.png';
+
+  var stream = fs.createReadStream(imgPath);
+  stream.pipe(res);
+  stream.on('error', res.successRes);
+});
+
+/*
  * @api {get} /action/search Search for Actions by name
  * @apiGroup Challenge
  *

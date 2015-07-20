@@ -2,12 +2,14 @@
 
 var _ = require('underscore');
 var l = require('winston').loggers.get('default');
+var path = require('path');
 
 var getUserConfig = function() {
   var userConfig = {};
 
   try {
-    userConfig = require(process.env.HOME + '/.youpower.json');
+    var home = process.env[(process.platform === 'win32') ? 'USERPROFILE' : 'HOME'];
+    userConfig = require(path.join(home, '.youpower', 'config.json'));
   } catch (e) {
     l.warn('could not find user config, using defaults');
   }

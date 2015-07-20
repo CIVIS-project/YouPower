@@ -4,12 +4,22 @@ This is the backend of the YouPower app.
 
 ## Setup
 
-First set up mongodb on your local machine. Also install `graphicsmagick` on your
-machine. (needed for resizing profile pictures). Then:
+First set up nodejs, npm and mongodb on your local machine. Also install
+`graphicsmagick` on your machine. (needed for resizing profile pictures).
+
+If you're on Debian or Ubuntu, here's a hack to put nodejs into the same
+path that almost everyone else uses:
 ```
-cd backend/     # move into correct directory
+sudo ln -s /usr/bin/nodejs /usr/bin/node
+```
+
+Then:
+```
+cd YouPower/    # move into project root
 npm install     # install dependencies
-npm start       # run server
+
+# run server:
+MONGO_URL=mongodb://user:pass@my.db/name npm start
 ```
 
 ## Running unit tests

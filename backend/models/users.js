@@ -39,8 +39,8 @@ var UserSchema = new Schema({
       default: {}
     },
 
-    // user has canceled an action that they were performing
-    canceled: {
+    // user has declined an action or canceled an action that they were already performing
+    declined: {
       type: Object,
       default: {}
     },
@@ -202,7 +202,7 @@ var getUA = function(user, actionId) {
   return user.actions.pending[actionId] ||
     user.actions.inProgress[actionId] ||
     user.actions.done[actionId] ||
-    user.actions.canceled[actionId] ||
+    user.actions.declined[actionId] ||
     user.actions.na[actionId] ||
     {};
 };
@@ -228,7 +228,7 @@ exports.setActionState = function(user, actionId, state, postponed, cb) {
     delete(user.actions.pending[actionId]);
     delete(user.actions.inProgress[actionId]);
     delete(user.actions.done[actionId]);
-    delete(user.actions.canceled[actionId]);
+    delete(user.actions.declined[actionId]);
     delete(user.actions.na[actionId]);
 
     // state-specific logic
@@ -246,7 +246,11 @@ exports.setActionState = function(user, actionId, state, postponed, cb) {
     } else if (state === 'done') {
       userAction.doneDate = new Date();
     } else if (state === 'canceled') {
-      userAction.cancelDate = new Date();
+      userAction.wasCanceled = true;
+      userAction.declineDate = new Date();
+      state = 'declined';
+    } else if (state === 'declined') {
+      userAction.declineDate = new Date();
     } else if (state === 'na') {
       userAction.naDate = new Date();
     } else {
@@ -259,7 +263,7 @@ exports.setActionState = function(user, actionId, state, postponed, cb) {
     user.markModified('actions.pending');
     user.markModified('actions.inProgress');
     user.markModified('actions.done');
-    user.markModified('actions.canceled');
+    user.markModified('actions.declined');
     user.markModified('actions.na');
     user.save(cb);
   });
