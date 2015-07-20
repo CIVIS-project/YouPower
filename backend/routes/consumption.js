@@ -28,4 +28,49 @@ router.get('/', auth.authenticate(), function(req, res) {
   Consumption.get(req.body, res.successRes);
 });
 
+/**
+ * @api {post} /consumption/getAllSensors Fetch all UsagePoints & Sensors from Reply
+ * @apiGroup Consumption
+ *
+ * @apiParam {Boolean} AddUsagePoints adds new usage points only
+ * @apiParam {Boolean} [UpdateUsagePoints] updates existing UsagePoints
+ * 	with new sensor data if available
+ * @apiParam {[Number]} [ApartmentId] Adds/Updates the value of only
+ *	that particular ApartmentId/Ids
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
+ *  '{
+ *		'AddUsagePoints': true,
+ *		'UpdateUsagePoints': true,
+ *		'ApartmentId': [14,17]
+ *  }' \
+ *  http://localhost:3000/api/consumption/getAllSensors
+ *
+ * @apiSuccessExample {[json]} Success-Response:
+ *	 [
+ *		{ ApartmentID: '14',
+ *		  Success: true,
+ *		  UsagePoint: { __v: 0, apartmentId: '14', _id: 55acb78868440371168b57c7 }
+ *		},
+ *		{ ApartmentID: '42',
+ *		  Success: true,
+ *		  UsagePoint: { __v: 0, apartmentId: '42', _id: 55acb78868440371168b57cc }
+ *		},
+ *		{ ApartmentID: '17',
+ *		  Success: true,
+ *		  UsagePoint: { __v: 0, apartmentId: '17', _id: 55acb78868440371168b57c8 }
+ *		},
+ *		{ ApartmentID: '73',
+ *		  Success: true,
+ *		  UsagePoint: { __v: 0, apartmentId: '73', _id: 55acb78868440371168b57cd }
+ *		}
+ *	 ]
+ */
+router.post('/getAllSensors', auth.authenticate(), function(req, res) {
+  Consumption.getAllSensors(req.body, res.successRes);
+});
+
 module.exports = router;
