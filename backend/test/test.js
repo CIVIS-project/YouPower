@@ -255,6 +255,13 @@ describe('models', function() {
         done(err);
       });
     });
+    it('search should only match actions from start of string', function(done) {
+      models.actions.search('ummy name', function(err, actions) {
+        actions.length.should.equal(0);
+        done(err);
+      });
+    });
+
   });
 
   describe('actionComments', function() {
@@ -450,11 +457,54 @@ describe('models', function() {
     });
 
     it('should return the complete actions list for a user', function(done) {
-      models.users.getUserActions(dbUsers[0]._id, function(err, user) {
+      models.users.getUserActions(dbUsers[0]._id, 'all' , function(err, user) {
         //Is there a way to combine all of the action types?
-        user.actions.inProgress.should.deep.equal(dbUsers[0].actions.inProgress);
-        user.actions.done.should.deep.equal(dbUsers[0].actions.done);
-        user.actions.canceled.should.deep.equal(dbUsers[0].actions.canceled);
+        user.inProgress.should.deep.equal(dbUsers[0].actions.inProgress);
+        user.done.should.deep.equal(dbUsers[0].actions.done);
+        user.pending.should.deep.equal(dbUsers[0].actions.pending);
+        user.canceled.should.deep.equal(dbUsers[0].actions.canceled);
+        //user.declined.should.deep.equal(dbUsers[0].actions.declined);
+        user.na.should.deep.equal(dbUsers[0].actions.na);
+        done(err);
+      });
+    });
+
+    it('should return only actions \'In Progress\'', function(done) {
+      models.users.getUserActions(dbUsers[0]._id, 'In Progress' , function(err, user) {
+        //Is there a way to combine all of the action types?
+        user.should.deep.equal(dbUsers[0].actions.inProgress);
+        done(err);
+      });
+    });
+
+    it('should return only actions \'Canceled\'', function(done) {
+      models.users.getUserActions(dbUsers[0]._id, 'Canceled' , function(err, user) {
+        //Is there a way to combine all of the action types?
+        user.should.deep.equal(dbUsers[0].actions.canceled);
+        done(err);
+      });
+    });
+
+    it('should return only \'Pending\' actions' , function(done) {
+      models.users.getUserActions(dbUsers[0]._id, 'Pending' , function(err, user) {
+        //Is there a way to combine all of the action types?
+        user.should.deep.equal(dbUsers[0].actions.pending);
+        done(err);
+      });
+    });
+
+    it('should return only \'Done\' actions', function(done) {
+      models.users.getUserActions(dbUsers[0]._id, 'Done' , function(err, user) {
+        //Is there a way to combine all of the action types?
+        user.should.deep.equal(dbUsers[0].actions.done);
+        done(err);
+      });
+    });
+
+    it('should return only actions \'Not applicable\'', function(done) {
+      models.users.getUserActions(dbUsers[0]._id, 'NA' , function(err, user) {
+        //Is there a way to combine all of the action types?
+        user.should.deep.equal(dbUsers[0].actions.na);
         done(err);
       });
     });

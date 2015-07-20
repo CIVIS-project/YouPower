@@ -127,8 +127,8 @@ exports.getUserCommunities = function(id, cb) {
     // }
   });
 };
-//Display user's actions (in progress)
-exports.getUserActions = function(id, cb) {
+//Display user's actions
+exports.getUserActions = function(id, type, cb) {
   User.findOne({_id: id} , function(err, user) {
     if (err) {
       return cb(err);
@@ -136,7 +136,23 @@ exports.getUserActions = function(id, cb) {
     if (!user) {
       return cb('User not found');
     } else {
-      return cb(null, user);
+      switch (type)
+      {
+        case 'In Progress':
+          return cb(null, user.actions.inProgress);
+        case 'Pending':
+          return cb(null, user.actions.pending);
+        case 'Done':
+          return cb(null, user.actions.done);
+        case 'Canceled':
+          return cb(null, user.actions.canceled);
+        case 'Declined':
+          return cb(null, user.actions.declined);
+        case 'NA':
+          return cb(null, user.actions.na);
+        default:
+          return cb(null, user.actions);
+      }
     }
   });
 };
