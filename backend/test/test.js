@@ -1032,6 +1032,27 @@ describe('models', function() {
       });
     });
 
+    it('should add rating to an unrated community document', function(done) {
+      var user = dummyData.users[0];
+      var d = dummyData.ratings[user._id];
+      var id = dbCommunities[1]._id; // mustn't contain any ratings
+      // try rating a community that has not been rated yet
+      models.communities.rate(id, user, d.rating, d.comment, function(err) {
+        if (err) {
+          return done(err);
+        }
+
+        models.communities.get(id, function(err, community) {
+          if (err) {
+            return done(err);
+          }
+          var rating = community.ratings[user._id].rating;
+          rating.should.equal(d.rating);
+          done();
+        });
+      });
+    });
+
     it('should return all communities without ratings', function(done) {
       models.communities.all(null, null, null, function(err, communities) {
         communities.length.should.equal(dummyData.communities.length);

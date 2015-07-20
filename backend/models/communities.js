@@ -242,7 +242,7 @@ exports.rate = function(id, userId, rating, comment, cb) {
     } else if (!community) {
       cb('Community not found');
     } else {
-      community.ratings[userId] = {
+      community.ratings[userId._id] = {
         rating: rating,
         comment: comment || community.ratings[userId].comment,
         date: new Date()
