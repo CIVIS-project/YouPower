@@ -255,13 +255,6 @@ describe('models', function() {
         done(err);
       });
     });
-    it('search should only match actions from start of string', function(done) {
-      models.actions.search('dummy name', function(err, actions) {
-        actions.length.should.equal(0);
-        done(err);
-      });
-    });
-
   });
 
   describe('actionComments', function() {
