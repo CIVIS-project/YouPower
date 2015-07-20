@@ -232,10 +232,10 @@ describe('models', function() {
       var userActions = {};
       userActions.done = {};
       userActions.inProgress = {};
-      userActions.canceled = {};
+      userActions.declined = {};
       userActions.done[dbActions[0]._id] = {};
       userActions.inProgress[dbActions[1]._id] = {};
-      userActions.canceled[dbActions[2]._id] = {};
+      userActions.declined[dbActions[2]._id] = {};
       models.actions.getSuggested(userActions, function(err, suggestedActions) {
         suggestedActions.length.should.equal(dbActions.length - 3);
         done(err);
@@ -454,7 +454,7 @@ describe('models', function() {
         //Is there a way to combine all of the action types?
         user.actions.inProgress.should.deep.equal(dbUsers[0].actions.inProgress);
         user.actions.done.should.deep.equal(dbUsers[0].actions.done);
-        user.actions.canceled.should.deep.equal(dbUsers[0].actions.canceled);
+        user.actions.declined.should.deep.equal(dbUsers[0].actions.declined);
         done(err);
       });
     });
@@ -524,11 +524,11 @@ describe('models', function() {
       });
     });
     it('should remove same action from other action lists when adding', function(done) {
-      // insert some actions into both done and canceled
+      // insert some actions into both done and declined
       dbUsers[0].actions.done[dbActions[0]._id] = dbActions[0];
       dbUsers[0].markModified('actions.done');
-      dbUsers[0].actions.canceled[dbActions[1]._id] = dbActions[1];
-      dbUsers[0].markModified('actions.canceled');
+      dbUsers[0].actions.declined[dbActions[1]._id] = dbActions[1];
+      dbUsers[0].markModified('actions.declined');
       dbUsers[0].save(function(err) {
         if (err) {
           return done(err);
@@ -550,7 +550,7 @@ describe('models', function() {
             user.actions.inProgress[dbActions[0]._id].name.should.equal(dbActions[0].name);
             user.actions.inProgress[dbActions[1]._id].name.should.equal(dbActions[1].name);
             should.not.exist(user.actions.done[dbActions[0]._id]);
-            should.not.exist(user.actions.canceled[dbActions[1]._id]);
+            should.not.exist(user.actions.declined[dbActions[1]._id]);
             done(err);
           });
         });
@@ -566,7 +566,7 @@ describe('models', function() {
         done(err ? null : 'no error returned!');
       });
     });
-    it('should remove action from inProgress when canceling, add to canceled', function(done) {
+    it('should remove action from inProgress when canceling, add to declined', function(done) {
       async.series([
         function(cb) {
           models.users.setActionState(dbUsers[0], dbActions[0]._id, 'inProgress', null, cb);
@@ -575,7 +575,7 @@ describe('models', function() {
           models.users.setActionState(dbUsers[0], dbActions[1]._id, 'inProgress', null, cb);
         },
         function(cb) {
-          models.users.setActionState(dbUsers[0], dbActions[0]._id, 'canceled', null, cb);
+          models.users.setActionState(dbUsers[0], dbActions[0]._id, 'declined', null, cb);
         }
       ], function(err) {
         if (err) {
@@ -583,10 +583,10 @@ describe('models', function() {
         }
         models.users.find({_id: dbUsers[0]._id}, false, null, null, function(err, user) {
           should.not.exist(user.actions.inProgress[dbActions[0]]);
-          user.actions.canceled[dbActions[0]._id].name.should.equal(dbActions[0].name);
+          user.actions.declined[dbActions[0]._id].name.should.equal(dbActions[0].name);
           user.actions.inProgress[dbActions[1]._id].name.should.equal(dbActions[1].name);
           should.not.exist(user.actions.done[dbActions[0]._id]);
-          should.not.exist(user.actions.canceled[dbActions[1]._id]);
+          should.not.exist(user.actions.declined[dbActions[1]._id]);
           done(err);
         });
       });
@@ -596,33 +596,33 @@ describe('models', function() {
       var user = dbUsers[0];
       user.actions.done[dbActions[0]._id] = dbActions[0];
       user.markModified('actions.done');
-      user.actions.canceled[dbActions[1]._id] = dbActions[1];
-      user.markModified('actions.canceled');
+      user.actions.declined[dbActions[1]._id] = dbActions[1];
+      user.markModified('actions.declined');
       user.save(function(err) {
         if (err) {
           return done(err);
         }
         async.parallel([
           function(cb) {
-            models.users.setActionState(user, dbActions[0]._id, 'canceled', null, function(err) {
-              cb(err ? null : 'completed action was canceled without error!');
+            models.users.setActionState(user, dbActions[0]._id, 'declined', null, function(err) {
+              cb(err ? null : 'completed action was declined without error!');
             });
           },
           function(cb) {
-            models.users.setActionState(user, dbActions[1]._id, 'canceled', null, function(err) {
-              cb(err ? null : 'already canceled action was canceled without error!');
+            models.users.setActionState(user, dbActions[1]._id, 'declined', null, function(err) {
+              cb(err ? null : 'already declined action was declined without error!');
             });
           }
         ], function(err) {
-          should.not.exist(user.actions.canceled[dbActions[0]._id]);
+          should.not.exist(user.actions.declined[dbActions[0]._id]);
           should.exist(user.actions.done[dbActions[0]._id]);
-          should.exist(user.actions.canceled[dbActions[1]._id]);
+          should.exist(user.actions.declined[dbActions[1]._id]);
           done(err);
         });
       });
     });
     it('should return error when trying to cancel bogus action id', function(done) {
-      models.users.setActionState(dbUsers[0], dummyData.ids[0], 'canceled', null, function(err) {
+      models.users.setActionState(dbUsers[0], dummyData.ids[0], 'declined', null, function(err) {
         done(err ? null : 'no error returned!');
       });
     });
@@ -645,8 +645,8 @@ describe('models', function() {
           should.not.exist(user.actions.inProgress[dbActions[0]]);
           user.actions.done[dbActions[0]._id].name.should.equal(dbActions[0].name);
           user.actions.inProgress[dbActions[1]._id].name.should.equal(dbActions[1].name);
-          should.not.exist(user.actions.canceled[dbActions[0]._id]);
-          should.not.exist(user.actions.canceled[dbActions[1]._id]);
+          should.not.exist(user.actions.declined[dbActions[0]._id]);
+          should.not.exist(user.actions.declined[dbActions[1]._id]);
           done(err);
         });
       });
@@ -656,8 +656,8 @@ describe('models', function() {
       var user = dbUsers[0];
       user.actions.done[dbActions[0]._id] = dbActions[0];
       user.markModified('actions.done');
-      user.actions.canceled[dbActions[1]._id] = dbActions[1];
-      user.markModified('actions.canceled');
+      user.actions.declined[dbActions[1]._id] = dbActions[1];
+      user.markModified('actions.declined');
       user.save(function(err) {
         if (err) {
           return done(err);
@@ -670,15 +670,15 @@ describe('models', function() {
           },
           function(cb) {
             models.users.setActionState(user, dbActions[1]._id, 'done', null, function(err) {
-              cb(err ? null : 'canceled action was completed without error!');
+              cb(err ? null : 'declined action was completed without error!');
             });
           }
         ], function(err) {
           should.not.exist(user.actions.done[dbActions[1]._id]);
           should.exist(user.actions.done[dbActions[0]._id]);
           user.actions.done[dbActions[0]._id].name.should.equal(dbActions[0].name);
-          should.exist(user.actions.canceled[dbActions[1]._id]);
-          user.actions.canceled[dbActions[1]._id].name.should.equal(dbActions[1].name);
+          should.exist(user.actions.declined[dbActions[1]._id]);
+          user.actions.declined[dbActions[1]._id].name.should.equal(dbActions[1].name);
           done(err);
         });
       });

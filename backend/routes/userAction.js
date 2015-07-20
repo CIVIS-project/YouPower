@@ -65,7 +65,7 @@ router.get('/suggested', auth.authenticate(), function(req, res) {
  *
  * @apiParam {String} actionId Action's MongoId
  * @apiParam {String} state Can be one of: 'pending', 'inProgress', 'alreadyDoing',
- * 'done', 'canceled', 'na'.
+ * 'done', 'canceled', 'declined', 'na'.
  * @apiParam {Date} postponed Must be provided if state is 'pending'. Specifies
  * at which time the user will be reminded of the action again.
  *
