@@ -244,7 +244,7 @@ exports.rate = function(id, userId, rating, comment, cb) {
     } else {
       community.ratings[userId._id] = {
         rating: rating,
-        comment: comment || community.ratings[userId].comment,
+        comment: comment || community.ratings[userId._id].comment,
         date: new Date()
       };
       community.markModified('ratings');

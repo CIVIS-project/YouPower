@@ -1053,6 +1053,60 @@ describe('models', function() {
       });
     });
 
+    it('should update rating of community', function(done) {
+      var user = dummyData.users[0];
+      var d = dummyData.ratings[user._id];
+      var id = dbCommunities[0]._id;
+      var newRating = 2;
+      models.communities.rate(id, user, newRating, d.comment, function(err) {
+        if (err) {
+          return done(err);
+        }
+        models.communities.get(id, function(err, community) {
+          if (err) {
+            return done(err);
+          }
+          var rating = community.ratings[user._id].rating;
+          rating.should.equal(newRating);
+          done();
+        });
+      });
+    });
+
+    it('should refuse invalid ratings', function(done) {
+      var user = dummyData.users[0];
+      var d = dummyData.ratings[user._id];
+      async.parallel([
+        function(cb) {
+          models.communities.rate(dummyData.ids[0], user, d.rating, d.comment, function(err) {
+            cb(err ? null : 'passing bogus community id did not cause error!');
+          });
+        },
+        function(cb) {
+          models.communities.rate('foo bar', user, d.rating, d.comment, function(err) {
+            cb(err ? null : 'passing invalid community id did not cause error!');
+          });
+        },
+        function(cb) {
+          models.communities.rate(dbCommunities[0]._id, null, d.rating, d.comment, function(err) {
+            cb(err ? null : 'missing user id parameter did not cause error!');
+          });
+        },
+        function(cb) {
+          models.communities.rate(dbCommunities[0]._id, user, null, d.comment, function(err) {
+            cb(err ? null : 'missing rating field did not cause error!');
+          });
+        },
+        function(cb) {
+          models.communities.rate(dbCommunities[0]._id, user, d.rating, null, function(err) {
+            cb(err ? 'comment field should be optional but wasn\'t!' : null);
+          });
+        }
+      ], function(err) {
+        done(err);
+      });
+    });
+
     it('should return all communities without ratings', function(done) {
       models.communities.all(null, null, null, function(err, communities) {
         communities.length.should.equal(dummyData.communities.length);
