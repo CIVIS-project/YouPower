@@ -3,10 +3,11 @@
 var express = require('express');
 var util = require('util');
 var auth = require('../middleware/auth');
+var path = require('path');
+var common = require('./common');
 var router = express.Router();
 var Community = require('../models').communities;
 var CommunityComment = require('../models').communityComments;
-var fs = require('fs');
 var Log = require('../models').logs;
 
 /**
@@ -442,8 +443,10 @@ router.get('/top/:id', auth.authenticate(), function(req, res) {
 });
 
 /**
- * @api {post} /community/communityPicture/:id Update your Community picture
+ * @api {post} /community/communityPicture/:communityId Update your Community picture
  * @apiGroup Community
+ *
+ * @apiParam {String} communityId MongoId of community
  *
  * @apiExample {curl} Example usage:
  *  # Get API token via /api/user/profile
@@ -451,29 +454,25 @@ router.get('/top/:id', auth.authenticate(), function(req, res) {
  *
  *  curl -i -X POST -H "Content-Type: image/png" -H "Authorization: Bearer $API_TOKEN" \
  *  --data-binary @/path/to/picture.png \
- *  http://localhost:3000/api/community/communityPicture/:id
+ *  http://localhost:3000/api/community/communityPicture/555f0163688305b57c7cef6c
  *
  * @apiSuccessExample {json} Success-Response:
  * {
  *   "status": "ok"
  * }
  */
-router.post('/communityPicture/:id', auth.authenticate(), function(req, res) {
+router.post('/communityPicture/:communityId', auth.authenticate(), function(req, res) {
   req.checkParams('id', 'Invalid Community id').isMongoId();
+
   var err;
   if ((err = req.validationErrors())) {
-    res.status(500).send('There have been validation errors: ' + util.inspect(err));
-  } else {
-    var picPath = process.env.HOME + '/.youpower/communityPicture/' + req.params.id + '.png';
-    var stream = fs.createWriteStream(picPath);
-    req.pipe(stream);
-    stream.on('close', function() {
-      res.successRes(null, {msg: 'success!'});
-    });
-    stream.on('error', function(err) {
-      res.successRes(err);
-    });
+    return res.successRes('There have been validation errors: ' + util.inspect(err));
   }
+
+  var imgPath = path.join(common.getUserHome(), '.youpower', 'communityPictures');
+  common.uploadPicture(req, 512, imgPath, req.params.communityId, function(err) {
+    res.successRes(err, {msg: 'success!'});
+  });
 });
 
 module.exports = router;

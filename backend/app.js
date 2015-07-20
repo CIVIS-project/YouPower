@@ -38,6 +38,7 @@ var mkdirp = require('mkdirp');
 
 mkdirp(process.env.HOME + '/.youpower/profilePictures');
 mkdirp(process.env.HOME + '/.youpower/commentPictures');
+mkdirp(process.env.HOME + '/.youpower/communityPictures');
 
 mongoose.connect(process.env.MONGO_URL || 'mongodb://localhost/youpower');
 var db = mongoose.connection;
