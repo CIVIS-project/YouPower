@@ -34,11 +34,15 @@ var bodyParser = require('body-parser');
 var expressValidator = require('express-validator');
 var mongoose = require('mongoose');
 var fs = require('fs');
+var path = require('path');
 var mkdirp = require('mkdirp');
 
-mkdirp(process.env.HOME + '/.youpower/profilePictures');
-mkdirp(process.env.HOME + '/.youpower/commentPictures');
-mkdirp(process.env.HOME + '/.youpower/communityPictures');
+// make sure directories exist for picture uploads
+var home = process.env[(process.platform === 'win32') ? 'USERPROFILE' : 'HOME'];
+mkdirp(path.join(home, '.youpower', 'actionCommentPictures'));
+mkdirp(path.join(home, '.youpower', 'actionPictures'));
+mkdirp(path.join(home, '.youpower', 'profilePictures'));
+mkdirp(path.join(home, '.youpower', 'communityPictures'));
 
 mongoose.connect(process.env.MONGO_URL || 'mongodb://localhost/youpower');
 var db = mongoose.connection;
