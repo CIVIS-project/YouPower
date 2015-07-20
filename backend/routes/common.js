@@ -3,7 +3,7 @@
 var path = require('path');
 var gm = require('gm');
 
-exports.savePicture = function(stream, maxSize, imgPath, name, cb) {
+exports.uploadPicture = function(stream, maxSize, imgPath, name, cb) {
   var fullPath = path.join(imgPath, name + '.png');
 
   gm(stream)

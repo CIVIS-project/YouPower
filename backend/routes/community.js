@@ -462,7 +462,7 @@ router.get('/top/:id', auth.authenticate(), function(req, res) {
  * }
  */
 router.post('/communityPicture/:communityId', auth.authenticate(), function(req, res) {
-  req.checkParams('id', 'Invalid Community id').isMongoId();
+  req.checkParams('communityId', 'Invalid Community id').isMongoId();
 
   var err;
   if ((err = req.validationErrors())) {
