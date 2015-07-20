@@ -67,6 +67,8 @@ exports.getProfile = function(id, cb) {
       email: user.email,
       profile: user.profile,
       actions: user.actions,
+      accessToken: user.accessToken,
+      facebookId: user.facebookId,
       energyConsumption: {}, // TODO
       topActions: [], // TODO
       topChallenges: [], // TODO
