@@ -5,6 +5,7 @@
 var mongoose = require('mongoose');
 var _ = require('underscore');
 var Schema = mongoose.Schema;
+var escapeStringRegexp = require('escape-string-regexp');
 
 var ActionSchema = new Schema({
   name: {
@@ -171,6 +172,20 @@ exports.getSuggested = function(userActions, cb) {
   .limit(3)
   .select('name description impact effort')
   .exec(cb);
+};
+
+//Search action by name
+exports.search = function(aname, cb) {
+  Action.find({
+    name : new RegExp('^' + escapeStringRegexp(aname), 'i')
+  }, function(err, actions) {
+    /* istanbul ignore if: db errors are hard to unit test */
+    if (err) {
+      cb(err);
+    } else {
+      cb(null, actions);
+    }
+  });
 };
 
 exports.model = Action;
