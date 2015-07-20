@@ -3,7 +3,8 @@
 var express = require('express');
 var auth = require('../middleware/auth');
 var util = require('util');
-var gm = require('gm');
+var path = require('path');
+var common = require('./common');
 var fs = require('fs');
 var router = express.Router();
 var Action = require('../models').actions;
@@ -73,23 +74,21 @@ router.post('/:actionId/comment', auth.authenticate(), function(req, res) {
  *   }
  */
 router.post('/comment/:commentId/picture', auth.authenticate(), function(req, res) {
-  var picPath = process.env.HOME + '/.youpower/commentPictures/' + req.params.commentId + '.png';
+  req.checkParams('commentId', 'Invalid commentId').isMongoId();
 
-  gm(req)
-  .size({bufferStream: true}, function(err) {
+  var err;
+  if ((err = req.validationErrors())) {
+    return res.successRes('There have been validation errors: ' + util.inspect(err));
+  }
+
+  var imgPath = path.join(common.getUserHome(), '.youpower', 'commentPictures');
+  common.uploadPicture(req, 512, imgPath, req.params.commentId, function(err) {
     if (err) {
       return res.successRes(err);
     }
 
-    this.resize(512);
-    this.write(picPath, function(err) {
-      if (err) {
-        return res.successRes(err);
-      }
-
-      ActionComment.setHasPicture(req.params.commentId, true, function(err) {
-        res.successRes(err, {msg: 'success!'});
-      });
+    ActionComment.setHasPicture(req.params.commentId, true, function(err) {
+      res.successRes(err, {msg: 'success!'});
     });
   });
 });
@@ -111,8 +110,10 @@ router.post('/comment/:commentId/picture', auth.authenticate(), function(req, re
  * <image data>
  */
 router.get('/comment/:commentId/picture', auth.authenticate(), function(req, res) {
-  var picPath = process.env.HOME + '/.youpower/commentPictures/' + req.params.commentId + '.png';
-  var stream = fs.createReadStream(picPath);
+  var imgPath = path.join(common.getUserHome(), '.youpower', 'commentPictures');
+  imgPath += req.params.commentId + '.png';
+
+  var stream = fs.createReadStream(imgPath);
   stream.pipe(res);
   stream.on('error', function(err) {
     res.successRes(err);
