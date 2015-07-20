@@ -2,7 +2,7 @@
 
 var mongoose = require('mongoose');
 var Action = require('./').actions;
-var Community = require('./communities').Community;
+//var Community = require('./communities').Community;
 var Schema = mongoose.Schema;
 var passportLocalMongoose = require('passport-local-mongoose');
 var escapeStringRegexp = require('escape-string-regexp');
@@ -107,21 +107,24 @@ exports.getUserCommunities = function(id, cb) {
     if (!user) {
       return cb('User not found');
     } else {
-      Community.find({_id: {$in : user.communities}}, function(err, communities) {
-        if (err) {
-          return cb(err);
-        }
-        if (!communities) {
-          return cb('Community not found');
-        } else {
-          // convert every returned action into a raw object (remove mongoose magic)
-          for (var i = 0; i < communities.length; i++) {
-            communities[i] = communities[i].toObject();
-          }
-          cb(null, communities);
-        }
-      });
+      cb(null, user);
     }
+    // else {
+    //   Community.find({_id: {$in : user.communities}}, function(err, communities) {
+    //     if (err) {
+    //       return cb(err);
+    //     }
+    //     if (!communities) {
+    //       return cb('Community not found');
+    //     } else {
+    //       // convert every returned action into a raw object (remove mongoose magic)
+    //       for (var i = 0; i < communities.length; i++) {
+    //         communities[i] = communities[i].toObject();
+    //       }
+    //       cb(null, communities);
+    //     }
+    //   });
+    // }
   });
 };
 //Display user's actions (in progress)

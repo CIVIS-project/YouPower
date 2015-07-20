@@ -475,4 +475,82 @@ router.post('/communityPicture/:communityId', auth.authenticate(), function(req,
   });
 });
 
+/**
+ * @api {put} /action/rate/:id Create/update community's rating by user
+ * @apiGroup Community
+ *
+ * @apiParam {String} id MongoId of community
+ * @apiParam {Number} rating Rating of community (1 [least] - 5 [most])
+ * @apiParam {String} [comment] Comment attached to rating
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/community/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X PUT -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
+ *  '{
+ *    "rating": 4,
+ *    "comment": "This community is really awesome!"
+ *  }' \
+ *  http://localhost:3000/api/action/rate/555ef84b2fd41ffc6e078a34
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "_id": "5594dbeadfbb985d0ac150c4",
+ *     "name": "Otaniemi Community",
+ *     "description": "Disabling standby can save up to 10% in total electricity costs.",
+ *     "__v": 0,
+ *     "ratings": {
+ *       "5593ccfa9255daa130890164": {
+ *         "date": "2015-07-02T06:37:39.845Z",
+ *         "comment": "This community is really awesome!",
+ *         "name": "Test User",
+ *         "rating": 4
+ *       }
+ *     },
+ *    "challenges": [
+ *      {
+ *        "id": "555eda2531039c1853352b7f",
+ *        "name": "Reduce energy consumption by 10%"
+ *      },
+ *      {
+ *        "id": "455eda2531039c1853335b7f",
+ *        "name": "Save for 2 solar panels for the area"
+ *      }
+ *    ],
+ *     "date": "2015-07-01T12:04:33.599Z",
+ *      "members": [
+ *      {
+ *        "_id": "testUser1",
+ *        "name": "Jane"
+ *      },
+ *      {
+ *        "_id": "testUser2",
+ *        "name": "Jack"
+ *      }
+ *    ]
+ *   }
+ */
+router.put('/rate/:id', auth.authenticate(), function(req, res) {
+  req.checkParams('id', 'Invalid community id').isMongoId();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    Community.rate(req.params.id, req.user, req.body.rating, req.body.comment, res.successRes);
+
+    Log.create({
+      userId: req.user._id,
+      category: 'Community',
+      type: 'rate',
+      data: {
+        communityId: req.params.id,
+        rating: req.body.rating,
+        comment: req.body.comment
+      }
+    });
+  }
+});
+
 module.exports = router;

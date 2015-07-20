@@ -444,6 +444,13 @@ describe('models', function() {
         done(err);
       });
     });
+
+    it('should return the complete communities list for a user', function(done) {
+      models.users.getUserCommunities(dbUsers[0]._id, function(err, user) {
+        user.communities[0].toString().should.equal(dummyData.communityids[0]);
+        done(err);
+      });
+    });
   });
 
   describe('userAction', function() {
@@ -1021,6 +1028,81 @@ describe('models', function() {
       models.communities.create({
         name: d.name
       }, function(err) {
+        done(err);
+      });
+    });
+
+    it('should add rating to an unrated community document', function(done) {
+      var user = dummyData.users[0];
+      var d = dummyData.ratings[user._id];
+      var id = dbCommunities[1]._id; // mustn't contain any ratings
+      // try rating a community that has not been rated yet
+      models.communities.rate(id, user, d.rating, d.comment, function(err) {
+        if (err) {
+          return done(err);
+        }
+
+        models.communities.get(id, function(err, community) {
+          if (err) {
+            return done(err);
+          }
+          var rating = community.ratings[user._id].rating;
+          rating.should.equal(d.rating);
+          done();
+        });
+      });
+    });
+
+    it('should update rating of community', function(done) {
+      var user = dummyData.users[0];
+      var d = dummyData.ratings[user._id];
+      var id = dbCommunities[0]._id;
+      var newRating = 2;
+      models.communities.rate(id, user, newRating, d.comment, function(err) {
+        if (err) {
+          return done(err);
+        }
+        models.communities.get(id, function(err, community) {
+          if (err) {
+            return done(err);
+          }
+          var rating = community.ratings[user._id].rating;
+          rating.should.equal(newRating);
+          done();
+        });
+      });
+    });
+
+    it('should refuse invalid ratings', function(done) {
+      var user = dummyData.users[0];
+      var d = dummyData.ratings[user._id];
+      async.parallel([
+        function(cb) {
+          models.communities.rate(dummyData.ids[0], user, d.rating, d.comment, function(err) {
+            cb(err ? null : 'passing bogus community id did not cause error!');
+          });
+        },
+        function(cb) {
+          models.communities.rate('foo bar', user, d.rating, d.comment, function(err) {
+            cb(err ? null : 'passing invalid community id did not cause error!');
+          });
+        },
+        function(cb) {
+          models.communities.rate(dbCommunities[0]._id, null, d.rating, d.comment, function(err) {
+            cb(err ? null : 'missing user id parameter did not cause error!');
+          });
+        },
+        function(cb) {
+          models.communities.rate(dbCommunities[0]._id, user, null, d.comment, function(err) {
+            cb(err ? null : 'missing rating field did not cause error!');
+          });
+        },
+        function(cb) {
+          models.communities.rate(dbCommunities[0]._id, user, d.rating, null, function(err) {
+            cb(err ? 'comment field should be optional but wasn\'t!' : null);
+          });
+        }
+      ], function(err) {
         done(err);
       });
     });
