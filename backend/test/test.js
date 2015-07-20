@@ -444,6 +444,13 @@ describe('models', function() {
         done(err);
       });
     });
+
+    it('should return the complete communities list for a user', function(done) {
+      models.users.getUserCommunities(dbUsers[0]._id, function(err, user) {
+        user.communities[0].toString().should.equal(dummyData.communityids[0]);
+        done(err);
+      });
+    });
   });
 
   describe('userAction', function() {
