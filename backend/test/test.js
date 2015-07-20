@@ -256,7 +256,7 @@ describe('models', function() {
       });
     });
     it('search should only match actions from start of string', function(done) {
-      models.actions.search('ummy challenge', function(err, actions) {
+      models.actions.search('dummy name', function(err, actions) {
         actions.length.should.equal(0);
         done(err);
       });
