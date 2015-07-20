@@ -540,4 +540,36 @@ router.get('/search', auth.authenticate(), function(req, res) {
     */
   }
 });
+
+/**
+ * @api {get} /action/search Search for Actions by name
+ * @apiGroup Challenge
+ *
+ * @apiParam {String} q Search query
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/action/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/action/search\?q\=foobar
+ */
+router.get('/search', function(req, res) {
+  req.checkQuery('q', 'Invalid query parameter').notEmpty();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    Action.search(req.query.q, res.successRes);
+
+    Log.create({
+      userId: req.user._id,
+      category: 'Action',
+      type: 'search',
+      data: req.query
+    });
+  }
+});
+
 module.exports = router;

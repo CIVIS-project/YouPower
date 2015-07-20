@@ -241,6 +241,27 @@ describe('models', function() {
         done(err);
       });
     });
+
+    it('should find actions by search', function(done) {
+      models.actions.search('dummy name', function(err, actions) {
+        // manually search dummy challenges for same string
+        var d = [];
+        _.each(dummyData.actions, function(action) {
+          if (action.name.indexOf('dummy name') === 0) {
+            d.push(action);
+          }
+        });
+        actions.length.should.equal(d.length);
+        done(err);
+      });
+    });
+    it('search should only match actions from start of string', function(done) {
+      models.actions.search('ummy challenge', function(err, actions) {
+        actions.length.should.equal(0);
+        done(err);
+      });
+    });
+
   });
 
   describe('actionComments', function() {
