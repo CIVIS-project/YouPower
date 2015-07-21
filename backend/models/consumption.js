@@ -116,7 +116,7 @@ exports.getAllUsagePointsData = function(usagepoint, cb) {
         var tempArr = [];
 
         console.log('RESULT', JSON.stringify(result));
-        async.each(result.entry.content.usagePoint.slice(0,2), function(obj, callback) {
+        async.each(result.entry.content.usagePoint.slice(0, 2), function(obj, callback) {
           exports.create(obj, function(err, success) {
             if (err) {
               tempArr.push(success);
