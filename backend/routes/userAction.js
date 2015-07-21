@@ -73,13 +73,13 @@ router.get('/suggested', auth.authenticate(), function(req, res) {
  */
 router.post('/:actionId', auth.authenticate(), function(req, res) {
   User.setActionState(req.user, req.params.actionId,
-      req.params.state, req.params.postponed, res.successRes);
+      req.body.state, req.body.postponed, res.successRes);
 
   Log.create({
     userId: req.user._id,
     category: 'User Action',
     type: 'update',
-    data: req.params
+    data: req.body
   });
 });
 
