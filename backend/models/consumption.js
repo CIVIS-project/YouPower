@@ -7,8 +7,9 @@ var xml2js = require('xml2js');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var async = require('async');
+var usagePoint = require('./usagePoint');
 
-var UsagePointSchema = new Schema({
+/*var UsagePointSchema = new Schema({
   apartmentId: {
     type: String,
     required: true,
@@ -43,7 +44,7 @@ var UsagePointSchema = new Schema({
     required: false
   },
   pv: Boolean, //Set to True if Production is present
-});
+});*/
 
 var sensorSchema = new Schema({
   sensorNumber: {
@@ -74,21 +75,15 @@ var sensorSchema = new Schema({
 });
 
 var Sensor = mongoose.model('Sensor', sensorSchema);
-var UsagePoint = mongoose.model('UsagePoint', UsagePointSchema);
+//var UsagePoint = mongoose.model('UsagePoint', UsagePointSchema);
 
 exports.create = function(usagePt, cb1) {
-  exports.createUsagePoint(usagePt.ApartmentID, function(err, up) {
+  usagePoint.create(usagePt.ApartmentID, function(err, up) {
     if (err) {
       cb1(err, {'ApartmentID': usagePt.ApartmentID, 'Success': false, 'ERROR': err});
     } else {
       async.each(usagePt.sensors.sensor, function(obj, callback) {
-        exports.createSensors(obj, up, function(err) {
-          if (err) {
-            callback();
-          } else {
-            callback();
-          }
-        });
+        exports.createSensors(obj, up, callback);
       }, function(err) {
         if (err) {cb1(err, {'ApartmentID': usagePt.ApartmentID, 'Success': false});}
         cb1(null, {'ApartmentID':usagePt.ApartmentID, 'Success': true, 'UsagePoint':up});
@@ -104,7 +99,6 @@ exports.getAllUsagePointsData = function(usagepoint, cb) {
     qs: {
     }
   }, function(err, res, body) {
-    console.log('RESULT');
     if (err) {
       cb(err);
     } else {
@@ -115,8 +109,7 @@ exports.getAllUsagePointsData = function(usagepoint, cb) {
         if (err) {cb(err);}
         var tempArr = [];
 
-        console.log('RESULT', JSON.stringify(result));
-        async.each(result.entry.content.usagePoint.slice(0, 2), function(obj, callback) {
+        async.each(result.entry.content.usagePoint.slice(0,2), function(obj, callback) {
           exports.create(obj, function(err, success) {
             if (err) {
               tempArr.push(success);
@@ -135,7 +128,7 @@ exports.getAllUsagePointsData = function(usagepoint, cb) {
   });
 };
 
-exports.createUsagePoint = function(usagepoint, cb1) {
+/*exports.createUsagePoint = function(usagepoint, cb1) {
   //console.log('USAGEPOINT1', usagepoint);
   UsagePoint.create({
     apartmentId: usagepoint
@@ -148,7 +141,7 @@ exports.createUsagePoint = function(usagepoint, cb1) {
       cb1(null, up);
     }
   });
-};
+};*/
 
 exports.createSensors = function(sensor, up, cb1) {
   //console.log("SENSOR",sensor)
@@ -202,5 +195,5 @@ exports.allByUser = function(user, cb) {
   cb(null, []);
 };
 
-exports.model = UsagePoint;
+
 exports.model = Sensor;
