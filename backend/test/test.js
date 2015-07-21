@@ -1676,4 +1676,32 @@ describe('models', function() {
       });
     });
   });
+
+  describe('UsagePoint', function() {
+    var dbUsagePoints = [];
+
+    beforeEach(function(done) {
+      // reset users collection
+      resetModel('consumption', function(err, UsagePoint) {
+        dbUsagePoints = UsagePoint;
+        console.log('USAGE POINTS', dbUsagePoints);
+        done(err);
+      });
+
+      models.consumption.createUsagePoint('1', function(err) {
+        console.log('ERRRRRRR', err);       
+      });
+    });
+
+    it('should create a new UsagePoint', function(done) {
+      models.consumption.createUsagePoint('1', function(err) {
+        if (err) {
+          done(err);
+        } else {
+          done(null, 'Dupilcate upsagepoint not created');
+        }
+      });
+    });
+
+  });
 });

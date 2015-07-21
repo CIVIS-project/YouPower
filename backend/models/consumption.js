@@ -53,7 +53,7 @@ var sensorSchema = new Schema({
   _apartmentId: {
     type: Schema.Types.ObjectId,
     ref: 'UsagePoint',
-    required: false
+    required: true
   },
   sensorType: {
     type: Number,
@@ -76,7 +76,7 @@ var sensorSchema = new Schema({
 var Sensor = mongoose.model('Sensor', sensorSchema);
 var UsagePoint = mongoose.model('UsagePoint', UsagePointSchema);
 
-var createAll = function(usagePt, cb1) {
+exports.create = function(usagePt, cb1) {
   exports.createUsagePoint(usagePt.ApartmentID, function(err, up) {
     if (err) {
       cb1(err, {'ApartmentID': usagePt.ApartmentID, 'Success': false, 'ERROR': err});
@@ -97,13 +97,14 @@ var createAll = function(usagePt, cb1) {
   });
 };
 
-exports.getAllSensors = function(usagepoint, cb) {
+exports.getAllUsagePointsData = function(usagepoint, cb) {
 
   request({
     url: config.civisURL + '/energyplatform.svc/getallsensors',
     qs: {
     }
   }, function(err, res, body) {
+    console.log('RESULT');
     if (err) {
       cb(err);
     } else {
@@ -113,8 +114,10 @@ exports.getAllSensors = function(usagepoint, cb) {
       parser.parseString(body, function(err, result) {
         if (err) {cb(err);}
         var tempArr = [];
-        async.each(result.entry.content.usagePoint, function(obj, callback) {
-          createAll(obj, function(err, success) {
+
+        console.log('RESULT', JSON.stringify(result));
+        async.each(result.entry.content.usagePoint.slice(0,2), function(obj, callback) {
+          exports.create(obj, function(err, success) {
             if (err) {
               tempArr.push(success);
               callback();
@@ -133,13 +136,15 @@ exports.getAllSensors = function(usagepoint, cb) {
 };
 
 exports.createUsagePoint = function(usagepoint, cb1) {
-  //console.log("USAGEPOINT",usagepoint)
+  //console.log('USAGEPOINT1', usagepoint);
   UsagePoint.create({
     apartmentId: usagepoint
   }, function(err, up) {
     if (err) {
+      console.log('USAGEPOINT2FF=' + usagepoint, err);
       cb1 (err);
     } else {
+      console.log('USAGEPOINT2', up);
       cb1(null, up);
     }
   });

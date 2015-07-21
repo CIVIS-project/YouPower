@@ -29,7 +29,7 @@ router.get('/', auth.authenticate(), function(req, res) {
 });
 
 /**
- * @api {post} /consumption/getAllSensors Fetch all UsagePoints & Sensors from Reply
+ * @api {post} /consumption/getAllUsagePointsData Fetch all UsagePoints & Sensors from Reply
  * @apiGroup Consumption
  *
  * @apiParam {Boolean} AddUsagePoints adds new usage points only
@@ -47,7 +47,7 @@ router.get('/', auth.authenticate(), function(req, res) {
  *		'UpdateUsagePoints': true,
  *		'ApartmentId': [14,17]
  *  }' \
- *  http://localhost:3000/api/consumption/getAllSensors
+ *  http://localhost:3000/api/consumption/getAllUsagePointsData
  *
  * @apiSuccessExample {[json]} Success-Response:
  *	 [
@@ -69,8 +69,8 @@ router.get('/', auth.authenticate(), function(req, res) {
  *		}
  *	 ]
  */
-router.post('/getAllSensors', auth.authenticate(), function(req, res) {
-  Consumption.getAllSensors(req.body, res.successRes);
+router.post('/getAllUsagePointsData', auth.authenticate(), function(req, res) {
+  Consumption.getAllUsagePointsData(req.body, res.successRes);
 });
 
 module.exports = router;
