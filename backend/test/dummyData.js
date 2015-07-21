@@ -156,6 +156,8 @@ exports.households = [
     _id: newId(),
     apartmentId: 1234,
     address: 'my address',
+    householdType: 'apartment',
+    householdSize: '20m2',
     energyVal: '42',
     members: [
       exports.users[0]._id
@@ -165,6 +167,8 @@ exports.households = [
     _id: newId(),
     apartmentId: 1235,
     address: 'my address 2',
+    householdType: 'house',
+    householdSize: '40m2',
     energyVal: '43',
     members: [
       exports.users[1]._id

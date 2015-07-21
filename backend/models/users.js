@@ -40,8 +40,8 @@ var UserSchema = new Schema({
       default: {}
     },
 
-    // user has canceled an action that they were performing
-    canceled: {
+    // user has declined an action or canceled an action that they were already performing
+    declined: {
       type: Object,
       default: {}
     },
@@ -130,8 +130,11 @@ exports.getUserCommunities = function(id, cb) {
     // }
   });
 };
-//Display user's actions (in progress)
-exports.getUserActions = function(id, cb) {
+
+//Display user's actions
+//Display user's actions based on 'type' passed.
+//May be there is better way to do this?
+exports.getUserActions = function(id, type, cb) {
   User.findOne({_id: id} , function(err, user) {
     if (err) {
       return cb(err);
@@ -139,10 +142,38 @@ exports.getUserActions = function(id, cb) {
     if (!user) {
       return cb('User not found');
     } else {
-      return cb(null, user);
+      switch (type)
+      {
+        case 'progress':
+          return cb(null, user.actions.inProgress);
+        case 'pending':
+          return cb(null, user.actions.pending);
+        case 'done':
+          return cb(null, user.actions.done);
+        case 'declined':
+          return cb(null, user.actions.declined);
+        case 'na':
+          return cb(null, user.actions.na);
+        default:
+          return cb(null, user.actions);
+      }
     }
   });
 };
+
+/*exports.getUserChallenges = function(id, cb) {
+  User.findOne({_id: id} , function(err, user) {
+    if (err) {
+      return cb(err);
+    }
+    if (!user) {
+      return cb('User not found');
+    } else {
+        return cb(null, user.actions);
+      }
+    }
+  });
+};*/
 
 exports.find = function(q, multi, limit, skip, cb) {
   // pick any key that is present from the list [_id, profile.name, email]
@@ -189,7 +220,7 @@ var getUA = function(user, actionId) {
   return user.actions.pending[actionId] ||
     user.actions.inProgress[actionId] ||
     user.actions.done[actionId] ||
-    user.actions.canceled[actionId] ||
+    user.actions.declined[actionId] ||
     user.actions.na[actionId] ||
     {};
 };
@@ -215,7 +246,7 @@ exports.setActionState = function(user, actionId, state, postponed, cb) {
     delete(user.actions.pending[actionId]);
     delete(user.actions.inProgress[actionId]);
     delete(user.actions.done[actionId]);
-    delete(user.actions.canceled[actionId]);
+    delete(user.actions.declined[actionId]);
     delete(user.actions.na[actionId]);
 
     // state-specific logic
@@ -233,7 +264,11 @@ exports.setActionState = function(user, actionId, state, postponed, cb) {
     } else if (state === 'done') {
       userAction.doneDate = new Date();
     } else if (state === 'canceled') {
-      userAction.cancelDate = new Date();
+      userAction.wasCanceled = true;
+      userAction.declineDate = new Date();
+      state = 'declined';
+    } else if (state === 'declined') {
+      userAction.declineDate = new Date();
     } else if (state === 'na') {
       userAction.naDate = new Date();
     } else {
@@ -246,7 +281,7 @@ exports.setActionState = function(user, actionId, state, postponed, cb) {
     user.markModified('actions.pending');
     user.markModified('actions.inProgress');
     user.markModified('actions.done');
-    user.markModified('actions.canceled');
+    user.markModified('actions.declined');
     user.markModified('actions.na');
     user.save(cb);
   });

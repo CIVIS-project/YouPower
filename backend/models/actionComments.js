@@ -81,4 +81,4 @@ exports.delete = function(actionId, id, cb) {
   }, cb);
 };
 
-exports.ActionComment = ActionComment;
+exports.model = ActionComment;
