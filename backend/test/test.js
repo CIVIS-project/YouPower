@@ -1689,7 +1689,7 @@ describe('models', function() {
       });
 
       models.consumption.createUsagePoint('1', function(err) {
-        console.log('ERRRRRRR', err);       
+        console.log('ERRRRRRR', err);
       });
     });
 
