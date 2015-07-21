@@ -12,15 +12,19 @@ var dummyData = require('./dummyData');
 
 var resetModel = function(modelName, cb) {
   dummyData = require('./dummyData');
-  var resModels = [];
+  var resDocs = [];
   conn.connection.db.dropCollection(modelName, function() {
     async.map(dummyData[modelName], function(model, cb) {
       models[modelName].create(model, cb);
-    }, function(err, models) {
-      _.each(models, function(model, i) {
-        resModels[i] = model;
+    }, function(err, docs) {
+      _.each(docs, function(doc, i) {
+        resDocs[i] = doc;
       });
-      cb(err, resModels);
+
+      //console.log('resetting model: ' + modelName);
+      models[modelName].model.ensureIndexes(function(err) {
+        cb(err, resDocs);
+      });
     });
   });
 };
@@ -1087,9 +1091,8 @@ describe('models', function() {
       });
     });
     it('should create community with empty challenges & actions', function(done) {
-      var d = dummyData.communities[0];
       models.communities.create({
-        name: d.name
+        name: 'asdf'
       }, function(err) {
         done(err);
       });

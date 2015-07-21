@@ -62,4 +62,4 @@ exports.delete = function(challengeId, id, cb) {
   }, cb);
 };
 
-exports.ChallengeComment = ChallengeComment;
+exports.model = ChallengeComment;
