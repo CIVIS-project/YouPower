@@ -127,7 +127,10 @@ exports.getUserCommunities = function(id, cb) {
     // }
   });
 };
+
 //Display user's actions
+//Display user's actions based on 'type' passed.
+//May be there is better way to do this?
 exports.getUserActions = function(id, type, cb) {
   User.findOne({_id: id} , function(err, user) {
     if (err) {
@@ -154,6 +157,20 @@ exports.getUserActions = function(id, type, cb) {
     }
   });
 };
+
+/*exports.getUserChallenges = function(id, cb) {
+  User.findOne({_id: id} , function(err, user) {
+    if (err) {
+      return cb(err);
+    }
+    if (!user) {
+      return cb('User not found');
+    } else {
+        return cb(null, user.actions);
+      }
+    }
+  });
+};*/
 
 exports.find = function(q, multi, limit, skip, cb) {
   // pick any key that is present from the list [_id, profile.name, email]

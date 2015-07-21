@@ -1605,12 +1605,15 @@ describe('models', function() {
       });
     });
     it('should update address', function(done) {
-      models.households.updateAddress(dbHouseholds[0]._id, 'new address', function(err) {
+      models.households.updateAddress(dbHouseholds[0]._id, dbHouseholds[1].address,
+       dbHouseholds[1].householdSize, dbHouseholds[1].householdType , function(err) {
         if (err) {
           return done(err);
         }
         models.households.get(dbHouseholds[0]._id, function(err, household) {
-          household.address.should.equal('new address');
+          household.address.should.equal(dbHouseholds[1].address);
+          household.householdType.should.equal(dbHouseholds[1].householdType);
+          household.householdSize.should.equal(dbHouseholds[1].householdSize);
           done(err);
         });
       });
