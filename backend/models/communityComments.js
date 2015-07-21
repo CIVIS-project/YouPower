@@ -62,4 +62,4 @@ exports.delete = function(communityId, id, cb) {
   }, cb);
 };
 
-exports.CommunityComment = CommunityComment;
+exports.model = CommunityComment;

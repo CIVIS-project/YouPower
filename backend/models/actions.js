@@ -164,7 +164,8 @@ exports.getSuggested = function(userActions, cb) {
   Action.find({
     $and: [
       {_id: {$nin: _.keys(userActions.done)}},
-      {_id: {$nin: _.keys(userActions.canceled)}},
+      {_id: {$nin: _.keys(userActions.declined)}},
+      {_id: {$nin: _.keys(userActions.na)}},
       {_id: {$nin: _.keys(userActions.inProgress)}}
     ]
   })

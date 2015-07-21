@@ -65,7 +65,7 @@ router.get('/suggested', auth.authenticate(), function(req, res) {
  *
  * @apiParam {String} actionId Action's MongoId
  * @apiParam {String} state Can be one of: 'pending', 'inProgress', 'alreadyDoing',
- * 'done', 'canceled', 'na'.
+ * 'done', 'canceled', 'declined', 'na'.
  * @apiParam {Date} postponed Must be provided if state is 'pending'. Specifies
  * at which time the user will be reminded of the action again.
  *
@@ -73,13 +73,13 @@ router.get('/suggested', auth.authenticate(), function(req, res) {
  */
 router.post('/:actionId', auth.authenticate(), function(req, res) {
   User.setActionState(req.user, req.params.actionId,
-      req.params.state, req.params.postponed, res.successRes);
+      req.body.state, req.body.postponed, res.successRes);
 
   Log.create({
     userId: req.user._id,
     category: 'User Action',
     type: 'update',
-    data: req.params
+    data: req.body
   });
 });
 

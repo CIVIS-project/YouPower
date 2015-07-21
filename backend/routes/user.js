@@ -8,7 +8,7 @@ var fs = require('fs');
 var path = require('path');
 var router = express.Router();
 var User = require('../models').users;
-
+var Log = require('../models').logs;
 var defaultPath = path.dirname(require.main.filename) + '/res/missingProfile.png';
 
 router.use('/action', require('./userAction'));
@@ -127,20 +127,34 @@ router.get('/communities', auth.authenticate(), function(req, res) {
 });
 
 /**
- * @apiDefine Authorization
- * @apiHeader {String} Authorization Authorization token
- * @apiHeaderExample {String} Authorization-Example:
- *   "Authorization: Bearer 615ea82f7fec0ffaee5..."
- */
-
-/**
- * @api {get} /user/actions Get the list of your actions in progress
+ * @api {get} /user/search List user's actions based on type of actions
  * @apiGroup User
  *
- * @apiVersion 1.0.0
+ * @apiParam {String} q Search query
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/user/actions\?q\=foobar
  */
 router.get('/actions', auth.authenticate(), function(req, res) {
-  User.getUserActions(req.user._id, res.successRes);
+  req.checkQuery('q', 'Invalid query parameter').notEmpty();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    User.getUserActions(req.user._id, req.query.q, res.successRes);
+
+    Log.create({
+      userId: req.user._id,
+      category: 'User',
+      type: 'get',
+      data: req.query
+    });
+  }
 });
 
 /**

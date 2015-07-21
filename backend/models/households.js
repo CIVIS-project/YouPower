@@ -27,6 +27,17 @@ var HouseSchema = new Schema({
     ],
     default: []
   },
+  householdType : {
+    type: String,
+    enum : ['apartment' , 'house'],
+  },
+  householdSize : {
+    type: String
+  },
+  familyComposition : {
+    NumAdults: Number,
+    NumKids: Number
+  },
   energyVal: {
     type: String,
     required: true
@@ -47,6 +58,9 @@ exports.create = function(household, cb) {
   Household.create({
     apartmentId: household.apartmentId,
     address: household.address,
+    householdType: household.householdType,
+    householdSize: household.householdSize,
+    familyComposition: household.familyComposition,
     appliancesList: household.appliancesList,
     energyVal: household.energyVal,
     members: household.members // need to verify. not really correct
@@ -86,11 +100,13 @@ exports.getByApartmentId = function(id, cb) {
   });
 };
 
-//update address
-exports.updateAddress = function(id, newAddress, cb) {
+//update address and in turn update apartment size and type.
+exports.updateAddress = function(id, newAddress, size, type, cb) {
   Household.findByIdAndUpdate(id, {
     $set : {
-      address: newAddress
+      address: newAddress,
+      householdType: type,
+      householdSize: size
     }
   }, cb);
 };
