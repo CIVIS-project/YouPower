@@ -6,6 +6,7 @@ var Action = require('./').actions;
 var Schema = mongoose.Schema;
 var passportLocalMongoose = require('passport-local-mongoose');
 var escapeStringRegexp = require('escape-string-regexp');
+var achievements = require('../common/achievements');
 var _ = require('underscore');
 
 var UserSchema = new Schema({
@@ -17,7 +18,13 @@ var UserSchema = new Schema({
     photo: String,
     gender: String
   },
+  // contains state of each achievement
   achievements: {
+    type: Object,
+    default: {}
+  },
+  // contains three most recent achievements
+  recentAchievements: {
     type: Object,
     default: {}
   },
@@ -90,6 +97,7 @@ exports.getProfile = function(id, cb) {
     }
 
     cb(null, {
+      _id: id,
       email: user.email,
       profile: user.profile,
       actions: user.actions,
@@ -186,7 +194,7 @@ exports.find = function(q, multi, limit, skip, cb) {
     new RegExp('^' + escapeStringRegexp(String(q[key])), 'i');
 
   var query = User.find(filteredQ);
-  query.select('email profile actions');
+  query.select('email profile actions achievements recentAchievements');
   query.limit(limit);
   query.skip(skip);
   query.exec(function(err, res) {
@@ -284,6 +292,15 @@ exports.setActionState = function(user, actionId, state, postponed, cb) {
     user.markModified('actions.declined');
     user.markModified('actions.na');
     user.save(cb);
+  });
+};
+
+exports.getAchievements = function(user, cb) {
+  var stats = achievements.getStats(user);
+
+  cb(null, {
+    stats: stats,
+    recentAchievements: user.recentAchievements
   });
 };
 
