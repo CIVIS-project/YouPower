@@ -116,3 +116,6 @@ exports.getStats = function(user) {
 
   return stats;
 };
+
+exports.updateAchievement = function(user, aName, progress) {
+};
