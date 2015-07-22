@@ -11,3 +11,5 @@ exports.feedback = require('./feedback');
 exports.households = require('./households');
 exports.logs = require('./logs');
 exports.users = require('./users');
+exports.sensor = require('./sensor');
+exports.usagePoint = require('./usagePoint');
