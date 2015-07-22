@@ -74,13 +74,16 @@ app.use(expressValidator());
 app.use(require('./middleware/auth').initialize());
 app.use('/api', require('./routes'));
 app.get('/', function(req, res, next) {
+  res.redirect('/apidoc');
+});
+app.get('/apidoc', function(req, res, next) {
   if (fs.existsSync(__dirname + '/apidoc/index.html')) {
     next();
   } else {
     res.render('placeholder');
   }
 });
-app.use(express.static(__dirname + '/apidoc'));
+app.use('/apidoc', express.static(__dirname + '/apidoc'));
 
 db.on('error', l.error.bind(console, 'connection error:'));
 db.once('open', function() {
