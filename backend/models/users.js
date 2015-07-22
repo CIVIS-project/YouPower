@@ -17,6 +17,10 @@ var UserSchema = new Schema({
     photo: String,
     gender: String
   },
+  achievements: {
+    type: Object,
+    default: {}
+  },
   actions: {
     // NOTE: mixed type schemas below,
     // http://mongoosejs.com/docs/schematypes.html#mixed
@@ -91,7 +95,6 @@ exports.getProfile = function(id, cb) {
       actions: user.actions,
       energyConsumption: {}, // TODO
       topActions: [], // TODO
-      topChallenges: [], // TODO
       topCommunities: [], // TODO
       topFriends: [] // TODO
     });
