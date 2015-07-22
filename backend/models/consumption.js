@@ -4,94 +4,24 @@ var config = require('../config');
 var request = require('request');
 var moment = require('moment');
 var xml2js = require('xml2js');
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
 var async = require('async');
-
-var UsagePointSchema = new Schema({
-  apartmentId: {
-    type: String,
-    required: true,
-    index: {unique: true}
-  },
-  city: {
-    type: String,
-    required: false
-  },
-  dsoId: {
-    type: String,
-    required: false
-  },
-  contractId: {
-    type: String,
-    required: false
-  },
-  pod: {
-    type: String,
-    required: false
-  },
-  tariffCode: {
-    type: String,
-    required: false
-  },
-  dwellers: {
-    type: Number,
-    required: false
-  },
-  kitType: {
-    type: Number,
-    required: false
-  },
-  pv: Boolean, //Set to True if Production is present
-});
-
-var sensorSchema = new Schema({
-  sensorNumber: {
-    type: Number,
-    required: true
-  },
-  _apartmentId: {
-    type: Schema.Types.ObjectId,
-    ref: 'UsagePoint',
-    required: true
-  },
-  sensorType: {
-    type: Number,
-    required: false
-  },
-  measureUnit: {
-    type: String,
-    required: false
-  },
-  label: {
-    type: String,
-    required: false
-  },
-  lastSampleTimestamp: {
-    type: Date,
-    required: false
-  },
-});
-
-var Sensor = mongoose.model('Sensor', sensorSchema);
-var UsagePoint = mongoose.model('UsagePoint', UsagePointSchema);
+var usagePoint = require('./usagePoint');
+var sensor = require('./sensor');
 
 exports.create = function(usagePt, cb1) {
-  exports.createUsagePoint(usagePt.ApartmentID, function(err, up) {
+  //console.log('TETS', usagePt);
+  usagePoint.create(usagePt.ApartmentID, function(err, up) {
     if (err) {
       cb1(err, {'ApartmentID': usagePt.ApartmentID, 'Success': false, 'ERROR': err});
     } else {
       async.each(usagePt.sensors.sensor, function(obj, callback) {
-        exports.createSensors(obj, up, function(err) {
-          if (err) {
-            callback();
-          } else {
-            callback();
-          }
-        });
+        sensor.create(obj, up, callback);
       }, function(err) {
-        if (err) {cb1(err, {'ApartmentID': usagePt.ApartmentID, 'Success': false});}
-        cb1(null, {'ApartmentID':usagePt.ApartmentID, 'Success': true, 'UsagePoint':up});
+        if (err) {
+          console.log('EROR in SENSOR');
+          cb1(err, {'ApartmentID': usagePt.ApartmentID, 'Success': false});
+        }
+        cb1(null, {ApartmentID:usagePt.ApartmentID, Success: true, UsagePoint:up});
       });
     }
   });
@@ -104,7 +34,6 @@ exports.getAllUsagePointsData = function(usagepoint, cb) {
     qs: {
     }
   }, function(err, res, body) {
-    console.log('RESULT');
     if (err) {
       cb(err);
     } else {
@@ -115,8 +44,7 @@ exports.getAllUsagePointsData = function(usagepoint, cb) {
         if (err) {cb(err);}
         var tempArr = [];
 
-        console.log('RESULT', JSON.stringify(result));
-        async.each(result.entry.content.usagePoint.slice(0, 2), function(obj, callback) {
+        async.each(result.entry.content.usagePoint.slice(2, 3), function(obj, callback) {
           exports.create(obj, function(err, success) {
             if (err) {
               tempArr.push(success);
@@ -131,40 +59,6 @@ exports.getAllUsagePointsData = function(usagepoint, cb) {
           cb(null, tempArr);
         });
       });
-    }
-  });
-};
-
-exports.createUsagePoint = function(usagepoint, cb1) {
-  //console.log('USAGEPOINT1', usagepoint);
-  UsagePoint.create({
-    apartmentId: usagepoint
-  }, function(err, up) {
-    if (err) {
-      console.log('USAGEPOINT2FF=' + usagepoint, err);
-      cb1 (err);
-    } else {
-      console.log('USAGEPOINT2', up);
-      cb1(null, up);
-    }
-  });
-};
-
-exports.createSensors = function(sensor, up, cb1) {
-  //console.log("SENSOR",sensor)
-  Sensor.create({
-    sensorNumber: sensor.sensorNumber,
-    sensorType: sensor.sensorType,
-    measureUnit: sensor.measureUnit,
-    label: sensor.label ,
-    lastSampleTimestamp: sensor.lastSampleTimestamp,
-    _apartmentId: up._id
-  }, function(err, sen) {
-    if (err) {
-      cb1 (err);
-    } else {
-      sen.save();
-      cb1(null, sen);
     }
   });
 };
@@ -202,5 +96,22 @@ exports.allByUser = function(user, cb) {
   cb(null, []);
 };
 
-exports.model = UsagePoint;
-exports.model = Sensor;
+exports.getUsagePoint = function(apartmentId, cb) {
+  usagePoint.getUsagePoint(apartmentId, function(err, up) {
+    if (err) {
+      return cb(err);
+    }
+    if (!up) {
+      return cb('UsagePoint not found');
+    }
+    sensor.getSensor(up._id, function(err, sensors) {
+      if (err) {
+        return cb(err, up);
+      }
+      var usagepoint = up.toObject();
+      usagepoint.Sensors = sensors;
+      cb(null, usagepoint);
+    });
+
+  });
+};

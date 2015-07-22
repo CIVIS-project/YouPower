@@ -1736,20 +1736,16 @@ describe('models', function() {
     var dbUsagePoints = [];
 
     beforeEach(function(done) {
-      // reset users collection
       resetModel('consumption', function(err, UsagePoint) {
         dbUsagePoints = UsagePoint;
-        console.log('USAGE POINTS', dbUsagePoints);
+        console.log('VEFORE EACH USAGE POINTS', dbUsagePoints);
         done(err);
-      });
-
-      models.consumption.createUsagePoint('1', function(err) {
-        console.log('ERRRRRRR', err);
       });
     });
 
     it('should create a new UsagePoint', function(done) {
-      models.consumption.createUsagePoint('1', function(err) {
+      var d = dummyData.consumption[0];
+      models.consumption.create(d, function(err) {
         if (err) {
           done(err);
         } else {

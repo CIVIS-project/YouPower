@@ -316,71 +316,43 @@ exports.usagepoints = [
 
 exports.consumption = [
   {
-    'apartmentId':'1',
-    'sensors': {
-      'sensor': [
+    ApartmentID:'1',
+    sensors: {
+      sensor: [
         {
-          'sensorNumber':'0',
-          'sensorType':'0',
-          'measureUnit':'Wh',
-          'label':'Consumo Elettrico',
-          'lastSampleTimestamp':'2015-07-10T17:42:11+02:00'
+          sensorNumber:'0',
+          sensorType:'0',
+          measureUnit:'Wh',
+          label:'Consumo Elettrico',
+          lastSampleTimestamp:'2015-07-10T17:42:11+02:00'
         },
         {
-          'sensorNumber':'1',
-          'sensorType':'1',
-          'measureUnit':'Wh',
-          'label':'Freezer',
-          'lastSampleTimestamp':'2015-07-10T17:45:23+02:00'
-        },
-        {
-          'sensorNumber':'2',
-          'sensorType':'1',
-          'measureUnit':'Wh',
-          'label':'Lavatrice',
-          'lastSampleTimestamp':'2015-07-10T17:38:31+02:00'
-        },
-        {
-          'sensorNumber':'32',
-          'sensorType':'32',
-          'measureUnit':'°C',
-          'label':'Temp. Interna',
-          'lastSampleTimestamp':'2015-07-10T17:45:14+02:00'
+          sensorNumber:'1',
+          sensorType:'1',
+          measureUnit:'Wh',
+          label:'Freezer',
+          lastSampleTimestamp:'2015-07-10T17:45:23+02:00'
         }
       ]
     }
   },
   {
-    'apartmentId':'2',
-    'sensors': {
-      'sensor': [
+    ApartmentID:'2',
+    sensors: {
+      sensor: [
         {
-          'sensorNumber':'5',
-          'sensorType':'0',
-          'measureUnit':'Wh',
-          'label':'Consumo Elettrico',
-          'lastSampleTimestamp':'2015-07-10T17:42:11+02:00'
+          sensorNumber:'5',
+          sensorType:'0',
+          measureUnit:'Wh',
+          label:'Consumo Elettrico',
+          lastSampleTimestamp:'2015-07-10T17:42:11+02:00'
         },
         {
-          'sensorNumber':'6',
-          'sensorType':'1',
-          'measureUnit':'Wh',
-          'label':'Freezer',
-          'lastSampleTimestamp':'2015-07-10T17:45:23+02:00'
-        },
-        {
-          'sensorNumber':'7',
-          'sensorType':'1',
-          'measureUnit':'Wh',
-          'label':'Lavatrice',
-          'lastSampleTimestamp':'2015-07-10T17:38:31+02:00'
-        },
-        {
-          'sensorNumber':'8',
-          'sensorType':'32',
-          'measureUnit':'°C',
-          'label':'Temp. Interna',
-          'lastSampleTimestamp':'2015-07-10T17:45:14+02:00'
+          sensorNumber:'6',
+          sensorType:'1',
+          measureUnit:'Wh',
+          label:'Freezer',
+          lastSampleTimestamp:'2015-07-10T17:45:23+02:00'
         }
       ]
     }
