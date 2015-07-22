@@ -73,7 +73,7 @@ app.use(bodyParser.raw());
 app.use(expressValidator());
 app.use(require('./middleware/auth').initialize());
 app.use('/api', require('./routes'));
-app.get('/', function(req, res, next) {
+app.get('/', function(req, res) {
   res.redirect('/apidoc');
 });
 app.get('/apidoc', function(req, res, next) {
