@@ -34,10 +34,16 @@ var HouseSchema = new Schema({
   householdSize : {
     type: String
   },
+  // TODO: When do you update kids count?
   familyComposition : {
-    NumAdults: Number,
-    NumKids: Number
-  },
+    NumAdults: {
+      type: Number,
+      default: 0
+    },
+    NumKids:  {
+      type: Number,
+      default: 0
+    }},
   energyVal: {
     type: String,
     required: true
@@ -63,7 +69,7 @@ exports.create = function(household, cb) {
     familyComposition: household.familyComposition,
     appliancesList: household.appliancesList,
     energyVal: household.energyVal,
-    members: household.members // need to verify. not really correct
+    members: household.members // TODO : need to verify.
   }, cb);
 };
 
@@ -111,6 +117,17 @@ exports.updateAddress = function(id, newAddress, size, type, cb) {
   }, cb);
 };
 
+//update household details like family composition, household size and type.
+exports.updateHousehold = function(id, familyComposition, size, type, cb) {
+  Household.findByIdAndUpdate(id, {
+    $set : {
+      familyComposition: familyComposition,
+      householdSize: size,
+      householdType: type
+    }
+  }, cb);
+};
+
 //add appliances to the household
 exports.addAppliance = function(id, appliance, cb) {
   Household.findById({
@@ -154,6 +171,8 @@ exports.addMember = function(id, userId, cb) {
       cb('Household not found');
     } else {
       household.members.push(userId);
+      // Increase family adults count by 1.
+      household.familyComposition.NumAdults++;
       household.save(cb);
     }
   });

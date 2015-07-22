@@ -1621,6 +1621,23 @@ describe('models', function() {
         });
       });
     });
+    it('should update misc household details', function(done) {
+      models.households.updateHousehold(dbHouseholds[0]._id, dbHouseholds[1].familyComposition,
+       dbHouseholds[1].householdSize, dbHouseholds[1].householdType , function(err) {
+        if (err) {
+          return done(err);
+        }
+        models.households.get(dbHouseholds[0]._id, function(err, household) {
+          household.familyComposition.NumAdults
+          .should.equal(dbHouseholds[1].familyComposition.NumAdults);
+          household.familyComposition.NumKids
+          .should.equal(dbHouseholds[1].familyComposition.NumKids);
+          household.householdType.should.equal(dbHouseholds[1].householdType);
+          household.householdSize.should.equal(dbHouseholds[1].householdSize);
+          done(err);
+        });
+      });
+    });
     it('should return household by apartment id', function(done) {
       models.households.getByApartmentId(dummyData.households[0].apartmentId,
       function(err, household) {
