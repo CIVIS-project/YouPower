@@ -1,12 +1,7 @@
 'use strict';
 
-var config = require('../config');
-var request = require('request');
-var moment = require('moment');
-var xml2js = require('xml2js');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var async = require('async');
 
 var UsagePointSchema = new Schema({
   apartmentId: {
@@ -48,18 +43,21 @@ var UsagePointSchema = new Schema({
 var UsagePoint = mongoose.model('UsagePoint', UsagePointSchema);
 
 exports.create = function(usagepoint, cb1) {
-  //console.log('USAGEPOINT1', usagepoint);
+  console.log('TAHA', usagepoint);
   UsagePoint.create({
     apartmentId: usagepoint
   }, function(err, up) {
     if (err) {
-      console.log('USAGEPOINT2FF=' + usagepoint, err);
+      console.log('USAGEPOINT2Fail =', err);
       cb1 (err);
     } else {
-      console.log('USAGEPOINT2', up);
+      console.log('USAGEPOINT2PAss =', up);
       cb1(null, up);
     }
   });
 };
 
+exports.getUsagePoint = function(apartmentId, cb) {
+  UsagePoint.findOne({apartmentId: apartmentId}, false, cb);
+};
 exports.model = UsagePoint;

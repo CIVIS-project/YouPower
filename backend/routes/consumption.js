@@ -37,7 +37,7 @@ router.get('/', auth.authenticate(), function(req, res) {
  * 	with new sensor data if available
  * @apiParam {[Number]} [ApartmentId] Adds/Updates the value of only
  *	that particular ApartmentId/Ids
- * @apiExample {curl} Example usage:
+ * @apiExample {curl} Example usage(PENDING-For now only data is fetched!!):
  *  # Get API token via /api/user/token
  *  export API_TOKEN=fc35e6b2f27e0f5ef...
  *
@@ -71,6 +71,50 @@ router.get('/', auth.authenticate(), function(req, res) {
  */
 router.post('/getAllUsagePointsData', auth.authenticate(), function(req, res) {
   Consumption.getAllUsagePointsData(req.body, res.successRes);
+});
+
+/**
+ * @api {get} /consumption/getUsagePoint/:apartmentId Get UsagePoint and sensors
+ * @apiGroup Consumption
+ *
+ * @apiParam {String} apartmentId apartmentId of desired UsagePoint
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/consumption/getUsagePoint/14
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *	{
+ *	"apartmentId":"14",
+ *	"_id":"55af508c9210ee7b13342d8e",
+ *	"__v":0,
+ *	"Sensors":[
+ *		{
+ *		"sensorNumber":0,
+ *		"sensorType":0,
+ *		"measureUnit":"Wh",
+ *		"label":"Consumo Elettrico",
+ *		"lastSampleTimestamp":"2015-07-10T15:42:11.000Z",
+ *		"_apartmentId":"55af508c9210ee7b13342d8e",
+ *		"_id":"55af508d9210ee7b13342d90","__v":0
+ *		},
+ *		{
+ *		"sensorNumber":1,
+ *		"sensorType":1,
+ *		"measureUnit":"Wh",
+ *		"label":"Freezer",
+ *		"lastSampleTimestamp":"2015-07-10T15:45:23.000Z",
+ *		"_apartmentId":"55af508c9210ee7b13342d8e",
+ *		"_id":"55af508d9210ee7b13342d91",
+ *		"__v":0
+ *		}]
+ *	}
+ */
+router.get('/getUsagePoint/:apartmentId', auth.authenticate(), function(req, res) {
+  Consumption.getUsagePoint(req.params.apartmentId, res.successRes);
 });
 
 module.exports = router;
