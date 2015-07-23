@@ -220,8 +220,7 @@ router.delete('/:communityId/comment/:commentId', auth.authenticate(), function(
  *   }
  */
 router.post('/', auth.authenticate(), function(req, res) {
-  Community.create(req.body, res.successRes);
-
+  Community.create(req.body, req.user._id, res.successRes);
   Log.create({
     userId: req.user._id,
     category: 'Community',
@@ -394,7 +393,7 @@ router.put('/leave/:id', auth.authenticate(), function(req, res) {
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    Community.removeMember(req.params.id, req.user._id, res.successRes);
+    Community.removeMember(req.params.id, req.params.userId, req.user._id, res.successRes);
 
     Log.create({
       userId: req.user._id,

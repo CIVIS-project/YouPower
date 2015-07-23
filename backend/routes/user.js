@@ -110,24 +110,23 @@ router.get('/profile', auth.authenticate(), function(req, res) {
 });
 
 /**
- * @apiDefine Authorization
- * @apiHeader {String} Authorization Authorization token
- * @apiHeaderExample {String} Authorization-Example:
- *   "Authorization: Bearer 615ea82f7fec0ffaee5..."
- */
-
-/**
- * @api {get} /user/communities Get the list of your communities
+ * @api {get} /user/communities List all of user's communities
  * @apiGroup User
  *
- * @apiVersion 1.0.0
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/user/communities
  */
 router.get('/communities', auth.authenticate(), function(req, res) {
   User.getUserCommunities(req.user._id, res.successRes);
 });
 
 /**
- * @api {get} /user/search List user's actions based on type of actions
+ * @api {get} /user/actions List user's actions based on type of actions
  * @apiGroup User
  *
  * @apiParam {String} q Search query
