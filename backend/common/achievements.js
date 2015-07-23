@@ -117,5 +117,19 @@ exports.getStats = function(user) {
   return stats;
 };
 
-exports.updateAchievement = function(user, aName, progress) {
+// update achievement of aName
+//
+// takes a calcProgress function which decides how to set the new progress
+// value
+exports.updateAchievement = function(user, aName, calcProgress, cb) {
+  var ua = user.achievements[aName] || {};
+
+  // get new user achievement value from calcProgress by passing in old value
+  ua.value = calcProgress(ua.value || 0);
+
+  // save user model
+  user.achievements[aName] = ua;
+  cb = cb || _.noop;
+  user.markModified('achievements');
+  user.save(cb);
 };

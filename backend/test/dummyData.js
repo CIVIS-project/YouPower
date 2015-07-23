@@ -64,7 +64,8 @@ exports.actions = [
     ratings: exports.ratings,
     description: 'dummy description',
     impact: 4,
-    effort: 5
+    effort: 5,
+    authorId: newId()
   },
   {
     _id: newId(),
@@ -75,7 +76,8 @@ exports.actions = [
     },
     description: 'dummy description 2',
     impact: 2,
-    effort: 1
+    effort: 1,
+    authorId: newId()
   },
   {
     _id: newId(),
@@ -86,7 +88,8 @@ exports.actions = [
     },
     description: 'dummy description 3',
     impact: 5,
-    effort: 5
+    effort: 5,
+    authorId: newId()
   }
 ];
 

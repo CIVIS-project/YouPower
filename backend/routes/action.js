@@ -6,6 +6,7 @@ var util = require('util');
 var path = require('path');
 var common = require('./common');
 var fs = require('fs');
+var achievements = require('../common/achievements');
 var router = express.Router();
 var Action = require('../models').actions;
 var ActionComment = require('../models').actionComments;
@@ -270,7 +271,25 @@ router.delete('/:actionId/comment/:commentId', auth.authenticate(), function(req
  *   }
  */
 router.post('/', auth.authenticate(), function(req, res) {
-  Action.create(req.body, res.successRes);
+  var action = req.body;
+  action.authorId = req.user._id;
+
+  Action.create(action, function(err, result) {
+    if (!err) {
+      // update actionsCreated achievement to the current count of actions
+      // created by user
+      Action.model.find({
+        authorId: req.user._id
+      }).count(function(err, count) {
+        achievements.updateAchievement(req.user, 'actionsCreated', function(oldVal) {
+          // make sure we never decerase the action count
+          return Math.max(oldVal, count);
+        });
+      });
+    }
+
+    res.successRes(err, result);
+  });
 
   Log.create({
     userId: req.user._id,
