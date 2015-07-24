@@ -145,6 +145,7 @@ router.get('/comment/:commentId/picture', auth.authenticate(), function(req, res
  *     "name": "Test User",
  *     "email": "testuser1@test.com",
  *     "comment": "This is an amazing and easy to perform action!",
+ *     "rating": 42,
  *     "date": "2015-07-01T12:04:33.599Z",
  *     "__v": 0,
  *   },
@@ -195,6 +196,63 @@ router.delete('/:actionId/comment/:commentId', auth.authenticate(), function(req
     type: 'delete',
     data: req.params
   });
+});
+
+/**
+ * @api {put} /action/:actionId/comment/:commentId/rate
+ * Create/update user's rating of action comment
+ * @apiGroup Action Comments
+ *
+ * @apiParam {String} actionId MongoId of action
+ * @apiParam {String} commentId MongoId of action comment
+ * @apiParam {Number} rating Rating of action (-1, 0 or 1. Means upvote,
+ * vote abstain, downvote)
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X PUT -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
+ *  '{
+ *    "rating": 1
+ *  }' \
+ *  http://localhost:3000/api/action/831ef84b2fd41ffc6e078a35/comment/555ef84b2fd41ffc6e078a34/rate
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "_id": "55b1e95d28fa449f29b8cc19",
+ *     "actionId": "555f0163688305b57c7cef6c",
+ *     "name": "Test User",
+ *     "email": "testuser@test.com",
+ *     "comment": "This is an amazing and easy to perform action!",
+ *     "date": "2015-07-24T07:29:33.227Z",
+ *     "__v": 0,
+ *     "rating": 42,
+ *     "hasPicture": false
+ *   }
+ */
+router.put('/:actionId/comment/:commentId/rate', auth.authenticate(), function(req, res) {
+  req.checkParams('actionId', 'Invalid action id').isMongoId();
+  req.checkParams('commentId', 'Invalid action id').isMongoId();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    ActionComment.rate(req.params.actionId, req.params.commentId,
+        req.user, req.body.rating, res.successRes);
+
+    Log.create({
+      userId: req.user._id,
+      category: 'Action',
+      type: 'rate',
+      data: {
+        actionId: req.params.id,
+        rating: req.body.rating,
+        comment: req.body.comment
+      }
+    });
+  }
 });
 
 /**
