@@ -49,6 +49,10 @@ var ActionSchema = new Schema({
   date: {
     type: Date,
     required: true
+  },
+  authorId: {
+    type: Schema.Types.ObjectId,
+    required: true
   }
 });
 
@@ -76,6 +80,7 @@ exports.create = function(action, cb) {
     ratings: action.ratings || {},
     impact: action.impact,
     effort: action.effort,
+    authorId: action.authorId,
     date: new Date()
   }, cb);
 };

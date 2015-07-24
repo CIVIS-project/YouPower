@@ -64,7 +64,8 @@ exports.actions = [
     ratings: exports.ratings,
     description: 'dummy description',
     impact: 4,
-    effort: 5
+    effort: 5,
+    authorId: newId()
   },
   {
     _id: newId(),
@@ -75,7 +76,8 @@ exports.actions = [
     },
     description: 'dummy description 2',
     impact: 2,
-    effort: 1
+    effort: 1,
+    authorId: newId()
   },
   {
     _id: newId(),
@@ -86,29 +88,8 @@ exports.actions = [
     },
     description: 'dummy description 3',
     impact: 5,
-    effort: 5
-  }
-];
-
-exports.challenges = [
-  {
-    _id: newId(),
-    name: 'dummy challenge name 1',
-    description: 'dummy challenge description 1',
-    actions: [exports.actions[0]._id],
-    ratings: exports.ratings
-  },
-  {
-    _id: newId(),
-    name: 'dummy challenge name 2',
-    description: 'dummy challenge description 2',
-    actions: [exports.actions[1]._id]
-  },
-  {
-    _id: newId(),
-    name: 'dummy challenge name 3',
-    description: 'dummy challenge description 3',
-    actions: [exports.actions[0]._id, exports.actions[1]._id]
+    effort: 5,
+    authorId: newId()
   }
 ];
 
@@ -116,20 +97,6 @@ exports.communities = [
   {
     _id: newId(),
     name: 'dummy community 1',
-    challenges: [
-      {
-        id: exports.challenges[0]._id,
-        name: exports.challenges[0].name
-      },
-      {
-        id: exports.challenges[1]._id,
-        name: exports.challenges[1].name
-      },
-      {
-        id: exports.challenges[2]._id,
-        name: exports.challenges[2].name
-      }
-    ],
     members: [
       exports.users[0]._id
     ],
@@ -139,12 +106,6 @@ exports.communities = [
   {
     _id: newId(),
     name: 'dummy community 2',
-    challenges: [
-      {
-        id: exports.challenges[2]._id,
-        name: exports.challenges[2].name
-      }
-    ],
     members: [
       exports.users[0]._id,
       exports.users[1]._id
@@ -220,30 +181,6 @@ exports.actionComments = [
     name: 'myUser3',
     email: 'dummy3@mail.com',
     comment: 'Another action'
-  }
-];
-
-exports.challengeComments = [
-  {
-    _id: newId(),
-    challengeId: exports.challenges[0]._id,
-    name: 'myUser1',
-    email: 'dummy@mail.com',
-    comment: 'Hello world!'
-  },
-  {
-    _id: newId(),
-    challengeId: exports.challenges[0]._id,
-    name: 'myUser2',
-    email: 'dummy2@mail.com',
-    comment: 'Hello world again!'
-  },
-  {
-    _id: newId(),
-    challengeId: exports.challenges[1]._id,
-    name: 'myUser3',
-    email: 'dummy3@mail.com',
-    comment: 'Another challenge'
   }
 ];
 

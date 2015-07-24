@@ -371,4 +371,35 @@ router.get('/token', auth.basicauth(), function(req, res) {
   });
 });
 
+/**
+ * @api {get} /user/:userId/achievements Get user's achievements
+ * @apiGroup User
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/user/555f0163688305b57c7cef6c/achievements
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     TODO
+ *   }
+ *
+ * @apiVersion 1.0.0
+ */
+router.get('/:userId/achievements', auth.authenticate(), function(req, res) {
+  User.find({_id: req.params.userId}, false, null, null, function(err, user) {
+    if (err) {
+      return res.successRes(err);
+    }
+    if (!user) {
+      return res.successRes('user not found');
+    }
+
+    User.getAchievements(user, res.successRes);
+  });
+});
+
 module.exports = router;
