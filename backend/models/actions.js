@@ -10,7 +10,8 @@ var escapeStringRegexp = require('escape-string-regexp');
 var ActionSchema = new Schema({
   name: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   category: {
     type: String,

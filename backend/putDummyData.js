@@ -1,52 +1,59 @@
 'use strict';
 
 var mongoose = require('mongoose');
-var dummyData = require('test/dummyData');
-var models = require('models');
+var models = require('./models');
+var defaults = require('./models/defaults');
 var async = require('async');
-var prompt = require('prompt');
-var _ = require('underscore');
 var dbUrl = process.env.MONGO_URL || 'mongodb://localhost/youpower';
-var conn = mongoose.connect(dbUrl);
+mongoose.connect(dbUrl);
 var db = mongoose.connection;
 
-var resetModel = function(modelName, cb) {
-  var resModels = [];
-  conn.connection.db.dropCollection(modelName, function() {
-    async.map(dummyData[modelName], function(model, cb) {
-      models[modelName].create(model, cb);
-    }, function(err, models) {
-      _.each(models, function(model, i) {
-        resModels[i] = model;
-      });
-      cb(err, resModels);
-    });
+var createIfNotExist = function(model, key, doc, cb) {
+  // contstruct the query
+  var q = {};
+  q[key] = doc[key];
+
+  // perform findOne on exported mongoose model, findOne function is then guaranteed to exist
+  models[model].model.findOne(q).exec(function(err, result) {
+    if (err) {
+      // return error
+      cb(err);
+    } else if (!result) {
+      // create model
+      console.log('creating model ' + model + ': ' + JSON.stringify(doc));
+      models[model].create(doc, cb);
+    } else {
+      // already exists, return doc from db
+      console.log(model + ' model already exists: ' + JSON.stringify(doc));
+      cb(null, result);
+    }
   });
 };
 
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
-  console.log('connected to database');
-  console.log('WARNING: this will DELETE the database at ' + dbUrl);
-  console.log('and insert dummy data into the empty DB.');
-  console.log('Are you sure you want to continue? (y/n): ');
-
-  prompt.start();
-
-  prompt.get(['answer'], function(err, result) {
-    if (result.answer !== 'y') {
-      console.log('aborting.');
-      process.exit(1);
+  async.series([
+      function(cb) {
+        // default user who created all the other default models
+        createIfNotExist('users', 'email', defaults.user, function(err, result) {
+          console.log(result);
+          cb(err);
+        });
+      }, function(cb) {
+        // actions
+        async.eachSeries(defaults.actions, function(action, eachCb) {
+          createIfNotExist('actions', 'name', action, function(err, result) {
+            console.log(result);
+            eachCb(err);
+          });
+        }, function(err) {
+          cb(err);
+        });
+      }
+  ], function(err) {
+    if (err) {
+      console.log('an error occurred! ' + err);
     }
-    conn.connection.db.dropDatabase();
-    async.each(_.keys(models), function(model, cb) {
-      resetModel(model, function(err) {
-        console.log(err ? err : model + ' added successfully');
-        cb(err);
-      });
-    }, function(err) {
-      console.log('finished ' + (err ? 'with error ' + err : 'without errors'));
-      process.exit(err ? 1 : 0);
-    });
+    process.exit(err ? 1 : 0);
   });
 });
