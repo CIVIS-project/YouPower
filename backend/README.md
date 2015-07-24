@@ -39,7 +39,8 @@ the moment) and will be available at: https://gentle-coast-9691.herokuapp.com/
 ## File structure
 ```
 ├──  apidoc/        - generated documentation for REST API, do not edit directly
-├──  middleware/    - misc express.js middleware
+├──  common/        - common code that is useful in multiple places
+├──  middleware/    - express.js middleware
 ├──  models/        - database models
 ├──  routes/        - express.js API routes
 ├──  test/          - unit tests
