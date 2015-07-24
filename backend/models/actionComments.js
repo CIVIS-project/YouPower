@@ -79,6 +79,7 @@ exports.setHasPicture = function(commentId, value, cb) {
 
     aComment.hasPicture = value;
     aComment.save(function(err) {
+      /* istanbul ignore if: db errors are hard to unit test */
       if (err) {
         return cb(err);
       }
@@ -140,7 +141,7 @@ exports.rate = function(actionId, commentId, user, rating, cb) {
     } else {
       // only allow values -1, 0, 1
       if (rating !== -1 && rating !== 0 && rating !== 1) {
-        rating = 0;
+        return cb('invalid rating! should be -1, 0 or 1');
       }
 
       aComment.ratings[user._id] = {
@@ -149,6 +150,7 @@ exports.rate = function(actionId, commentId, user, rating, cb) {
       };
       aComment.markModified('ratings');
       aComment.save(function(err) {
+        /* istanbul ignore if: db errors are hard to unit test */
         if (err) {
           return cb(err);
         }
