@@ -13,7 +13,7 @@ var dummyData = require('./dummyData');
 var resetModel = function(modelName, cb) {
   dummyData = require('./dummyData');
   var resDocs = [];
-  conn.connection.db.dropCollection(modelName, function() {
+  conn.connection.db.dropCollection(modelName.toLowerCase(), function() {
     async.map(dummyData[modelName], function(model, cb) {
       models[modelName].create(model, cb);
     }, function(err, docs) {
@@ -362,6 +362,112 @@ describe('models', function() {
     it('should not set hasPictures field for invalid commentId', function(done) {
       models.actionComments.setHasPicture('foo bar', true, function(err) {
         done(err ? null : 'no error returned!');
+      });
+    });
+    it('should add rating to unrated action comment', function(done) {
+      var user = dummyData.users[0];
+      var rating = 1;
+      var id = dbActionComments[0]._id;
+      var actionId = dummyData.actions[0]._id;
+
+      // try rating an action that has not been rated yet
+      models.actionComments.rate(actionId, id, user, rating, function(err) {
+        if (err) {
+          return done(err);
+        }
+
+        models.actionComments.get(actionId, null, null, function(err, aComments) {
+          if (err) {
+            return done(err);
+          }
+
+          var storedRating = _.find(aComments, function(aComment) {
+            return String(aComment._id) === String(id);
+          }).rating;
+
+          storedRating.should.equal(rating);
+          done();
+        });
+      });
+    });
+
+    it('should update rating to action document', function(done) {
+      var user = dummyData.users[0];
+      var id = dbActionComments[0]._id;
+      var actionId = dummyData.actions[0]._id;
+
+      models.actionComments.rate(actionId, id, user, 1, function(err) {
+        if (err) {
+          return done(err);
+        }
+
+        models.actionComments.rate(actionId, id, user, -1, function(err) {
+          if (err) {
+            return done(err);
+          }
+          models.actionComments.get(actionId, null, null, function(err, aComments) {
+            if (err) {
+              return done(err);
+            }
+            var storedRating = _.find(aComments, function(aComment) {
+              return String(aComment._id) === String(id);
+            }).rating;
+
+            storedRating.should.equal(-1);
+            done();
+          });
+        });
+      });
+    });
+
+    it('should refuse invalid ratings', function(done) {
+      var user = dummyData.users[0];
+      var id = dbActionComments[0]._id;
+      var actionId = dummyData.actions[0]._id;
+
+      async.parallel([
+        function(cb) {
+          models.actionComments.rate(dummyData.ids[0], id, user, 1, function(err) {
+            cb(err ? null : 'passing bogus action id did not cause error!');
+          });
+        },
+        function(cb) {
+          models.actionComments.rate('foo bar', id, user, 1, function(err) {
+            cb(err ? null : 'passing invalid action id did not cause error!');
+          });
+        },
+        function(cb) {
+          models.actionComments.rate(actionId, dummyData.ids[0], null, 1, function(err) {
+            cb(err ? null : 'passing bogus actionComment id did not cause error!');
+          });
+        },
+        function(cb) {
+          models.actionComments.rate(actionId, 'foo bar', null, 1, function(err) {
+            cb(err ? null : 'passing invalid actionComment id did not cause error!');
+          });
+        },
+        function(cb) {
+          models.actionComments.rate(actionId, id, null, 1, function(err) {
+            cb(err ? null : 'missing user parameter did not cause error!');
+          });
+        },
+        function(cb) {
+          models.actionComments.rate(actionId, id, user, 2, function(err) {
+            cb(err ? null : 'invalid rating did not cause error!');
+          });
+        },
+        function(cb) {
+          models.actionComments.rate(actionId, id, user, -100, function(err) {
+            cb(err ? null : 'invalid rating did not cause error!');
+          });
+        },
+        function(cb) {
+          models.actionComments.rate(actionId, id, user, null, function(err) {
+            cb(err ? null : 'missing rating field did not cause error!');
+          });
+        }
+      ], function(err) {
+        done(err);
       });
     });
   });
