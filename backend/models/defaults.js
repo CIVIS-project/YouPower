@@ -3,7 +3,7 @@
 // default data that can be used to get started from an empty db
 
 exports.user = {
-  email: 'testuser@test.com',
+  email: 'civisuser@test.com',
   name: 'Default Test User',
   password: 'test'
 };
