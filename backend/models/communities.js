@@ -32,7 +32,13 @@ var CommunitySchema = new Schema({
     type: Date,
     required: true
 
-  }
+  },
+  ownerId: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+    }]
 });
 var Community = mongoose.model('Community', CommunitySchema);
 
@@ -57,7 +63,8 @@ exports.create = function(community, cb) {
     name: community.name,
     members: community.members,
     ratings: community.ratings,
-    date: new Date()
+    date: new Date(),
+    ownerId: community.ownerId
   }, cb);
 };
 
@@ -99,7 +106,7 @@ exports.addMember = function(id, userId, cb) {
 
 //remove member from  Community
 
-exports.removeMember = function(id, userId, cb) {
+exports.removeMember = function(id, userId, authId, cb) {
   Community.findById({
     _id: id
   }, function(err, community) {
@@ -107,9 +114,11 @@ exports.removeMember = function(id, userId, cb) {
       cb(err);
     } else if (!community) {
       cb('Community not found');
-    } else {
+    } else if (authId.toString() === community.ownerId.toString()) {
       community.members.remove(userId);
       community.save(cb);
+    } else {
+      return cb('User not authorized');
     }
   });
 };

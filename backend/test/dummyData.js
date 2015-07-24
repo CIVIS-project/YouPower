@@ -98,17 +98,19 @@ exports.communities = [
     _id: newId(),
     name: 'dummy community 1',
     members: [
-      exports.users[0]._id,
-      exports.users[1]._id
+      exports.users[0]._id
     ],
-    ratings: exports.ratings
+    ratings: exports.ratings,
+    ownerId: exports.users[0]._id
   },
   {
     _id: newId(),
     name: 'dummy community 2',
     members: [
+      exports.users[0]._id,
       exports.users[1]._id
-    ]
+    ],
+    ownerId: exports.users[0]._id
   }
 ];
 
@@ -119,6 +121,10 @@ exports.households = [
     address: 'my address',
     householdType: 'apartment',
     householdSize: '20m2',
+    familyComposition: {
+      NumAdults: 2,
+      NumKids: 0
+    },
     energyVal: '42',
     members: [
       exports.users[0]._id
@@ -130,6 +136,10 @@ exports.households = [
     address: 'my address 2',
     householdType: 'house',
     householdSize: '40m2',
+    familyComposition: {
+      NumAdults: 2,
+      NumKids: 1
+    },
     energyVal: '43',
     members: [
       exports.users[1]._id
