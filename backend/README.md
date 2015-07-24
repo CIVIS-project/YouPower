@@ -4,11 +4,11 @@ This is the backend of the YouPower app.
 
 ## Setup
 
-First set up nodejs, npm and mongodb on your local machine. Also install
+First set up `nodejs`, `npm` and `mongodb` on your local machine. Also install
 `graphicsmagick` on your machine. (needed for resizing profile pictures).
 
 If you're on Debian or Ubuntu, here's a hack to put nodejs into the same
-path that almost everyone else uses:
+path as other distros:
 ```
 sudo ln -s /usr/bin/nodejs /usr/bin/node
 ```
@@ -89,6 +89,3 @@ Run it as
 
 Just like the `metricsViewer.js` script, you can supply a custom MONGO_URL to
 fill another database than the local one.
-
-## TODO:
-- OAuth 2.0 instead of HTTP basic auth (eg. OAuth2orize)
