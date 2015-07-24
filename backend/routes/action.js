@@ -546,7 +546,7 @@ router.delete('/:id', function(req, res) {
  *     ...
  *   ]
  */
-router.get('/', function(req, res) {
+router.get('/', auth.authenticate(), function(req, res) {
   req.checkBody('limit').optional().isInt();
   req.checkBody('skip').optional().isInt();
 

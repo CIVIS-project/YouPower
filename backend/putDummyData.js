@@ -32,18 +32,21 @@ var createIfNotExist = function(model, key, doc, cb) {
 
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
+  var defaultUserId = null;
+
   async.series([
       function(cb) {
         // default user who created all the other default models
         createIfNotExist('users', 'email', defaults.user, function(err, result) {
-          console.log(result);
+          // store the userId
+          defaultUserId = result._id;
           cb(err);
         });
       }, function(cb) {
         // actions
         async.eachSeries(defaults.actions, function(action, eachCb) {
-          createIfNotExist('actions', 'name', action, function(err, result) {
-            console.log(result);
+          action.authorId = defaultUserId;
+          createIfNotExist('actions', 'name', action, function(err) {
             eachCb(err);
           });
         }, function(err) {
