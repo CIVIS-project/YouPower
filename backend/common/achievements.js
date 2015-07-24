@@ -23,19 +23,24 @@ exports.achievementList = {
     goals: [100, 250, 500, 1000, 3000, 10000]
   },
 
+  communitiesJoined: {
+    name: 'Be social!',
+    description: 'Join %d communities(s)',
+    goals: [1, 3, 5, 10]
+  },
+
   actionsReviewed: {
-    name: 'Judge',
+    name: 'Expert',
     description: 'Help others choose great actions by reviewing %d YouPower action(s)',
     goals: [1, 2, 3]
   },
 
   reduceEnergy: {
     name: 'Environmentalist',
-    description: 'Reduce your monthly energy use by %d %',
+    description: 'Reduce your monthly energy use by %d %', // from average?
     goals: [5, 10, 15]
   },
 
-  // unlocked by creating actions
   actionsCreated: {
     name: 'Advisor',
     description: 'Create %d action(s) and give others tips on how to save energy!',
