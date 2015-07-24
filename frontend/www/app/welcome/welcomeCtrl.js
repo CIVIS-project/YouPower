@@ -4,7 +4,17 @@ angular.module('civis.youpower.welcome').controller('WelcomeCtrl', WelcomeCtrl);
 function WelcomeCtrl($translate, $scope, $rootScope, $state,AuthService) {
 
 	$scope.loginData = {}
-	// $scope.emailAddress = "jmayer@energyup.eu";
+	
+
+  // $scope.loginData.emailAddress = 'civisuser@test.com';
+  // $scope.loginData.password = "test";
+
+  // $scope.loginData.emailAddress = "testuser5@test.com";
+  // $scope.loginData.password = "topsecret50";
+
+  $scope.loginData.emailAddress = "foo";
+  $scope.loginData.password = "bar";
+
 
 	$scope.changeLanguage = function (langKey) {
 		$translate.use(langKey);
@@ -14,8 +24,11 @@ function WelcomeCtrl($translate, $scope, $rootScope, $state,AuthService) {
     AuthService.login($scope.loginData.emailAddress, $scope.loginData.password)
     .then(function(){
       // $state.go('main.actions');
-      $state.go('main.actions.index');
+      console.log("logged in"); 
+      $state.go('main.actions.yours');
     })
+
+
   }
 
 };

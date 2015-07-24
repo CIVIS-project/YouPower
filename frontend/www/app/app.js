@@ -18,7 +18,7 @@ angular.module('civis.youpower', [
   'civis.youpower.welcome',
   'civis.youpower.services',
   'civis.youpower.translations',
-])
+  ])
 
 .run(function($ionicPlatform, $rootScope, $window, AuthService) {
 
@@ -28,7 +28,7 @@ angular.module('civis.youpower', [
   $rootScope._=_;
 
   $rootScope.getNumber = function(num) {
-      return new Array(num);
+    return new Array(num);
   }
 
   $rootScope.$on('$stateChangeStart', function (event,next, nextParams, fromState) {
@@ -80,33 +80,67 @@ angular.module('civis.youpower', [
     controller: 'AppCtrl'
   })
 
-    .state('main.actions', {
-      url: '/actions',
-      abstract:true,
-      views: {
-        'menuContent': {
-          template: '<ion-nav-view></ion-nav-view>',
-          controller: 'ActionsCtrl'
-        }
+  .state('main.actions', {
+    url: '/actions',
+    abstract:true,
+    views: {
+      'menuContent': {
+        templateUrl: 'app/actions/tabs.html',
+        controller: 'ActionsCtrl'
       }
-    })
+    }
+  })
+  
 
-    .state('main.actions.index', {
-      url: '',
-      templateUrl: 'app/actions/index.html'
-    })
+  .state('main.actions.yours', {
+    url: '/yours',
+    views: {
+      'tab-actions': {
+        templateUrl: 'app/actions/index.html',
+      }
+    }
+  })
 
-    .state('main.actions.action', {
-      url: '/:id',
-      templateUrl: 'app/actions/action.html',
-      controller: 'ActionCtrl'
-    })
 
-    .state('main.actions.details', {
-      url: '/:type/:index',
+
+    // .state('main.actions.action', {
+    //   url: '/:id',
+    //   templateUrl: 'app/actions/action.html',
+    //   controller: 'ActionCtrl'
+    // })
+
+.state('main.actions.details', {
+  url: '/:type/:index',
+  views: {
+    'tab-actions': {
       templateUrl: 'app/actions/action-details.html',
       controller: 'ActionsListCtrl'
-    })
+    }
+  }
+})
+
+
+
+.state('main.actions.household', {
+  url: '/household',
+  views: {
+    'tab-household': {
+      templateUrl: 'app/household/index.html',
+    }
+  }
+})
+
+.state('main.actions.communities', {
+  url: '/communities',
+  views: {
+    'tab-communities': {
+      templateUrl: 'app/communities/index.html',
+    }
+  }
+})
+
+
+
 
     // .state('main.actions.completed', {
     //   url: '/:id/completed',
@@ -128,72 +162,90 @@ angular.module('civis.youpower', [
     //   }
     // })
 
-    .state('main.household', {
-      url: '/household',
-      views: {
-        'menuContent': {
-          templateUrl: 'app/household/index.html',
+.state('main.prosumption', {
+  url: '/prosumption',
+  views: {
+    'menuContent': {
+      templateUrl: 'app/prosumption/index.html',
           // controller: 'HouseholdCtrl'
         }
       }
     })
 
-    .state('main.communities', {
-      url: '/communities',
-      views: {
-        'menuContent': {
-          templateUrl: 'app/communities/index.html',
-          controller: 'CommunitiesCtrl'
-        }
-      }
-    })
+.state('main.brf', {
+  url: '/brf',
+  views: {
+    'menuContent': {
+      templateUrl: 'app/brf/index.html',
+    }
+  }
+})
 
-    .state('main.settings', {
-      url: '/settings',
-      abstract: true,
-      views: {
-        'menuContent': {
-          templateUrl: 'app/settings/tabs.html',
-          controller: 'SettingsCtrl'
-        }
-      }
-    })
+.state('main.communities', {
+  url: '/communities',
+  views: {
+    'menuContent': {
+      templateUrl: 'app/communities/index.html',
+      controller: 'CommunitiesCtrl'
+    }
+  }
+})
 
-      .state('main.settings.index', {
-        url: '',
-        views: {
-          'tab-index': {
-            templateUrl: 'app/settings/index.html',
-          }
-        }
-      })
+.state('main.settings', {
+  url: '/settings',
+  abstract: true,
+  views: {
+    'menuContent': {
+      templateUrl: 'app/settings/tabs.html',
+      controller: 'SettingsCtrl'
+    }
+  }
+})
 
-      .state('main.settings.personal', {
-        url: '/personal',
-        views: {
-          'tab-personal': {
-            templateUrl: 'app/settings/personal.html',
-          }
-        }
-      })
+.state('main.settings.index', {
+  url: '',
+  views: {
+    'tab-index': {
+      templateUrl: 'app/settings/index.html',
+    }
+  }
+})
 
-      .state('main.settings.household', {
-        url: '/household',
-        views: {
-          'tab-household': {
-            templateUrl: 'app/settings/household.html'
-          }
-        }
-      })
+.state('main.settings.personal', {
+  url: '/personal',
+  views: {
+    'tab-personal': {
+      templateUrl: 'app/settings/personal.html',
+    }
+  }
+})
 
-      .state('main.settings.preferences', {
-        url: '/preferences',
-        views: {
-          'tab-preferences': {
-            templateUrl: 'app/settings/preferences.html',
-          }
-        }
-      })
+.state('main.settings.household', {
+  url: '/household',
+  views: {
+    'tab-household': {
+      templateUrl: 'app/settings/household.html'
+    }
+  }
+})
+
+.state('main.settings.preferences', {
+  url: '/preferences',
+  views: {
+    'tab-preferences': {
+      templateUrl: 'app/settings/preferences.html',
+    }
+  }
+})
+
+.state('main.about', {
+  url: '/about',
+  views: {
+    'menuContent': {
+      templateUrl: 'app/about/index.html',
+    }
+  }
+})
 
   // .state('tab.performance', {
   //   url: '/performance',

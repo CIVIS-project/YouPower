@@ -35,31 +35,31 @@ angular.module('civis.youpower')
     return $q(function(resolve, reject) {
       /* Dummy authentication for old Firebase data
        ----------------------------------------------*/
-      var ref = new Firebase('https://youpower.firebaseio.com/users');
-      $firebaseObject(ref).$loaded().then(function(data){
-        var userid = _.findKey(data,function(user){return user && user.username == username});
-        if (userid) {
-          storeUserCredentials(userid);
-          resolve('Login success.');
-        } else {
-          reject('Login Failed.');
-        }
-      })
+      // var ref = new Firebase('https://youpower.firebaseio.com/users');
+      // $firebaseObject(ref).$loaded().then(function(data){
+      //   var userid = _.findKey(data,function(user){return user && user.username == username});
+      //   if (userid) {
+      //     storeUserCredentials(userid);
+      //     resolve('Login success.');
+      //   } else {
+      //     reject('Login Failed.');
+      //   }
+      // })
 
       /* Use this for real authentication
        ----------------------------------------------*/
-      // var headers = {
-      //   'Authorization':'Basic ' + Base64.encode(username + ':' + password)
-      // }
+      var headers = {
+        'Authorization':'Basic ' + Base64.encode(username + ':' + password)
+      }
 
-      // $http.get('/api/user/token', {headers:headers})
-      //  .success(function (data) {
-      //   storeUserCredentials(data.token);
-      //   resolve('Login success.');
-      //  })
-      //  .error(function(data){
-      //   reject('Login failed');
-      //  });
+      $http.get('http://civis.tbm.tudelft.nl/api/user/token', {headers:headers})
+       .success(function (data) {
+        storeUserCredentials(data.token);
+        resolve('Login success.');
+       })
+       .error(function(data){
+        reject('Login failed');
+       });
 
     });
 

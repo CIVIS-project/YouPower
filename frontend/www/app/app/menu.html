@@ -15,24 +15,30 @@
   <!-- Side menu -->
   <ion-side-menu side="left">
     <header class="bar bar-header bar-stable">
-      <h1 class="title">*TODO:User info here*</h1>
+      <h1 class="title">{{currentUser.profile.name}}</h1>
     </header>
     <ion-content class="has-header">
       <ion-list>
-        <ion-item nav-clear menu-close href="#/app/actions">
+        <ion-item nav-clear menu-close href="#/app/actions/yours">
           Actions
         </ion-item>
-        <ion-item nav-clear menu-close href="#/app/household">
+        <ion-item nav-clear menu-close href="#/app/prosumption">
+          Energy Data
+        </ion-item>
+       <!--  <ion-item nav-clear menu-close href="#/app/household">
           Household
         </ion-item>
         <ion-item nav-clear menu-close href="#/app/communities">
           Communities
-        </ion-item>
-        <!--  <ion-item nav-clear menu-close href="#/app/cooperative">
-          Cooperative
         </ion-item> -->
+        <ion-item nav-clear menu-close href="#/app/brf">
+          Bostadsrättsförening 
+        </ion-item>
         <ion-item nav-clear menu-close href="#/app/settings">
           Settings
+        </ion-item>
+        <ion-item nav-clear menu-close href="#/app/about">
+          About EnergyUp
         </ion-item>
       </ion-list>
     </ion-content>

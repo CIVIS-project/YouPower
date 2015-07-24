@@ -2,7 +2,7 @@
   <tr>
     <td width="20%"> Impact</td>
     <td width="45%" style="font-size:24px;"><i class="ion-happy balanced" ng-repeat="i in getNumber(action.impact) track by $index"></i><i class="ion-load-c balanced" ng-repeat="i in getNumber(scale-action.impact) track by $index"></i></td> 
-    <td rowspan="2" align="right" style="font-size:35px;"><i class="balanced" ><i class="icon ion-leaf balanced"></i> {{action.points}}</i></td>
+    <td rowspan="2" align="right" style="font-size:35px;"><i class="balanced" ><i class="icon ion-leaf balanced"></i> {{action.impact + action.effort}}</i></td>
   </tr>
   <tr>
     <td> Effort</td>
