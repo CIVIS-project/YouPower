@@ -205,8 +205,8 @@ router.delete('/:actionId/comment/:commentId', auth.authenticate(), function(req
  *
  * @apiParam {String} actionId MongoId of action
  * @apiParam {String} commentId MongoId of action comment
- * @apiParam {Number} rating Rating of action (-1, 0 or 1. Means upvote,
- * vote abstain, downvote)
+ * @apiParam {Number} rating Rating of action (-1, 0 or 1. Means downvote, vote
+ * abstain, upvote)
  *
  * @apiExample {curl} Example usage:
  *  # Get API token via /api/user/token
