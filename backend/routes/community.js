@@ -220,7 +220,9 @@ router.delete('/:communityId/comment/:commentId', auth.authenticate(), function(
  *   }
  */
 router.post('/', auth.authenticate(), function(req, res) {
-  Community.create(req.body, req.user._id, res.successRes);
+  var community = req.body;
+  community.ownerId = req.user._id;
+  Community.create(community, res.successRes);
   Log.create({
     userId: req.user._id,
     category: 'Community',
@@ -386,23 +388,23 @@ router.put('/join/:id', auth.authenticate(), function(req, res) {
  *  curl -i -X PUT -H "Authorization: Bearer $API_TOKEN" -d \
  *  http://localhost:3000/api/community/leave/555ef84b2fd41ffef6e078a34
  */
-router.put('/leave/:id', auth.authenticate(), function(req, res) {
-  req.checkParams('id', 'Invalid Community id').isMongoId();
-
-  var err;
-  if ((err = req.validationErrors())) {
-    res.status(500).send('There have been validation errors: ' + util.inspect(err));
-  } else {
-    Community.removeMember(req.params.id, req.params.userId, req.user._id, res.successRes);
-
-    Log.create({
-      userId: req.user._id,
-      category: 'Community',
-      type: 'leave',
-      data: req.params
-    });
-  }
-});
+// router.put('/leave/:id', auth.authenticate(), function(req, res) {
+//   req.checkParams('id', 'Invalid Community id').isMongoId();
+//
+//   var err;
+//   if ((err = req.validationErrors())) {
+//     res.status(500).send('There have been validation errors: ' + util.inspect(err));
+//   } else {
+//     Community.removeMember(req.params.id, req.params.userId, req.user._id, res.successRes);
+//
+//     Log.create({
+//       userId: req.user._id,
+//       category: 'Community',
+//       type: 'leave',
+//       data: req.params
+//     });
+//   }
+// });
 
 // TODO: verify that this one works
 /**

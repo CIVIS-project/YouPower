@@ -47,11 +47,12 @@ var CommunitySchema = new Schema({
     required: true
 
   },
-  ownerId : {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  }
+  ownerId: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+    }]
 });
 var Community = mongoose.model('Community', CommunitySchema);
 
@@ -71,14 +72,14 @@ var includeRatingStats = function(community) {
 
 // create community entity
 
-exports.create = function(community, owner, cb) {
+exports.create = function(community, cb) {
   Community.create({
     name: community.name,
     challenges: community.challenges,
     members: community.members,
     ratings: community.ratings,
     date: new Date(),
-    ownerId: owner
+    ownerId: community.ownerId
   }, cb);
 };
 
@@ -128,7 +129,7 @@ exports.removeMember = function(id, userId, authId, cb) {
       cb(err);
     } else if (!community) {
       cb('Community not found');
-    } else if (authId.toString() === community.ownerId) {
+    } else if (authId.toString() === community.ownerId.toString()) {
       community.members.remove(userId);
       community.save(cb);
     } else {

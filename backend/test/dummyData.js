@@ -131,10 +131,10 @@ exports.communities = [
       }
     ],
     members: [
-      exports.users[0]._id,
-      exports.users[1]._id
+      exports.users[0]._id
     ],
-    ratings: exports.ratings
+    ratings: exports.ratings,
+    ownerId: exports.users[0]._id
   },
   {
     _id: newId(),
@@ -146,8 +146,10 @@ exports.communities = [
       }
     ],
     members: [
+      exports.users[0]._id,
       exports.users[1]._id
-    ]
+    ],
+    ownerId: exports.users[0]._id
   }
 ];
 

@@ -1253,12 +1253,13 @@ describe('models', function() {
       // TODO: more thorough testing (remove more than one member etc)
       async.series([
         function(cb) {
-          models.communities.addMember(dbCommunities[0]._id, dbUsers[0]._id, function(err) {
+          models.communities.addMember(dbCommunities[0]._id, dbUsers[1]._id, function(err) {
             cb(err);
           });
         },
         function(cb) {
-          models.communities.removeMember(dbCommunities[0]._id, dbUsers[0]._id, function(err) {
+          models.communities
+          .removeMember(dbCommunities[0]._id, dbUsers[1]._id, dbUsers[0]._id, function(err) {
             cb(err);
           });
         }
@@ -1272,13 +1273,38 @@ describe('models', function() {
         });
       });
     });
+    it('should not allow non-owners to remove member from community', function(done) {
+      // TODO: more thorough testing (remove more than one member etc)
+      async.series([
+        function(cb) {
+          models.communities.addMember(dbCommunities[0]._id, dbUsers[1]._id, function(err) {
+            cb(err);
+          });
+        },
+        function(done) {
+          models.communities
+          .removeMember(dbCommunities[0]._id, dbUsers[0]._id, dbUsers[1]._id, function(err) {
+            done(err ? null : 'unauthorized removal of member did not return error!');
+          });
+        }
+      ], function(err) {
+        if (err) {
+          return done(err);
+        }
+        models.communities.get(dbCommunities[0]._id, function(err, community) {
+          should.exist(community.members[0]);
+          done(err);
+        });
+      });
+    });
     it('should return error when removing from bogus community id', function(done) {
-      models.communities.removeMember(dummyData.ids[0], dbUsers[0]._id, function(err) {
+      models.communities
+      .removeMember(dummyData.ids[0], dbUsers[1]._id, dbUsers[0]._id, function(err) {
         done(err ? null : 'bogus community id member remove did not return error!');
       });
     });
     it('should return error when removing from invalid community id', function(done) {
-      models.communities.removeMember('foo bar', dbUsers[0]._id, function(err) {
+      models.communities.removeMember('foo bar', dbUsers[1]._id, dbUsers[0]._id, function(err) {
         done(err ? null : 'invalid community id member remove did not return error!');
       });
     });
