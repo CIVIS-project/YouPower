@@ -5,6 +5,7 @@
 exports.user = {
   email: 'civisuser@test.com',
   name: 'Default Test User',
+  token: '0',
   password: 'test'
 };
 
