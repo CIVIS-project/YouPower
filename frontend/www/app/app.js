@@ -27,6 +27,8 @@ angular.module('civis.youpower', [
   // Making underscore available in the angular expressions
   $rootScope._=_;
 
+  HOST = 'http://civis.tbm.tudelft.nl';
+
   $rootScope.getNumber = function(num) {
     return new Array(num);
   }
@@ -90,13 +92,25 @@ angular.module('civis.youpower', [
       }
     }
   })
-  
+
 
   .state('main.actions.yours', {
     url: '/yours',
     views: {
       'tab-actions': {
         templateUrl: 'app/actions/index.html',
+        controller: 'ActionCtrl' 
+      }
+    }
+  })
+
+
+  .state('main.actions.action', {
+    url: '/suggestion/:id',
+    views: {
+      'tab-actions': {
+        templateUrl: 'app/actions/action.html',
+        controller: 'ActionCtrl'
       }
     }
   })
@@ -135,6 +149,15 @@ angular.module('civis.youpower', [
   views: {
     'tab-communities': {
       templateUrl: 'app/communities/index.html',
+    }
+  }
+})
+
+.state('main.actions.achievements', {
+  url: '/achievements',
+  views: {
+    'tab-achievements': {
+      templateUrl: 'app/achievements/index.html',
     }
   }
 })

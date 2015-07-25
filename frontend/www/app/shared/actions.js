@@ -20,7 +20,7 @@ angular.module('civis.youpower')
 
   /* Use this for real data
    ----------------------------------------------*/
-  return $resource('http://civis.tbm.tudelft.nl/api/user/action/suggested');
+  return $resource(HOST + '/api/user/action/suggested');
 
 
 

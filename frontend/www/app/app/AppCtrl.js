@@ -22,4 +22,13 @@ function AppCtrl($scope,User) {
 
 	//catch//finally
 
+
+  $scope.salut = function(){
+    if ($scope.currentUser.profile.fname) {
+      return 'Hi, ' + $scope.currentUser.profile.name + '! ';
+    }
+    else return ''; 
+  }
+
+
 };

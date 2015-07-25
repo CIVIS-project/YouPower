@@ -4,7 +4,7 @@
 	<div class="list card">
 		<div class="item item-divider item-icon-left item-text-wrap">
 			<i class="icon ion-ios-lightbulb-outline balanced"></i>
-			<h2>{{action.title}}</h2>
+			<h2>{{action.name}}</h2>
 		</div>
 		<div class="item item-body">
 
@@ -12,8 +12,8 @@
 
 			<p><a href="#" class="subdued">{{action.participants}} Participant{{action.participants > 1 ? 's' : ''}}.</a></p>
 
-			<a class="item item-icon-left" insert-into="user.actionsDoing" ng-click="skipAction('already doing')">
-				<i class="icon ion-ios-checkmark-outline positive"></i>
+			<a class="item item-icon-left" ng-click="skipAction('already doing')">
+				<i class="icon ion-android-done positive"></i>
 				I already do this.
 			</a>
 			<a class="item item-icon-left" insert-into="user.actionsActive" ng-click="addAction()">
@@ -21,11 +21,11 @@
 				I want to do this.
 			</a>
 			<a class="item item-icon-left" insert-into="user.actionsNotInterested" ng-click="skipAction('don not want')">
-				<i class="icon ion-ios-close-outline assertive"></i>
+				<i class="icon ion-android-close assertive"></i>
 				I don't want to do this.
 			</a>
 			<a class="item item-icon-left" insert-into="user.actionsNA" ng-click="skipAction('N/A')">
-				<i class="icon ion-ios-minus-outline energized"></i>
+				<i class="icon ion-android-remove energized"></i>
 				This doesn't apply to me.
 			</a>
 

@@ -3,24 +3,19 @@ angular.module('civis.youpower.actions').controller('ActionsCtrl', ActionsCtrl);
 
 
 /* The controller that's shared over all the action states.
- ----------------------------------------------*/
+----------------------------------------------*/
 function ActionsCtrl($scope,Actions) {
 
 
-	console.log("suggested actions");
-	console.log(Actions.query());
+	$scope.idx = -1;
 
-	// Actions.get().then(function(data) {
+	Actions.query().$promise.then(function(data) {
 
-	// 	$scope.suggestedActions = data;
+		$scope.suggestedActions = data; 
+		console.log("load tips");
+		console.log($scope.suggestedActions);
 
-	// 	// $scope.userActions = $scope.currentUser.actions;
-	// 	// console.log("1");
-	// 	console.log($scope.suggestedActions);
-	// 	// console.log("2");
-	// 	// console.log($scope.userActions);
-
-	// });
+	});
 
 };
 

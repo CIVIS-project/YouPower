@@ -1,22 +1,19 @@
 <ion-view view-title="Your Actions">
 <ion-content class="padding">
 
-
-
 <div class="list card">
   <div class="item item-divider">Current Actions ({{_.size(currentUser.actions.inProgress)}})</div>
   <a class="item item-icon-left item-icon-right" ng-repeat="action in currentUser.actions.inProgress" ng-href="#/app/actions/Active/{{$index}}">
-    <span class="balanced" >
-      <b>{{action.effort + action.impact }}</b>
-    </span>
     <i class="icon ion-leaf balanced"></i>
-    {{action.name}}
+    <span class="leafs balanced">
+      {{action.effort + action.impact }}
+    </span>{{action.name}}
     <i class="icon ion-chevron-right icon-accessory"></i>
   </a>
 </div>
 
 <div class="list card" > <!-- ng-if="actionsPending.length > 0" -->
-  <div class="item item-divider">Pending actions ({{_.size(currentUser.actions.pending)}})</div>
+  <div class="item item-divider">Pending Actions ({{_.size(currentUser.actions.pending)}})</div>
   <a class="item item-icon-left item-icon-right" ng-repeat="action in currentUser.actions.pending" ng-href="#/app/actions/Pending/{{$index}}">
     <!-- ng-repeat="(idx, action) in actions" > -->
     <span class="balanced" >
@@ -28,24 +25,21 @@
   </a>
 </div>
 
-<!-- ng-click="nextTip(user)"
- -->
-<a href="#" class="item item-divider item-icon-left">
-  <i class="icon ion-android-add"></i>
-  Add actions
-</a>
-
-
 <div class="list card">
   <div class="item item-divider">Completed Actions ({{_.size(currentUser.actions.done)}})</div>
   <a href="#" class="item item-icon-left item-icon-right">
     <i class="icon ion-leaf balanced"></i>
-    <span class="balanced">
+    <span class="leafs balanced">
       <b>{{user.points ? user.points : 0}}</b>
     </span> Leafs earned in total
     <i class="icon ion-chevron-right icon-accessory"></i>
   </a>
 </div>
+
+<button class="button icon-left button-full button-balanced" ng-click="nextTip()">
+  <i class="icon ion-android-add"></i>
+  Add actions
+</button>
 
 </ion-content>
 </ion-view>

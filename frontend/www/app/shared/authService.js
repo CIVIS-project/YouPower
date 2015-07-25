@@ -52,7 +52,7 @@ angular.module('civis.youpower')
         'Authorization':'Basic ' + Base64.encode(username + ':' + password)
       }
 
-      $http.get('http://civis.tbm.tudelft.nl/api/user/token', {headers:headers})
+      $http.get(HOST + '/api/user/token', {headers:headers})
        .success(function (data) {
         storeUserCredentials(data.token);
         resolve('Login success.');

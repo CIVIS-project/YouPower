@@ -50,10 +50,10 @@ angular.module('civis.youpower')
 
   /* Use this for real data
    ----------------------------------------------*/
-  return $resource('http://civis.tbm.tudelft.nl/api/user/profile',{
+  return $resource(HOST + '/api/user/profile',{
     'startAction': {
       method: 'POST',
-      url:'/api/user/action/complete/:id'
+      url: HOST + '/api/user/action/:id'
     }
   });
 });

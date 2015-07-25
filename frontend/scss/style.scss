@@ -1,6 +1,5 @@
 //colors
 $white: white;
-$color_emerald_approx: #33cd5f;
 $color_tundora_approx: #444;
 $color_gray_nurse_approx: #e8e8e8;
 
@@ -12,31 +11,33 @@ $color_gray_nurse_approx: #e8e8e8;
 }
 
 
-.card {
-  .tabs {
-    background-color: $white !important;
-    border-color: $color_emerald_approx;
-    border-bottom-style: solid;
-    border-width: 3px;
-  }
-  .tab-item {
-    color: $color_tundora_approx !important;
-    opacity: 19238734;
-    .icon {
-      color: $color_emerald_approx;
-      opacity: 0.78;
-    }
-    &.tab-item-active {
-      opacity: 0.4;
-    }
-    &.active {
-      opacity: 0.4;
-    }
-    &.activated {
-      opacity: 0.4;
-    }
-  }
-}
+// .card {
+//   .tabs {
+//     background-color: $white !important;
+//     border-color: $color_emerald_approx;
+//     border-bottom-style: solid;
+//     border-width: 3px;
+//   }
+//   .tab-item {
+//     color: $color_tundora_approx !important;
+//     opacity: 19238734;
+//     .icon {
+//       color: dark;
+//       opacity: 0.78;
+//     }
+//     &.tab-item-active {
+//       opacity: 0.4;
+//     }
+//     &.active {
+//       opacity: 0.4;
+//     }
+//     &.activated {
+//       opacity: 0.4;
+//     }
+//   }
+// }
+
+
 table {
   border-collapse: collapse;
   border-spacing: 0;
@@ -70,6 +71,14 @@ hr {
     @extend %frame50;
   }
 }
+.leafs {
+  position: relative;
+  top: 1px;
+  right: 10px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
 .item-select select {
   right: auto;
   padding: 13px 45px 15px 0;
