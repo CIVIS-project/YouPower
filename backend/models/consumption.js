@@ -7,6 +7,8 @@ var xml2js = require('xml2js');
 var async = require('async');
 var usagePoint = require('./usagePoint');
 var sensor = require('./sensor');
+var intervalBlock = require('./intervalBlock');
+var intervalReading = require('./intervalReading');
 
 exports.create = function(usagePt, cb1) {
   //console.log('TETS', usagePt);
@@ -115,3 +117,54 @@ exports.getUsagePoint = function(apartmentId, cb) {
 
   });
 };
+
+exports.downloadMyData = function(usagepoint, from, to, res, ctype, cb) {
+
+//console.log('VALUES',usagepoint,from,to,res,ctype,moment(from).format('YYYY-MM-DD'));
+  var r=request({
+    url: config.civisURL + '/InterfaceWP3.svc/downloadmydata',
+    qs: {
+      usagepoint: usagepoint,
+      //from: moment(from).format('YYYY-MM-DD'),
+      from: moment(from).format('YYYY-MM-DD'),
+      to: moment(to).format('YYYY-MM-DD'),
+      res: res,
+      type: ctype
+    }
+  }, function(err, res, body) {
+    if (err) {
+      cb(err);
+    } else {
+      var parser = new xml2js.Parser({
+        explicitArray: false
+      });
+      parser.parseString(body, function(err, result) {
+        if (err) {cb(err);}
+        var tempArr = [];
+        //console.log(r.url);
+        //console.log('Results', JSON.stringify(result));
+        usagePoint.getUsagePoint(result.feed.UsagePoint.ApartmentID, function(err, up) {
+          if (err) {
+            cb(err);
+          }
+          if (!up) {
+            cb(null,'UsagePoint not found');
+          }
+          console.log('UP',up);
+          intervalBlock.create(result.feed.UsagePoint, up._id, function(err, ib){
+            if (err) {
+              cb(err);
+            }
+            //console.log('YIPPIE', ib)
+            intervalReading.create(result.feed.IntervalBlock.IntervalReading[0],ib._id, function(err, ir) {
+              if (err) console.log(err);
+              console.log('SUCCESS',ir)
+            });
+
+          });
+        });  
+      });
+    }
+  });
+};
+

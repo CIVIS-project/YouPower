@@ -117,4 +117,45 @@ router.get('/getUsagePoint/:apartmentId', auth.authenticate(), function(req, res
   Consumption.getUsagePoint(req.params.apartmentId, res.successRes);
 });
 
+/**
+ * @api {get} /downloadMyData Fetch IntervalBlock data from Reply
+ * @apiGroup Consumption
+ *
+ * @apiParam {Integer} usagepoint ApartmentID/UsagePoint
+ * @apiParam {Date} from Starting Date to fetch data from
+ * @apiParam {Date} to Ending Date to fetch data from
+ * @apiParam {String} [res='MONTHLY'] Other types RAW/DAILY/WEEKLY
+ * @apiParam {String} [ctype='S_CONS'] S_CONS/S_PROD
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/action
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   [
+ *     {
+ *       "__v": 8,
+ *       "_id": "555ef84b2fd41ffc6e078a34",
+ *       "avgRating": 4.25,
+ *       "description": "Disabling standby can save up to 10% in total electricity costs.",
+ *       "effort": 3,
+ *       "impact": 2,
+ *       "date": "2015-07-01T12:04:33.599Z",
+ *       "name": "Disable standby on your devices",
+ *       "numRatings": 4
+ *     },
+ *     ...
+ *   ]
+ */
+router.get('/downloadMyData', auth.authenticate(), function(req, res) {
+  req.checkBody('usagepoint').isInt();
+  req.checkBody('from').isDate();
+  req.checkBody('to').isDate();
+  console.log(req.body);
+  Consumption.downloadMyData(req.body.usagepoint, req.body.from, req.body.to, req.body.res || 'MONTHLY', req.body.ctype || 'S_CONS', res.successRes);
+});
+
 module.exports = router;
