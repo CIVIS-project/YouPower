@@ -13,7 +13,7 @@ var dummyData = require('./dummyData');
 var resetModel = function(modelName, cb) {
   dummyData = require('./dummyData');
   var resDocs = [];
-  conn.connection.db.dropCollection(modelName, function() {
+  conn.connection.db.dropCollection(modelName.toLowerCase(), function() {
     async.map(dummyData[modelName], function(model, cb) {
       models[modelName].create(model, cb);
     }, function(err, docs) {
@@ -362,6 +362,112 @@ describe('models', function() {
     it('should not set hasPictures field for invalid commentId', function(done) {
       models.actionComments.setHasPicture('foo bar', true, function(err) {
         done(err ? null : 'no error returned!');
+      });
+    });
+    it('should add rating to unrated action comment', function(done) {
+      var user = dummyData.users[0];
+      var rating = 1;
+      var id = dbActionComments[0]._id;
+      var actionId = dummyData.actions[0]._id;
+
+      // try rating an action that has not been rated yet
+      models.actionComments.rate(actionId, id, user, rating, function(err) {
+        if (err) {
+          return done(err);
+        }
+
+        models.actionComments.get(actionId, null, null, function(err, aComments) {
+          if (err) {
+            return done(err);
+          }
+
+          var storedRating = _.find(aComments, function(aComment) {
+            return String(aComment._id) === String(id);
+          }).rating;
+
+          storedRating.should.equal(rating);
+          done();
+        });
+      });
+    });
+
+    it('should update rating to action document', function(done) {
+      var user = dummyData.users[0];
+      var id = dbActionComments[0]._id;
+      var actionId = dummyData.actions[0]._id;
+
+      models.actionComments.rate(actionId, id, user, 1, function(err) {
+        if (err) {
+          return done(err);
+        }
+
+        models.actionComments.rate(actionId, id, user, -1, function(err) {
+          if (err) {
+            return done(err);
+          }
+          models.actionComments.get(actionId, null, null, function(err, aComments) {
+            if (err) {
+              return done(err);
+            }
+            var storedRating = _.find(aComments, function(aComment) {
+              return String(aComment._id) === String(id);
+            }).rating;
+
+            storedRating.should.equal(-1);
+            done();
+          });
+        });
+      });
+    });
+
+    it('should refuse invalid ratings', function(done) {
+      var user = dummyData.users[0];
+      var id = dbActionComments[0]._id;
+      var actionId = dummyData.actions[0]._id;
+
+      async.parallel([
+        function(cb) {
+          models.actionComments.rate(dummyData.ids[0], id, user, 1, function(err) {
+            cb(err ? null : 'passing bogus action id did not cause error!');
+          });
+        },
+        function(cb) {
+          models.actionComments.rate('foo bar', id, user, 1, function(err) {
+            cb(err ? null : 'passing invalid action id did not cause error!');
+          });
+        },
+        function(cb) {
+          models.actionComments.rate(actionId, dummyData.ids[0], null, 1, function(err) {
+            cb(err ? null : 'passing bogus actionComment id did not cause error!');
+          });
+        },
+        function(cb) {
+          models.actionComments.rate(actionId, 'foo bar', null, 1, function(err) {
+            cb(err ? null : 'passing invalid actionComment id did not cause error!');
+          });
+        },
+        function(cb) {
+          models.actionComments.rate(actionId, id, null, 1, function(err) {
+            cb(err ? null : 'missing user parameter did not cause error!');
+          });
+        },
+        function(cb) {
+          models.actionComments.rate(actionId, id, user, 2, function(err) {
+            cb(err ? null : 'invalid rating did not cause error!');
+          });
+        },
+        function(cb) {
+          models.actionComments.rate(actionId, id, user, -100, function(err) {
+            cb(err ? null : 'invalid rating did not cause error!');
+          });
+        },
+        function(cb) {
+          models.actionComments.rate(actionId, id, user, null, function(err) {
+            cb(err ? null : 'missing rating field did not cause error!');
+          });
+        }
+      ], function(err) {
+        done(err);
       });
     });
   });
@@ -789,266 +895,6 @@ describe('models', function() {
     });
   });
 
-  describe('challenge', function() {
-    var dbChallenges = [];
-    var dbUsers = [];
-
-    beforeEach(function(done) {
-      // reset challenges and user collections
-      async.parallel([
-        function(cb) {
-          resetModel('challenges', function(err, challenges) {
-            dbChallenges = challenges;
-            cb(err);
-          });
-        },
-        function(cb) {
-          resetModel('users', function(err, users) {
-            dbUsers = users;
-            cb(err);
-          });
-        }
-      ], function(err) {
-        done(err);
-      });
-    });
-
-    it('should return all challenges without ratings', function(done) {
-      models.challenges.all(null, null, null, function(err, challenges) {
-        challenges.length.should.equal(dummyData.challenges.length);
-
-        // find an challenge that was added with ratings
-        var testChallenge = _.find(challenges, function(challenge) {
-          return challenge.name === dummyData.challenges[0].name;
-        });
-
-        should.equal(testChallenge.ratings, undefined);
-        done(err);
-      });
-    });
-
-    it('should return all challenges with ratings', function(done) {
-      var user = dummyData.users[0];
-      models.challenges.all(null, null, true, function(err, challenges) {
-        challenges.length.should.equal(dummyData.challenges.length);
-
-        var testChallenge = _.find(challenges, function(challenge) {
-          return challenge.name === 'dummy challenge name 1';
-        });
-
-        testChallenge.ratings[user._id].comment
-          .should.equal(dummyData.challenges[0].ratings[user._id].comment);
-        done(err);
-      });
-    });
-
-    it('should return first challenge by id', function(done) {
-      models.challenges.get(dbChallenges[0]._id, function(err, challenge) {
-        challenge.name.should.equal(dbChallenges[0].name);
-        done(err);
-      });
-    });
-
-    it('should return no challenge for bogus id', function(done) {
-      models.challenges.get(dummyData.ids[0], function(err) {
-        done(err ? null : 'bogus challenge fetch did return an challenge!');
-      });
-    });
-
-    it('should delete challenge by id', function(done) {
-      models.challenges.delete(dbChallenges[0]._id, function() {
-        models.challenges.get(dbChallenges[0]._id, function(err) {
-          done(err ? null : 'challenge was not deleted successfully');
-        });
-      });
-    });
-
-    it('should add rating to unrated challenge document', function(done) {
-      var user = dummyData.users[0];
-      var d = dummyData.ratings[user._id];
-      var id = dbChallenges[1]._id; // mustn't contain any ratings
-
-      // try rating an challenge that has not been rated yet
-      models.challenges.rate(id, user, d.rating, d.comment, function(err) {
-        if (err) {
-          return done(err);
-        }
-
-        models.challenges.get(id, function(err, challenge) {
-          if (err) {
-            return done(err);
-          }
-
-          var rating = challenge.ratings[user._id].rating;
-          rating.should.equal(d.rating);
-          done();
-        });
-      });
-    });
-
-    it('should update rating to challenge document', function(done) {
-      var user = dummyData.users[0];
-      var d = dummyData.ratings[user._id];
-
-      models.challenges.rate(dbChallenges[1]._id, user, d.rating, d.comment, function(err) {
-        if (err) {
-          return done(err);
-        }
-        d.comment = 'lorem ipsum';
-
-        models.challenges.rate(dbChallenges[1]._id, user, d.rating, d.comment, function(err) {
-          if (err) {
-            return done(err);
-          }
-          models.challenges.get(dbChallenges[1]._id, function(err, challenge) {
-            if (err) {
-              return done(err);
-            }
-
-            var comment = challenge.ratings[user._id].comment;
-            comment.should.equal(d.comment);
-            done();
-          });
-        });
-      });
-    });
-
-    it('should refuse invalid ratings', function(done) {
-      var user = dummyData.users[0];
-      var d = dummyData.ratings[user._id];
-      async.parallel([
-        function(cb) {
-          models.challenges.rate(dummyData.ids[0], user, d.rating, d.comment, function(err) {
-            cb(err ? null : 'passing bogus challenge id did not cause error!');
-          });
-        },
-        function(cb) {
-          models.challenges.rate('foo bar', user, d.rating, d.comment, function(err) {
-            cb(err ? null : 'passing invalid challenge id did not cause error!');
-          });
-        },
-        function(cb) {
-          models.challenges.rate(dbChallenges[0]._id, null, d.rating, d.comment, function(err) {
-            cb(err ? null : 'missing user parameter did not cause error!');
-          });
-        },
-        function(cb) {
-          models.challenges.rate(dbChallenges[0]._id, user, null, d.comment, function(err) {
-            cb(err ? null : 'missing rating field did not cause error!');
-          });
-        },
-        function(cb) {
-          models.challenges.rate(dbChallenges[0]._id, user, d.rating, null, function(err) {
-            cb(err ? 'comment field should be optional but wasn\'t!' : null);
-          });
-        }
-      ], function(err) {
-        done(err);
-      });
-    });
-    it('should find challenges by search', function(done) {
-      models.challenges.search('dummy challenge', function(err, challenges) {
-        // manually search dummy challenges for same string
-        var d = [];
-        _.each(dummyData.challenges, function(challenge) {
-          if (challenge.name.indexOf('dummy challenge') === 0) {
-            d.push(challenge);
-          }
-        });
-        challenges.length.should.equal(d.length);
-        done(err);
-      });
-    });
-    it('search should only match from start of string', function(done) {
-      models.challenges.search('ummy challenge', function(err, challenges) {
-        challenges.length.should.equal(0);
-        done(err);
-      });
-    });
-  });
-
-  describe('challengeComments', function() {
-    var dbChallengeComments = [];
-
-    // clear db before starting
-    before(function() {
-      conn.connection.db.dropDatabase();
-    });
-
-    beforeEach(function(done) {
-      // reset challenges collection
-      resetModel('challengeComments', function(err, challengeComments) {
-        dbChallengeComments = challengeComments;
-        done(err);
-      });
-    });
-
-    it('should get all dummy comments for first challenge', function(done) {
-      var numFirstChallengeComments = _.filter(dummyData.challengeComments, function(ac) {
-        return ac.challengeId === dummyData.challenges[0]._id;
-      }).length;
-
-      models.challengeComments.get(
-          dummyData.challenges[0]._id, null, null, function(err, challengeComments) {
-        challengeComments.length.should.equal(numFirstChallengeComments);
-        done(err);
-      });
-    });
-    it('should return error for bogus challengeId', function(done) {
-      models.challengeComments.get(dummyData.ids[0], null, null, function(err) {
-        done(err ? null : 'no error returned!');
-      });
-    });
-    it('should return error for invalid challengeId', function(done) {
-      models.challengeComments.get('foo', null, null, function(err, challengeComments) {
-        should.not.exist(challengeComments);
-        done(err ? null : 'no error returned!');
-      });
-    });
-    it('should create a comment', function(done) {
-      var d = dummyData.challengeComments[0];
-      models.challengeComments.create({
-        challengeId: d.challengeId,
-        name: 'foo bar',
-        email: d.email,
-        comment: 'foo baz'
-      }, function(err, challengeComment) {
-        challengeComment.name.should.equal('foo bar');
-        challengeComment.comment.should.equal('foo baz');
-        done(err);
-      });
-    });
-    it('should not create a comment with missing name', function(done) {
-      var d = dummyData.challengeComments[0];
-      models.challengeComments.create({
-        challengeId: d.challengeId,
-        name: null,
-        email: d.email,
-        comment: d.comment
-      }, function(err) {
-        done(err ? null : 'no error returned!');
-      });
-    });
-    it('should not create a comment with missing comment field', function(done) {
-      var d = dummyData.challengeComments[0];
-      models.challengeComments.create({
-        challengeId: d.challengeId,
-        name: d.name,
-        email: d.email,
-        comment: null
-      }, function(err) {
-        done(err ? null : 'no error returned!');
-      });
-    });
-    it('should delete a comment', function(done) {
-      var d = dbChallengeComments[0];
-      models.challengeComments.delete(d.challengeId, d._id, function(err, status) {
-        status.result.n.should.equal(1);
-        done(err);
-      });
-    });
-  });
-
   describe('community', function() {
     var dbCommunities = [];
     var dbUsers = [];
@@ -1084,7 +930,6 @@ describe('models', function() {
       var d = dummyData.communities[0];
       models.communities.create({
         name: null,
-        challenges: d.challenges,
         actions: d.actions
       }, function(err) {
         done(err ? null : 'creating community with missing name did not cause error!');
@@ -1253,12 +1098,13 @@ describe('models', function() {
       // TODO: more thorough testing (remove more than one member etc)
       async.series([
         function(cb) {
-          models.communities.addMember(dbCommunities[0]._id, dbUsers[0]._id, function(err) {
+          models.communities.addMember(dbCommunities[0]._id, dbUsers[1]._id, function(err) {
             cb(err);
           });
         },
         function(cb) {
-          models.communities.removeMember(dbCommunities[0]._id, dbUsers[0]._id, function(err) {
+          models.communities
+          .removeMember(dbCommunities[0]._id, dbUsers[1]._id, dbUsers[0]._id, function(err) {
             cb(err);
           });
         }
@@ -1272,13 +1118,38 @@ describe('models', function() {
         });
       });
     });
+    it('should not allow non-owners to remove member from community', function(done) {
+      // TODO: more thorough testing (remove more than one member etc)
+      async.series([
+        function(cb) {
+          models.communities.addMember(dbCommunities[0]._id, dbUsers[1]._id, function(err) {
+            cb(err);
+          });
+        },
+        function(done) {
+          models.communities
+          .removeMember(dbCommunities[0]._id, dbUsers[0]._id, dbUsers[1]._id, function(err) {
+            done(err ? null : 'unauthorized removal of member did not return error!');
+          });
+        }
+      ], function(err) {
+        if (err) {
+          return done(err);
+        }
+        models.communities.get(dbCommunities[0]._id, function(err, community) {
+          should.exist(community.members[0]);
+          done(err);
+        });
+      });
+    });
     it('should return error when removing from bogus community id', function(done) {
-      models.communities.removeMember(dummyData.ids[0], dbUsers[0]._id, function(err) {
+      models.communities
+      .removeMember(dummyData.ids[0], dbUsers[1]._id, dbUsers[0]._id, function(err) {
         done(err ? null : 'bogus community id member remove did not return error!');
       });
     });
     it('should return error when removing from invalid community id', function(done) {
-      models.communities.removeMember('foo bar', dbUsers[0]._id, function(err) {
+      models.communities.removeMember('foo bar', dbUsers[1]._id, dbUsers[0]._id, function(err) {
         done(err ? null : 'invalid community id member remove did not return error!');
       });
     });
@@ -1615,6 +1486,23 @@ describe('models', function() {
         }
         models.households.get(dbHouseholds[0]._id, function(err, household) {
           household.address.should.equal(dbHouseholds[1].address);
+          household.householdType.should.equal(dbHouseholds[1].householdType);
+          household.householdSize.should.equal(dbHouseholds[1].householdSize);
+          done(err);
+        });
+      });
+    });
+    it('should update misc household details', function(done) {
+      models.households.updateHousehold(dbHouseholds[0]._id, dbHouseholds[1].familyComposition,
+       dbHouseholds[1].householdSize, dbHouseholds[1].householdType , function(err) {
+        if (err) {
+          return done(err);
+        }
+        models.households.get(dbHouseholds[0]._id, function(err, household) {
+          household.familyComposition.NumAdults
+          .should.equal(dbHouseholds[1].familyComposition.NumAdults);
+          household.familyComposition.NumKids
+          .should.equal(dbHouseholds[1].familyComposition.NumKids);
           household.householdType.should.equal(dbHouseholds[1].householdType);
           household.householdSize.should.equal(dbHouseholds[1].householdSize);
           done(err);

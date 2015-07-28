@@ -2,8 +2,6 @@
 
 exports.actions = require('./actions');
 exports.actionComments = require('./actionComments');
-exports.challenges = require('./challenges');
-exports.challengeComments = require('./challengeComments');
 exports.communities = require('./communities');
 exports.communityComments = require('./communityComments');
 exports.consumption = require('./consumption');
