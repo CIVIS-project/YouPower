@@ -46,7 +46,7 @@ exports.getAllUsagePointsData = function(usagepoint, cb) {
         if (err) {cb(err);}
         var tempArr = [];
 
-        async.each(result.entry.content.usagePoint.slice(2, 3), function(obj, callback) {
+        async.each(result.entry.content.usagePoint, function(obj, callback) {
           exports.create(obj, function(err, success) {
             if (err) {
               tempArr.push(success);
@@ -118,7 +118,7 @@ exports.getUsagePoint = function(apartmentId, cb) {
   });
 };
 
-exports.downloadMyData = function(usagepoint, from, to, res, ctype, cb) {
+exports.downloadMyData = function(usagepoint, from, to, res_type, ctype, cb) {
 
 //console.log('VALUES',usagepoint,from,to,res,ctype,moment(from).format('YYYY-MM-DD'));
   var r=request({
@@ -128,7 +128,7 @@ exports.downloadMyData = function(usagepoint, from, to, res, ctype, cb) {
       //from: moment(from).format('YYYY-MM-DD'),
       from: moment(from).format('YYYY-MM-DD'),
       to: moment(to).format('YYYY-MM-DD'),
-      res: res,
+      res: res_type,
       type: ctype
     }
   }, function(err, res, body) {
@@ -140,31 +140,66 @@ exports.downloadMyData = function(usagepoint, from, to, res, ctype, cb) {
       });
       parser.parseString(body, function(err, result) {
         if (err) {cb(err);}
-        var tempArr = [];
+        var tempArr = {"IntervalBlock":[], "IntervalReadings":[]};
         //console.log(r.url);
-        //console.log('Results', JSON.stringify(result));
-        usagePoint.getUsagePoint(result.feed.UsagePoint.ApartmentID, function(err, up) {
-          if (err) {
-            cb(err);
-          }
-          if (!up) {
-            cb(null,'UsagePoint not found');
-          }
-          console.log('UP',up);
-          intervalBlock.create(result.feed.UsagePoint, up._id, function(err, ib){
+        console.log('RESSSS', res_type);
+        if (res_type==='MONTHLY') {
+          usagePoint.getUsagePoint(result.feed.UsagePoint.ApartmentID, function(err, up) {
             if (err) {
               cb(err);
             }
-            //console.log('YIPPIE', ib)
-            intervalReading.create(result.feed.IntervalBlock.IntervalReading[0],ib._id, function(err, ir) {
-              if (err) console.log(err);
-              console.log('SUCCESS',ir)
+            if (!up) {
+              cb(null,'UsagePoint not found');
+            }
+            //console.log('UP',up);
+            intervalBlock.create(result.feed.UsagePoint, up._id, from, to, function(err, ib){
+              if (err) {
+                cb(err);
+              }
+              tempArr.IntervalBlock.push(ib);
+              /*async.each(result.feed.IntervalBlock.IntervalReading, function(obj, callback) {
+                intervalReading.create(obj,ib._id, function(err, ir) {
+                  if (err) {
+                    tempArr.IntervalReadings.push(err);
+                    callback();
+                  } else {
+                    tempArr.IntervalReadings.push(ir);
+                    callback();
+                  }
+                });
+              }, function(err) {
+                if (err) {cb(err);}
+                cb(null, tempArr);
+              });*/
             });
-
           });
-        });  
+        } else {
+          //console.log('Results', JSON.stringify(result));
+          tempArr.IntervalBlock.push({"apartmentId": result.feed.UsagePoint.ApartmentID,
+            "type": result.feed.UsagePoint.Type, "kind": result.feed.UsagePoint.ServiceCategory.kind});
+          async.each(result.feed.IntervalBlock.IntervalReading, function(obj, callback) {
+                pushIR(obj, function(err, ir) {
+                  if (err) {
+                    tempArr.IntervalReadings.push(err);
+                    callback();
+                  } else {
+                    tempArr.IntervalReadings.push(ir);
+                    callback();
+                  }
+                });
+              }, function(err) {
+                if (err) {cb(err);}
+                cb(null, tempArr);
+              });
+        }  
       });
     }
   });
 };
 
+
+var pushIR = function(ir, cb) {
+  console.log("TTTTTTT", ir)
+  var temp_ir = {"value": ir['value'], "timeslot": ir.timeslot, "timePeriod": ir.timePeriod};
+  cb(null, temp_ir);
+};

@@ -124,7 +124,8 @@ router.get('/getUsagePoint/:apartmentId', auth.authenticate(), function(req, res
  * @apiParam {Integer} usagepoint ApartmentID/UsagePoint
  * @apiParam {Date} from Starting Date to fetch data from
  * @apiParam {Date} to Ending Date to fetch data from
- * @apiParam {String} [res='MONTHLY'] Other types RAW/DAILY/WEEKLY
+ * @apiParam {String} [res='MONTHLY'] Other types RAW/DAILY/WEEKLY/MONTHLY. Stream will be 
+ * saved in db only if its MONTHLY.
  * @apiParam {String} [ctype='S_CONS'] S_CONS/S_PROD
  *
  * @apiExample {curl} Example usage:
@@ -135,20 +136,45 @@ router.get('/getUsagePoint/:apartmentId', auth.authenticate(), function(req, res
  *  http://localhost:3000/api/action
  *
  * @apiSuccessExample {json} Success-Response:
- *   [
- *     {
- *       "__v": 8,
- *       "_id": "555ef84b2fd41ffc6e078a34",
- *       "avgRating": 4.25,
- *       "description": "Disabling standby can save up to 10% in total electricity costs.",
- *       "effort": 3,
- *       "impact": 2,
- *       "date": "2015-07-01T12:04:33.599Z",
- *       "name": "Disable standby on your devices",
- *       "numRatings": 4
- *     },
- *     ...
- *   ]
+ * {
+ *    "IntervalBlock": [
+ *        {
+ *            "__v": 0,
+ *            "apartmentId": "14",
+ *            "_apartmentId": "55af508c9210ee7b13342d8e",
+ *            "type": "S_CONS",
+ *            "kind": 0,
+ *            "_id": "55b6427740e5c8de12e3aae1"
+ *        }
+ *    ],
+ *    "IntervalReadings": [
+ *        {
+ *            "__v": 0,
+ *            "_intervalBlockId": "55b6427740e5c8de12e3aae1",
+ *            "value": "5928.74046667293",
+ *            "timeslot": "F2",
+ *            "_id": "55b6427740e5c8de12e3aae5",
+ *            "timePeriod": {
+ *                "start": "2015-05-31T22:00:00.000Z",
+ *                "duration": 2592000,
+ *                "datacoverage": 597586
+ *            }
+ *        },
+ *        {
+ *            "__v": 0,
+ *            "_intervalBlockId": "55b6427740e5c8de12e3aae1",
+ *            "value": "6627.6354826726",
+ *            "timeslot": "F1",
+ *            "_id": "55b6427740e5c8de12e3aaea",
+ *            "timePeriod": {
+ *                "start": "2015-05-31T22:00:00.000Z",
+ *                "duration": 2592000,
+ *                "datacoverage": 833685
+ *            }
+ *        },
+ *        .....
+ *    ]
+}
  */
 router.get('/downloadMyData', auth.authenticate(), function(req, res) {
   req.checkBody('usagepoint').isInt();

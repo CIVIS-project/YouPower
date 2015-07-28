@@ -28,7 +28,7 @@ var IntervalReadingSchema = new Schema({
 var IntervalReading = mongoose.model('IntervalReading',IntervalReadingSchema);
 
 exports.create = function(intervalReading, intervalBlock, cb) {
-	console.log('TADA', intervalReading)
+	//console.log('TADA', intervalReading)
 	IntervalReading.create({
 		timePeriod: intervalReading.timePeriod,
 		_intervalBlockId: intervalBlock,
@@ -36,7 +36,7 @@ exports.create = function(intervalReading, intervalBlock, cb) {
 		timeslot: intervalReading.timeslot,
 	}, function(err, ir) {
 		if (err) {
-		  console.log("ERROR creating IR", err);
+		  //console.log("ERROR creating IR", err);
 		  cb(err);
 		}
 		cb(null, ir);
