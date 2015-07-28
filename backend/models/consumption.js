@@ -118,17 +118,19 @@ exports.getUsagePoint = function(apartmentId, cb) {
   });
 };
 
-exports.downloadMyData = function(usagepoint, from, to, res_type, ctype, cb) {
+var pushIR = function(ir, cb) {
+  var tempIr = {'value': ir.value, 'timeslot': ir.timeslot, 'timePeriod': ir.timePeriod};
+  cb(null, tempIr);
+};
 
-//console.log('VALUES',usagepoint,from,to,res,ctype,moment(from).format('YYYY-MM-DD'));
-  var r=request({
+exports.downloadMyData = function(usagepoint, from, to, resType, ctype, cb) {
+  request({
     url: config.civisURL + '/InterfaceWP3.svc/downloadmydata',
     qs: {
       usagepoint: usagepoint,
-      //from: moment(from).format('YYYY-MM-DD'),
       from: moment(from).format('YYYY-MM-DD'),
       to: moment(to).format('YYYY-MM-DD'),
-      res: res_type,
+      res: resType,
       type: ctype
     }
   }, function(err, res, body) {
@@ -139,26 +141,26 @@ exports.downloadMyData = function(usagepoint, from, to, res_type, ctype, cb) {
         explicitArray: false
       });
       parser.parseString(body, function(err, result) {
-        if (err) {cb(err);}
-        var tempArr = {"IntervalBlock":[], "IntervalReadings":[]};
-        //console.log(r.url);
-        console.log('RESSSS', res_type);
-        if (res_type==='MONTHLY') {
+        if (err) {
+          cb(err);
+        }
+        var tempArr = {'IntervalBlock':[], 'IntervalReadings':[]};
+        if (false) {// if commented for not saving anything in the database
           usagePoint.getUsagePoint(result.feed.UsagePoint.ApartmentID, function(err, up) {
             if (err) {
               cb(err);
             }
             if (!up) {
-              cb(null,'UsagePoint not found');
+              cb(null, 'UsagePoint not found');
             }
             //console.log('UP',up);
-            intervalBlock.create(result.feed.UsagePoint, up._id, from, to, function(err, ib){
+            intervalBlock.create(result.feed.UsagePoint, up._id, from, to, function(err, ib) {
               if (err) {
                 cb(err);
               }
               tempArr.IntervalBlock.push(ib);
-              /*async.each(result.feed.IntervalBlock.IntervalReading, function(obj, callback) {
-                intervalReading.create(obj,ib._id, function(err, ir) {
+              async.each(result.feed.IntervalBlock.IntervalReading, function(obj, callback) {
+                intervalReading.create(obj, ib._id, function(err, ir) {
                   if (err) {
                     tempArr.IntervalReadings.push(err);
                     callback();
@@ -170,13 +172,15 @@ exports.downloadMyData = function(usagepoint, from, to, res_type, ctype, cb) {
               }, function(err) {
                 if (err) {cb(err);}
                 cb(null, tempArr);
-              });*/
+              });
             });
           });
         } else {
-          //console.log('Results', JSON.stringify(result));
-          tempArr.IntervalBlock.push({"apartmentId": result.feed.UsagePoint.ApartmentID,
-            "type": result.feed.UsagePoint.Type, "kind": result.feed.UsagePoint.ServiceCategory.kind});
+          tempArr.IntervalBlock.push({
+            'apartmentId': result.feed.UsagePoint.ApartmentID,
+            'type': result.feed.UsagePoint.Type,
+            'kind': result.feed.UsagePoint.ServiceCategory.kind
+          });
           async.each(result.feed.IntervalBlock.IntervalReading, function(obj, callback) {
                 pushIR(obj, function(err, ir) {
                   if (err) {
@@ -191,15 +195,8 @@ exports.downloadMyData = function(usagepoint, from, to, res_type, ctype, cb) {
                 if (err) {cb(err);}
                 cb(null, tempArr);
               });
-        }  
+        }
       });
     }
   });
-};
-
-
-var pushIR = function(ir, cb) {
-  console.log("TTTTTTT", ir)
-  var temp_ir = {"value": ir['value'], "timeslot": ir.timeslot, "timePeriod": ir.timePeriod};
-  cb(null, temp_ir);
 };

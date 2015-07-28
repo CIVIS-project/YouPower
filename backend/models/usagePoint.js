@@ -43,15 +43,14 @@ var UsagePointSchema = new Schema({
 var UsagePoint = mongoose.model('UsagePoint', UsagePointSchema);
 
 exports.create = function(usagepoint, cb1) {
-  console.log('TAHA', usagepoint);
   UsagePoint.create({
     apartmentId: usagepoint
   }, function(err, up) {
     if (err) {
-      console.log('USAGEPOINT2Fail =', err);
+      //console.log('USAGEPOINT2Fail =', err);
       cb1 (err);
     } else {
-      console.log('USAGEPOINT2PAss =', up);
+      //console.log('USAGEPOINT2PAss =', up);
       cb1(null, up);
     }
   });

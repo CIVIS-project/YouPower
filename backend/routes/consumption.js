@@ -124,7 +124,7 @@ router.get('/getUsagePoint/:apartmentId', auth.authenticate(), function(req, res
  * @apiParam {Integer} usagepoint ApartmentID/UsagePoint
  * @apiParam {Date} from Starting Date to fetch data from
  * @apiParam {Date} to Ending Date to fetch data from
- * @apiParam {String} [res='MONTHLY'] Other types RAW/DAILY/WEEKLY/MONTHLY. Stream will be 
+ * @apiParam {String} [res='MONTHLY'] Other types RAW/DAILY/WEEKLY/MONTHLY. Stream will be
  * saved in db only if its MONTHLY.
  * @apiParam {String} [ctype='S_CONS'] S_CONS/S_PROD
  *
@@ -132,8 +132,13 @@ router.get('/getUsagePoint/:apartmentId', auth.authenticate(), function(req, res
  *  # Get API token via /api/user/token
  *  export API_TOKEN=fc35e6b2f27e0f5ef...
  *
- *  curl -i -X GET -H "Authorization: Bearer $API_TOKEN" \
- *  http://localhost:3000/api/action
+ *	curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d '{
+ * 	"usagepoint": 14,
+ * 	"from": "2015-06-01",
+ *	"to":"2015-06-06",
+ *	"type":"S_CONS",
+ *	"res":"WEEKLY
+ *	}' http://localhost:3000/api/consumption/downloadMyData
  *
  * @apiSuccessExample {json} Success-Response:
  * {
@@ -174,14 +179,19 @@ router.get('/getUsagePoint/:apartmentId', auth.authenticate(), function(req, res
  *        },
  *        .....
  *    ]
-}
  */
 router.get('/downloadMyData', auth.authenticate(), function(req, res) {
   req.checkBody('usagepoint').isInt();
   req.checkBody('from').isDate();
   req.checkBody('to').isDate();
-  console.log(req.body);
-  Consumption.downloadMyData(req.body.usagepoint, req.body.from, req.body.to, req.body.res || 'MONTHLY', req.body.ctype || 'S_CONS', res.successRes);
+  Consumption.downloadMyData(
+	req.body.usagepoint,
+	req.body.from,
+	req.body.to,
+	req.body.res || 'MONTHLY',
+	req.body.ctype || 'S_CONS',
+	res.successRes
+  );
 });
 
 module.exports = router;

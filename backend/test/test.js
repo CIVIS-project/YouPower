@@ -1732,13 +1732,13 @@ describe('models', function() {
     });
   });
 
-  describe('UsagePoint', function() {
+  /*describe('UsagePoint', function() {
     var dbUsagePoints = [];
 
     beforeEach(function(done) {
       resetModel('consumption', function(err, UsagePoint) {
         dbUsagePoints = UsagePoint;
-        console.log('VEFORE EACH USAGE POINTS', dbUsagePoints);
+        //console.log('VEFORE EACH USAGE POINTS', dbUsagePoints);
         done(err);
       });
     });
@@ -1754,5 +1754,5 @@ describe('models', function() {
       });
     });
 
-  });
+  });*/
 });
