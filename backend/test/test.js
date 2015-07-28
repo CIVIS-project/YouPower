@@ -1619,28 +1619,4 @@ describe('models', function() {
       });
     });
   });
-
-  /*describe('UsagePoint', function() {
-    var dbUsagePoints = [];
-
-    beforeEach(function(done) {
-      resetModel('consumption', function(err, UsagePoint) {
-        dbUsagePoints = UsagePoint;
-        //console.log('VEFORE EACH USAGE POINTS', dbUsagePoints);
-        done(err);
-      });
-    });
-
-    it('should create a new UsagePoint', function(done) {
-      var d = dummyData.consumption[0];
-      models.consumption.create(d, function(err) {
-        if (err) {
-          done(err);
-        } else {
-          done(null, 'Dupilcate upsagepoint not created');
-        }
-      });
-    });
-
-  });*/
 });
