@@ -10,6 +10,7 @@ var BearerStrategy = require('passport-http-bearer');
 var BasicStrategy = require('passport-http').BasicStrategy;
 var FacebookStrategy = require('passport-facebook');
 var User = require('../models').users;
+//var FB = require('fb');
 
 exports.genToken = function(cb) {
   crypto.randomBytes(48, function(ex, buf) {
@@ -54,16 +55,21 @@ exports.initialize = function() {
     clientID: process.env.FACEBOOK_APP_ID,
     clientSecret: process.env.FACEBOOK_APP_SECRET,
     callbackURL: 'http://localhost:3000/api/auth/facebook/callback',
+    profileFields: ['id', 'displayName', 'gender', 'email', 'birthday'],
     enableProof: false
   },
   function(accessToken, refreshToken, profile, done) {
     //console.log("profile",profile);
-    //console.log("profile",profile);
+    //console.log("accessToken",accessToken);
     process.nextTick(function() {
-      User.find({facebookId: profile.id}, false, null, null, function(err, user) {
+      User.find({email: profile._json.email}, false, null, null, function(err, user) {
+        //console.log('user',user);
         if (err) {
           return done(err);
         } else if (user) {
+          user.accessToken = accessToken;
+          user.markModified('accessToken');
+          user.save();
           return done(err, user);
         } else {
           // TODO: refactor this mess
@@ -76,9 +82,11 @@ exports.initialize = function() {
                   email: profile.emails[0].value,
                   //email: mongoose.Types.ObjectId(),
                   facebookId: profile.id,
+                  accessToken:accessToken,
                   profile: {
                   name: profile.displayName,
-                  gender: profile.gender
+                  gender: profile.gender,
+                  dob: profile._json.birthday
                 }
                 }, password, function(err, user) {
                   if (err) {
@@ -99,7 +107,8 @@ exports.initialize = function() {
     passport.use('facebook-authz', new FacebookStrategy({
       clientID: process.env.FACEBOOK_APP_ID,
       clientSecret: process.env.FACEBOOK_APP_SECRET,
-      callbackURL: 'http://localhost:3000/api/auth/facebook/callbackfb'
+      callbackURL: 'http://localhost:3000/api/auth/facebook/callbackfb',
+      profileFields: ['id', 'displayName', 'gender', 'email', 'birthday']
     },
     function(accessToken, refreshToken, profile, done) {
       var tk = 'token come here';
@@ -110,10 +119,12 @@ exports.initialize = function() {
           return done(err, 'The given user does not exist');
         } else {
           user.facebookId  = profile.id;
+          user.accessToken  = accessToken;
           user.profile.gender   = profile.gender;
 
           user.markModified('profile.gender');
           user.markModified('facebookId');
+          user.markModified('accessToken');
           user.save();
           //console.log("USERUPDATED",user);
           return done(null, 'Facebook account successfully connected');
@@ -126,6 +137,29 @@ exports.initialize = function() {
 
   return passport.initialize();
 };
+
+/*FB.setAccessToken('CAAUWthYSwZCIBAIfyx2zAO1MiIw4CjuPZC
+XkZBYoGy5TF5UkfdRSwJb7AEHGPNBTn9PozGqwMQlUgLc2koI172Tlg
+qgE4ZA3na2vb1UUZCugkI09Jswp1BgrTRw4W169Q50
+zeRwifOjlDkL0NjgwFTFXHfvG8Q7llTJcvNXScM8ox8kPJI
+vCDpScoXMScrhnWC6xVd8e8RzcoJnDSrhylqOWggeHZBJvsZD');
+FB.api('4', function (res) {
+  if(!res || res.error) {
+   console.log(!res ? 'error occurred' : res.error);
+   return;
+  }
+  console.log(res.id);
+  console.log(res.name);
+});
+
+var body = 'My first post using facebook-node-sdk';
+FB.api('me/feed', 'post', { message: body}, function (res) {
+  if(!res || res.error) {
+    console.log(!res ? 'error occurred' : res.error);
+    return;
+  }
+  console.log('Post Id: ' + res.id);
+});*/
 
 exports.basicauth = function() {
   return passport.authenticate('basic', {session: false});

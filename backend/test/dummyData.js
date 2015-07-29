@@ -245,3 +245,63 @@ exports.logs = [
     date: new Date(43)
   }
 ];
+
+exports.usagepoints = [
+  {
+    _id: newId(),
+    apartmentId: '1'
+  },
+  {
+    _id: newId(),
+    apartmentId: '2'
+  },
+  {
+    _id: newId(),
+    apartmentId: '3'
+  }
+];
+
+exports.consumption = [
+  {
+    ApartmentID:'1',
+    sensors: {
+      sensor: [
+        {
+          sensorNumber:'0',
+          sensorType:'0',
+          measureUnit:'Wh',
+          label:'Consumo Elettrico',
+          lastSampleTimestamp:'2015-07-10T17:42:11+02:00'
+        },
+        {
+          sensorNumber:'1',
+          sensorType:'1',
+          measureUnit:'Wh',
+          label:'Freezer',
+          lastSampleTimestamp:'2015-07-10T17:45:23+02:00'
+        }
+      ]
+    }
+  },
+  {
+    ApartmentID:'2',
+    sensors: {
+      sensor: [
+        {
+          sensorNumber:'5',
+          sensorType:'0',
+          measureUnit:'Wh',
+          label:'Consumo Elettrico',
+          lastSampleTimestamp:'2015-07-10T17:42:11+02:00'
+        },
+        {
+          sensorNumber:'6',
+          sensorType:'1',
+          measureUnit:'Wh',
+          label:'Freezer',
+          lastSampleTimestamp:'2015-07-10T17:45:23+02:00'
+        }
+      ]
+    }
+  }
+];

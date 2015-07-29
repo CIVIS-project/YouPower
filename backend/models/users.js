@@ -12,6 +12,7 @@ var _ = require('underscore');
 var UserSchema = new Schema({
   token: String,
   facebookId: String,
+  accessToken: String,
   profile: {
     name: String,
     dob: Date,
@@ -101,6 +102,8 @@ exports.getProfile = function(id, cb) {
       email: user.email,
       profile: user.profile,
       actions: user.actions,
+      accessToken: user.accessToken,
+      facebookId: user.facebookId,
       energyConsumption: {}, // TODO
       topActions: [], // TODO
       topCommunities: [], // TODO
