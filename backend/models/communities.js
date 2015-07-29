@@ -16,20 +16,6 @@ var CommunitySchema = new Schema({
     required: true,
     unique: true
   },
-  //refer challenge schema
-  challenges: [
-    {
-      id: {
-        type: Schema.Types.ObjectId,
-        ref: 'Challenge',
-        required: true
-      },
-      name: {
-        type: String,
-        required: true
-      }
-    }
-  ],
   // refer user schema
   members: [
     {
@@ -75,7 +61,6 @@ var includeRatingStats = function(community) {
 exports.create = function(community, cb) {
   Community.create({
     name: community.name,
-    challenges: community.challenges,
     members: community.members,
     ratings: community.ratings,
     date: new Date(),

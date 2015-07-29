@@ -4,11 +4,11 @@ This is the backend of the YouPower app.
 
 ## Setup
 
-First set up nodejs, npm and mongodb on your local machine. Also install
+First set up `nodejs`, `npm` and `mongodb` on your local machine. Also install
 `graphicsmagick` on your machine. (needed for resizing profile pictures).
 
 If you're on Debian or Ubuntu, here's a hack to put nodejs into the same
-path that almost everyone else uses:
+path as other distros:
 ```
 sudo ln -s /usr/bin/nodejs /usr/bin/node
 ```
@@ -39,7 +39,8 @@ the moment) and will be available at: https://gentle-coast-9691.herokuapp.com/
 ## File structure
 ```
 ├──  apidoc/        - generated documentation for REST API, do not edit directly
-├──  middleware/    - misc express.js middleware
+├──  common/        - common code that is useful in multiple places
+├──  middleware/    - express.js middleware
 ├──  models/        - database models
 ├──  routes/        - express.js API routes
 ├──  test/          - unit tests
@@ -78,5 +79,14 @@ by setting the `MONGO_URL` environment variable as such:
 
     MONGO_URL=mongodb://somewhere.else.com/youpower node metricsViewer.js
 
-## TODO:
-- OAuth 2.0 instead of HTTP basic auth (eg. OAuth2orize)
+## Inserting default data into the database
+When first launching the application it is pretty useless, since the database
+is initially empty. In order to get started, populate it with some default
+actions and communities using the `putDummyData.js` script.
+
+Run it as
+
+    node putDummyData.js
+
+Just like the `metricsViewer.js` script, you can supply a custom MONGO_URL to
+fill another database than the local one.
