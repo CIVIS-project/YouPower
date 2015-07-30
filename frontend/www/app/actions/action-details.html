@@ -1,4 +1,7 @@
-<ion-view view-title="{{actionsType}} Actions ({{_.size(actionsByType())}})">
+<ion-view>
+  <ion-nav-title>
+    <span class="capitalize">{{actionsType}} Actions ({{_.size(actionsByType())}})</span>
+</ion-nav-title>
 <ion-content>
 <ion-slide-box active-slide="slideIdx" does-continue="false" show-pager="false">
 <ion-slide ng-repeat="action in actionsByType() track by $index">
@@ -17,7 +20,7 @@
   </div>
 </div>
 
-<div class="list card" ng-if="actionsType == 'Active'">
+<div class="list card" ng-if="actionsType == 'active'">
   <div class="item item-divider item-text-wrap">
     {{salut()}} How are you doing?
    <!--  <i class="icon ion-ios-chatbubble-outline balanced" style="font-size:35px;"></i> -->

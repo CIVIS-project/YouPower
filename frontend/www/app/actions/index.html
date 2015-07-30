@@ -3,7 +3,7 @@
 
 <div class="list card">
   <div class="item item-divider">Current Actions ({{_.size(currentUser.actions.inProgress)}})</div>
-  <a class="item item-icon-left item-icon-right" ng-repeat="action in currentUser.actions.inProgress" ng-href="#/app/actions/Active/{{$index}}">
+  <a class="item item-icon-left item-icon-right" ng-repeat="action in currentUser.actions.inProgress" ng-href="#/app/actions/active/{{$index}}">
     <i class="icon ion-leaf balanced"></i>
     <span class="leafs balanced">
       {{action.effort + action.impact }}

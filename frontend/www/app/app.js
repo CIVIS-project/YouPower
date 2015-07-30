@@ -106,7 +106,7 @@ angular.module('civis.youpower', [
 
 
   .state('main.actions.action', {
-    url: '/suggestion/:id',
+    url: '/suggested/:id',
     views: {
       'tab-actions': {
         templateUrl: 'app/actions/action.html',

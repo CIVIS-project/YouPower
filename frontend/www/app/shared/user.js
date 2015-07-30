@@ -50,10 +50,11 @@ angular.module('civis.youpower')
 
   /* Use this for real data
    ----------------------------------------------*/
-  return $resource(HOST + '/api/user/profile',{
-    'startAction': {
+  return $resource(HOST + '/api/user/profile', {}, {
+    startAction : {
       method: 'POST',
-      url: HOST + '/api/user/action/:id'
+      // params: {actionId: '@_id', state: '@state', postponed: '@postponed'},
+      url: HOST + '/api/user/action/:actionId'
     }
   });
 });

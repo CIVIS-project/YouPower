@@ -10,7 +10,7 @@ function ActionsListCtrl($scope, $state, $stateParams, Actions) {
   $scope.actionsType = $stateParams.type;
 
   $scope.actionsByType = function(){
-    if ($stateParams.type == 'Active') {
+    if ($stateParams.type == 'active') {
       return $scope.currentUser.actions.inProgress;
     }
     if ($stateParams.type == 'Done') {

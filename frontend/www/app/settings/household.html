@@ -2,18 +2,55 @@
   <ion-content>
 
 <div class="list card">
-  <div class="item item-divider">About the You</div>
-  <div class="item item-input">
-    <span class="input-label">Username</span>
-    {{person.username}}
+    <label class="item item-input">
+      <span class="input-label" translate>Address</span>
+      <input type="text" ng-model="currentUser.profile.name" placeholder="Name">
+    </label>
+    <label class="item item-input" >
+      <span class="input-label" translate>Nickname</span>
+      <input type="text" ng-model="currentUser.profile.nickname" placeholder="Nickname">
+    </label>
+    <label class="item item-input item-select">
+      <span class="input-label" translate>Gender</span>
+      <select ng-model="currentUser.profile.gender">
+        <option></option>
+        <option value=0 translate>Male</option>
+        <option value=1 translate>Female</option>
+      </select>
+    </label>
+    <!-- shall do auto-save -->
+  <!-- <div class="button-bar">
+    <a href="#" class="button button-balanced" translate>Cancel</a>
+    <a href="#" class="button button-balanced" ng-click="save()" translate>Save</a>
+  </div> -->
   </div>
-  <div class="item item-input" ng-repeat="data in getPersonData()" ng-show="data.show">
-    <span class="input-label">{{data.label}}</span>
-    {{data.value}}
-  </div>
-  <a href="#" class="item item-divider item-icon-left" ng-show="person.moreData">
-    <i class="icon ion-social-snapchat-outline"></i>
-    Change about you
+
+
+<div class="list card">
+  <div class="item item-divider">Household Composition</div>
+  <a class="item item-input">
+    <span class="input-label">Adults</span>
+    2
+  </a>
+  <a class="item item-input">
+    <span class="input-label">Children</span>
+    3
+  </a>
+</div>
+
+<div class="list card">
+  <div class="item item-divider">Major Appliances List</div>
+  <a class="item item-input">
+    <span class="input-label">Adults</span>
+    2
+  </a>
+  <a class="item item-input">
+    <span class="input-label">Children</span>
+    3
+  </a>
+  <a href="#/tab/household-profile" class="item item-divider item-icon-left">
+    <i class="icon ion-android-add"></i>
+    Add more
   </a>
 </div>
 

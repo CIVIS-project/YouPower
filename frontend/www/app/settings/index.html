@@ -1,79 +1,31 @@
 <ion-view view-title={{"Settings"|translate}}>
-  <ion-content>
-    <!-- <ion-list>
-    <ion-toggle  ng-model="settings.enableFriends">
-        Enable Friends
-    </ion-toggle>
-    <li class="item item-checkbox">
-	     <label class="checkbox">
-	       <input type="checkbox">
-	     </label>
-	     Flux Capacitor
-	  </li>
-	  <ion-checkbox ng-model="isChecked">Checkbox Label</ion-checkbox>
-    </ion-list> -->
+<ion-content>
+
 <div class="list card">
-  <div class="item item-divider" translate>About_You</div>
-  <div class="item item-input">
-    <span class="input-label" translate>Username</span>
-    {{person.username}}
-  </div>
-  <div class="item item-input" ng-repeat="entry in personDataView">
-    <span class="input-label" translate>{{entry.label}}</span> <i translate>{{entry.value}}</i>
-  </div>
-  <a href="#/tab/personal-profile" class="item item-divider item-icon-left">
-    <i class="icon ion-social-snapchat-outline"></i>
-    Edit <i ng-show="person.isDataComplete">your profile</i> <i ng-show="!person.isDataComplete">or add more about you</i>
+<div class="item item-divider">Energy Data Account</div>
+  
+  <a href="#" class="item item-divider item-icon-left">
+    <i class="icon ion-android-add"></i>
+    Link Data Account
   </a>
 </div>
 
 <div class="list card">
-  <div class="item item-divider">About Your Household</div>
-  <a class="item item-input">
-    <span class="input-label">Address</span>
-    Brinellvägen 8, 114 28 Stockholm
-  </a>
-  <a class="item item-input">
-    <span class="input-label">Home Size/Type</span>
-    98 sq.m. apartment
-  </a>
-  <a class="item  item-input">
-    <span class="input-label">Composition</span>
-    2 adults 2 children
-  </a>
-  <a class="item item-input">
-    <span class="input-label">Energy Data</span>
-    Linked about 2 months ago
-  </a>
-  <a href="#/tab/household-profile" class="item item-divider item-icon-left">
-    <i class="icon ion-ios-home-outline"></i>
-    Edit or add more about your household
-  </a>
+  <div class="item item-divider">App Preferences</div>
+  <label class="item item-input item-select">
+    <span class="input-label" translate>Language</span>
+    <select ng-model="currentUser.language" ng-change="save()">
+      <option value=0 translate>English</option>
+      <option value=1 translate>Italian</option>
+    </select>
+  </label>
+  <ion-toggle ng-model="currentUser.profile.reminder" toggle-class="toggle-calm">Reminder</ion-toggle>
+  <!-- shall do auto-save -->
+  <!-- <div class="button-bar">
+    <a href="#" class="button button-balanced" translate>Cancel</a>
+    <a href="#" class="button button-balanced" ng-click="save()" translate>Save</a>
+  </div> -->
 </div>
 
-<div class="list card">
-  <div class="item item-divider">Preferences</div>
-  <a class="item item-input">
-    <span class="input-label">Tip Categories</span>
-    kitchen, heating, appliances
-  </a>
-  <a class="item item-input">
-    <span class="input-label"># of tips</span>
-    3
-  </a>
-  <a class="item item-input">
-    <span class="input-label"># of challenges</span>
-    3
-  </a>
-  <a class="item item-input">
-    <span class="input-label">Reminder</span>
-    Once a day
-  </a>
-  <a href="#/tab/preferences" class="item item-divider item-icon-left">
-    <i class="icon ion-ios-lightbulb-outline"></i>
-    Edit or add more Preferences
-  </a>
-</div>
-
-  </ion-content>
+</ion-content>
 </ion-view>

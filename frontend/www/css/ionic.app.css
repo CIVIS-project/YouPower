@@ -7681,6 +7681,9 @@ a.button {
   -webkit-border-radius: 30px;
   border-radius: 30px; }
 
+.capitalize {
+  text-transform: capitalize; }
+
 table {
   border-collapse: collapse;
   border-spacing: 0; }

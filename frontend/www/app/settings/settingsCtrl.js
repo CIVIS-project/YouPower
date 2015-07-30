@@ -34,7 +34,7 @@ function SettingsCtrl($scope, $filter, $translate, PersonalProfile) {
 	};
 
 	$scope.save = function () {
-		if ($scope.person.language == 1){
+		if ($scope.currentUser.language == 1){
 			$translate.use("it");
 		}else $translate.use("en");
 	};

@@ -1,7 +1,7 @@
 
 angular.module('civis.youpower.actions').controller('ActionCtrl', ActionCtrl);
 
-function ActionCtrl($scope, $stateParams, $state, Actions, User) {
+function ActionCtrl($scope, $stateParams, $state, User) {
 
   if ($scope.$parent.idx > -1){
      $scope.action = $scope.$parent.suggestedActions[$scope.$parent.idx];
@@ -14,14 +14,17 @@ function ActionCtrl($scope, $stateParams, $state, Actions, User) {
 
 
 
-  // $scope.addAction = function(){
-  //   User.startAction({actionId: $scope.action._id, state:'done'}).then(function(){
-  //     // We do this so we don't need to refresh the whole user every time.
-  //     if(!$scope.currentUser.actions.inProgress) $scope.currentUser.actions.inProgress = [];
-  //     $scope.currentUser.actions.inProgress.push($scope.action);
-  //     $state.go('main.actions.index');
-  //   });
-  // };
+  $scope.addAction = function(){
+    User.startAction({actionId: $scope.action._id, state:'inProgress'}, {});
+    $state.go('main.actions.yours');
+
+    // .$promise.then(function(){
+    //   // We do this so we don't need to refresh the whole user every time.
+    //   if(!$scope.currentUser.actions.inProgress) $scope.currentUser.actions.inProgress = [];
+    //   $scope.currentUser.actions.inProgress.push($scope.action);
+      
+    // });
+  };
 
   // $scope.skipAction = function(reason){
   //   // TODO: not implemented on backend
