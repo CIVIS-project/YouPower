@@ -246,12 +246,23 @@ describe('models', function() {
       });
     });
 
-    it('should find actions by search', function(done) {
+    it('should find actions by name or tag', function(done) {
       models.actions.search('dummy name', function(err, actions) {
         // manually search dummy challenges for same string
         var d = [];
         _.each(dummyData.actions, function(action) {
           if (action.name.indexOf('dummy name') === 0) {
+            d.push(action);
+          }
+        });
+        actions.length.should.equal(d.length);
+        done(err);
+      });
+      models.actions.search('daily', function(err, actions) {
+        // manually search dummy challenges for same string
+        var d = [];
+        _.each(dummyData.actions, function(action) {
+          if (action.name.indexOf('daily') === 0) {
             d.push(action);
           }
         });
