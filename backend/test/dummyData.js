@@ -55,7 +55,7 @@ exports.actions = [
   {
     _id: newId(),
     name: 'dummy name',
-    category: 'repeating',
+    tag: 'daily',
     activation: {
       configurable: true,
       repeat: 42,
@@ -70,7 +70,7 @@ exports.actions = [
   {
     _id: newId(),
     name: 'dummy name 2',
-    category: 'oneshot',
+    tag: 'repeating',
     activation: {
       configurable: false
     },

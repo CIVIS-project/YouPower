@@ -52,6 +52,26 @@ db.once('open', function() {
         }, function(err) {
           cb(err);
         });
+      }, function(cb) {
+        // actions
+        async.eachSeries(defaults.communities, function(community, eachCb) {
+          community.authorId = defaultUserId;
+          createIfNotExist('communities', 'name', community, function(err) {
+            eachCb(err);
+          });
+        }, function(err) {
+          cb(err);
+        });
+      }, function(cb) {
+        // actions
+        async.eachSeries(defaults.households, function(household, eachCb) {
+          household.authorId = defaultUserId;
+          createIfNotExist('households', 'name', household, function(err) {
+            eachCb(err);
+          });
+        }, function(err) {
+          cb(err);
+        });
       }
   ], function(err) {
     if (err) {

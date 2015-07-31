@@ -13,10 +13,10 @@ var ActionSchema = new Schema({
     required: true,
     unique: true
   },
-  category: {
+  tag: {
     type: String,
-    enum: 'oneshot reminder continuous repeating'.split(' '),
-    default: 'oneshot'
+    enum: 'daily onetime high-effort repeating'.split(' '),
+    default: 'daily'
   },
   activation: {
     configurable: {
@@ -74,7 +74,7 @@ var includeRatingStats = function(action) {
 exports.create = function(action, cb) {
   Action.create({
     name: action.name,
-    category: action.category,
+    tag: action.tag,
     activation: action.activation,
     description: action.description,
     ratings: action.ratings || {},
@@ -181,11 +181,11 @@ exports.getSuggested = function(userActions, cb) {
   .exec(cb);
 };
 
-//Search action by name
+//Search action by name and tag attached to name
 exports.search = function(aname, cb) {
-  Action.find({
-    name : new RegExp('^' + escapeStringRegexp(aname), 'i')
-  }, function(err, actions) {
+  Action.find ({$or:[{'name': new RegExp('^' + escapeStringRegexp(aname), 'i')},
+  {'tag' : new RegExp('^' + escapeStringRegexp(aname), 'i')}]},
+   function(err, actions) {
     /* istanbul ignore if: db errors are hard to unit test */
     if (err) {
       cb(err);
