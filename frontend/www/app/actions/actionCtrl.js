@@ -15,15 +15,18 @@ function ActionCtrl($scope, $stateParams, $state, User) {
 
 
   $scope.addAction = function(){
-    User.startAction({actionId: $scope.action._id, state:'inProgress'}, {});
-    $state.go('main.actions.yours');
+    User.startAction({actionId: $scope.action._id}, {state:'inProgress'});
+    
 
-    // .$promise.then(function(){
+    // .then(function(){
     //   // We do this so we don't need to refresh the whole user every time.
     //   if(!$scope.currentUser.actions.inProgress) $scope.currentUser.actions.inProgress = [];
     //   $scope.currentUser.actions.inProgress.push($scope.action);
       
     // });
+
+    $state.go('main.actions.yours');
+    
   };
 
   // $scope.skipAction = function(reason){
