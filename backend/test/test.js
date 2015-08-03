@@ -246,7 +246,7 @@ describe('models', function() {
       });
     });
 
-    it('should find actions by name or tag', function(done) {
+    it('should find actions by name', function(done) {
       models.actions.search('dummy name', function(err, actions) {
         // manually search dummy challenges for same string
         var d = [];
@@ -258,11 +258,13 @@ describe('models', function() {
         actions.length.should.equal(d.length);
         done(err);
       });
+    });
+    it('should find actions by tag', function(done) {
       models.actions.search('daily', function(err, actions) {
         // manually search dummy challenges for same string
         var d = [];
         _.each(dummyData.actions, function(action) {
-          if (action.name.indexOf('daily') === 0) {
+          if (action.tag === 'daily') {
             d.push(action);
           }
         });
