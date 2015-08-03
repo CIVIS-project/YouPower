@@ -81,7 +81,19 @@ exports.achievementList = {
     name: 'Completionist',
     description: 'Unlock %d % of all YouPower achievements',
     goals: [25, 50, 75, 90]
-  }
+  },
+
+  joinedHousehold: {
+    name: 'Household',
+    description: 'Be part of a household to track your energy and save with your family!',
+    goals: [1]
+  },
+
+  energyData: {
+    name: 'Energy tracker',
+    description: 'Connect household with an energy data provider to track your energy',
+    goals: [1]
+  },
 };
 
 exports.getStats = function(user) {
