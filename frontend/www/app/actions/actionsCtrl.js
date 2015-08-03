@@ -17,5 +17,16 @@ function ActionsCtrl($scope,Actions) {
 
 	});
 
+	$scope.getActionPoints = function(action){
+		// return (action.effort + action.impact)*10; 
+		return action.effort + action.impact; 
+	}
+
+
+	$scope.getFormBonus=function(action){
+		var bonus = Math.round($scope.getActionPoints(action)/5);
+		return bonus < 1 ? 1 : bonus; 
+	};
+
 };
 

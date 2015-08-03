@@ -51,10 +51,13 @@ angular.module('civis.youpower')
   /* Use this for real data
    ----------------------------------------------*/
   return $resource(HOST + '/api/user/profile', {}, {
-    startAction : {
-      method: 'POST',
-      // params: {actionId: '@_id', state: '@state', postponed: '@postponed'},
+    actionState : {
+      method: 'POST', 
       url: HOST + '/api/user/action/:actionId'
+    },
+    rateAction : {
+      method: 'PUT', 
+      url: HOST + '/api/action/rate/:actionId'
     }
   });
 });

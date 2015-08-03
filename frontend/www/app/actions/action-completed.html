@@ -1,42 +1,30 @@
 <ion-view view-title="Action Completed">
-<ion-content "padding">
-
-<div from="actions action" provider="firebase" where="action.id=actionId" loaded="setBonus(action.points)">
+<ion-content class="padding">
 
 <div class="list card">
-  <div class="item item-divider item-icon-left item-text-wrap">
-    <i class="icon ion-happy-outline balanced"></i>
-    Congratulations!
-  </div>
   <div class="item item-text-wrap">
-    You will earn <b class="balanced text-large"><i class="icon ion-leaf icon-large balanced"></i> {{action.points}}</b> for the action: {{action.title}}<br/>
-    You can earn <b class="balanced text-large"><i class="icon ion-leaf icon-large balanced"></i> {{bonus}} more</b> by filling the form below. We love to hear your feedback.
+    Congratulations! You will earn <b class="balanced text-large"><i class="icon ion-leaf icon-large balanced"></i> {{getActionPoints(currentAction)}}</b> for the action: {{currentAction.name}}<br/>
+    You can earn <b class="balanced text-large"><i class="icon ion-leaf icon-large balanced"></i> {{getFormBonus(currentAction)}} extra</b> by filling the feedback form. We'd love to hear your opition.
   </div>
 </div>
 
-<div from="action.feedback feedback" where="feedback.userId = user.id" auto-update="true" default="{userId: user.id, date:Date.now(), completed:true}" auto-insert="true" loaded="feedback.date=Date.now()">
 <div class="list card">
   <div class="item item-divider item-icon-left item-text-wrap">
-    <i class="icon ion-android-bulb balanced"></i>
+  <i class="icon ion-android-bulb positive"></i>
     Feedback Form
   </div>
   <div class="item item-text-wrap">
-    Please rate the level of effort for this action from 1 (very low) to 5 (very high):
-    <!-- <hr> -->
-    <table>
-      <tr>
-        <td><b>Effort</b> </td>
-        <td><rating data-value="feedback.effort" ng-model="data.rating" max="data.max" ></rating></td>
-      </tr>
-    </table>
-    </div>
-    <div class="item item-text-wrap">
-      What are your comments or tips to other users in performing this action?
-      <label class="item item-input">
-        <textarea data-value="feedback.comments" placeholder="Give your comments here."></textarea>
-      </label>
-    </div>
-    <div class="item item-text-wrap">
+    Please rate the level of <b>effort</b> for this action from 1 (very low) to 5 (very high):
+    <hr> 
+    <rating class="text-center" ng-model="data.rating" max="data.max" ></rating>
+  </div>
+  <div class="item item-text-wrap">
+    What are your comments or tips to other users in performing this action?
+    <label class="item item-input">
+      <textarea data-value="feedback.comment" placeholder="Give your comments here."></textarea>
+    </label>
+  </div>
+    <!-- <div class="item item-text-wrap">
       Do you have any tips regarding energy-efficiency or load-shifting?
       <label class="item item-input">
         <textarea data-value="feedback.tips" placeholder="Give your tips here."></textarea>
@@ -47,15 +35,15 @@
       <label class="item item-input">
         <textarea data-value="feedback.sugguestions" placeholder="Give your suggestions here."></textarea>
       </label>
-    </div>
+    </div> -->
   </div>
-  
-    <a style="width:50%" class="button button-balanced" remove-from="action.feedback" ng-click="remove(feedback);goBack()">Cancel</a><a class="button button-balanced" style="width:50%" remove-from="user.actionsActive" from="user.actionsActive act" where="act.id=action.id" insert-into="user.actionsDone" loaded="_act={id:action.id, dateStarted:act.date, dateCompleted:Date.now()}" data-click="setPoints(user.points + action.points + (feedback.effort > 0 ? bonus : 0)); remove(act); insert(_act); completed(user)"> Done </a>
 
-    <!--  -->
-    <!-- user.points=user.points+bonus;  -->
-
+  <div class="button-bar">
+    <a class="button button-dark">Cancel</a>
+    <a class="button button-dark">Done</a>
   </div>
-  </div> 
+  <!-- 
+  <a style="width:50%" class="button button-balanced" remove-from="action.feedback" ng-click="remove(feedback);goBack()">Cancel</a><a class="button button-balanced" style="width:50%" remove-from="user.actionsActive" from="user.actionsActive act" where="act.id=action.id" insert-into="user.actionsDone" loaded="_act={id:action.id, dateStarted:act.date, dateCompleted:Date.now()}" data-click="setPoints(user.points + action.points + (feedback.effort > 0 ? bonus : 0)); remove(act); insert(_act); completed(user)"> Done </a> -->
+
 </ion-content>
 </ion-view>

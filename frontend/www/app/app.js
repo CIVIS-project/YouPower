@@ -135,6 +135,28 @@ angular.module('civis.youpower', [
 
 
 
+.state('main.actions.completed', {
+  url: '/:id/completed',
+  views: {
+    'tab-actions': {
+      templateUrl: 'app/actions/action-completed.html',
+      controller: 'FormsCtrl'
+    }
+  }
+})
+
+.state('main.actions.abandoned', {
+  url: '/:id/abandoned',
+  views: {
+    'tab-actions': {
+      templateUrl: 'app/actions/action-abandoned.html',
+      controller: 'FormsCtrl'
+    }
+  }
+})
+
+///////
+
 .state('main.actions.household', {
   url: '/household',
   views: {
@@ -164,26 +186,6 @@ angular.module('civis.youpower', [
 
 
 
-
-    // .state('main.actions.completed', {
-    //   url: '/:id/completed',
-    //   views: {
-    //     'menuContent': {
-    //       templateUrl: 'app/actions/action-completed.html',
-    //       controller: 'FormsCtrl'
-    //     }
-    //   }
-    // })
-
-    // .state('main.actions.abandoned', {
-    //   url: '/:id/abandoned',
-    //   views: {
-    //     'menuContent': {
-    //       templateUrl: 'app/actions/action-abandoned.html',
-    //       controller: 'FormsCtrl'
-    //     }
-    //   }
-    // })
 
 .state('main.prosumption', {
   url: '/prosumption',

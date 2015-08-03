@@ -8,17 +8,13 @@ function FormsCtrl($scope, $timeout, $state, $stateParams, $ionicHistory, $fireb
 
 	$scope.actionId = $stateParams.id;
 
-	$scope._act;
+	$scope.currentAction = $scope.currentUser.actions.inProgress[$stateParams.id];
 
-	$scope.bonus;
+	console.log($scope.currentAction);
 
+	$scope._act; 
 
-	$scope.setBonus=function(points){
-		$scope.bonus=Math.round(points/5);
-	};
-
-	//ionic rating
-	$scope.rating = 4;
+	//ionic rating 
 	$scope.data = {
 		rating : 0,
 		max: 5

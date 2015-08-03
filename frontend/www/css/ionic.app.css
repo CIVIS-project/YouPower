@@ -7681,6 +7681,9 @@ a.button {
   -webkit-border-radius: 30px;
   border-radius: 30px; }
 
+h1 {
+  font-size: 1.5em; }
+
 .capitalize {
   text-transform: capitalize; }
 

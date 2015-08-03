@@ -6,7 +6,7 @@
   <a class="item item-icon-left item-icon-right" ng-repeat="action in currentUser.actions.inProgress" ng-href="#/app/actions/active/{{$index}}">
     <i class="icon ion-leaf balanced"></i>
     <span class="leafs balanced">
-      {{action.effort + action.impact }}
+      {{getActionPoints(action)}}
     </span>{{action.name}}
     <i class="icon ion-chevron-right icon-accessory"></i>
   </a>
@@ -36,7 +36,7 @@
   </a>
 </div>
 
-<button class="button icon-left button-full button-balanced" ng-click="nextTip()">
+<button class="button icon-left button-full button-dark" ng-click="nextTip()">
   <i class="icon ion-android-add"></i>
   Add actions
 </button>
