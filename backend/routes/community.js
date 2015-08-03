@@ -7,6 +7,7 @@ var path = require('path');
 var common = require('./common');
 var router = express.Router();
 var Community = require('../models').communities;
+var User = require('../models').users;
 var CommunityComment = require('../models').communityComments;
 var Log = require('../models').logs;
 
@@ -302,7 +303,6 @@ router.get('/:id', auth.authenticate(), function(req, res) {
     });
   }
 });
-
 
 /**
  * @api {get} /community/list List all of user's communities
