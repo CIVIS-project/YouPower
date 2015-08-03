@@ -38,7 +38,12 @@ var CommunitySchema = new Schema({
       type: Schema.Types.ObjectId,
       ref: 'User',
       required: true
-    }]
+    }],
+  privacy: {
+     type:String,
+     enum:['Open' , 'Closed'],
+     default : 'Open'
+   }
 });
 var Community = mongoose.model('Community', CommunitySchema);
 
@@ -64,7 +69,8 @@ exports.create = function(community, cb) {
     members: community.members,
     ratings: community.ratings,
     date: new Date(),
-    ownerId: community.ownerId
+    ownerId: community.ownerId,
+    privacy:community.privacy
   }, cb);
 };
 
@@ -85,8 +91,19 @@ exports.get = function(id, cb) {
   });
 };
 
-//add member to the Community
+exports.getUserCommunities = function(id, cb) {
+  Community
+  .find({'members': {$in : [id]}, 'privacy': 'Open'})
+  .exec(function(err, communities) {
+      if (err) {
+        cb(err);
+      } else {
+        cb(null, communities);
+      }
+    });
+};
 
+//add member to the Community
 exports.addMember = function(id, userId, cb) {
   Community.findById({
     _id: id
