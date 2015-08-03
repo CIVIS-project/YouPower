@@ -486,6 +486,11 @@ describe('models', function() {
   describe('user', function() {
     var dbUsers = [];
 
+    // clear db before starting
+    before(function() {
+      conn.connection.db.dropDatabase();
+    });
+
     beforeEach(function(done) {
       // reset users collection
       resetModel('users', function(err, users) {
@@ -640,6 +645,11 @@ describe('models', function() {
   describe('userAction', function() {
     var dbUsers = [];
     var dbActions = [];
+
+    // clear db before starting
+    before(function() {
+      conn.connection.db.dropDatabase();
+    });
 
     beforeEach(function(done) {
       // reset users and actions collections
@@ -909,6 +919,11 @@ describe('models', function() {
   describe('community', function() {
     var dbCommunities = [];
     var dbUsers = [];
+
+    // clear db before starting
+    before(function() {
+      conn.connection.db.dropDatabase();
+    });
 
     beforeEach(function(done) {
       // reset challenges and user collections
@@ -1292,6 +1307,11 @@ describe('models', function() {
   describe('household', function() {
     var dbHouseholds = [];
     var dbUsers = [];
+
+    // clear db before starting
+    before(function() {
+      conn.connection.db.dropDatabase();
+    });
 
     beforeEach(function(done) {
       // reset challenges and user collections
