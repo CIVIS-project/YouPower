@@ -4,8 +4,8 @@ This is the backend of the YouPower app.
 
 ## Setup
 
-First set up `nodejs`, `npm` and `mongodb` on your local machine. Also install
-`graphicsmagick` on your machine. (needed for resizing profile pictures).
+First install `nodejs`, `npm`, `graphicsmagick` and `mongodb` on your local
+machine.
 
 If you're on Debian or Ubuntu, here's a hack to put nodejs into the same
 path as other distros:
