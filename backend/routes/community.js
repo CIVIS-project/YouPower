@@ -303,6 +303,23 @@ router.get('/:id', auth.authenticate(), function(req, res) {
   }
 });
 
+
+/**
+ * @api {get} /community/list List all of user's communities
+ * @apiGroup Community
+ *
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/community/list
+ */
+router.get('/list', auth.authenticate(), function(req, res) {
+  User.getUserCommunities(req.user._id, res.successRes);
+});
+
 /**
  * @api {delete} /household/:id Delete a Community by id
  * @apiGroup Community
