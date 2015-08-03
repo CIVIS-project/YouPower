@@ -20,11 +20,7 @@ exports.users = [
       name: 'my nick',
       dob: new Date(42),
       photo: 'http://dummy'
-    },
-
-    communities: [
-      exports.communityids[0]
-    ]
+    }
   },
   {
     _id: newId(),
@@ -34,10 +30,7 @@ exports.users = [
       name: 'my nick2',
       dob: new Date(43),
       photo: 'http://dummy2'
-    },
-    communities: [
-      exports.communityids[1]
-    ]
+    }
   }
 ];
 
@@ -101,7 +94,8 @@ exports.communities = [
       exports.users[0]._id
     ],
     ratings: exports.ratings,
-    ownerId: exports.users[0]._id
+    ownerId: exports.users[0]._id,
+    privacy: 'Open'
   },
   {
     _id: newId(),
@@ -110,7 +104,8 @@ exports.communities = [
       exports.users[0]._id,
       exports.users[1]._id
     ],
-    ownerId: exports.users[0]._id
+    ownerId: exports.users[0]._id,
+    privacy: 'Closed'
   }
 ];
 

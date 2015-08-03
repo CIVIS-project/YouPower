@@ -2,7 +2,7 @@
 
 var mongoose = require('mongoose');
 var Action = require('./').actions;
-//var Community = require('./communities').Community;
+//var Community = require('./communities');
 var Schema = mongoose.Schema;
 var passportLocalMongoose = require('passport-local-mongoose');
 var escapeStringRegexp = require('escape-string-regexp');
@@ -40,7 +40,7 @@ var UserSchema = new Schema({
 
     // user is performing action
     inProgress: {
-      type: Object,
+      type: Schema.Types.Mixed,
       default: {}
     },
 
@@ -61,13 +61,7 @@ var UserSchema = new Schema({
       type: Object,
       default: {}
     }
-  },
-  communities: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: 'Community',
-    }
-  ]
+  }
 });
 UserSchema.plugin(passportLocalMongoose, {
   usernameField: 'email',
@@ -109,35 +103,33 @@ exports.getProfile = function(id, cb) {
   });
 };
 
-//Display user's communities (member of which community?)
-exports.getUserCommunities = function(id, cb) {
-  User.findOne({_id: id} , function(err, user) {
-    if (err) {
-      return cb(err);
-    }
-    if (!user) {
-      return cb('User not found');
-    } else {
-      cb(null, user);
-    }
-    // else {
-    //   Community.find({_id: {$in : user.communities}}, function(err, communities) {
-    //     if (err) {
-    //       return cb(err);
-    //     }
-    //     if (!communities) {
-    //       return cb('Community not found');
-    //     } else {
-    //       // convert every returned action into a raw object (remove mongoose magic)
-    //       for (var i = 0; i < communities.length; i++) {
-    //         communities[i] = communities[i].toObject();
-    //       }
-    //       cb(null, communities);
-    //     }
-    //   });
-    // }
-  });
-};
+// //Display user's communities (member of which community?)
+// exports.getUserCommunities = function(id, cb) {
+//   User.findOne({_id: id}, function(err, user) {
+//     /* istanbul ignore if: db errors are hard to unit test */
+//     if (err) {
+//       return cb(err);
+//     }
+//     console.log(user._id);
+//     Community.model
+//     .find({members: {$in : user._id}})
+//     .exec(function(err, communities) {
+//       if (err) {
+//         return cb(err);
+//       }
+//       if (!communities) {
+//         return cb('Community not found');
+//       } else {
+//         console.log(communities);
+//         // convert every returned action into a raw object (remove mongoose magic)
+//         for (var i = 0; i < communities.length; i++) {
+//           communities[i] = communities[i].toObject();
+//         }
+//         cb(null, communities);
+//       }
+//     });
+//   });
+// };
 
 //Display user's actions
 //Display user's actions based on 'type' passed.

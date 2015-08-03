@@ -485,15 +485,28 @@ describe('models', function() {
 
   describe('user', function() {
     var dbUsers = [];
+    var dbCommunities = [];
 
     beforeEach(function(done) {
-      // reset users collection
-      resetModel('users', function(err, users) {
-        dbUsers = users;
+      // reset challenges and user collections
+      async.parallel([
+        function(cb) {
+          resetModel('communities', function(err, communities) {
+            dbCommunities = communities;
+            cb(err);
+          });
+        },
+        function(cb) {
+          resetModel('users', function(err, users) {
+            dbUsers = users;
+            cb(err);
+          });
+        }
+      ], function(err) {
         done(err);
       });
+      dummyData = require('./dummyData');
     });
-
     it('should return profile', function(done) {
       models.users.getProfile(dbUsers[0]._id, function(err, user) {
         user.email.should.equal(dbUsers[0].email);
@@ -625,13 +638,6 @@ describe('models', function() {
       models.users.getUserActions(dbUsers[0]._id, 'na' , function(err, user) {
         //Is there a way to combine all of the action types?
         user.should.deep.equal(dbUsers[0].actions.na);
-        done(err);
-      });
-    });
-
-    it('should return the complete communities list for a user', function(done) {
-      models.users.getUserCommunities(dbUsers[0]._id, function(err, user) {
-        user.communities[0].toString().should.equal(dummyData.communityids[0]);
         done(err);
       });
     });
@@ -934,6 +940,12 @@ describe('models', function() {
     it('should return all communities', function(done) {
       models.communities.all(null, null, true, function(err, communities) {
         communities.length.should.equal(2);
+        done(err);
+      });
+    });
+    it('should return only \'Open\' communities list for a user', function(done) {
+      models.communities.getUserCommunities(dbUsers[0]._id, function(err, user) {
+        user.length.should.equal(1);
         done(err);
       });
     });
