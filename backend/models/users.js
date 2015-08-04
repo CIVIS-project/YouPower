@@ -238,7 +238,7 @@ exports.setActionState = function(user, actionId, state, postponed, cb) {
     var userAction = getUA(user, actionId);
 
     // update the UA with new data
-    userAction.id = actionId;
+    userAction._id = actionId;
     userAction.name = actionResult.name;
     userAction.description = actionResult.description;
     userAction.effort = actionResult.effort;
