@@ -207,14 +207,20 @@ exports.feedback = [
   {
     _id: newId(),
     name: 'My Name',
+    kind: 'actionCompleted',
     email: 'my@email.com',
-    comment: 'Hello world!'
+    comment: {
+      text: 'Hello world!'
+    }
   },
   {
     _id: newId(),
     name: 'My Other Name',
+    kind: 'general',
     email: 'myother@email.com',
-    comment: 'Hello other world!'
+    comment: {
+      text: 'Hello other world!'
+    }
   }
 ];
 

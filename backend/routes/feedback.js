@@ -10,7 +10,9 @@ var Feedback = require('../models').feedback;
  * @apiGroup Feedback
  *
  * @apiParam {Boolean} [anonymous=false] false = include user's name & email
- * @apiParam {String} comment Text contents of feedback
+ * @apiParam {Object} comment Contents of feedback (free-form JSON)
+ * @apiParam {String} kind What kind of feedback is this, must be one of
+ * "general, actionCompleted, actionCanceled"
  *
  * @apiExample {curl} Example usage:
  *  # Get API token via /api/user/token
@@ -19,7 +21,10 @@ var Feedback = require('../models').feedback;
  *  curl -i -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
  *  '{
  *    "anonymous": false,
- *    "comment": "Thank you for this app!"
+ *    "kind": "actionCompleted",
+ *    "comment": {
+ *      "text": "Thank you for this app!"
+ *    }
  *  }' \
  *  http://localhost:3000/api/feedback
  *
@@ -30,6 +35,7 @@ var Feedback = require('../models').feedback;
  *    "date": "2015-07-02T12:59:58.932Z",
  *    "_id": "559535ced51d8717277cd816",
  *    "email": "testuser1@test.com",
+ *    "kind": "actionCompleted",
  *    "name": "My Name"
  *  }
  */

@@ -8,12 +8,17 @@ var FeedbackSchema = new Schema({
     type: String,
     default: 'Anonymous'
   },
+  kind: {
+    type: String,
+    enum: 'general actionCompleted actionCanceled'.split(' '),
+    required: true,
+  },
   email: {
     type: String,
     default: 'Anonymous'
   },
   comment: {
-    type: String,
+    type: Schema.Types.Mixed,
     required: true
   },
   date: {
@@ -27,6 +32,7 @@ var Feedback = mongoose.model('Feedback', FeedbackSchema);
 exports.create = function(feedback, cb) {
   Feedback.create({
     name: feedback.name,
+    kind: feedback.kind,
     email: feedback.email,
     comment: feedback.comment,
     date: new Date()
