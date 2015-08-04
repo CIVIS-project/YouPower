@@ -10,7 +10,11 @@ var Feedback = require('../models').feedback;
  * @apiGroup Feedback
  *
  * @apiParam {Boolean} [anonymous=false] false = include user's name & email
- * @apiParam {Object} comment Contents of feedback (free-form JSON)
+ * @apiParam {Object} content Contents of feedback (free-form JSON)
+ * @apiParam {String} [content._id] In case the feedback is related to an action,
+ * set this to the action's id
+ * @apiParam {String} [content.text] If there's only one text-field
+ * set this to the comment itself
  * @apiParam {String} kind What kind of feedback is this, must be one of
  * "general, actionCompleted, actionCanceled"
  *
@@ -22,7 +26,8 @@ var Feedback = require('../models').feedback;
  *  '{
  *    "anonymous": false,
  *    "kind": "actionCompleted",
- *    "comment": {
+ *    "content": {
+ *      "_id": "559535ced51d8717277cd815"
  *      "text": "Thank you for this app!"
  *    }
  *  }' \
@@ -31,7 +36,10 @@ var Feedback = require('../models').feedback;
  * @apiSuccessExample {json} Success-Response:
  *  {
  *    "__v": 0,
- *    "comment": "Thank you for this app!",
+ *    "content": {
+ *      "_id": "559535ced51d8717277cd815",
+ *      "text": "Thank you for this app!"
+*      },
  *    "date": "2015-07-02T12:59:58.932Z",
  *    "_id": "559535ced51d8717277cd816",
  *    "email": "testuser1@test.com",
@@ -43,7 +51,7 @@ router.post('/', auth.authenticate(), function(req, res) {
   Feedback.create({
     name: req.body.anonymous ? null : req.user.profile.name,
     email: req.body.anonymous ? null : req.user.email,
-    comment: req.body.comment
+    content: req.body.content
   }, res.successRes);
 });
 
@@ -69,7 +77,11 @@ router.post('/', auth.authenticate(), function(req, res) {
  *  [
  *    {
  *      "__v": 0,
- *      "comment": "Thank you for this app!",
+ *      "content": {
+ *        "_id": "559535ced51d8717277cd815",
+ *        "text": "Thank you for this app!"
+ *      },
+ *      "kind": "actionCompleted",
  *      "date": "2015-07-02T12:59:58.932Z",
  *      "_id": "559535ced51d8717277cd816",
  *      "email": "testuser1@test.com",
@@ -77,7 +89,11 @@ router.post('/', auth.authenticate(), function(req, res) {
  *    },
  *    {
  *      "__v": 0,
- *      "comment": "This is a nice app!",
+ *      "content": {
+ *        "_id": "559535ced51d8717277cd815",
+ *        "text": "Thank you for this app!"
+ *      },
+ *      "kind": "actionCompleted",
  *      "date": "2015-07-02T12:59:58.932Z",
  *      "_id": "559535ced51d8717277cd816",
  *      "email": null,

@@ -209,7 +209,7 @@ exports.feedback = [
     name: 'My Name',
     kind: 'actionCompleted',
     email: 'my@email.com',
-    comment: {
+    content: {
       text: 'Hello world!'
     }
   },
@@ -218,7 +218,7 @@ exports.feedback = [
     name: 'My Other Name',
     kind: 'general',
     email: 'myother@email.com',
-    comment: {
+    content: {
       text: 'Hello other world!'
     }
   }

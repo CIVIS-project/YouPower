@@ -17,7 +17,7 @@ var FeedbackSchema = new Schema({
     type: String,
     default: 'Anonymous'
   },
-  comment: {
+  content: {
     type: Schema.Types.Mixed,
     required: true
   },
@@ -34,7 +34,7 @@ exports.create = function(feedback, cb) {
     name: feedback.name,
     kind: feedback.kind,
     email: feedback.email,
-    comment: feedback.comment,
+    content: feedback.content,
     date: new Date()
   }, cb);
 };
