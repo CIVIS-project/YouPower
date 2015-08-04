@@ -10,12 +10,14 @@ exports.achievementList = {
     goals: [1, 3, 5, 10]
   },
 
+  // TODO: leaves are still WIP
   leavesSaved: {
     name: 'Save the trees',
     description: 'Save %d leaves',
     goals: [10, 20, 50, 75, 100, 150, 200, 300, 500, 1000]
   },
 
+  // TODO: leaves are still WIP
   communityLeaves: {
     name: 'Save together!',
     description: 'Join a community and save energy together! ' +
@@ -23,18 +25,21 @@ exports.achievementList = {
     goals: [100, 250, 500, 1000, 3000, 10000]
   },
 
+  // TODO: getUserCommunities still WIP
   communitiesJoined: {
     name: 'Be social!',
     description: 'Join %d communities(s)',
     goals: [1, 3, 5, 10]
   },
 
+  // TODO: count reviewed actions
   actionsReviewed: {
     name: 'Expert',
     description: 'Help others choose great actions by reviewing %d YouPower action(s)',
     goals: [1, 2, 3]
   },
 
+  // TODO: energy data
   reduceEnergy: {
     name: 'Environmentalist',
     description: 'Reduce your monthly energy use by %d %', // from average?
@@ -47,48 +52,56 @@ exports.achievementList = {
     goals: [1, 2, 3]
   },
 
+  // TODO
   myActionsCompleted: {
     name: 'Motivator',
     description: 'Have %d other YouPower user(s) complete an action created by you',
     goals: [1, 2, 3, 5, 10, 25, 50, 75, 100]
   },
 
+  // TODO
   communitiesCreated: {
     name: 'Gathering',
     description: 'Create a community so you can save energy together with your friends!',
     goals: [1]
   },
 
+  // TODO
   communityComments: {
     name: 'Discuss',
     description: 'Participate in community discussions by posting %d comment(s) to a community',
     goals: [1, 3, 5, 10]
   },
 
+  // TODO
   betaTester: {
     name: 'Did it break yet?',
     description: 'Use YouPower in the beta testing phase',
     goals: [1]
   },
 
+  // TODO
   dailyUser: {
     name: 'Daily user',
     description: 'Use the YouPower app every day for %d days',
     goals: [3, 7]
   },
 
+  // TODO
   achievementsUnlocked: {
     name: 'Completionist',
     description: 'Unlock %d % of all YouPower achievements',
     goals: [25, 50, 75, 90]
   },
 
+  // TODO
   joinedHousehold: {
     name: 'Household',
     description: 'Be part of a household to track your energy and save with your family!',
     goals: [1]
   },
 
+  // TODO: energy data
   energyData: {
     name: 'Energy tracker',
     description: 'Connect household with an energy data provider to track your energy',

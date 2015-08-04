@@ -3,6 +3,7 @@
 var auth = require('../middleware/auth');
 var express = require('express');
 var router = express.Router();
+var achievements = require('../common/achievements');
 var User = require('../models').users;
 var Action = require('../models').actions;
 var Log = require('../models').logs;
@@ -72,8 +73,17 @@ router.get('/suggested', auth.authenticate(), function(req, res) {
  * @apiVersion 1.0.0
  */
 router.post('/:actionId', auth.authenticate(), function(req, res) {
-  User.setActionState(req.user, req.params.actionId,
-      req.body.state, req.body.postponed, res.successRes);
+  User.setActionState(req.user, req.params.actionId, req.body.state, req.body.postponed,
+  function(err, user) {
+    if (!err) {
+      achievements.updateAchievement(req.user, 'actionsDone', function(oldVal) {
+        // make sure we never decerase the action count
+        return Math.max(oldVal, user.actions.done.length);
+      });
+    }
+
+    res.successRes(err, user);
+  });
 
   Log.create({
     userId: req.user._id,

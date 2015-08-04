@@ -6,6 +6,7 @@ var auth = require('../middleware/auth');
 var path = require('path');
 var common = require('./common');
 var router = express.Router();
+var achievements = require('../common/achievements');
 var Community = require('../models').communities;
 var User = require('../models').users;
 var CommunityComment = require('../models').communityComments;
@@ -381,7 +382,18 @@ router.put('/join/:id', auth.authenticate(), function(req, res) {
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    Community.addMember(req.params.id, req.user._id, res.successRes);
+    Community.addMember(req.params.id, req.user._id, function(err, community) {
+      if (!err) {
+        User.getUserCommunities(req.user._id, function(err, communities) {
+          achievements.updateAchievement(req.user, 'communitiesJoined', function(oldVal) {
+            // make sure we never decerase the achievement progress
+            return Math.max(oldVal, communities.length);
+          });
+        });
+      }
+
+      res.successRes(err, community);
+    });
 
     Log.create({
       userId: req.user._id,

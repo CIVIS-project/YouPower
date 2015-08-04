@@ -340,7 +340,7 @@ router.post('/', auth.authenticate(), function(req, res) {
         authorId: req.user._id
       }).count(function(err, count) {
         achievements.updateAchievement(req.user, 'actionsCreated', function(oldVal) {
-          // make sure we never decerase the action count
+          // make sure we never decerase the achievement progress
           return Math.max(oldVal, count);
         });
       });
