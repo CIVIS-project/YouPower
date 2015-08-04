@@ -91,6 +91,12 @@ exports.getProfile = function(id, cb) {
       return cb('User not found');
     }
 
+    var totalLeaves = 0;
+
+    _.each(user.actions.done, function(action) {
+      totalLeaves += action.impact * 5;
+    });
+
     cb(null, {
       _id: id,
       email: user.email,
@@ -98,6 +104,7 @@ exports.getProfile = function(id, cb) {
       actions: user.actions,
       accessToken: user.accessToken,
       facebookId: user.facebookId,
+      leaves: totalLeaves,
       energyConsumption: {}, // TODO
       topActions: [], // TODO
       topCommunities: [], // TODO
