@@ -109,6 +109,12 @@ exports.achievementList = {
   },
 };
 
+// get total number of achievements (including their sub-goals)
+exports.totalAchievements = 0;
+_.each(exports.achievementList, function(achievement) {
+  exports.totalAchievements += achievement.goals.length;
+});
+
 exports.getStats = function(user) {
   var stats = {};
 
@@ -156,6 +162,32 @@ exports.updateAchievement = function(user, aName, calcProgress, cb) {
 
   // get new user achievement value from calcProgress by passing in old value
   ua.value = calcProgress(ua.value || 0);
+
+  // check if the user has enough achievements to unlock next sub-goal of
+  // 'achievementsUnlocked' achievement
+  if (aName !== 'achievementsUnlocked') {
+    var stats = exports.getStats(user);
+
+    var unlockedAchievements = 0;
+    // loop through every achievement
+    _.each(stats, function(a) {
+      // skip achievement if user hasn't achieved even the first sub-goal
+      if (a.achievedGoal) {
+        // loop through each sub-goal and add it if it's been achieved
+        _.each(exports.achievementList[a.name].goals, function(goal) {
+          if (goal <= a.value) {
+            unlockedAchievements++;
+          }
+        });
+      }
+    });
+
+    var totalA = user.achievements.achievementsUnlocked || {};
+    totalA.value = Math.max(totalA.value || 0,
+        unlockedAchievements / exports.totalAchievements * 100);
+
+    user.achievements.achievementsUnlocked = totalA;
+  }
 
   // save user model
   user.achievements[aName] = ua;
