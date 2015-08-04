@@ -92,15 +92,14 @@ router.post('/register', function(req, res) {
  *       "name": "Test User"
  *     },
  *     "actions": {
- *       "done": {},
+ *       "pending": {},
  *       "inProgress": {},
- *       "canceled": {}
+ *       "done": {},
+ *       "declined": {},
+ *       "na": {}
  *     },
- *     "energyConsumption": {},
- *     "topActions": [],
- *     "topChallenges": [],
- *     "topCommunities": [],
- *     "topFriends": []
+ *     "leaves": 42,
+ *     "energyConsumption": {}
  *   }
  *
  * @apiVersion 1.0.0
@@ -246,15 +245,14 @@ router.post('/profilePicture', auth.authenticate(), function(req, res) {
  *     "name": "Test User"
  *   },
  *   "actions": {
- *     "done": {},
+ *     "pending": {},
  *     "inProgress": {},
- *     "canceled": {}
+ *     "done": {},
+ *     "declined": {},
+ *     "na": {}
  *   },
- *   "energyConsumption": {},
- *   "topActions": [],
- *   "topChallenges": [],
- *   "topCommunities": [],
- *   "topFriends": []
+ *   "leaves": 42,
+ *   "energyConsumption": {}
  *  }
  */
 router.get('/profile/:userId', auth.authenticate(), function(req, res) {

@@ -52,7 +52,14 @@ router.post('/', auth.authenticate(), function(req, res) {
     name: req.body.anonymous ? null : req.user.profile.name,
     email: req.body.anonymous ? null : req.user.email,
     content: req.body.content
-  }, res.successRes);
+  }, function(err, feedback) {
+    if (!err) {
+      req.user.numFeedback++;
+      req.user.save();
+    }
+
+    res.successRes(err, feedback);
+  });
 });
 
 /**

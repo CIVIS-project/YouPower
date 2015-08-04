@@ -62,6 +62,10 @@ var UserSchema = new Schema({
       type: Object,
       default: {}
     }
+  },
+  numFeedback: {
+    type: Number,
+    default: 0
   }
 });
 UserSchema.plugin(passportLocalMongoose, {
@@ -94,8 +98,12 @@ exports.getProfile = function(id, cb) {
     var totalLeaves = 0;
 
     _.each(user.actions.done, function(action) {
+      // leaves for actions: impact * 5 leaves
       totalLeaves += action.impact * 5;
     });
+
+    // leaves for feedback: 1 leaf / feedback
+    totalLeaves += user.numFeedback;
 
     cb(null, {
       _id: id,
@@ -105,10 +113,7 @@ exports.getProfile = function(id, cb) {
       accessToken: user.accessToken,
       facebookId: user.facebookId,
       leaves: totalLeaves,
-      energyConsumption: {}, // TODO
-      topActions: [], // TODO
-      topCommunities: [], // TODO
-      topFriends: [] // TODO
+      energyConsumption: {} // TODO
     });
   });
 };
