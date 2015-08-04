@@ -7,6 +7,7 @@ var common = require('./common');
 var fs = require('fs');
 var path = require('path');
 var router = express.Router();
+var achievements = require('../common/achievements');
 var User = require('../models').users;
 var Log = require('../models').logs;
 var defaultPath = path.dirname(require.main.filename) + '/res/missingProfile.png';
@@ -59,6 +60,12 @@ router.post('/register', function(req, res) {
       }
 
       auth.newUserToken(user, function(err, token) {
+        if (achievements.isBeta) {
+          achievements.updateAchievement(user, 'betaTester', function() {
+            return 1;
+          });
+        }
+
         res.successRes(err, {
           token: token
         });

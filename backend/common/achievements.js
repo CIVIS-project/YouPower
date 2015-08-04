@@ -73,7 +73,6 @@ exports.achievementList = {
     goals: [1, 3, 5, 10]
   },
 
-  // TODO
   betaTester: {
     name: 'Did it break yet?',
     description: 'Use YouPower in the beta testing phase',
@@ -87,11 +86,10 @@ exports.achievementList = {
     goals: [3, 7]
   },
 
-  // TODO
   achievementsUnlocked: {
     name: 'Completionist',
     description: 'Unlock %d % of all YouPower achievements',
-    goals: [25, 50, 75, 90]
+    goals: [10, 25, 50, 75, 90]
   },
 
   // TODO
@@ -115,6 +113,9 @@ _.each(exports.achievementList, function(achievement) {
   exports.totalAchievements += achievement.goals.length;
 });
 
+// TODO: put this in a configuration file
+exports.isBeta = 1;
+
 exports.getStats = function(user) {
   var stats = {};
 
@@ -126,13 +127,19 @@ exports.getStats = function(user) {
     // get user achievement value, default to zero
     a.value = user.achievements[aName] ? user.achievements[aName].value : 0;
     a.achievedGoal = 0;
+    a.numGoalsAchieved = 0;
     a.nextGoal = null;
 
     _.each(achievement.goals, function(goal) {
       // find largest goal that we have achieved
-      if (a.achievedGoal < goal && goal < a.value) {
+      if (a.achievedGoal <= goal && goal <= a.value) {
         a.achievedGoal = goal;
       }
+
+      if (goal <= a.value) {
+        a.numGoalsAchieved++;
+      }
+
       // find smallest goal that is larger than what we have achieved
       if (goal > a.value && (goal < a.nextGoal || !a.nextGoal)) {
         a.nextGoal = goal;
@@ -169,17 +176,9 @@ exports.updateAchievement = function(user, aName, calcProgress, cb) {
     var stats = exports.getStats(user);
 
     var unlockedAchievements = 0;
-    // loop through every achievement
+    // sum count of all achieved goals
     _.each(stats, function(a) {
-      // skip achievement if user hasn't achieved even the first sub-goal
-      if (a.achievedGoal) {
-        // loop through each sub-goal and add it if it's been achieved
-        _.each(exports.achievementList[a.name].goals, function(goal) {
-          if (goal <= a.value) {
-            unlockedAchievements++;
-          }
-        });
-      }
+      unlockedAchievements += a.numGoalsAchieved;
     });
 
     var totalA = user.achievements.achievementsUnlocked || {};
