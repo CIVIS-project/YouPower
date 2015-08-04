@@ -27,7 +27,7 @@ var Feedback = require('../models').feedback;
  *    "anonymous": false,
  *    "kind": "actionCompleted",
  *    "content": {
- *      "_id": "559535ced51d8717277cd815"
+ *      "_id": "559535ced51d8717277cd815",
  *      "text": "Thank you for this app!"
  *    }
  *  }' \
@@ -51,6 +51,7 @@ router.post('/', auth.authenticate(), function(req, res) {
   Feedback.create({
     name: req.body.anonymous ? null : req.user.profile.name,
     email: req.body.anonymous ? null : req.user.email,
+    kind: req.body.kind,
     content: req.body.content
   }, function(err, feedback) {
     if (!err) {
