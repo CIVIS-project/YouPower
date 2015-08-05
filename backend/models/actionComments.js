@@ -101,7 +101,7 @@ exports.get = function(actionId, limit, skip, cb) {
     if (err) {
       cb(err);
     } else if (aComments && !aComments.length) {
-      cb('Comments not found');
+      cb(null, []);
     } else {
       for (var i = 0; i < aComments.length; i++) {
         aComments[i] = aComments[i].toObject();

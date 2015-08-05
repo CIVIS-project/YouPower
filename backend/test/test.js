@@ -308,9 +308,10 @@ describe('models', function() {
         done(err);
       });
     });
-    it('should return error for bogus actionId', function(done) {
-      models.actionComments.get(dummyData.ids[0], null, null, function(err) {
-        done(err ? null : 'no error returned!');
+    it('should return empty array for bogus actionId', function(done) {
+      models.actionComments.get(dummyData.ids[0], null, null, function(err, actionComments) {
+        actionComments.should.be.instanceof(Array).and.be.empty;
+        done(err);
       });
     });
     it('should return error for invalid actionId', function(done) {
