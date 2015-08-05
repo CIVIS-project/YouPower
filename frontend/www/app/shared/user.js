@@ -55,9 +55,9 @@ angular.module('civis.youpower')
       method: 'POST', 
       url: HOST + '/api/user/action/:actionId'
     },
-    rateAction : {
-      method: 'PUT', 
-      url: HOST + '/api/action/rate/:actionId'
+    feedback : {
+      method: 'POST', 
+      url: HOST + '/api/feedback'
     }
   });
 });

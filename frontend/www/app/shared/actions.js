@@ -20,9 +20,17 @@ angular.module('civis.youpower')
 
   /* Use this for real data
    ----------------------------------------------*/
-  return $resource(HOST + '/api/user/action/suggested');
-
-
-
-
+  return $resource(HOST + '/api/user/action/suggested', {}, {
+    postComment : {
+      method: 'POST', 
+      url: HOST + '/api/action/:actionId/comment'
+    },
+    getComments : {
+      method: 'GET', 
+      isArray: true,
+      url: HOST + '/api/action/:actionId/comments'
+    },
+    // 'query': {method: 'GET', isArray: false }
+  });
 });
+

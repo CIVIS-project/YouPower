@@ -62,8 +62,13 @@ td {
 .icon-large {
   font-size: 32px;
 }
-.text-large {
-  font-size: 24px;
+.text-small {
+  font-size: 10px;
+  color: gray;
+}
+.right{
+  // text-align:center;
+  float:right; 
 }
 hr {
   color: $color_gray_nurse_approx;

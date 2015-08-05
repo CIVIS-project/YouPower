@@ -12,16 +12,15 @@
   </div>
   <div class="item item-body">
     <ng-include src="'app/actions/actionDescription.html'"></ng-include>
-    <p>
-      <a class="subdued">{{action.participants}} Participant{{action.participants > 1 ? 's' : ''}}.</a> 
-      You started on {{action.startedDate | date: "yyyy-MM-dd"}}.
-    </p>
+    <span class="text-small">You started on {{action.startedDate | date: "yyyy-MM-dd"}}. <a href="#" class="balanced">{{action.participants}} Participant{{action.participants > 1 ? 's' : ''}}.</a> 
+    </span>
+  </div>
   </div>
 </div>
 
 <div class="list card" ng-if="actionsType == 'active'">
   <div class="item item-divider item-text-wrap">
-    {{salut()}} How are you doing?
+    How are you doing?
    <!--  <i class="icon ion-ios-chatbubble-outline balanced" style="font-size:35px;"></i> -->
   </div>
 
@@ -50,11 +49,18 @@
       {{action.share}} Share
     </a>
   </div>
-  <div class="item item-avatar item-text-wrap" ng-repeat="comment in action.comments" >
-    <img ng-src="img/{{comment.name}}.jpg"><h3>{{comment.name}}</h3>
-    <p>{{comment.description}}</p>
+  <div class="item item-text-wrap">
+    <label class="item item-input">
+      <textarea type="text" ng-model="comment.text" placeholder="Give your comment ..."></textarea>
+    </label>
+    <button class="button button-small button-dark right" ng-if="comment.text != ''" ng-click="postComment(action)"> &nbsp; &nbsp; Post &nbsp; &nbsp;</button>
+  </div>
+  <div class="item item-avatar item-text-wrap" ng-repeat="comment in comments" ng-if="comment.actionId == action._id">
+    <img ng-src="img/{{comment.comment}}.jpg"><h3>{{comment.name}} <span class="text-small">{{comment.date| date: "yyyy-MM-dd"}}</span></h3>
+    <p>{{comment.comment}}</p>
   </div>
 </div>
+
 </ion-slide>
 </ion-slide-box>
 </ion-content>
