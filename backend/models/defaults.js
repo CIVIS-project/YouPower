@@ -6,7 +6,9 @@ var newId = mongoose.Types.ObjectId;
 exports.user = {
   _id: newId(),
   email: 'civisuser@test.com',
-  name: 'Default Test User',
+  profile: {
+    name: 'Default Test User'
+  },
   token: '0',
   password: 'test'
 };

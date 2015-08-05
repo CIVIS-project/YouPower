@@ -429,7 +429,7 @@ router.put('/rate/:id', auth.authenticate(), function(req, res) {
  *  # Get API token via /api/user/token
  *  export API_TOKEN=fc35e6b2f27e0f5ef...
  *
- *  curl -i -X PUT -H "Authorization: Bearer $API_TOKEN" \
+ *  curl -i -X GET -H "Authorization: Bearer $API_TOKEN" \
  *  http://localhost:3000/api/action/555ecb997aa6360e40f26451
  *
  * @apiSuccessExample {json} Success-Response:
