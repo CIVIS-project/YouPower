@@ -34,14 +34,24 @@ exports.users = [
   }
 ];
 
-exports.ratings = {};
-exports.ratings[exports.users[0]._id] = {
+exports.communityRatings = {};
+exports.communityRatings[exports.users[0]._id] = {
   rating: 4,
   comment: 'dummy rating comment'
 };
-exports.ratings[exports.users[1]._id] = {
+exports.communityRatings[exports.users[1]._id] = {
   rating: 3,
   comment: 'another dummy rating comment'
+};
+
+exports.actionRatings = {};
+exports.actionRatings[exports.users[0]._id] = {
+  rating: 4,
+  effort: 5
+};
+exports.actionRatings[exports.users[1]._id] = {
+  rating: 3,
+  effort: 3
 };
 
 exports.actions = [
@@ -54,7 +64,7 @@ exports.actions = [
       repeat: 42,
       delay: 43
     },
-    ratings: exports.ratings,
+    ratings: exports.actionRatings,
     description: 'dummy description',
     impact: 4,
     effort: 5,
@@ -93,7 +103,7 @@ exports.communities = [
     members: [
       exports.users[0]._id
     ],
-    ratings: exports.ratings,
+    ratings: exports.communityRatings,
     ownerId: exports.users[0]._id,
     privacy: 'Open'
   },

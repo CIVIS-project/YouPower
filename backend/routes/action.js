@@ -363,7 +363,7 @@ router.post('/', auth.authenticate(), function(req, res) {
  *
  * @apiParam {String} id MongoId of action
  * @apiParam {Number} rating Rating of action (1 [least] - 5 [most])
- * @apiParam {String} [comment] Comment attached to rating
+ * @apiParam {Number} effort Effort estimate (1 [least] - 5 [most])
  *
  * @apiExample {curl} Example usage:
  *  # Get API token via /api/user/token
@@ -372,7 +372,7 @@ router.post('/', auth.authenticate(), function(req, res) {
  *  curl -i -X PUT -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
  *  '{
  *    "rating": 4,
- *    "comment": "This tip is really awesome!"
+ *    "effort": 3
  *  }' \
  *  http://localhost:3000/api/action/rate/555ef84b2fd41ffc6e078a34
  *
@@ -385,9 +385,9 @@ router.post('/', auth.authenticate(), function(req, res) {
  *     "ratings": {
  *       "5593ccfa9255daa130890164": {
  *         "date": "2015-07-02T06:37:39.845Z",
- *         "comment": "This tip is really awesome!",
  *         "name": "Test User",
  *         "rating": 4
+ *         "effort": 3
  *       }
  *     },
  *     "effort": 2,
@@ -406,7 +406,7 @@ router.put('/rate/:id', auth.authenticate(), function(req, res) {
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    Action.rate(req.params.id, req.user, req.body.rating, req.body.comment, res.successRes);
+    Action.rate(req.params.id, req.user, req.body.rating, req.body.effort, res.successRes);
 
     Log.create({
       userId: req.user._id,
@@ -414,8 +414,7 @@ router.put('/rate/:id', auth.authenticate(), function(req, res) {
       type: 'rate',
       data: {
         actionId: req.params.id,
-        rating: req.body.rating,
-        comment: req.body.comment
+        rating: req.body.rating
       }
     });
   }

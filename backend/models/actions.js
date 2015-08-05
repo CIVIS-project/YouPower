@@ -63,12 +63,31 @@ var includeRatingStats = function(action) {
   var sum = 0;
 
   _.each(action.ratings, function(rating) {
-    sum += rating.rating;
-    cnt++;
+    if (rating.rating) {
+      sum += rating.rating;
+      cnt++;
+    }
   });
 
   action.avgRating = cnt ? sum / cnt : 0;
   action.numRatings = cnt;
+};
+
+var includeMeanEffort = function(action) {
+  var effortEstimates = [];
+
+  // include initial effort estimate with larger weight
+  for (var i = 0; i < 5; i++) {
+    effortEstimates.push(action.effort);
+  }
+
+  _.each(action.ratings, function(rating) {
+    if (rating.effort) {
+      effortEstimates.push(rating.effort);
+    }
+  });
+
+  action.effort = effortEstimates[parseInt(effortEstimates.length / 2)];
 };
 
 exports.create = function(action, cb) {
@@ -96,6 +115,7 @@ exports.get = function(id, cb) {
     } else {
       action = action.toObject();
       includeRatingStats(action);
+      includeMeanEffort(action);
       cb(null, action);
     }
   });
@@ -123,8 +143,9 @@ exports.all = function(limit, skip, includeRatings, cb) {
         actions[i] = actions[i].toObject();
       }
 
-      // calculate rating stats for each action
+      // calculate rating & effort stats for each action
       _.each(actions, includeRatingStats);
+      _.each(actions, includeMeanEffort);
 
       // get rid of ratings
       if (!includeRatings) {
@@ -137,13 +158,21 @@ exports.all = function(limit, skip, includeRatings, cb) {
   });
 };
 
-exports.rate = function(id, user, rating, comment, cb) {
+exports.rate = function(id, user, rating, effort, cb) {
   if (!user || !user._id || !user.profile || !user.profile.name) {
     return cb('Missing/invalid user');
   }
-  if (!rating || !_.isNumber(rating)) {
+  if (!rating || !_.isNumber(rating) || rating < 1 || rating > 5) {
     return cb('Missing/invalid rating');
   }
+  if (!effort || !_.isNumber(effort) || effort < 1 || effort > 5) {
+    return cb('Missing/invalid effort estimate');
+  }
+
+  // make sure we're dealing with integers
+  rating = parseInt(rating);
+  effort = parseInt(effort);
+
   Action.findOne({
     _id: id
   }, function(err, action) {
@@ -154,8 +183,8 @@ exports.rate = function(id, user, rating, comment, cb) {
     } else {
       action.ratings[user._id] = {
         rating: rating,
+        effort: effort,
         name: user.profile.name,
-        comment: comment || action.ratings[user._id].comment,
         date: new Date()
       };
       action.markModified('ratings');

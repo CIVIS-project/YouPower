@@ -86,10 +86,10 @@ describe('models', function() {
 
     it('should add rating to unrated action document', function(done) {
       var user = dummyData.users[0];
-      var d = dummyData.ratings[user._id];
+      var d = dummyData.actionRatings[user._id];
       var id = dbActions[0]._id;
       // try rating an action that has not been rated yet
-      models.actions.rate(id, user, d.rating, d.comment, function(err) {
+      models.actions.rate(id, user, d.rating, d.effort, function(err) {
         if (err) {
           return done(err);
         }
@@ -108,10 +108,10 @@ describe('models', function() {
 
     it('should update rating to action document', function(done) {
       var user = dummyData.users[0];
-      var d = dummyData.ratings[user._id];
+      var d = dummyData.actionRatings[user._id];
       var id = dbActions[0]._id;
       var newRating = 2;
-      models.actions.rate(id, user, newRating, d.comment, function(err) {
+      models.actions.rate(id, user, newRating, d.effort, function(err) {
         if (err) {
           return done(err);
         }
@@ -128,31 +128,31 @@ describe('models', function() {
 
     it('should refuse invalid ratings', function(done) {
       var user = dummyData.users[0];
-      var d = dummyData.ratings[user._id];
+      var d = dummyData.actionRatings[user._id];
       async.parallel([
         function(cb) {
-          models.actions.rate(dummyData.ids[0], user, d.rating, d.comment, function(err) {
+          models.actions.rate(dummyData.ids[0], user, d.rating, d.effort, function(err) {
             cb(err ? null : 'passing bogus action id did not cause error!');
           });
         },
         function(cb) {
-          models.actions.rate('foo bar', user, d.rating, d.comment, function(err) {
+          models.actions.rate('foo bar', user, d.rating, d.effort, function(err) {
             cb(err ? null : 'passing invalid action id did not cause error!');
           });
         },
         function(cb) {
-          models.actions.rate(dbActions[0]._id, null, d.rating, d.comment, function(err) {
+          models.actions.rate(dbActions[0]._id, null, d.rating, d.effort, function(err) {
             cb(err ? null : 'missing user parameter did not cause error!');
           });
         },
         function(cb) {
-          models.actions.rate(dbActions[0]._id, user, null, d.comment, function(err) {
+          models.actions.rate(dbActions[0]._id, user, null, d.effort, function(err) {
             cb(err ? null : 'missing rating field did not cause error!');
           });
         },
         function(cb) {
           models.actions.rate(dbActions[0]._id, user, d.rating, null, function(err) {
-            cb(err ? 'comment field should be optional but wasn\'t!' : null);
+            cb(err ? null : 'missing effort field did not cause error!');
           });
         }
       ], function(err) {
@@ -985,7 +985,7 @@ describe('models', function() {
 
     it('should add rating to an unrated community document', function(done) {
       var user = dummyData.users[0];
-      var d = dummyData.ratings[user._id];
+      var d = dummyData.communityRatings[user._id];
       var id = dbCommunities[1]._id; // mustn't contain any ratings
       // try rating a community that has not been rated yet
       models.communities.rate(id, user, d.rating, d.comment, function(err) {
@@ -1006,7 +1006,7 @@ describe('models', function() {
 
     it('should update rating of community', function(done) {
       var user = dummyData.users[0];
-      var d = dummyData.ratings[user._id];
+      var d = dummyData.communityRatings[user._id];
       var id = dbCommunities[0]._id;
       var newRating = 2;
       models.communities.rate(id, user, newRating, d.comment, function(err) {
@@ -1026,7 +1026,7 @@ describe('models', function() {
 
     it('should refuse invalid ratings', function(done) {
       var user = dummyData.users[0];
-      var d = dummyData.ratings[user._id];
+      var d = dummyData.communityRatings[user._id];
       async.parallel([
         function(cb) {
           models.communities.rate(dummyData.ids[0], user, d.rating, d.comment, function(err) {
