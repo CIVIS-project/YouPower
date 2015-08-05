@@ -386,7 +386,7 @@ router.post('/', auth.authenticate(), function(req, res) {
  *       "5593ccfa9255daa130890164": {
  *         "date": "2015-07-02T06:37:39.845Z",
  *         "name": "Test User",
- *         "rating": 4
+ *         "rating": 4,
  *         "effort": 3
  *       }
  *     },
@@ -446,8 +446,8 @@ router.put('/rate/:id', auth.authenticate(), function(req, res) {
  *     "ratings": [
  *       {
  *         "_id": "testUser",
- *         "comment": "This tip is awesome!",
- *         "rating": 4
+ *         "rating": 4,
+ *         "effort": 3
  *       },
  *       ...
  *     ]
