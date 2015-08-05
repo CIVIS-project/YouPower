@@ -7,7 +7,7 @@ function ActionsListCtrl($scope, $state, $stateParams, Actions) {
 
   $scope.slideIdx = $stateParams.index ? $stateParams.index : 0;
 
-  $scope.comment = {text: ''}
+  $scope.comment = {text: '', show: false}
 
   $scope.actionsType = $stateParams.type;
 

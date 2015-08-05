@@ -66,9 +66,10 @@ td {
   font-size: 10px;
   color: gray;
 }
-.right{
-  // text-align:center;
-  float:right; 
+.button-right{
+  float: right;
+  width: 30%;
+  // margin-bottom: 5px;
 }
 hr {
   color: $color_gray_nurse_approx;
