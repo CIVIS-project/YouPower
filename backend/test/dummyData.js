@@ -169,22 +169,25 @@ exports.actionComments = [
   {
     _id: newId(),
     actionId: exports.actions[0]._id,
-    name: 'myUser1',
-    email: 'dummy@mail.com',
+    userId: exports.users[0]._id,
+    name: exports.users[0].profile.name,
+    email: exports.users[0].email,
     comment: 'Hello world!'
   },
   {
     _id: newId(),
     actionId: exports.actions[0]._id,
-    name: 'myUser2',
-    email: 'dummy2@mail.com',
+    userId: exports.users[1]._id,
+    name: exports.users[1].profile.name,
+    email: exports.users[1].email,
     comment: 'Hello world again!'
   },
   {
     _id: newId(),
     actionId: exports.actions[1]._id,
-    name: 'myUser3',
-    email: 'dummy3@mail.com',
+    userId: exports.users[1]._id,
+    name: exports.users[1].profile.name,
+    email: exports.users[1].email,
     comment: 'Another action'
   }
 ];
@@ -193,22 +196,25 @@ exports.communityComments = [
   {
     _id: newId(),
     communityId: exports.communities[0]._id,
-    name: 'myUser1',
-    email: 'dummy@mail.com',
+    userId: exports.users[0]._id,
+    name: exports.users[0].profile.name,
+    email: exports.users[0].email,
     comment: 'Hello world!'
   },
   {
     _id: newId(),
     communityId: exports.communities[0]._id,
-    name: 'myUser2',
-    email: 'dummy2@mail.com',
+    userId: exports.users[1]._id,
+    name: exports.users[1].profile.name,
+    email: exports.users[1].email,
     comment: 'Hello world again!'
   },
   {
     _id: newId(),
     communityId: exports.communities[1]._id,
-    name: 'myUser3',
-    email: 'dummy3@mail.com',
+    userId: exports.users[1]._id,
+    name: exports.users[1].profile.name,
+    email: exports.users[1].email,
     comment: 'Another community'
   }
 ];

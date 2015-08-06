@@ -326,6 +326,7 @@ describe('models', function() {
         actionId: d.actionId,
         name: 'foo bar',
         email: d.email,
+        userId: d.userId,
         comment: 'foo baz'
       }, function(err, actionComment) {
         actionComment.name.should.equal('foo bar');
@@ -1281,6 +1282,7 @@ describe('models', function() {
         communityId: d.communityId,
         name: 'foo bar',
         email: d.email,
+        userId: d.userId,
         comment: 'foo baz'
       }, function(err, communityComment) {
         communityComment.name.should.equal('foo bar');

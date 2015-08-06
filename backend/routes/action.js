@@ -33,6 +33,7 @@ var Log = require('../models').logs;
  *   {
  *     "__v": 0,
  *     "actionId": "555f0163688305b57c7cef6c",
+ *     "userId": "555f0163688305b57c7cef6e",
  *     "name": "Test User",
  *     "email": "testuser1@test.com",
  *     "comment": "This is an amazing and easy to perform action!",
@@ -43,6 +44,7 @@ var Log = require('../models').logs;
 router.post('/:actionId/comment', auth.authenticate(), function(req, res) {
   var actionComment = req.body;
   actionComment.actionId = req.params.actionId;
+  actionComment.userId = req.user._id;
   actionComment.name = req.user.profile.name;
   actionComment.email = req.user.email;
   ActionComment.create(actionComment, res.successRes);

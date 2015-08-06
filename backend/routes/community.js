@@ -33,6 +33,7 @@ var Log = require('../models').logs;
  *   {
  *     "__v": 0,
  *     "communityId": "555f0163688305b57c7cef6c",
+ *     "userId": "555f0163688305b57c7cef6e",
  *     "name": "Test User",
  *     "email": "testuser1@test.com",
  *     "comment": "This is a fun community!",
@@ -43,6 +44,7 @@ var Log = require('../models').logs;
 router.post('/:communityId/comment', auth.authenticate(), function(req, res) {
   var communityComment = req.body;
   communityComment.actionId = req.params.actionId;
+  communityComment.userId = req.user._id;
   communityComment.name = req.user.profile.name;
   communityComment.email = req.user.email;
   CommunityComment.create(communityComment, res.successRes);

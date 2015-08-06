@@ -9,6 +9,10 @@ var CommunityCommentSchema = new Schema({
     ref: 'Community',
     required: true
   },
+  userId: {
+    type: Schema.Types.ObjectId,
+    required: true
+  },
   name: {
     type: String,
     required: true
@@ -32,6 +36,7 @@ var CommunityComment = mongoose.model('CommunityComment', CommunityCommentSchema
 exports.create = function(communityComment, cb) {
   CommunityComment.create({
     communityId: communityComment.communityId,
+    userId: communityComment.userId,
     name: communityComment.name,
     email: communityComment.email,
     comment: communityComment.comment,

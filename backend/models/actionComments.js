@@ -10,6 +10,10 @@ var ActionCommentSchema = new Schema({
     ref: 'Action',
     required: true
   },
+  userId: {
+    type: Schema.Types.ObjectId,
+    required: true
+  },
   name: {
     type: String,
     required: true
@@ -50,6 +54,7 @@ var calcRating = function(aComment) {
 exports.create = function(aComment, cb) {
   ActionComment.create({
     actionId: aComment.actionId,
+    userId: aComment.userId,
     name: aComment.name,
     email: aComment.email,
     comment: aComment.comment,
