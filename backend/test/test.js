@@ -47,7 +47,7 @@ describe('models', function() {
     });
 
     it('should return all actions without ratings', function(done) {
-      models.actions.all(null, null, null, function(err, actions) {
+      models.actions.all(null, null, null, null, function(err, actions) {
         actions.length.should.equal(dummyData.actions.length);
 
         // find an action that was added with ratings
@@ -60,7 +60,7 @@ describe('models', function() {
     });
 
     it('should return all actions with ratings', function(done) {
-      models.actions.all(null, null, true, function(err, actions) {
+      models.actions.all(null, null, true, null, function(err, actions) {
         actions.length.should.equal(dummyData.actions.length);
         var testAction = _.find(actions, function(action) {
           return action.name === dummyData.actions[0].name;
@@ -72,14 +72,14 @@ describe('models', function() {
     });
 
     it('should return first action by id', function(done) {
-      models.actions.get(dbActions[0]._id, function(err, action) {
+      models.actions.get(dbActions[0]._id, null, function(err, action) {
         action.name.should.equal(dbActions[0].name);
         done(err);
       });
     });
 
     it('should return no action for bogus id', function(done) {
-      models.actions.get(dummyData.ids[0], function(err) {
+      models.actions.get(dummyData.ids[0], null, function(err) {
         done(err ? null : 'bogus action fetch did return an action!');
       });
     });
@@ -94,7 +94,7 @@ describe('models', function() {
           return done(err);
         }
 
-        models.actions.get(id, function(err, action) {
+        models.actions.get(id, null, function(err, action) {
           if (err) {
             return done(err);
           }
@@ -115,7 +115,7 @@ describe('models', function() {
         if (err) {
           return done(err);
         }
-        models.actions.get(id, function(err, action) {
+        models.actions.get(id, null, function(err, action) {
           if (err) {
             return done(err);
           }
@@ -162,7 +162,7 @@ describe('models', function() {
 
     it('should delete action by id', function(done) {
       models.actions.delete(dbActions[0]._id, function() {
-        models.actions.get(dbActions[0]._id, function(err) {
+        models.actions.get(dbActions[0]._id, null, function(err) {
           done(err ? null : 'action was not deleted successfully');
         });
       });

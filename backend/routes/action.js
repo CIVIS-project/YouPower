@@ -461,7 +461,7 @@ router.get('/:id', auth.authenticate(), function(req, res) {
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    Action.get(req.params.id, res.successRes);
+    Action.get(req.params.id, req.user, res.successRes);
 
     Log.create({
       userId: req.user._id,
@@ -551,7 +551,8 @@ router.get('/', auth.authenticate(), function(req, res) {
 
   req.sanitize('includeReviews').toBoolean();
 
-  Action.all(req.body.limit || 50, req.body.skip, req.body.includeRatings, res.successRes);
+  Action.all(req.body.limit || 50, req.body.skip, req.body.includeRatings, req.user,
+      res.successRes);
 
   Log.create({
     userId: req.user._id,

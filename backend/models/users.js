@@ -241,7 +241,7 @@ var getUA = function(user, actionId) {
 };
 
 exports.setActionState = function(user, actionId, state, postponed, cb) {
-  Action.get(actionId, function(err, actionResult) {
+  Action.get(actionId, null, function(err, actionResult) {
     if (err) {
       return cb(err);
     }
