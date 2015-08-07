@@ -303,19 +303,19 @@ describe('models', function() {
       }).length;
 
       models.actionComments.get(
-          dummyData.actions[0]._id, null, null, function(err, actionComments) {
+          dummyData.actions[0]._id, null, null, null, function(err, actionComments) {
         actionComments.length.should.equal(numFirstActionComments);
         done(err);
       });
     });
     it('should return empty array for bogus actionId', function(done) {
-      models.actionComments.get(dummyData.ids[0], null, null, function(err, actionComments) {
+      models.actionComments.get(dummyData.ids[0], null, null, null, function(err, actionComments) {
         actionComments.should.be.instanceof(Array).and.be.empty;
         done(err);
       });
     });
     it('should return error for invalid actionId', function(done) {
-      models.actionComments.get('foo', null, null, function(err, actionComments) {
+      models.actionComments.get('foo', null, null, null, function(err, actionComments) {
         should.not.exist(actionComments);
         done(err ? null : 'no error returned!');
       });
@@ -391,7 +391,7 @@ describe('models', function() {
           return done(err);
         }
 
-        models.actionComments.get(actionId, null, null, function(err, aComments) {
+        models.actionComments.get(actionId, null, null, null, function(err, aComments) {
           if (err) {
             return done(err);
           }
@@ -420,7 +420,7 @@ describe('models', function() {
           if (err) {
             return done(err);
           }
-          models.actionComments.get(actionId, null, null, function(err, aComments) {
+          models.actionComments.get(actionId, null, null, null, function(err, aComments) {
             if (err) {
               return done(err);
             }

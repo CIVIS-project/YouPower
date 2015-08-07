@@ -156,7 +156,8 @@ router.get('/comment/:commentId/picture', auth.authenticate(), function(req, res
  * ]
  */
 router.get('/:actionId/comments', auth.authenticate(), function(req, res) {
-  ActionComment.get(req.params.actionId, req.body.limit || 10, req.body.skip || 0, res.successRes);
+  ActionComment.get(req.params.actionId, req.body.limit || 10, req.body.skip || 0, null,
+      res.successRes);
 
   Log.create({
     userId: req.user._id,

@@ -42,12 +42,19 @@ var ActionCommentSchema = new Schema({
 
 var ActionComment = mongoose.model('ActionComment', ActionCommentSchema);
 
-var calcRating = function(aComment) {
+var calcRating = function(aComment, userId) {
   var totalRating = 0;
   _.each(aComment.ratings, function(rating) {
     totalRating += rating.value;
   });
   aComment.rating = totalRating;
+
+  // include user's rating
+  userId = String(userId);
+  if (userId && aComment.ratings && aComment.ratings[userId]) {
+    aComment.userRating = aComment.ratings[userId].rating;
+  }
+
   delete(aComment.ratings);
 };
 
@@ -66,7 +73,7 @@ exports.create = function(aComment, cb) {
     }
 
     aComment = aComment.toObject();
-    calcRating(aComment);
+    calcRating(aComment, aComment.userId);
 
     cb(err, aComment);
   });
@@ -90,14 +97,14 @@ exports.setHasPicture = function(commentId, value, cb) {
       }
 
       aComment = aComment.toObject();
-      calcRating(aComment);
+      calcRating(aComment, null);
 
       cb(err, aComment);
     });
   });
 };
 
-exports.get = function(actionId, limit, skip, cb) {
+exports.get = function(actionId, limit, skip, user, cb) {
   ActionComment.find({actionId: actionId})
   .sort({'date': -1})
   .skip(skip)
@@ -113,7 +120,7 @@ exports.get = function(actionId, limit, skip, cb) {
       }
 
       _.each(aComments, function(aComment) {
-        calcRating(aComment);
+        calcRating(aComment, user ? user._id : null);
       });
 
       cb(null, aComments);
@@ -161,7 +168,7 @@ exports.rate = function(actionId, commentId, user, rating, cb) {
         }
 
         aComment = aComment.toObject();
-        calcRating(aComment);
+        calcRating(aComment, user._id);
 
         cb(err, aComment);
       });
