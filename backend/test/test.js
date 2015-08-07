@@ -110,7 +110,7 @@ describe('models', function() {
       var user = dummyData.users[0];
       var d = dummyData.actionRatings[user._id];
       var id = dbActions[0]._id;
-      var newRating = 2;
+      var newRating = 0;
       models.actions.rate(id, user, newRating, d.effort, function(err) {
         if (err) {
           return done(err);
@@ -990,7 +990,7 @@ describe('models', function() {
       var d = dummyData.communityRatings[user._id];
       var id = dbCommunities[1]._id; // mustn't contain any ratings
       // try rating a community that has not been rated yet
-      models.communities.rate(id, user, d.rating, d.comment, function(err) {
+      models.communities.rate(id, user, d.rating, function(err) {
         if (err) {
           return done(err);
         }
@@ -1008,10 +1008,9 @@ describe('models', function() {
 
     it('should update rating of community', function(done) {
       var user = dummyData.users[0];
-      var d = dummyData.communityRatings[user._id];
       var id = dbCommunities[0]._id;
-      var newRating = 2;
-      models.communities.rate(id, user, newRating, d.comment, function(err) {
+      var newRating = 0;
+      models.communities.rate(id, user, newRating, function(err) {
         if (err) {
           return done(err);
         }
@@ -1031,28 +1030,23 @@ describe('models', function() {
       var d = dummyData.communityRatings[user._id];
       async.parallel([
         function(cb) {
-          models.communities.rate(dummyData.ids[0], user, d.rating, d.comment, function(err) {
+          models.communities.rate(dummyData.ids[0], user, d.rating, function(err) {
             cb(err ? null : 'passing bogus community id did not cause error!');
           });
         },
         function(cb) {
-          models.communities.rate('foo bar', user, d.rating, d.comment, function(err) {
+          models.communities.rate('foo bar', user, d.rating, function(err) {
             cb(err ? null : 'passing invalid community id did not cause error!');
           });
         },
         function(cb) {
-          models.communities.rate(dbCommunities[0]._id, null, d.rating, d.comment, function(err) {
+          models.communities.rate(dbCommunities[0]._id, null, d.rating, function(err) {
             cb(err ? null : 'missing user id parameter did not cause error!');
           });
         },
         function(cb) {
-          models.communities.rate(dbCommunities[0]._id, user, null, d.comment, function(err) {
+          models.communities.rate(dbCommunities[0]._id, user, null, function(err) {
             cb(err ? null : 'missing rating field did not cause error!');
-          });
-        },
-        function(cb) {
-          models.communities.rate(dbCommunities[0]._id, user, d.rating, null, function(err) {
-            cb(err ? 'comment field should be optional but wasn\'t!' : null);
           });
         }
       ], function(err) {

@@ -49,16 +49,15 @@ var Community = mongoose.model('Community', CommunitySchema);
 
 //rate communities
 var includeRatingStats = function(community) {
-  var cnt = 0;
   var sum = 0;
 
   _.each(community.ratings, function(rating) {
-    sum += rating.rating;
-    cnt++;
+    if (rating.rating) {
+      sum += 1;
+    }
   });
 
-  community.avgRating = cnt ? sum / cnt : 0;
-  community.numRatings = cnt;
+  community.numLikes = sum;
 };
 
 // create community entity
@@ -237,12 +236,12 @@ exports.all = function(limit, skip, includeRatings, cb) {
   });
 };
 
-// Users can rate community and give feedback in comment
-exports.rate = function(id, userId, rating, comment, cb) {
+// Users can rate community
+exports.rate = function(id, userId, rating, cb) {
   if (!userId) {
     return cb('Missing userId');
   }
-  if (!rating || !_.isNumber(rating)) {
+  if (!_.isNumber(rating) || (rating !== 1 && rating !== 0)) {
     return cb('Missing/invalid rating');
   }
   Community.findOne({
@@ -255,7 +254,6 @@ exports.rate = function(id, userId, rating, comment, cb) {
     } else {
       community.ratings[userId._id] = {
         rating: rating,
-        comment: comment || community.ratings[userId._id].comment,
         date: new Date()
       };
       community.markModified('ratings');

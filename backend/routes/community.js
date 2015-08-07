@@ -510,7 +510,7 @@ router.post('/communityPicture/:communityId', auth.authenticate(), function(req,
  * @apiGroup Community
  *
  * @apiParam {String} id MongoId of community
- * @apiParam {Number} rating Rating of community (1 [least] - 5 [most])
+ * @apiParam {Number} rating Rating of community (0 = unlike, 1 = like)
  * @apiParam {String} [comment] Comment attached to rating
  *
  * @apiExample {curl} Example usage:
@@ -519,7 +519,7 @@ router.post('/communityPicture/:communityId', auth.authenticate(), function(req,
  *
  *  curl -i -X PUT -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
  *  '{
- *    "rating": 4,
+ *    "rating": 1,
  *    "comment": "This community is really awesome!"
  *  }' \
  *  http://localhost:3000/api/action/rate/555ef84b2fd41ffc6e078a34
@@ -535,7 +535,7 @@ router.post('/communityPicture/:communityId', auth.authenticate(), function(req,
  *         "date": "2015-07-02T06:37:39.845Z",
  *         "comment": "This community is really awesome!",
  *         "name": "Test User",
- *         "rating": 4
+ *         "rating": 1
  *       }
  *     },
  *    "challenges": [

@@ -364,7 +364,7 @@ router.post('/', auth.authenticate(), function(req, res) {
  * @apiGroup Action
  *
  * @apiParam {String} id MongoId of action
- * @apiParam {Number} rating Rating of action (1 [least] - 5 [most])
+ * @apiParam {Number} rating Rating of action (0 = unlike, 1 = like)
  * @apiParam {Number} effort Effort estimate (1 [least] - 5 [most])
  *
  * @apiExample {curl} Example usage:
@@ -373,7 +373,7 @@ router.post('/', auth.authenticate(), function(req, res) {
  *
  *  curl -i -X PUT -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
  *  '{
- *    "rating": 4,
+ *    "rating": 1,
  *    "effort": 3
  *  }' \
  *  http://localhost:3000/api/action/rate/555ef84b2fd41ffc6e078a34
@@ -388,7 +388,7 @@ router.post('/', auth.authenticate(), function(req, res) {
  *       "5593ccfa9255daa130890164": {
  *         "date": "2015-07-02T06:37:39.845Z",
  *         "name": "Test User",
- *         "rating": 4,
+ *         "rating": 1,
  *         "effort": 3
  *       }
  *     },
@@ -438,13 +438,12 @@ router.put('/rate/:id', auth.authenticate(), function(req, res) {
  *   {
  *     "__v": 8,
  *     "_id": "555ef84b2fd41ffc6e078a34",
- *     "avgRating": 4.25,
  *     "description": "Disabling standby can save up to 10% in total electricity costs.",
  *     "effort": 3,
  *     "impact": 2,
  *     "date": "2015-07-01T12:04:33.599Z",
  *     "name": "Disable standby on your devices",
- *     "numRatings": 4,
+ *     "numLikes": 4,
  *     "ratings": [
  *       {
  *         "_id": "testUser",
@@ -536,13 +535,12 @@ router.delete('/:id', function(req, res) {
  *     {
  *       "__v": 8,
  *       "_id": "555ef84b2fd41ffc6e078a34",
- *       "avgRating": 4.25,
  *       "description": "Disabling standby can save up to 10% in total electricity costs.",
  *       "effort": 3,
  *       "impact": 2,
  *       "date": "2015-07-01T12:04:33.599Z",
  *       "name": "Disable standby on your devices",
- *       "numRatings": 4
+ *       "numLikes": 4
  *     },
  *     ...
  *   ]

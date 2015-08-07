@@ -59,18 +59,15 @@ var ActionSchema = new Schema({
 var Action = mongoose.model('Action', ActionSchema);
 
 var includeRatingStats = function(action) {
-  var cnt = 0;
   var sum = 0;
 
   _.each(action.ratings, function(rating) {
     if (rating.rating) {
-      sum += rating.rating;
-      cnt++;
+      sum += 1;
     }
   });
 
-  action.avgRating = cnt ? sum / cnt : 0;
-  action.numRatings = cnt;
+  action.numLikes = sum;
 };
 
 var includeMeanEffort = function(action) {
@@ -162,7 +159,7 @@ exports.rate = function(id, user, rating, effort, cb) {
   if (!user || !user._id || !user.profile || !user.profile.name) {
     return cb('Missing/invalid user');
   }
-  if (!rating || !_.isNumber(rating) || rating < 1 || rating > 5) {
+  if (!_.isNumber(rating) || (rating !== 1 && rating !== 0)) {
     return cb('Missing/invalid rating');
   }
   if (!effort || !_.isNumber(effort) || effort < 1 || effort > 5) {

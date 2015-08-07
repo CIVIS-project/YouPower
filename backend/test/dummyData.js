@@ -36,21 +36,19 @@ exports.users = [
 
 exports.communityRatings = {};
 exports.communityRatings[exports.users[0]._id] = {
-  rating: 4,
-  comment: 'dummy rating comment'
+  rating: 1
 };
 exports.communityRatings[exports.users[1]._id] = {
-  rating: 3,
-  comment: 'another dummy rating comment'
+  rating: 1
 };
 
 exports.actionRatings = {};
 exports.actionRatings[exports.users[0]._id] = {
-  rating: 4,
+  rating: 1,
   effort: 5
 };
 exports.actionRatings[exports.users[1]._id] = {
-  rating: 3,
+  rating: 1,
   effort: 3
 };
 
