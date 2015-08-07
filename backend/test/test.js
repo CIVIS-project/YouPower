@@ -398,7 +398,7 @@ describe('models', function() {
 
           var storedRating = _.find(aComments, function(aComment) {
             return String(aComment._id) === String(id);
-          }).rating;
+          }).numLikes;
 
           storedRating.should.equal(rating);
           done();
@@ -416,7 +416,7 @@ describe('models', function() {
           return done(err);
         }
 
-        models.actionComments.rate(actionId, id, user, -1, function(err) {
+        models.actionComments.rate(actionId, id, user, 0, function(err) {
           if (err) {
             return done(err);
           }
@@ -426,9 +426,9 @@ describe('models', function() {
             }
             var storedRating = _.find(aComments, function(aComment) {
               return String(aComment._id) === String(id);
-            }).rating;
+            }).numLikes;
 
-            storedRating.should.equal(-1);
+            storedRating.should.equal(0);
             done();
           });
         });

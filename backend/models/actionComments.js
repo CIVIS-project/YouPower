@@ -45,9 +45,11 @@ var ActionComment = mongoose.model('ActionComment', ActionCommentSchema);
 var calcRating = function(aComment, userId) {
   var totalRating = 0;
   _.each(aComment.ratings, function(rating) {
-    totalRating += rating.value;
+    if (rating.value) {
+      totalRating += 1;
+    }
   });
-  aComment.rating = totalRating;
+  aComment.numLikes = totalRating;
 
   // include user's rating
   userId = String(userId);
@@ -151,9 +153,9 @@ exports.rate = function(actionId, commentId, user, rating, cb) {
     } else if (!aComment) {
       cb('Action comment not found');
     } else {
-      // only allow values -1, 0, 1
-      if (rating !== -1 && rating !== 0 && rating !== 1) {
-        return cb('invalid rating! should be -1, 0 or 1');
+      // only allow values 0, 1
+      if (rating !== 0 && rating !== 1) {
+        return cb('invalid rating! should be 0 or 1');
       }
 
       aComment.ratings[user._id] = {

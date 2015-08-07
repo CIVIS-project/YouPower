@@ -148,7 +148,7 @@ router.get('/comment/:commentId/picture', auth.authenticate(), function(req, res
  *     "name": "Test User",
  *     "email": "testuser1@test.com",
  *     "comment": "This is an amazing and easy to perform action!",
- *     "rating": 42,
+ *     "numLikes": 42,
  *     "date": "2015-07-01T12:04:33.599Z",
  *     "__v": 0,
  *   },
@@ -209,8 +209,7 @@ router.delete('/:actionId/comment/:commentId', auth.authenticate(), function(req
  *
  * @apiParam {String} actionId MongoId of action
  * @apiParam {String} commentId MongoId of action comment
- * @apiParam {Number} rating Rating of action (-1, 0 or 1. Means downvote, vote
- * abstain, upvote)
+ * @apiParam {Number} rating Rating of action (0 or 1. Means unlike, like)
  *
  * @apiExample {curl} Example usage:
  *  # Get API token via /api/user/token
@@ -231,7 +230,7 @@ router.delete('/:actionId/comment/:commentId', auth.authenticate(), function(req
  *     "comment": "This is an amazing and easy to perform action!",
  *     "date": "2015-07-24T07:29:33.227Z",
  *     "__v": 0,
- *     "rating": 42,
+ *     "numLikes": 42,
  *     "hasPicture": false
  *   }
  */
