@@ -31,11 +31,42 @@ function ActionsListCtrl($scope, $state, $stateParams, Actions) {
   $scope.postComment = function(action){
 
     Actions.postComment(
-        {actionId: action._id},{comment:$scope.comment.text}).$promise.then(function(){
+        {actionId: action._id},{comment:$scope.comment.text}).$promise.then(function(data){
 
           console.log($scope.comment.text);
-          console.log(action);
+          console.log(data);
 
+          $scope.comment.text = '';
+          $scope.comment.show = !$scope.comment.show; 
+
+          //add action to list 
+          $scope.comments.unshift(data);
+
+    });
+  }
+
+  $scope.deleteComment = function(comment){
+
+    Actions.deleteComment(
+        {actionId: comment.actionId, commentId: comment._id }).$promise.then(function(data){
+
+          console.log(comment);
+          console.log(data);
+
+          //delete action in list 
+
+    });
+  }
+
+  $scope.likeComment = function(comment){
+
+    Actions.likeComment(
+        {actionId: comment.actionId, commentId: comment._id}, {rating: 1}).$promise.then(function(data){
+
+          console.log(comment);
+          console.log(data);
+
+          //delete action in list 
 
     });
   }

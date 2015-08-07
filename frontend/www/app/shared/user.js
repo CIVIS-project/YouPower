@@ -58,6 +58,10 @@ angular.module('civis.youpower')
     feedback : {
       method: 'POST', 
       url: HOST + '/api/feedback'
+    },
+    getPicture : {
+      method: 'GET', 
+      url: HOST + '/api/user/profilePicture/:userId'
     }
   });
 });

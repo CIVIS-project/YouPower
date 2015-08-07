@@ -3,7 +3,7 @@
   <div class="list card">
     <a class="item item-thumbnail-left item-text-wrap" href="#">
       <!-- <img src="{{currentUser.profile.imageUrl}}"> -->
-      <img src="img/Martijn.jpg">
+      <img ng-src="data:image/png;base64,{{userPictures[currentUser._id].image}}"/>
       <h2>{{currentUser.email}}</h2>
       <p>Password updated 6 months ago</p> <!-- todo -->
     </a>

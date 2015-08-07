@@ -25,6 +25,14 @@ angular.module('civis.youpower')
       method: 'POST', 
       url: HOST + '/api/action/:actionId/comment'
     },
+    deleteComment : {
+      method: 'DELETE', 
+      url: HOST + '/api/action/:actionId/comment/:commentId'
+    },
+    likeComment : {
+      method: 'PUT', 
+      url: HOST + '/api/action/:actionId/comment/:commentId/rate'
+    },
     getComments : {
       method: 'GET', 
       isArray: true,

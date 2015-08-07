@@ -7,9 +7,26 @@ details (since this is after the user logs in).
 ----------------------------------------------*/
 function AppCtrl($scope,User,Actions) {
 
+
+	$scope.userPictures = {}; 
+
 	User.get().$promise.then(function(data) {
-		
+
 		$scope.currentUser = data;
+
+		//get user picture
+		User.getPicture({userId: $scope.currentUser._id}).$promise.then(function(data){
+			
+			console.log("user picture");
+			console.log(data); 
+			var b64 = btoa(data); //this doesnot work 
+			console.log(b64); 
+			$scope.userPictures[$scope.currentUser._id]=({_id: $scope.currentUser._id, image: b64});
+
+			console.log($scope.userPictures); 
+
+		});
+
 		$scope.loadComments($scope.currentUser.actions); 
 
 		console.log("load user data");
@@ -29,15 +46,22 @@ function AppCtrl($scope,User,Actions) {
 						Actions.getComments({actionId: action._id}).$promise.then(function(data){
 
 							$scope.comments = $scope.comments.concat(data);
-							console.log($scope.comments); 
+
+							data.forEach(function(comment) {
+								//load user picture
+
+								
+
+							    console.log(comment);
+
+							});
+
 
 						});
 					}
 				}
 			}
 		}
-		//console.log(comments); 
-		//return comments; 
 	}
 
 	$scope.salut = function(){
