@@ -75,7 +75,7 @@ exports.create = function(community, cb) {
 
 // get community information
 
-exports.get = function(id, cb) {
+exports.get = function(id, user, cb) {
   Community.findOne({
     _id: id
   }, function(err, community) {
@@ -85,6 +85,11 @@ exports.get = function(id, cb) {
       cb('Community not found');
     } else {
       community = community.toObject();
+
+      // include user's rating
+      if (user && community.ratings[user._id]) {
+        community.userRating = community.ratings[user].rating;
+      }
       cb(null, community);
     }
   });
@@ -207,7 +212,7 @@ exports.delete = function(id, cb) {
   }, cb);
 };
 
-exports.all = function(limit, skip, includeRatings, cb) {
+exports.all = function(limit, skip, includeRatings, user, cb) {
   Community
   .find({})
   .skip(skip)
@@ -224,6 +229,13 @@ exports.all = function(limit, skip, includeRatings, cb) {
 
       // calculate rating stats for each action
       _.each(communities, includeRatingStats);
+
+      // include user's rating
+      _.each(communities, function(community) {
+        if (user && community.ratings[user._id]) {
+          community.userRating = community.ratings[user._id].rating;
+        }
+      });
 
       // get rid of ratings
       if (!includeRatings) {
