@@ -12,7 +12,7 @@
   </div>
   <div class="item item-body">
     <ng-include src="'app/actions/actionDescription.html'"></ng-include>
-    <span class="text-small">You started on {{action.startedDate | date: "yyyy-MM-dd"}}. <a href="#" class="balanced">{{action.participants}} Participant{{action.participants > 1 ? 's' : ''}}.</a> 
+    <span class="text-small">You started on {{action.startedDate | date: "yyyy-MM-dd"}}. <a href="#" class="balanced">{{num=action.participant}} Participant{{num>0 ? 's':''}}</a> 
     </span>
   </div>
 </div>
@@ -57,8 +57,8 @@
   <div class="item item-avatar item-text-wrap" ng-repeat="comment in comments | filter: {actionId: action._id}" > <!-- ng-if="comment.actionId == action._id" -->
     <img ng-src="comment.picture"><h3>{{comment.name}} <span class="text-small">{{comment.date| date: "yyyy-MM-dd"}}</span></h3>
     <p>{{comment.comment}}</p>
-    <a class="button button-clear button-stable icon-left ion-close button-small" ng-click="deleteComment(comment)"> Delete</a>
-    <a class="button button-clear button-stable icon-left ion-thumbsup button-small" ng-click="likeComment(comment)"> {{comment.rating}} Like</a>
+    <a class="button button-clear button-stable icon-left ion-close button-small" ng-if="comment.userId == currentUser._id" ng-click="deleteComment(comment)"> Delete</a>
+    <a class="button button-clear button-stable icon-left ion-thumbsup button-small" ng-click="likeComment(comment)"> {{num=comment.numLikes}} Like{{num>0? 's':''}}</a>
   </div>
 </div>
 
