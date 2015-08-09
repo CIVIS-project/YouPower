@@ -57,8 +57,8 @@
   <div class="item item-avatar item-text-wrap" ng-repeat="comment in comments | filter: {actionId: action._id}" > <!-- ng-if="comment.actionId == action._id" -->
     <img ng-src="comment.picture"><h3>{{comment.name}} <span class="text-small">{{comment.date| date: "yyyy-MM-dd"}}</span></h3>
     <p>{{comment.comment}}</p>
-    <a class="button icon-left ion-close button-clear button-dark button-small" ng-click="deleteComment(comment)"> Delete</a>
-    <a class="button button-balanced icon-left ion-thumbsup button-clear button-small" ng-click="likeComment(comment)"> {{comment.rating}} Like</a>
+    <a class="button button-clear button-stable icon-left ion-close button-small" ng-click="deleteComment(comment)"> Delete</a>
+    <a class="button button-clear button-stable icon-left ion-thumbsup button-small" ng-click="likeComment(comment)"> {{comment.rating}} Like</a>
   </div>
 </div>
 

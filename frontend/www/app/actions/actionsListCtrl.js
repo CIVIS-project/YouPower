@@ -22,22 +22,15 @@ function ActionsListCtrl($scope, $state, $stateParams, Actions) {
   }
 
 
-  $scope.getComments = function(action){
-    
-
-  }
-
-
   $scope.postComment = function(action){
 
     Actions.postComment(
         {actionId: action._id},{comment:$scope.comment.text}).$promise.then(function(data){
 
-          console.log($scope.comment.text);
-          console.log(data);
+          // console.log($scope.comment.text);
+          // console.log(data);
 
-          $scope.comment.text = '';
-          $scope.comment.show = !$scope.comment.show; 
+          $scope.comment = {text: '', show: false}; 
 
           //add action to list 
           $scope.comments.unshift(data);
@@ -50,10 +43,11 @@ function ActionsListCtrl($scope, $state, $stateParams, Actions) {
     Actions.deleteComment(
         {actionId: comment.actionId, commentId: comment._id }).$promise.then(function(data){
 
-          console.log(comment);
-          console.log(data);
+          // console.log(comment);
+          // console.log(data);
 
           //delete action in list 
+          $scope.comments.splice($scope.comments.indexOf(comment), 1);
 
     });
   }
