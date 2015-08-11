@@ -118,7 +118,7 @@ exports.get = function(id, user, cb) {
 
       // include user's rating
       if (user && action.ratings && action.ratings[user._id]) {
-        action.userRating = action.ratings[user].rating;
+        action.userRating = action.ratings[user._id].rating;
       }
 
       // fetch number of comments to this action
