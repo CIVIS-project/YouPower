@@ -14,7 +14,6 @@ var defaultPath = path.dirname(require.main.filename) + '/res/missingProfile.png
 
 router.use('/action', require('./userAction'));
 router.use('/community', require('./community'));
-router.use('/challenge', require('./userChallenge'));
 
 /**
  * @api {post} /user/register New user registration

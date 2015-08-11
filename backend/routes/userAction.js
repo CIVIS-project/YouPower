@@ -100,7 +100,7 @@ router.post('/:actionId', auth.authenticate(), function(req, res) {
     if (!err) {
       achievements.updateAchievement(req.user, 'actionsDone', function(oldVal) {
         // make sure we never decerase the action count
-        return Math.max(oldVal, user.actions.done.length);
+        return Math.max(oldVal, user.actions ? user.actions.done.length : 0);
       });
     }
 

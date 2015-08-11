@@ -328,7 +328,9 @@ exports.setActionState = function(user, actionId, state, postponed, cb) {
     user.markModified('actions.done');
     user.markModified('actions.declined');
     user.markModified('actions.na');
-    user.save(cb);
+    user.save(function(err) {
+      cb(err, user.actions);
+    });
   });
 };
 
