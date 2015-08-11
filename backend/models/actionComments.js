@@ -130,6 +130,30 @@ exports.get = function(actionId, limit, skip, user, cb) {
   });
 };
 
+exports.getByUser = function(user, limit, skip, cb) {
+  ActionComment.find({userId: user._id})
+  .sort({'date': -1})
+  .skip(skip)
+  .limit(limit)
+  .exec(function(err, aComments) {
+    if (err) {
+      cb(err);
+    } else if (aComments && !aComments.length) {
+      cb(null, []);
+    } else {
+      for (var i = 0; i < aComments.length; i++) {
+        aComments[i] = aComments[i].toObject();
+      }
+
+      _.each(aComments, function(aComment) {
+        calcRating(aComment, user ? user._id : null);
+      });
+
+      cb(null, aComments);
+    }
+  });
+};
+
 exports.delete = function(actionId, id, cb) {
   ActionComment.remove({
     actionId: actionId,

@@ -53,7 +53,23 @@ exports.get = function(communityId, limit, skip, cb) {
     if (err) {
       cb(err);
     } else if (communityComments && !communityComments.length) {
-      cb('Comments not found');
+      cb(null, []);
+    } else {
+      cb(null, communityComments);
+    }
+  });
+};
+
+exports.getByUser = function(user, limit, skip, cb) {
+  CommunityComment.find({userId: user._id})
+  .sort({'date': -1})
+  .skip(skip)
+  .limit(limit)
+  .exec(function(err, communityComments) {
+    if (err) {
+      cb(err);
+    } else if (communityComments && !communityComments.length) {
+      cb(null, []);
     } else {
       cb(null, communityComments);
     }

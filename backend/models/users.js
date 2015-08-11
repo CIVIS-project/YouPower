@@ -7,6 +7,9 @@ var Schema = mongoose.Schema;
 var passportLocalMongoose = require('passport-local-mongoose');
 var escapeStringRegexp = require('escape-string-regexp');
 var achievements = require('../common/achievements');
+var actionComments = require('./actionComments');
+var communityComments = require('./communityComments');
+var async = require('async');
 var _ = require('underscore');
 
 var UserSchema = new Schema({
@@ -98,22 +101,49 @@ exports.getProfile = function(id, cb) {
     var totalLeaves = 0;
 
     _.each(user.actions.done, function(action) {
-      // leaves for actions: impact * 5 leaves
-      totalLeaves += action.impact * 5;
+      // leaves for actions: impact + effort
+      totalLeaves += action.impact + action.effort;
     });
 
     // leaves for feedback: 1 leaf / feedback
     totalLeaves += user.numFeedback;
 
-    cb(null, {
-      _id: id,
-      email: user.email,
-      profile: user.profile,
-      actions: user.actions,
-      accessToken: user.accessToken,
-      facebookId: user.facebookId,
-      leaves: totalLeaves,
-      energyConsumption: {} // TODO
+    async.parallel([
+      function(cb) {
+        actionComments.getByUser(user, null, null, function(err, aComments) {
+          if (err) {
+            return cb(err);
+          }
+          // leaves for action comments: 1 leaf / comment
+          totalLeaves += aComments.length;
+          cb();
+        });
+      },
+      function(cb) {
+        communityComments.getByUser(user, null, null, function(err, cComments) {
+          if (err) {
+            return cb(err);
+          }
+          // leaves for community comments: 1 leaf / comment
+          totalLeaves += cComments.length;
+          cb();
+        });
+      }
+    ], function(err) {
+      if (err) {
+        return cb(err);
+      }
+
+      cb(null, {
+        _id: id,
+        email: user.email,
+        profile: user.profile,
+        actions: user.actions,
+        accessToken: user.accessToken,
+        facebookId: user.facebookId,
+        leaves: totalLeaves,
+        energyConsumption: {} // TODO
+      });
     });
   });
 };

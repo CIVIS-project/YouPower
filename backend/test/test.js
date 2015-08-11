@@ -1259,9 +1259,10 @@ describe('models', function() {
         done(err);
       });
     });
-    it('should return error for bogus communityId', function(done) {
-      models.communityComments.get(dummyData.ids[0], null, null, function(err) {
-        done(err ? null : 'no error returned!');
+    it('should return empty array for bogus communityId', function(done) {
+      models.communityComments.get(dummyData.ids[0], null, null, function(err, c) {
+        c.should.be.instanceof(Array).and.be.empty;
+        done(err);
       });
     });
     it('should return error for invalid communityId', function(done) {
