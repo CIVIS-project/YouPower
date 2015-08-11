@@ -172,7 +172,7 @@ exports.removeAppliance = function(id, applianceId, cb) {
   });
 };
 
-exports.joinHouse = function(id, userId, cb) {
+exports.joinHouse = function(id, familyId, userId, cb) {
   Household.findOne({
     apartmentId: id
   }, function(err, household) {
@@ -180,13 +180,28 @@ exports.joinHouse = function(id, userId, cb) {
       cb(err);
     } else if (!household) {
       cb('Household not found');
-    } else if (household.members.indexOf(userId) === -1) {
+    } else if (household.smartMeterStatus === 'true')  {
+      Household.findOne({
+        familyId: familyId
+      }, function(err, family) {
+        if (err) {
+          cb(err);
+        } else if (!family) {
+          cb('Family ID not found');
+        } else if (family.members.indexOf(userId) === -1) {
+          family.members.push(userId);
+          // Increase family adult count by 1.
+          family.familyComposition.NumAdults++;
+          family.save(cb);
+        } else {
+          cb('User already a member of the household');
+        }
+      });
+    } else {
       household.members.push(userId);
       // Increase family adult count by 1.
       household.familyComposition.NumAdults++;
       household.save(cb);
-    } else {
-      cb('User already a member of the household');
     }
   });
 };

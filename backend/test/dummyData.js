@@ -31,6 +31,16 @@ exports.users = [
       dob: new Date(43),
       photo: 'http://dummy2'
     }
+  },
+  {
+    _id: newId(),
+    email: 'testUser3@foo.com',
+    password: 'foobar3',
+    profile: {
+      name: 'my nick2',
+      dob: new Date(43),
+      photo: 'http://dummy3'
+    }
   }
 ];
 
@@ -109,6 +119,11 @@ exports.usagePoint = [
     _id: newId(),
     apartmentId: '3',
     familyId: 'F3'
+  },
+  {
+    _id: newId(),
+    apartmentId: '4',
+    familyId: 'F4'
   }
 ];
 
@@ -154,7 +169,7 @@ exports.households = [
   },
   {
     _id: newId(),
-    apartmentId: exports.usagePoint[2].apartmentId,
+    apartmentId: exports.usagePoint[3].apartmentId,
     familyId: 'F1',
     address: 'my address 2',
     householdType: 'house',

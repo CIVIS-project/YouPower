@@ -1393,7 +1393,7 @@ describe('models', function() {
       });
     });
 
-    it('should connect household to smart meter with family ID', function(done) {
+    it('should connect household to smart meter using family ID', function(done) {
       models.households.connect(dbHouseholds[0]._id,
         'F2', function(err) {
           if (err) {
@@ -1487,18 +1487,56 @@ describe('models', function() {
       });
     });
 
-    it('should join a household with apartment ID', function(done) {
+    it('should join a household with apartment ID w/o smart meter', function(done) {
       // TODO: more thorough testing (add more than one member etc)
-
-      models.households.joinHouse(dbHouseholds[0].apartmentId, dbUsers[1]._id, function(err) {
-          if (err) {
-            return done(err);
-          }
-          models.households.getByApartmentId(dbHouseholds[0].apartmentId, function(err, household) {
-            household.members.length.should.equal(2);
-            done(err);
+      async.series([
+        function(cb) {
+          models.households.joinHouse(dbHouseholds[0].apartmentId,
+            dummyData.usagePoint[1].familyId, dbUsers[1]._id, function(err) {
+            cb(err);
           });
+        },
+        function(cb) {
+          models.households
+          .connect(dbHouseholds[0]._id, dummyData.usagePoint[2].familyId, function(err) {
+            cb(err);
+          });
+        }
+    ], function(err) {
+        if (err) {
+          return done(err);
+        }
+        models.households.get(dbHouseholds[0]._id, function(err, household) {
+          household.members.length.should.equal(2);
+          done(err);
         });
+      });
+    });
+
+    it('should join a household with apartment ID & family ID with smart meter', function(done) {
+      // TODO: more thorough testing (add more than one member etc)
+      async.series([
+        function(cb) {
+          models.households
+          .connect(dbHouseholds[0]._id, dummyData.usagePoint[2].familyId, function(err) {
+            cb(err);
+          });
+        },
+        function(cb) {
+        models.households.joinHouse(dummyData.usagePoint[2].apartmentId,
+          dummyData.usagePoint[2].familyId, dbUsers[2]._id, function(err) {
+          cb(err);
+        });
+      }
+    ], function(err) {
+        if (err) {
+          return done(err);
+        }
+        models.households.get(dbHouseholds[0]._id, function(err, household) {
+          household.members.length.should.equal(2);
+          done(err);
+        });
+      });
     });
 
     it('should return error when removing member from bogus household id', function(done) {
