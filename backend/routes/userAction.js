@@ -12,7 +12,12 @@ var Log = require('../models').logs;
  * @api {get} /user/action Get user's action list
  * @apiGroup User Action
  *
- * @apiVersion 1.0.0
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/user/action
  */
 router.get('/', auth.authenticate(), function(req, res) {
   res.json(req.user.actions);
@@ -29,6 +34,13 @@ router.get('/', auth.authenticate(), function(req, res) {
  * @api {get} /user/action/suggested Get list of suggested user actions
  * @apiGroup User Action
  * @apiDescription Returns top three most recent actions that the user has not tried
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/user/action/suggested
  *
  * @apiSuccessExample {json} Success-Response:
  * [
@@ -69,6 +81,16 @@ router.get('/suggested', auth.authenticate(), function(req, res) {
  * 'done', 'canceled', 'declined', 'na'.
  * @apiParam {Date} postponed Must be provided if state is 'pending'. Specifies
  * at which time the user will be reminded of the action again.
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X POST -H "Authorization: Bearer $API_TOKEN" -H "Content-Type: application/json" -d \
+ *  '{
+ *    "state": "inProgress"
+ *  }' \
+ *  http://localhost:3000/api/user/action/55b230d69a8c96f177154fa1
  *
  * @apiVersion 1.0.0
  */

@@ -444,6 +444,7 @@ router.put('/rate/:id', auth.authenticate(), function(req, res) {
  *     "date": "2015-07-01T12:04:33.599Z",
  *     "name": "Disable standby on your devices",
  *     "numLikes": 4,
+ *     "numComments": 42,
  *     "ratings": [
  *       {
  *         "_id": "testUser",

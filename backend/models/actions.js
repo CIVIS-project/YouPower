@@ -5,6 +5,8 @@
 var mongoose = require('mongoose');
 var _ = require('underscore');
 var Schema = mongoose.Schema;
+var User = require('./users');
+var actionComments = require('./actionComments');
 var escapeStringRegexp = require('escape-string-regexp');
 
 var ActionSchema = new Schema({
@@ -118,7 +120,31 @@ exports.get = function(id, user, cb) {
       if (user && action.ratings[user._id]) {
         action.userRating = action.ratings[user].rating;
       }
-      cb(null, action);
+
+      // fetch number of comments to this action
+      actionComments.get(id, null, null, null, function(err, aComments) {
+        if (err) {
+          return cb(err);
+        }
+
+        action.numComments = aComments.length;
+
+        // fetch number of users doing this action
+        User.model.find({
+          $or: [
+            {'actions.inProgress': {$elemMatch: {_id: id}}},
+            {'actions.done': {$elemMatch: {_id: id}}}
+          ]
+        }, function(err, users) {
+          if (err) {
+            return cb(err);
+          }
+
+          action.numUsers = users.length;
+
+          cb(null, action);
+        });
+      });
     }
   });
 };
@@ -151,8 +177,8 @@ exports.all = function(limit, skip, includeRatings, user, cb) {
 
       // include user's rating
       _.each(actions, function(action) {
-        if (user && action.ratings[user._id]) {
-          action.userRating = action.ratings[user._id].rating;
+        if (user && action.ratings && action.ratings[String(user._id)]) {
+          action.userRating = action.ratings[String(user._id)].rating;
         }
       });
 
