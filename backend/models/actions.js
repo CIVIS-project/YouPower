@@ -117,7 +117,7 @@ exports.get = function(id, user, cb) {
       includeMeanEffort(action);
 
       // include user's rating
-      if (user && action.ratings[user._id]) {
+      if (user && action.ratings && action.ratings[user._id]) {
         action.userRating = action.ratings[user].rating;
       }
 
