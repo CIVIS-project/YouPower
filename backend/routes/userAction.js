@@ -18,6 +18,33 @@ var Log = require('../models').logs;
  *
  *  curl -i -X GET -H "Authorization: Bearer $API_TOKEN" \
  *  http://localhost:3000/api/user/action
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ *   "pending": {},
+ *   "inProgress": {
+ *     "55b230d69a8c96f177154fa1": {
+ *       "_id": "55b230d69a8c96f177154fa1",
+ *       "name": "Disable standby",
+ *       "description": "Turn off and unplug standby power of TV, stereo, computer, etc.",
+ *       "effort": 2,
+ *       "impact": 2,
+ *       "category": null,
+ *       "startedDate": "2015-08-11T10:31:39.934Z"
+ *     },
+ *     "55b230d69a8c96f177154fa2": {
+ *       "startedDate": "2015-08-11T10:43:33.485Z",
+ *       "impact": 3,
+ *       "effort": 4,
+ *       "description": "Find and seal up leaks",
+ *       "name": "Leaks",
+ *       "_id": "55b230d69a8c96f177154fa2"
+ *     }
+ *   },
+ *   "done": {},
+ *   "declined": {},
+ *   "na": {}
+ * }
  */
 router.get('/', auth.authenticate(), function(req, res) {
   res.json(req.user.actions);
@@ -92,7 +119,32 @@ router.get('/suggested', auth.authenticate(), function(req, res) {
  *  }' \
  *  http://localhost:3000/api/user/action/55b230d69a8c96f177154fa1
  *
- * @apiVersion 1.0.0
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ *   "pending": {},
+ *   "inProgress": {
+ *     "55b230d69a8c96f177154fa1": {
+ *       "_id": "55b230d69a8c96f177154fa1",
+ *       "name": "Disable standby",
+ *       "description": "Turn off and unplug standby power of TV, stereo, computer, etc.",
+ *       "effort": 2,
+ *       "impact": 2,
+ *       "category": null,
+ *       "startedDate": "2015-08-11T10:31:39.934Z"
+ *     },
+ *     "55b230d69a8c96f177154fa2": {
+ *       "startedDate": "2015-08-11T10:43:33.485Z",
+ *       "impact": 3,
+ *       "effort": 4,
+ *       "description": "Find and seal up leaks",
+ *       "name": "Leaks",
+ *       "_id": "55b230d69a8c96f177154fa2"
+ *     }
+ *   },
+ *   "done": {},
+ *   "declined": {},
+ *   "na": {}
+ * }
  */
 router.post('/:actionId', auth.authenticate(), function(req, res) {
   User.setActionState(req.user, req.params.actionId, req.body.state, req.body.postponed,
