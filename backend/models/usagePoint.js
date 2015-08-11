@@ -9,6 +9,11 @@ var UsagePointSchema = new Schema({
     required: true,
     index: {unique: true}
   },
+  familyId: {
+    type: String,
+    required: true,
+    unique: true,
+  },
   city: {
     type: String,
     required: false
@@ -42,18 +47,11 @@ var UsagePointSchema = new Schema({
 
 var UsagePoint = mongoose.model('UsagePoint', UsagePointSchema);
 
-exports.create = function(usagepoint, cb1) {
+exports.create = function(usagepoint, cb) {
   UsagePoint.create({
-    apartmentId: usagepoint
-  }, function(err, up) {
-    if (err) {
-      //console.log('USAGEPOINT2Fail =', err);
-      cb1 (err);
-    } else {
-      //console.log('USAGEPOINT2PAss =', up);
-      cb1(null, up);
-    }
-  });
+    apartmentId: usagepoint.apartmentId,
+    familyId: usagepoint.familyId
+  }, cb);
 };
 
 exports.getUsagePoint = function(apartmentId, cb) {

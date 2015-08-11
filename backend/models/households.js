@@ -4,7 +4,7 @@
 
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-
+var UsagePoint = require('./usagePoint');
 //Appliance Schema
 var applianceSchema = new Schema({
   appliance: String,
@@ -16,6 +16,12 @@ var HouseSchema = new Schema({
     type: String,
     required: true,
     unique: true
+  },
+  familyId: {
+    type: String,
+    ref: 'UsagePoint',
+    unique: true,
+    default: 'F0'
   },
   address: {
     type: String,
@@ -54,7 +60,11 @@ var HouseSchema = new Schema({
       ref: 'User',
       required: true
     }
-  ]
+  ],
+  smartMeterStatus: {
+    type: Boolean,
+    default: false
+  }
 });
 
 var Household = mongoose.model('Household', HouseSchema);
@@ -63,12 +73,14 @@ var Household = mongoose.model('Household', HouseSchema);
 exports.create = function(household, cb) {
   Household.create({
     apartmentId: household.apartmentId,
+    familyId: household.familyId,
     address: household.address,
     householdType: household.householdType,
     householdSize: household.householdSize,
     familyComposition: household.familyComposition,
     appliancesList: household.appliancesList,
     energyVal: household.energyVal,
+    smartMeterStatus: household.smartMeterStatus,
     members: household.members // TODO : need to verify.
   }, cb);
 };
@@ -160,6 +172,54 @@ exports.removeAppliance = function(id, applianceId, cb) {
   });
 };
 
+exports.joinHouse = function(id, userId, cb) {
+  Household.findOne({
+    apartmentId: id
+  }, function(err, household) {
+    if (err) {
+      cb(err);
+    } else if (!household) {
+      cb('Household not found');
+    } else if (household.members.indexOf(userId) === -1) {
+      household.members.push(userId);
+      // Increase family adult count by 1.
+      household.familyComposition.NumAdults++;
+      household.save(cb);
+    } else {
+      cb('User already a member of the household');
+    }
+  });
+};
+
+//Connect to smart meter
+exports.connect = function(id, familyId, cb) {
+  Household.findOne({
+    _id: id
+  }, function(err, household) {
+    if (err) {
+      cb(err);
+    } else if (!household) {
+      cb('Household not found');
+    } else {
+      //set apartment ID from usagepoint to apartment ID of household
+      UsagePoint.model
+      .findOne({familyId: familyId})
+      .exec(function(err, family) {
+        if (err) {
+          cb(err);
+        } else if (!family) {
+          cb('Family ID not found');
+        } else {
+          household.smartMeterStatus = 'true';
+          household.apartmentId = family.apartmentId;
+          household.familyId = family.familyId;
+          household.save(cb);
+        }
+      });
+    }
+  });
+};
+
 //add member to the household
 exports.addMember = function(id, userId, cb) {
   Household.findById({
@@ -169,11 +229,13 @@ exports.addMember = function(id, userId, cb) {
       cb(err);
     } else if (!household) {
       cb('Household not found');
-    } else {
+    } else if (household.members.indexOf(userId) === -1) {
       household.members.push(userId);
-      // Increase family adults count by 1.
+      // Increase family adult count by 1.
       household.familyComposition.NumAdults++;
       household.save(cb);
+    } else {
+      cb('User already a member of the household');
     }
   });
 };

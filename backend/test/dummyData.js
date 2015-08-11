@@ -94,6 +94,24 @@ exports.actions = [
   }
 ];
 
+exports.usagePoint = [
+  {
+    _id: newId(),
+    apartmentId: '1',
+    familyId: 'F1'
+  },
+  {
+    _id: newId(),
+    apartmentId: '2',
+    familyId: 'F2'
+  },
+  {
+    _id: newId(),
+    apartmentId: '3',
+    familyId: 'F3'
+  }
+];
+
 exports.communities = [
   {
     _id: newId(),
@@ -131,11 +149,13 @@ exports.households = [
     energyVal: '42',
     members: [
       exports.users[0]._id
-    ]
+    ],
+    smartMeterStatus: false
   },
   {
     _id: newId(),
-    apartmentId: 1235,
+    apartmentId: exports.usagePoint[2].apartmentId,
+    familyId: 'F1',
     address: 'my address 2',
     householdType: 'house',
     householdSize: '40m2',
@@ -146,7 +166,8 @@ exports.households = [
     energyVal: '43',
     members: [
       exports.users[1]._id
-    ]
+    ],
+    smartMeterStatus: false
   }
 ];
 
@@ -258,21 +279,6 @@ exports.logs = [
       hello: 'world2'
     },
     date: new Date(43)
-  }
-];
-
-exports.usagepoints = [
-  {
-    _id: newId(),
-    apartmentId: '1'
-  },
-  {
-    _id: newId(),
-    apartmentId: '2'
-  },
-  {
-    _id: newId(),
-    apartmentId: '3'
   }
 ];
 

@@ -1318,6 +1318,7 @@ describe('models', function() {
   describe('household', function() {
     var dbHouseholds = [];
     var dbUsers = [];
+    var dbUsage = [];
 
     // clear db before starting
     before(function() {
@@ -1327,6 +1328,12 @@ describe('models', function() {
     beforeEach(function(done) {
       // reset challenges and user collections
       async.parallel([
+        function(cb) {
+          resetModel('usagePoint', function(err, usagePoint) {
+            dbUsage = usagePoint;
+            cb(err);
+          });
+        },
         function(cb) {
           resetModel('households', function(err, households) {
             dbHouseholds = households;
@@ -1386,6 +1393,19 @@ describe('models', function() {
       });
     });
 
+    it('should connect household to smart meter with family ID', function(done) {
+      models.households.connect(dbHouseholds[0]._id,
+        'F2', function(err) {
+          if (err) {
+            return done(err);
+          }
+          models.households.get(dbHouseholds[0]._id, function(err, household) {
+            household.apartmentId.should.equal(dummyData.usagePoint[1].apartmentId);
+            done(err);
+          });
+        });
+    });
+
     it('should return no household for bogus id', function(done) {
       models.households.get(dummyData.ids[0], function(err) {
         done(err ? null : 'bogus household fetch did return a household!');
@@ -1408,16 +1428,30 @@ describe('models', function() {
 
     it('should add member to household', function(done) {
       // TODO: more thorough testing (add more than one member etc)
-      models.households.addMember(dbHouseholds[0]._id, dbUsers[0]._id, function(err) {
-        if (err) {
-          return done(err);
-        }
-        models.households.get(dbHouseholds[0]._id, function(err, household) {
-          household.members[0].toString().should.equal(dbUsers[0]._id.toString());
-          done(err);
+
+      models.households.addMember(dbHouseholds[0]._id, dbUsers[1]._id, function(err) {
+          if (err) {
+            return done(err);
+          }
+          models.households.get(dbHouseholds[0]._id, function(err, household) {
+            household.members.length.should.equal(2);
+            done(err);
+          });
         });
-      });
     });
+
+    // How to check error thrown by the model?
+    it('should add unique member to household', function(done) {
+      // TODO: more thorough testing (add more than one member etc)
+
+      models.households.addMember(dbHouseholds[0]._id, dbUsers[0]._id, function(err) {
+        done(err ? null : 'User already existing in household!');
+      });
+      models.households.get(dbHouseholds[0]._id, function(err, household) {
+          household.members.length.should.equal(1);
+        });
+    });
+
     it('should return error when adding to bogus household id', function(done) {
       models.households.addMember(dummyData.ids[0], dbUsers[0]._id, function(err) {
         done(err ? null : 'bogus household id member add did not return error!');
@@ -1433,12 +1467,12 @@ describe('models', function() {
       // TODO: more thorough testing (remove more than one member etc)
       async.series([
         function(cb) {
-          models.households.addMember(dbHouseholds[0]._id, dbUsers[0]._id, function(err) {
+          models.households.removeMember(dbHouseholds[0]._id, dbUsers[0]._id, function(err) {
             cb(err);
           });
         },
         function(cb) {
-          models.households.removeMember(dbHouseholds[0]._id, dbUsers[0]._id, function(err) {
+          models.households.removeMember(dbHouseholds[0]._id, dbUsers[1]._id, function(err) {
             cb(err);
           });
         }
@@ -1447,11 +1481,26 @@ describe('models', function() {
           return done(err);
         }
         models.households.get(dbHouseholds[0]._id, function(err, household) {
-          should.not.exist(household.members[0]);
+          household.members.length.should.equal(0);
           done(err);
         });
       });
     });
+
+    it('should join a household with apartment ID', function(done) {
+      // TODO: more thorough testing (add more than one member etc)
+
+      models.households.joinHouse(dbHouseholds[0].apartmentId, dbUsers[1]._id, function(err) {
+          if (err) {
+            return done(err);
+          }
+          models.households.getByApartmentId(dbHouseholds[0].apartmentId, function(err, household) {
+            household.members.length.should.equal(2);
+            done(err);
+          });
+        });
+    });
+
     it('should return error when removing member from bogus household id', function(done) {
       models.households.removeMember(dummyData.ids[0], dbUsers[0]._id, function(err) {
         done(err ? null : 'bogus household id member remove did not return error!');
@@ -1552,20 +1601,20 @@ describe('models', function() {
       });
     });
     it('should return household by apartment id', function(done) {
-      models.households.getByApartmentId(dummyData.households[0].apartmentId,
+      models.households.getByApartmentId(dbHouseholds[0].apartmentId,
       function(err, household) {
         household.address.should.equal(dummyData.households[0].address);
         done(err);
       });
     });
     it('should return error for bogus apartment id', function(done) {
-      models.households.getByApartmentId(dummyData.ids[0],
+      models.households.get(dummyData.ids[0],
       function(err) {
         done(err ? null : 'bogus apartment by id fetch did not error!');
       });
     });
     it('should return error for invalid apartment id', function(done) {
-      models.households.getByApartmentId('foo bar',
+      models.households.get('foo bar',
       function(err) {
         done(err ? null : 'invalid id in apartment by id fetch did not error!');
       });
