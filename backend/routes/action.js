@@ -94,6 +94,13 @@ router.post('/comment/:commentId/picture', auth.authenticate(), function(req, re
       res.successRes(err, {msg: 'success!'});
     });
   });
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Comment Pictures',
+    type: 'create',
+    data: req.params.commentId
+  });
 });
 
 /**
@@ -119,6 +126,13 @@ router.get('/comment/:commentId/picture', auth.authenticate(), function(req, res
   var stream = fs.createReadStream(imgPath);
   stream.pipe(res);
   stream.on('error', res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Comment Pictures',
+    type: 'get',
+    data: req.params.commentId
+  });
 });
 
 /**
@@ -648,6 +662,13 @@ router.post('/:actionId/picture', auth.authenticate(), function(req, res) {
 
   var imgPath = path.join(common.getUserHome(), '.youpower', 'actionPictures');
   common.uploadPicture(req, 512, imgPath, req.params.actionId, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Action Pictures',
+    type: 'create',
+    data: req.params.actionId
+  });
 });
 
 /**
@@ -673,6 +694,13 @@ router.get('/:actionId/picture', auth.authenticate(), function(req, res) {
   var stream = fs.createReadStream(imgPath);
   stream.pipe(res);
   stream.on('error', res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Action Pictures',
+    type: 'get',
+    data: req.params.actionId
+  });
 });
 
 /*

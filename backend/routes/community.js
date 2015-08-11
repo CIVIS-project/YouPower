@@ -321,6 +321,12 @@ router.get('/:id', auth.authenticate(), function(req, res) {
  */
 router.get('/list', auth.authenticate(), function(req, res) {
   User.getUserCommunities(req.user._id, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Community',
+    type: 'listAll'
+  });
 });
 
 /**
@@ -503,6 +509,13 @@ router.post('/communityPicture/:communityId', auth.authenticate(), function(req,
 
   var imgPath = path.join(common.getUserHome(), '.youpower', 'communityPictures');
   common.uploadPicture(req, 512, imgPath, req.params.communityId, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Community Picture',
+    type: 'create',
+    data: req.params.communityId
+  });
 });
 
 /**

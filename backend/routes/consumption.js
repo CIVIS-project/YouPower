@@ -4,6 +4,7 @@ var express = require('express');
 var router = express.Router();
 var Consumption = require('../models').consumption;
 var auth = require('../middleware/auth');
+var Log = require('../models').logs;
 
 /**
  * @api {get} /consumption Get energy consumption data
@@ -26,6 +27,13 @@ var auth = require('../middleware/auth');
 //&from=23-Mar-13%207%3A00:00%20PM&to=25-Apr-13%208:30:00%20PM&res=daily"
 router.get('/', auth.authenticate(), function(req, res) {
   Consumption.get(req.body, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Consumption Data',
+    type: 'get',
+    data: req.body
+  });
 });
 
 /**
@@ -71,6 +79,13 @@ router.get('/', auth.authenticate(), function(req, res) {
  */
 router.post('/getAllUsagePointsData', auth.authenticate(), function(req, res) {
   Consumption.getAllUsagePointsData(req.body, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Consumption Data',
+    type: 'getAll',
+    data: req.body
+  });
 });
 
 /**
@@ -115,6 +130,13 @@ router.post('/getAllUsagePointsData', auth.authenticate(), function(req, res) {
  */
 router.get('/getUsagePoint/:apartmentId', auth.authenticate(), function(req, res) {
   Consumption.getUsagePoint(req.params.apartmentId, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Consumption Data',
+    type: 'getUP',
+    data: req.body
+  });
 });
 
 /**
@@ -192,6 +214,13 @@ router.get('/downloadMyData', auth.authenticate(), function(req, res) {
 	req.body.ctype || 'S_CONS',
 	res.successRes
   );
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Consumption Data',
+    type: 'getMyData',
+    data: req.body
+  });
 });
 
 module.exports = router;

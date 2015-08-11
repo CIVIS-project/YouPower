@@ -9,8 +9,7 @@ var Schema = mongoose.Schema;
 
 var LogSchema = new Schema({
   userId: {
-    type: Schema.Types.ObjectId,
-    required: true
+    type: Schema.Types.ObjectId
   },
   category: {
     type: String,

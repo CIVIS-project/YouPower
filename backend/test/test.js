@@ -1619,7 +1619,7 @@ describe('models', function() {
             type: dummyData.logs[0].type,
             data: dummyData.logs[0].data
           }, function(err) {
-            cb(err ? null : 'no error returned!');
+            cb(err ? 'missing userId should not cause error, but did!' : null);
           });
         }, function(cb) {
           models.logs.create({

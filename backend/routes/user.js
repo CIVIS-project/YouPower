@@ -71,6 +71,12 @@ router.post('/register', function(req, res) {
       });
     });
   }
+
+  Log.create({
+    category: 'Register User',
+    type: 'create',
+    data: req.body
+  });
 });
 
 /**
@@ -112,6 +118,12 @@ router.post('/register', function(req, res) {
  */
 router.get('/profile', auth.authenticate(), function(req, res) {
   User.getProfile(req.user._id, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Own User Profile',
+    type: 'get'
+  });
 });
 
 /**
@@ -138,7 +150,7 @@ router.get('/actions', auth.authenticate(), function(req, res) {
 
     Log.create({
       userId: req.user._id,
-      category: 'User',
+      category: 'User Actions',
       type: 'get',
       data: req.query
     });
@@ -180,6 +192,13 @@ router.post('/profile', auth.authenticate(), function(req, res) {
   } else {
     User.updateProfile(req.user, req.body, res.successRes);
   }
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Own User Profile',
+    type: 'update',
+    data: req.body
+  });
 });
 
 /**
@@ -207,6 +226,13 @@ router.get('/profilePicture/:userId', auth.authenticate(), function(req, res) {
       res.successRes(err);
     });
   });
+
+  Log.create({
+    userId: req.user._id,
+    category: 'User Profile Picture',
+    type: 'get',
+    data: req.params.userId
+  });
 });
 
 /**
@@ -229,6 +255,12 @@ router.get('/profilePicture/:userId', auth.authenticate(), function(req, res) {
 router.post('/profilePicture', auth.authenticate(), function(req, res) {
   var imgPath = path.join(common.getUserHome(), '.youpower', 'profilePictures');
   common.uploadPicture(req, 256, imgPath, req.user._id, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'User Profile Picture',
+    type: 'update'
+  });
 });
 
 /**
@@ -263,6 +295,13 @@ router.post('/profilePicture', auth.authenticate(), function(req, res) {
  */
 router.get('/profile/:userId', auth.authenticate(), function(req, res) {
   User.getProfile(req.params.userId, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'User Profile',
+    type: 'get',
+    data: req.params.userId
+  });
 });
 
 /**
@@ -299,6 +338,13 @@ router.get('/profile/:userId', auth.authenticate(), function(req, res) {
  */
 router.get('/search', auth.authenticate(), function(req, res) {
   User.find(req.body, true, 50, null, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'User Profile',
+    type: 'find',
+    data: req.body
+  });
 });
 
 /**
@@ -357,6 +403,12 @@ router.get('/token', auth.basicauth(), function(req, res) {
   res.successRes(req.user.token ? null : 'User token not found', {
     token: req.user.token
   });
+
+  Log.create({
+    userId: req.user._id,
+    category: 'User Token',
+    type: 'get'
+  });
 });
 
 /**
@@ -387,6 +439,13 @@ router.get('/:userId/achievements', auth.authenticate(), function(req, res) {
     }
 
     User.getAchievements(user, res.successRes);
+  });
+
+  Log.create({
+    userId: req.user._id,
+    category: 'User Achievements',
+    type: 'get',
+    data: req.params.userId
   });
 });
 
