@@ -130,11 +130,14 @@ exports.get = function(id, user, cb) {
         action.numComments = aComments.length;
 
         // fetch number of users doing this action
+        var inProgressQuery = {};
+        inProgressQuery['actions.inProgress.' + id] = {$exists: true};
+
+        var doneQuery = {};
+        doneQuery['actions.done.' + id] = {$exists: true};
+
         User.model.find({
-          $or: [
-            {'actions.inProgress': {$elemMatch: {_id: id}}},
-            {'actions.done': {$elemMatch: {_id: id}}}
-          ]
+          $or: [inProgressQuery, doneQuery]
         }, function(err, users) {
           if (err) {
             return cb(err);
