@@ -5,6 +5,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var UsagePoint = require('./usagePoint');
+var crypto = require('crypto');
 //Appliance Schema
 var applianceSchema = new Schema({
   appliance: String,
@@ -71,8 +72,9 @@ var Household = mongoose.model('Household', HouseSchema);
 
 // create household entity
 exports.create = function(household, cb) {
+  var aptToken = crypto.randomBytes(8).toString('hex');
   Household.create({
-    apartmentId: household.apartmentId,
+    apartmentId: aptToken,
     familyId: household.familyId,
     address: household.address,
     householdType: household.householdType,
@@ -81,7 +83,7 @@ exports.create = function(household, cb) {
     appliancesList: household.appliancesList,
     energyVal: household.energyVal,
     smartMeterStatus: household.smartMeterStatus,
-    members: household.members // TODO : need to verify.
+    members: household.members
   }, cb);
 };
 
