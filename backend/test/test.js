@@ -1492,6 +1492,12 @@ describe('models', function() {
       });
     });
 
+    it('should return error when non owner removes member from household', function(done) {
+      models.households.removeMember(
+        dbHouseholds[0]._id, dbUsers[1]._id, dbUsers[1]._id, function(err) {
+          done(err ? null : 'Non owner removing member did not return error!');
+        });
+    });
     it('should allow user join household w/o smartmeter w only apt ID ', function(done) {
       // TODO: more thorough testing (add more than one member etc)
       async.series([
