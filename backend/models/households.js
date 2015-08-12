@@ -174,6 +174,9 @@ exports.removeAppliance = function(id, applianceId, cb) {
   });
 };
 
+//Adds user to household with or without smart meter (replaces the previous 'add member' function)
+//Checks apartment ID for household without smart meter
+//Checks apartment ID & family ID for household with smart meter
 exports.joinHouse = function(id, familyId, userId, cb) {
   Household.findOne({
     apartmentId: id
@@ -199,11 +202,13 @@ exports.joinHouse = function(id, familyId, userId, cb) {
           cb('User already a member of the household');
         }
       });
-    } else {
+    } else if (household.members.indexOf(userId) === -1) {
       household.members.push(userId);
       // Increase family adult count by 1.
       household.familyComposition.NumAdults++;
       household.save(cb);
+    } else {
+      cb('User already a member of the household');
     }
   });
 };
@@ -233,26 +238,6 @@ exports.connect = function(id, familyId, cb) {
           household.save(cb);
         }
       });
-    }
-  });
-};
-
-//add member to the household
-exports.addMember = function(id, userId, cb) {
-  Household.findById({
-    _id: id
-  }, function(err, household) {
-    if (err) {
-      cb(err);
-    } else if (!household) {
-      cb('Household not found');
-    } else if (household.members.indexOf(userId) === -1) {
-      household.members.push(userId);
-      // Increase family adult count by 1.
-      household.familyComposition.NumAdults++;
-      household.save(cb);
-    } else {
-      cb('User already a member of the household');
     }
   });
 };

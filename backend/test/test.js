@@ -1406,6 +1406,13 @@ describe('models', function() {
         });
     });
 
+    it('should not connect household to smart meter with invalid familyID', function(done) {
+      models.households.connect(dbHouseholds[0]._id,
+        'FF', function(err) {
+          done(err ? null : 'Invalid family ID connected household to smart meter');
+        });
+    });
+
     it('should return no household for bogus id', function(done) {
       models.households.get(dummyData.ids[0], function(err) {
         done(err ? null : 'bogus household fetch did return a household!');
@@ -1426,26 +1433,12 @@ describe('models', function() {
       });
     });
 
-    it('should add member to household', function(done) {
-      // TODO: more thorough testing (add more than one member etc)
-
-      models.households.addMember(dbHouseholds[0]._id, dbUsers[1]._id, function(err) {
-          if (err) {
-            return done(err);
-          }
-          models.households.get(dbHouseholds[0]._id, function(err, household) {
-            household.members.length.should.equal(2);
-            done(err);
-          });
-        });
-    });
-
-    // How to check error thrown by the model?
     it('should add unique member to household', function(done) {
       // TODO: more thorough testing (add more than one member etc)
 
-      models.households.addMember(dbHouseholds[0]._id, dbUsers[0]._id, function(err) {
-        done(err ? null : 'User already existing in household!');
+      models.households.joinHouse(dbHouseholds[0].apartmentId,
+        dummyData.usagePoint[1].familyId, dbUsers[0]._id, function(err) {
+        done(err ? null : 'Already existing user in household is being added again!');
       });
       models.households.get(dbHouseholds[0]._id, function(err, household) {
           household.members.length.should.equal(1);
@@ -1453,12 +1446,14 @@ describe('models', function() {
     });
 
     it('should return error when adding to bogus household id', function(done) {
-      models.households.addMember(dummyData.ids[0], dbUsers[0]._id, function(err) {
+      models.households.joinHouse(dummyData.ids[0],
+        dummyData.usagePoint[1].familyId, dbUsers[1]._id, function(err) {
         done(err ? null : 'bogus household id member add did not return error!');
       });
     });
     it('should return error when adding to invalid household id', function(done) {
-      models.households.addMember('foo bar', dbUsers[0]._id, function(err) {
+      models.households.joinHouse('foo bar',
+        dummyData.usagePoint[1].familyId, dbUsers[1]._id, function(err) {
         done(err ? null : 'invalid household id member add did not return error!');
       });
     });
@@ -1487,7 +1482,7 @@ describe('models', function() {
       });
     });
 
-    it('should join a household with apartment ID w/o smart meter', function(done) {
+    it('should allow user join household w/o smartmeter w only apt ID ', function(done) {
       // TODO: more thorough testing (add more than one member etc)
       async.series([
         function(cb) {
@@ -1513,7 +1508,7 @@ describe('models', function() {
       });
     });
 
-    it('should join a household with apartment ID & family ID with smart meter', function(done) {
+    it('should allow user join household w smartmeter w apt & family ids', function(done) {
       // TODO: more thorough testing (add more than one member etc)
       async.series([
         function(cb) {
