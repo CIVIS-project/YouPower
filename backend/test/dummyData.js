@@ -182,7 +182,7 @@ exports.households = [
     members: [
       exports.users[1]._id
     ],
-    smartMeterStatus: false
+    smartMeterStatus: true
   }
 ];
 

@@ -1407,7 +1407,7 @@ describe('models', function() {
     });
 
     it('should not connect household to smart meter with invalid familyID', function(done) {
-      models.households.connect(dbHouseholds[0]._id,
+      models.households.connect(dbHouseholds[1]._id,
         'FF', function(err) {
           done(err ? null : 'Invalid family ID connected household to smart meter');
         });
@@ -1451,10 +1451,18 @@ describe('models', function() {
         done(err ? null : 'bogus household id member add did not return error!');
       });
     });
+
     it('should return error when adding to invalid household id', function(done) {
       models.households.joinHouse('foo bar',
         dummyData.usagePoint[1].familyId, dbUsers[1]._id, function(err) {
         done(err ? null : 'invalid household id member add did not return error!');
+      });
+    });
+
+    it('should return error with invalid family id', function(done) {
+      models.households.joinHouse(dbHouseholds[0].apartmentId,
+        'foo', dbUsers[0]._id, function(err) {
+        done(err ? null : 'bogus family id did not return error!');
       });
     });
 

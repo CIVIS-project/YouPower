@@ -174,7 +174,7 @@ exports.removeAppliance = function(id, applianceId, cb) {
   });
 };
 
-//Adds user to household with or without smart meter (replaces the previous 'add member' function)
+//Adds user to household with or without smart meter (replaces the previous 'add member'z function)
 //Checks apartment ID for household without smart meter
 //Checks apartment ID & family ID for household with smart meter
 exports.joinHouse = function(id, familyId, userId, cb) {
@@ -185,7 +185,7 @@ exports.joinHouse = function(id, familyId, userId, cb) {
       cb(err);
     } else if (!household) {
       cb('Household not found');
-    } else if (household.smartMeterStatus === 'true')  {
+    } else if (household.smartMeterStatus === true)  {
       Household.findOne({
         familyId: familyId
       }, function(err, family) {
@@ -222,7 +222,7 @@ exports.connect = function(id, familyId, cb) {
       cb(err);
     } else if (!household) {
       cb('Household not found');
-    } else {
+    } else if (household.smartMeterStatus === false) {
       //set apartment ID from usagepoint to apartment ID of household
       UsagePoint.model
       .findOne({familyId: familyId})
@@ -238,6 +238,8 @@ exports.connect = function(id, familyId, cb) {
           household.save(cb);
         }
       });
+    } else {
+      cb('The household already has a smart meter');
     }
   });
 };
