@@ -1466,16 +1466,18 @@ describe('models', function() {
       });
     });
 
-    it('should remove member from household', function(done) {
+    it('should let only owner to remove member from household', function(done) {
       // TODO: more thorough testing (remove more than one member etc)
       async.series([
         function(cb) {
-          models.households.removeMember(dbHouseholds[0]._id, dbUsers[0]._id, function(err) {
+          models.households.joinHouse(dbHouseholds[0].apartmentId,
+            dummyData.usagePoint[0].familyId, dbUsers[1]._id, function(err) {
             cb(err);
           });
         },
         function(cb) {
-          models.households.removeMember(dbHouseholds[0]._id, dbUsers[1]._id, function(err) {
+          models.households.removeMember(
+            dbHouseholds[0]._id, dbUsers[1]._id, dbUsers[0]._id, function(err) {
             cb(err);
           });
         }
@@ -1484,7 +1486,7 @@ describe('models', function() {
           return done(err);
         }
         models.households.get(dbHouseholds[0]._id, function(err, household) {
-          household.members.length.should.equal(0);
+          household.members.length.should.equal(1);
           done(err);
         });
       });
@@ -1543,12 +1545,13 @@ describe('models', function() {
     });
 
     it('should return error when removing member from bogus household id', function(done) {
-      models.households.removeMember(dummyData.ids[0], dbUsers[0]._id, function(err) {
+      models.households.removeMember(
+        dummyData.ids[0], dbUsers[1]._id, dbUsers[0]._id, function(err) {
         done(err ? null : 'bogus household id member remove did not return error!');
       });
     });
     it('should return error when removing member from invalid household id', function(done) {
-      models.households.removeMember('foo bar', dbUsers[0]._id, function(err) {
+      models.households.removeMember('foo bar', dbUsers[1]._id, dbUsers[0]._id, function(err) {
         done(err ? null : 'invalid household id member remove did not return error!');
       });
     });

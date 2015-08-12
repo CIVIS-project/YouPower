@@ -65,7 +65,13 @@ var HouseSchema = new Schema({
   smartMeterStatus: {
     type: Boolean,
     default: false
-  }
+  },
+  ownerId: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+    }],
 });
 
 var Household = mongoose.model('Household', HouseSchema);
@@ -83,7 +89,8 @@ exports.create = function(household, cb) {
     appliancesList: household.appliancesList,
     energyVal: household.energyVal,
     smartMeterStatus: household.smartMeterStatus,
-    members: household.members
+    members: household.members,
+    ownerId: household.ownerId
   }, cb);
 };
 
@@ -245,7 +252,7 @@ exports.connect = function(id, familyId, cb) {
 };
 
 //remove member from  household
-exports.removeMember = function(id, userId, cb) {
+exports.removeMember = function(id, userId, authId, cb) {
   Household.findById({
     _id: id
   }, function(err, household) {
@@ -253,9 +260,11 @@ exports.removeMember = function(id, userId, cb) {
       cb(err);
     } else if (!household) {
       cb('Household not found');
-    } else {
+    } else if (authId.toString() === household.ownerId.toString()) {
       household.members.remove(userId);
       household.save(cb);
+    } else {
+      return cb('User not authorized');
     }
   });
 };

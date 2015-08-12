@@ -165,7 +165,8 @@ exports.households = [
     members: [
       exports.users[0]._id
     ],
-    smartMeterStatus: false
+    smartMeterStatus: false,
+    ownerId: exports.users[0]._id
   },
   {
     _id: newId(),
@@ -182,7 +183,8 @@ exports.households = [
     members: [
       exports.users[1]._id
     ],
-    smartMeterStatus: true
+    smartMeterStatus: true,
+    ownerId: exports.users[1]._id
   }
 ];
 
