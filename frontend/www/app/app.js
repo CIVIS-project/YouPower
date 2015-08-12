@@ -4,6 +4,8 @@ angular.module('civis.youpower.actions',[]);
 angular.module('civis.youpower.communities',[]);
 angular.module('civis.youpower.settings',[]);
 angular.module('civis.youpower.welcome',[]);
+//DM: added module
+angular.module('civis.youpower.prosumption',[]);
 
 angular.module('civis.youpower', [
   'ionic',
@@ -18,6 +20,8 @@ angular.module('civis.youpower', [
   'civis.youpower.welcome',
   'civis.youpower.services',
   'civis.youpower.translations',
+  //DM: added module
+  'civis.youpower.prosumption',
   ])
 
 .run(function($ionicPlatform, $rootScope, $window, AuthService) {
@@ -191,11 +195,24 @@ angular.module('civis.youpower', [
   url: '/prosumption',
   views: {
     'menuContent': {
-      templateUrl: 'app/prosumption/index.html',
-          // controller: 'HouseholdCtrl'
+      templateUrl: 'app/prosumption/tabs.html',
+          controller: 'prosumptionCtrl'
         }
       }
     })
+
+
+  .state('main.prosumption.yours', {
+    url: '/prosumption/yours',
+    views: {
+      'tab-actions': {
+        templateUrl: 'app/prosumption/index.html',
+       controller: 'dataVizCtrl' 
+      }
+    }
+  })
+
+
 
 .state('main.brf', {
   url: '/brf',
