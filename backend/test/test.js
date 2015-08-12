@@ -1460,7 +1460,7 @@ describe('models', function() {
     });
 
     it('should return error with invalid family id', function(done) {
-      models.households.joinHouse(dbHouseholds[0].apartmentId,
+      models.households.joinHouse(dbHouseholds[1].apartmentId,
         'foo', dbUsers[0]._id, function(err) {
         done(err ? null : 'bogus family id did not return error!');
       });
