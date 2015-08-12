@@ -22,7 +22,7 @@ var HouseSchema = new Schema({
     type: String,
     ref: 'UsagePoint',
     unique: true,
-    default: 'F0'
+    default: ''
   },
   address: {
     type: String,

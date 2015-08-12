@@ -1648,6 +1648,14 @@ describe('models', function() {
         done(err);
       });
     });
+
+    it('should return error for invalid apartment id', function(done) {
+      models.households.getByApartmentId('foo bar',
+      function(err) {
+        done(err ? null : 'invalid id in apartment by id fetch did not error!');
+      });
+    });
+
     it('should return error for bogus apartment id', function(done) {
       models.households.get(dummyData.ids[0],
       function(err) {
