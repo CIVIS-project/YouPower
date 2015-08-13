@@ -17,11 +17,14 @@ $scope.chartConfig1 = {
 		chart: {
 			type: 'bar',
 		}
-	}
+	},
 	title: {
 		text: 'title',
-	}
-}
+	},
+	series: [{
+        	data: [10, 15, 12, 8, 7]
+             }],
+};
 }
 // $scope.chartConfig1 = {
 //         options: {

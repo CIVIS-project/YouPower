@@ -216,7 +216,7 @@ angular.module('civis.youpower', [
     views: {
       'tab-prosumption-appliances': {
         templateUrl: 'app/prosumption/index_appliances.html',
-       controller: 'dataVizCtrl' 
+       //controller: 'dataVizCtrl' 
       }
     }
   })
@@ -225,7 +225,7 @@ angular.module('civis.youpower', [
     views: {
       'tab-prosumption-community': {
         templateUrl: 'app/prosumption/index_community.html',
-       controller: 'dataVizCtrl' 
+       //controller: 'dataVizCtrl' 
       }
     }
   })
