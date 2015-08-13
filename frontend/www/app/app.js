@@ -5,7 +5,7 @@ angular.module('civis.youpower.communities',[]);
 angular.module('civis.youpower.settings',[]);
 angular.module('civis.youpower.welcome',[]);
 //DM: added module
-angular.module('civis.youpower.prosumption',[]);
+angular.module('civis.youpower.prosumption',[]);//'highcharts-ng']);
 
 angular.module('civis.youpower', [
   'ionic',
@@ -205,8 +205,26 @@ angular.module('civis.youpower', [
   .state('main.prosumption.yours', {
     url: '/prosumption/yours',
     views: {
-      'tab-actions': {
-        templateUrl: 'app/prosumption/index.html',
+      'tab-prosumption-yours': {
+        templateUrl: 'app/prosumption/index_yours.html',
+       controller: 'dataVizCtrl' 
+      }
+    }
+  })
+.state('main.prosumption.appliances', {
+    url: '/prosumption/appliances',
+    views: {
+      'tab-prosumption-appliances': {
+        templateUrl: 'app/prosumption/index_appliances.html',
+       controller: 'dataVizCtrl' 
+      }
+    }
+  })
+.state('main.prosumption.community', {
+    url: '/prosumption/community',
+    views: {
+      'tab-prosumption-community': {
+        templateUrl: 'app/prosumption/index_community.html',
        controller: 'dataVizCtrl' 
       }
     }
