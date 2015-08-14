@@ -37,6 +37,35 @@ router.get('/', auth.authenticate(), function(req, res) {
 });
 
 /**
+ * @api {get} /consumption/appliance/:id Consumption data for a specific appliance
+ * @apiGroup Consumption
+ *
+ * @apiParam {String} id appliance id
+ *
+ * @apiExample {curl} Example usage
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *  curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
+ *  http://localhost:3000/api/consumption/appliance/164172718301
+ *
+ * @apiSuccessExample {[json]} Success-Response:
+ *   [
+ *    0.1187375511508435,
+ *    0.9294693802949041,
+ *    0.1715518836863339,
+ *    0.10940657090395689,
+ *    0.6286844359710813
+ *  ]
+ */
+router.get('/appliance/:id', auth.authenticate(), function(req, res) {
+  var rand = [];
+  for (var i = 0; i < 5; i++) {
+    rand.push(Math.random());
+  }
+  res.successRes(null, rand);
+});
+
+/**
  * @api {get} /consumption/last Last reading of consumption data
  * @apiGroup Consumption
  *
