@@ -1351,7 +1351,7 @@ describe('models', function() {
       });
     });
 
-    it('should not create household with missing fields', function(done) {
+    xit('should not create household with missing fields', function(done) {
       var d = dummyData.households[0];
       async.parallel([
         function(cb) {
@@ -1387,8 +1387,16 @@ describe('models', function() {
     });
 
     it('should return first household by id', function(done) {
+      console.log(dbHouseholds[0]);
       models.households.get(dbHouseholds[0]._id, function(err, household) {
         household.apartmentId.should.equal(dbHouseholds[0].apartmentId);
+        done(err);
+      });
+    });
+
+    it('should return nearby households', function(done) {
+      models.households.fetchLocation(null, function(err, household) {
+        console.log(household.loc);
         done(err);
       });
     });

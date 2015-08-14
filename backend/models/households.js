@@ -4,8 +4,10 @@
 
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var _ = require('underscore');
 var UsagePoint = require('./usagePoint');
 var crypto = require('crypto');
+var geocoder = require('geocoder');
 //Appliance Schema
 var applianceSchema = new Schema({
   appliance: String,
@@ -72,9 +74,28 @@ var HouseSchema = new Schema({
       ref: 'User',
       required: true
     }],
+  loc: []
 });
 
+HouseSchema.index({loc: '2d'});
 var Household = mongoose.model('Household', HouseSchema);
+
+//Find near by householdSizeexports.get = function(id, cb) {
+var findLoc = function(household) {
+  var lat;
+  var lng;
+  var loc;
+  geocoder.geocode(household.address, function(err, location) {
+    if (err) {
+      return err;
+    }
+    lat = location.results[0].geometry.location.lat;
+    lng = location.results[0].geometry.location.lng;
+    loc = [parseFloat(lng), parseFloat(lat)];
+  });
+  household.loc = loc;
+  console.log(household.loc);
+};
 
 // create household entity
 exports.create = function(household, cb) {
@@ -90,6 +111,7 @@ exports.create = function(household, cb) {
     energyVal: household.energyVal,
     smartMeterStatus: household.smartMeterStatus,
     members: household.members,
+    loc : household.loc,
     ownerId: household.ownerId
   }, cb);
 };
@@ -104,9 +126,30 @@ exports.get = function(id, cb) {
     } else if (!household) {
       cb('Household not found');
     } else {
-      household = household.toObject();
       cb(null, household);
     }
+  });
+};
+
+exports.fetchLocation = function(household, cb) {
+  Household
+  .find({})
+  .exec(function(err, households) {
+    /* istanbul ignore if: db errors are hard to unit test */
+    if (err) {
+      cb(err);
+    } else {
+      // convert every returned household into a raw object (remove mongoose magic)
+      for (var i = 0; i < households.length; i++) {
+        households[i] = households[i].toObject();
+      }
+    }
+    // Fetch location data from Google geocoder
+    _.each(households, findLoc);
+    _.each(households, function(household) {
+      console.log(household.loc);
+    });
+    cb(null, households);
   });
 };
 

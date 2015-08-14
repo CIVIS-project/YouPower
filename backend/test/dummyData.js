@@ -154,7 +154,7 @@ exports.households = [
   {
     _id: newId(),
     apartmentId: 1234,
-    address: 'my address',
+    address: 'Konemiehentie 2, Otaniemi, Espoo',
     householdType: 'apartment',
     householdSize: '20m2',
     familyComposition: {
@@ -172,7 +172,7 @@ exports.households = [
     _id: newId(),
     apartmentId: exports.usagePoint[3].apartmentId,
     familyId: 'F1',
-    address: 'my address 2',
+    address: 'Otakaari 12, Otaniemi, Espoo',
     householdType: 'house',
     householdSize: '40m2',
     familyComposition: {
