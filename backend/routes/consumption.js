@@ -37,45 +37,79 @@ router.get('/', auth.authenticate(), function(req, res) {
 });
 
 /**
+ * @api {get} /consumption/tou Time of Usage
+ * @apiGroup Consumption
+ *
+ * @apiParam {String} userId
+ * @apiParam {String} token
+ * @apiParam {Number} horizon must be one of the following [1,6,12,24,48,72]
+ *
+ *  curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
+ *  '{
+ *    "userId": "dummy",
+ *    "token": "dummy",
+ *    "horizon": 6
+ *  }' \
+ *  http://localhost:3000/api/consumption/tou
+ *
+ * @apiSuccessExample {[json]} Success-Response:
+ *   [
+ *    0.9164172718301415,
+ *    0.1187375511508435,
+ *    0.9294693802949041,
+ *    0.1715518836863339,
+ *    0.10940657090395689,
+ *    0.6286844359710813
+ *  ]
+ */
+router.get('/tou', auth.authenticate(), function(req, res) {
+  var rand = [];
+  for (var i = 0; i < req.body.horizon; i++) {
+    rand.push(Math.random());
+  }
+  res.successRes(null, rand);
+});
+
+/**
  * @api {post} /consumption/getAllUsagePointsData Fetch all UsagePoints & Sensors from Reply
  * @apiGroup Consumption
  *
  * @apiParam {Boolean} AddUsagePoints adds new usage points only
  * @apiParam {Boolean} [UpdateUsagePoints] updates existing UsagePoints
- * 	with new sensor data if available
+ *   with new sensor data if available
  * @apiParam {[Number]} [ApartmentId] Adds/Updates the value of only
- *	that particular ApartmentId/Ids
+ *  that particular ApartmentId/Ids
  * @apiExample {curl} Example usage(PENDING-For now only data is fetched!!):
  *  # Get API token via /api/user/token
  *  export API_TOKEN=fc35e6b2f27e0f5ef...
  *
  *  curl -i -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
  *  '{
- *		'AddUsagePoints': true,
- *		'UpdateUsagePoints': true,
- *		'ApartmentId': [14,17]
+ *    'AddUsagePoints': true,
+ *    'UpdateUsagePoints': true,
+ *    'ApartmentId': [14,17]
  *  }' \
  *  http://localhost:3000/api/consumption/getAllUsagePointsData
  *
  * @apiSuccessExample {[json]} Success-Response:
- *	 [
- *		{ ApartmentID: '14',
- *		  Success: true,
- *		  UsagePoint: { __v: 0, apartmentId: '14', _id: 55acb78868440371168b57c7 }
- *		},
- *		{ ApartmentID: '42',
- *		  Success: true,
- *		  UsagePoint: { __v: 0, apartmentId: '42', _id: 55acb78868440371168b57cc }
- *		},
- *		{ ApartmentID: '17',
- *		  Success: true,
- *		  UsagePoint: { __v: 0, apartmentId: '17', _id: 55acb78868440371168b57c8 }
- *		},
- *		{ ApartmentID: '73',
- *		  Success: true,
- *		  UsagePoint: { __v: 0, apartmentId: '73', _id: 55acb78868440371168b57cd }
- *		}
- *	 ]
+ *   [
+ *    { ApartmentID: '14',
+ *      Success: true,
+ *      UsagePoint: { __v: 0, apartmentId: '14', _id: 55acb78868440371168b57c7 }
+ *    },
+ *    { ApartmentID: '42',
+ *      Success: true,
+ *      UsagePoint: { __v: 0, apartmentId: '42', _id: 55acb78868440371168b57cc }
+ *    },
+ *    { ApartmentID: '17',
+ *      Success: true,
+ *      UsagePoint: { __v: 0, apartmentId: '17', _id: 55acb78868440371168b57c8 }
+ *    },
+ *    { ApartmentID: '73',
+ *      Success: true,
+ *      UsagePoint: { __v: 0, apartmentId: '73', _id: 55acb78868440371168b57cd }
+ *    }
+ *   ]
  */
 router.post('/getAllUsagePointsData', auth.authenticate(), function(req, res) {
   Consumption.getAllUsagePointsData(req.body, res.successRes);
@@ -102,31 +136,31 @@ router.post('/getAllUsagePointsData', auth.authenticate(), function(req, res) {
  *  http://localhost:3000/api/consumption/getUsagePoint/14
  *
  * @apiSuccessExample {json} Success-Response:
- *	{
- *	"apartmentId":"14",
- *	"_id":"55af508c9210ee7b13342d8e",
- *	"__v":0,
- *	"Sensors":[
- *		{
- *		"sensorNumber":0,
- *		"sensorType":0,
- *		"measureUnit":"Wh",
- *		"label":"Consumo Elettrico",
- *		"lastSampleTimestamp":"2015-07-10T15:42:11.000Z",
- *		"_apartmentId":"55af508c9210ee7b13342d8e",
- *		"_id":"55af508d9210ee7b13342d90","__v":0
- *		},
- *		{
- *		"sensorNumber":1,
- *		"sensorType":1,
- *		"measureUnit":"Wh",
- *		"label":"Freezer",
- *		"lastSampleTimestamp":"2015-07-10T15:45:23.000Z",
- *		"_apartmentId":"55af508c9210ee7b13342d8e",
- *		"_id":"55af508d9210ee7b13342d91",
- *		"__v":0
- *		}]
- *	}
+ *  {
+ *  "apartmentId":"14",
+ *  "_id":"55af508c9210ee7b13342d8e",
+ *  "__v":0,
+ *  "Sensors":[
+ *    {
+ *    "sensorNumber":0,
+ *    "sensorType":0,
+ *    "measureUnit":"Wh",
+ *    "label":"Consumo Elettrico",
+ *    "lastSampleTimestamp":"2015-07-10T15:42:11.000Z",
+ *    "_apartmentId":"55af508c9210ee7b13342d8e",
+ *    "_id":"55af508d9210ee7b13342d90","__v":0
+ *    },
+ *    {
+ *    "sensorNumber":1,
+ *    "sensorType":1,
+ *    "measureUnit":"Wh",
+ *    "label":"Freezer",
+ *    "lastSampleTimestamp":"2015-07-10T15:45:23.000Z",
+ *    "_apartmentId":"55af508c9210ee7b13342d8e",
+ *    "_id":"55af508d9210ee7b13342d91",
+ *    "__v":0
+ *    }]
+ *  }
  */
 router.get('/getUsagePoint/:apartmentId', auth.authenticate(), function(req, res) {
   Consumption.getUsagePoint(req.params.apartmentId, res.successRes);
@@ -154,13 +188,13 @@ router.get('/getUsagePoint/:apartmentId', auth.authenticate(), function(req, res
  *  # Get API token via /api/user/token
  *  export API_TOKEN=fc35e6b2f27e0f5ef...
  *
- *	curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d '{
- * 	"usagepoint": 14,
- * 	"from": "2015-06-01",
- *	"to":"2015-06-06",
- *	"type":"S_CONS",
- *	"res":"WEEKLY
- *	}' http://localhost:3000/api/consumption/downloadMyData
+ *  curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d '{
+ *   "usagepoint": 14,
+ *   "from": "2015-06-01",
+ *  "to":"2015-06-06",
+ *  "type":"S_CONS",
+ *  "res":"WEEKLY
+ *  }' http://localhost:3000/api/consumption/downloadMyData
  *
  * @apiSuccessExample {json} Success-Response:
  * {
@@ -207,12 +241,12 @@ router.get('/downloadMyData', auth.authenticate(), function(req, res) {
   req.checkBody('from').isDate();
   req.checkBody('to').isDate();
   Consumption.downloadMyData(
-	req.body.usagepoint,
-	req.body.from,
-	req.body.to,
-	req.body.res || 'MONTHLY',
-	req.body.ctype || 'S_CONS',
-	res.successRes
+  req.body.usagepoint,
+  req.body.from,
+  req.body.to,
+  req.body.res || 'MONTHLY',
+  req.body.ctype || 'S_CONS',
+  res.successRes
   );
 
   Log.create({
