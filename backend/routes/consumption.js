@@ -44,6 +44,9 @@ router.get('/', auth.authenticate(), function(req, res) {
  * @apiParam {String} token
  * @apiParam {Number} horizon must be one of the following [1,6,12,24,48,72]
  *
+ * @apiExample {curl} Example usage
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
  *  curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
  *  '{
  *    "userId": "dummy",
