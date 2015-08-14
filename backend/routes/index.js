@@ -4,6 +4,7 @@ var express = require('express');
 var router = express.Router();
 
 router.use('/consumption', require('./consumption'));
+router.use('/production', require('./production'));
 router.use('/user', require('./user'));
 router.use('/action', require('./action'));
 router.use('/challenge', require('./challenge'));
