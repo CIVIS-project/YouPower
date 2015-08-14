@@ -111,7 +111,8 @@ router.post('/register', function(req, res) {
  *       "na": {}
  *     },
  *     "leaves": 42,
- *     "energyConsumption": {}
+ *     "energyConsumption": {},
+ *     "production": 0
  *   }
  *
  * @apiVersion 1.0.0
@@ -290,7 +291,8 @@ router.post('/profilePicture', auth.authenticate(), function(req, res) {
  *     "na": {}
  *   },
  *   "leaves": 42,
- *   "energyConsumption": {}
+ *   "energyConsumption": {},
+ *   "production": 0
  *  }
  */
 router.get('/profile/:userId', auth.authenticate(), function(req, res) {

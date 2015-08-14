@@ -69,6 +69,11 @@ var UserSchema = new Schema({
   numFeedback: {
     type: Number,
     default: 0
+  },
+  // how many PVs does the user have that can produce energy?
+  production: {
+    type: Number,
+    default: 0
   }
 });
 UserSchema.plugin(passportLocalMongoose, {
@@ -141,6 +146,7 @@ exports.getProfile = function(id, cb) {
         actions: user.actions,
         accessToken: user.accessToken,
         facebookId: user.facebookId,
+        production: user.production,
         leaves: totalLeaves,
         energyConsumption: {} // TODO
       });
