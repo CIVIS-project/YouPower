@@ -5,7 +5,7 @@ angular.module('civis.youpower.communities',[]);
 angular.module('civis.youpower.settings',[]);
 angular.module('civis.youpower.welcome',[]);
 //DM: added module
-angular.module('civis.youpower.prosumption',[]);//'highcharts-ng']);
+angular.module('civis.youpower.prosumption',['highcharts-ng']);
 
 angular.module('civis.youpower', [
   'ionic',
