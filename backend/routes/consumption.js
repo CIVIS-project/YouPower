@@ -5,6 +5,7 @@ var router = express.Router();
 var Consumption = require('../models').consumption;
 var auth = require('../middleware/auth');
 var Log = require('../models').logs;
+var Household = require('../models').households;
 
 /**
  * @api {get} /consumption Get energy consumption data
@@ -85,7 +86,16 @@ router.get('/appliance/:id', auth.authenticate(), function(req, res) {
  *  ]
  */
 router.get('/getSensors', auth.authenticate(), function(req, res) {
-  console.log("getSensors", req.user._id)
+  console.log("getSensors", req.user._id);
+  Household.getHouseholdByUserId(req.user._id, function(err, household) {
+    if (err) {
+      res.successRes(err);
+    } else {
+      console.log('Household',household)
+      var applianceList=household.appliancesList;
+      console.log('applianceList',applianceList)
+    }
+  });
   var rand = [];
   for (var i = 0; i < 5; i++) {
     rand.push(Math.random());

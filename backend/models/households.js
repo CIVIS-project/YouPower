@@ -202,4 +202,21 @@ exports.delete = function(id, cb) {
   }, cb);
 };
 
+// get household by user_id
+exports.getHouseholdByUserId = function(id, cb) {
+  Household.findOne({
+    members: id
+  }, function(err, household) {
+    /* istanbul ignore if: db errors are hard to unit test */
+    if (err) {
+      cb(err);
+    } else if (!household) {
+      cb('Household not found');
+    } else {
+      household = household.toObject();
+      cb(null, household);
+    }
+  });
+};
+
 exports.model = Household;
