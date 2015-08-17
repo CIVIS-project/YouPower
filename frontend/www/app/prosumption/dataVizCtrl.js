@@ -1,13 +1,20 @@
+//declaring the controller
 angular.module('civis.youpower.prosumption').controller('dataVizCtrl', dataVizCtrl);
+//declaring various additional services, mostly related to specific highcharts visualizations
+angular.module('civis.youpower.prosumption').service('getRandomData', getRandomData);
+
+function getRandomData() {
+    return Math.floor((Math.random()*6)+1);
+}
 
 function dataVizCtrl($scope, $state, User, $http) {
 	//just loads the content of the window once the tabs have been generated
 	//$state.go('main.prosumption.yours');
 console.log('loaded dataVizCtrl');
 //DM: generates random stuff, need to be replaced with calls to the backend endpoints once available
-function getRandomData() {
-	return Math.floor((Math.random()*6)+1);
-}
+// function getRandomData() {
+// 	return Math.floor((Math.random()*6)+1);
+// }
 
 $scope.lastConsumption= getRandomData();
 $scope.lastProduction = getRandomData();
@@ -134,7 +141,7 @@ $scope.chartConfig = {
                 type: 'solidgauge'
             },
             pane: {
-                center: ['50%', '35%'],
+                center: ['50%', '50%'],
                 size: '60%',
                 startAngle: -90,
                 endAngle: 90,

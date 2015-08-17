@@ -229,7 +229,15 @@ angular.module('civis.youpower', [
       }
     }
   })
-
+.state('main.prosumption.vizConsumption', {
+  url: '/prosumption/viz',
+  views: {
+    'tab-prosumption-yours-viz': {
+    templateUrl: 'app/prosumption/viz_consumption_yours.html',
+    controller: 'dataVizCtrl' ,
+    }
+  }
+})
 
 
 .state('main.brf', {
