@@ -61,6 +61,7 @@ var Household = mongoose.model('Household', HouseSchema);
 
 // create household entity
 exports.create = function(household, cb) {
+  console.log("tada")
   Household.create({
     apartmentId: household.apartmentId,
     address: household.address,
