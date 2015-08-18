@@ -20,8 +20,7 @@ var LogSchema = new Schema({
     required: true
   },
   data: {
-    type: Schema.Types.Mixed,
-    required: true
+    type: Schema.Types.Mixed
   },
   date: {
     type: Date,
@@ -43,7 +42,7 @@ exports.create = function(log, cb) {
       /* istanbul ignore if: suppress messages when unit testing */
       if (process.env.NODE_ENV !== 'test') {
         console.log('error while logging:');
-        console.log(log);
+        console.log(err);
         console.log('this should never happen! fix your logging code to include required fields.');
       }
     }
