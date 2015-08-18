@@ -3,6 +3,7 @@
 //var config = require('../config');
 
 var mongoose = require('mongoose');
+var _ = require('underscore');
 var Schema = mongoose.Schema;
 
 //Appliance Schema
@@ -110,7 +111,7 @@ exports.getByUserId = function(userId, cb) {
     if (err) {
       cb(err);
     } else if (!household) {
-      cb('Household not found');
+      cb(null, null);
     } else {
       household = household.toObject();
       cb(null, household);
@@ -141,6 +142,24 @@ exports.invite = function(ownerId, userId, cb) {
 
       household.pendingInvites.push(userId);
       household.save(cb);
+    }
+  });
+};
+
+exports.findInvites = function(userId, cb) {
+  Household.find({
+    pendingInvites: {$in: [userId]}
+  }, function(err, households) {
+    if (err) {
+      cb(err);
+    } else if (!households) {
+      cb(null, []);
+    } else {
+      var householdIds = [];
+      _.each(households, function(household) {
+        householdIds.push(household._id);
+      });
+      cb(null, householdIds);
     }
   });
 };
