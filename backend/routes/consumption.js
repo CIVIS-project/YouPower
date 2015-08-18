@@ -295,8 +295,8 @@ router.get('/getUsagePoint/:apartmentId', auth.authenticate(), function(req, res
  *   "usagepoint": 14,
  *   "from": "2015-06-01",
  *  "to":"2015-06-06",
- *  "type":"S_CONS",
- *  "res":"WEEKLY
+ *  "ctype":"S_CONS",
+ *  "res":"MONTHLY
  *  }' http://localhost:3000/api/consumption/downloadMyData
  *
  * @apiSuccessExample {json} Success-Response:
