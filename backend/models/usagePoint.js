@@ -47,10 +47,8 @@ exports.create = function(usagepoint, cb1) {
     apartmentId: usagepoint
   }, function(err, up) {
     if (err) {
-      //console.log('USAGEPOINT2Fail =', err);
       cb1 (err);
     } else {
-      //console.log('USAGEPOINT2PAss =', up);
       cb1(null, up);
     }
   });

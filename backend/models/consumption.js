@@ -9,6 +9,7 @@ var usagePoint = require('./usagePoint');
 var sensor = require('./sensor');
 var intervalBlock = require('./intervalBlock');
 var intervalReading = require('./intervalReading');
+var Household = require('./households');
 
 exports.create = function(usagePt, cb1) {
   //console.log('TETS', usagePt);
@@ -43,7 +44,9 @@ exports.getAllUsagePointsData = function(usagepoint, cb) {
         explicitArray: false
       });
       parser.parseString(body, function(err, result) {
-        if (err) {cb(err);}
+        if (err) {
+          cb(err);
+        }
         var tempArr = [];
 
         async.each(result.entry.content.usagePoint, function(obj, callback) {
@@ -121,6 +124,28 @@ exports.getUsagePoint = function(apartmentId, cb) {
 var pushIR = function(ir, cb) {
   var tempIr = {'value': ir.value, 'timeslot': ir.timeslot, 'timePeriod': ir.timePeriod};
   cb(null, tempIr);
+};
+
+exports.getAllSensorsForUser = function(userId, cb) {
+  Household.getHouseholdByUserId(userId, function(err, household) {
+    if (err) {
+      cb(err);
+    } else {
+      //console.log('Household',household);
+      var applianceList = [{appliances : household.appliancesList}];
+      //console.log('APPLIANCELIST',applianceList);
+      exports.getUsagePoint(household.apartmentId, function(err, up) {
+        if (err) {
+          cb(err);
+        } else if (!up) {
+          cb(null, applianceList);
+        } else {
+          applianceList.push({sensors : up.Sensors});
+          cb(null, applianceList);
+        }
+      });
+    }
+  });
 };
 
 exports.downloadMyData = function(usagepoint, from, to, resType, ctype, cb) {

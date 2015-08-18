@@ -5,7 +5,6 @@ var router = express.Router();
 var Consumption = require('../models').consumption;
 var auth = require('../middleware/auth');
 var Log = require('../models').logs;
-var Household = require('../models').households;
 
 /**
  * @api {get} /consumption Get energy consumption data
@@ -67,7 +66,7 @@ router.get('/appliance/:id', auth.authenticate(), function(req, res) {
 });
 
 /**
- * @api {get} /consumption/getSensors list of sensors for that user
+ * @api {get} /consumption/getSensors list of sensors and appliances for that user
  * @apiGroup Consumption
  *
  * @apiExample {curl} Example usage
@@ -78,29 +77,37 @@ router.get('/appliance/:id', auth.authenticate(), function(req, res) {
  *
  * @apiSuccessExample {[json]} Success-Response:
  *   [
- *    0.1187375511508435,
- *    0.9294693802949041,
- *    0.1715518836863339,
- *    0.10940657090395689,
- *    0.6286844359710813
- *  ]
+ *    {
+ *        "appliances": [
+ *            {
+ *                "appliance": "Washing Machine",
+ *                "quantity": 2,
+ *                "_id": "55d2f971dfe4845d50451705"
+ *            },
+ *            {
+ *                "appliance": "Heater",
+ *                "quantity": 4,
+ *                "_id": "55d2f971dfe4845d50451704"
+ *            }
+ *        ]
+ *    },
+ *    {
+ *        "sensors": [
+ *            {
+ *                "_id": "55d2ef2f739304394f9f079f",
+ *                "sensorNumber": 0,
+ *                "sensorType": 0,
+ *                "measureUnit": "Wh",
+ *                "label": "Consumo Elettrico",
+ *                "lastSampleTimestamp": "2015-07-10T15:42:11.000Z",
+ *                "_apartmentId": "55d2ef2f739304394f9f0795",
+ *                "__v": 0
+ *            },..
+ *        ]
+ *    }
  */
 router.get('/getSensors', auth.authenticate(), function(req, res) {
-  console.log("getSensors", req.user._id);
-  Household.getHouseholdByUserId(req.user._id, function(err, household) {
-    if (err) {
-      res.successRes(err);
-    } else {
-      console.log('Household',household)
-      var applianceList=household.appliancesList;
-      console.log('applianceList',applianceList)
-    }
-  });
-  var rand = [];
-  for (var i = 0; i < 5; i++) {
-    rand.push(Math.random());
-  }
-  res.successRes(null, rand);
+  Consumption.getAllSensorsForUser(req.user._id, res.successRes);
 });
 
 /**
