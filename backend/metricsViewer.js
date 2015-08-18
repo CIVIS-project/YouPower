@@ -43,7 +43,7 @@ db.once('open', function() {
         var category = line.category;
         var type = '[' + line.type + ']';
         var userId = String(line.userId);
-        var data = JSON.stringify(line.data);
+        var data = JSON.stringify(line.data || '');
 
         var date = line.date.getFullYear() + '-' +
             zeropad(line.date.getMonth(), 2) + '-' +
