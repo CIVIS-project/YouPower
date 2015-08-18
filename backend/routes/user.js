@@ -111,6 +111,13 @@ router.post('/register', function(req, res) {
  *       "na": {}
  *     },
  *     "leaves": 42,
+ *     "householdId": null,
+ *     "pendingHouseholdInvites": [
+ *      '5562c1d46b1083a13e5b7843'
+ *     ],
+ *     "pendingCommunityInvites" [
+ *      '5562c1d46b1083a13e5b7844'
+ *     ],
  *     "energyConsumption": {},
  *     "production": 0
  *   }
@@ -291,6 +298,7 @@ router.post('/profilePicture', auth.authenticate(), function(req, res) {
  *     "na": {}
  *   },
  *   "leaves": 42,
+ *   "householdId": null,
  *   "energyConsumption": {},
  *   "production": 0
  *  }

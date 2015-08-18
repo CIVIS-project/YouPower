@@ -9,6 +9,7 @@ var escapeStringRegexp = require('escape-string-regexp');
 var achievements = require('../common/achievements');
 var actionComments = require('./actionComments');
 var communityComments = require('./communityComments');
+var households = require('./households');
 var async = require('async');
 var _ = require('underscore');
 
@@ -113,8 +114,39 @@ exports.getProfile = function(id, cb) {
     // leaves for feedback: 1 leaf / feedback
     totalLeaves += user.numFeedback;
 
+    var householdId = null;
+    var pendingHouseholdInvites = [];
+    var pendingCommunityInvites = ['TODO'];
+
     async.parallel([
       function(cb) {
+        // find households user has been invited to
+        households.findInvites(user._id, function(err, households) {
+          if (err) {
+            return cb(err);
+          }
+
+          pendingHouseholdInvites = households;
+
+          cb();
+        });
+      },
+      function(cb) {
+        // find which household user is in
+        households.getByUserId(user._id, function(err, household) {
+          if (err) {
+            return cb(err);
+          }
+
+          if (household) {
+            householdId = household._id;
+          }
+
+          cb();
+        });
+      },
+      function(cb) {
+        // action comment count needed for leaf count
         actionComments.getByUser(user, null, null, function(err, aComments) {
           if (err) {
             return cb(err);
@@ -125,6 +157,7 @@ exports.getProfile = function(id, cb) {
         });
       },
       function(cb) {
+        // community comment count needed for leaf count
         communityComments.getByUser(user, null, null, function(err, cComments) {
           if (err) {
             return cb(err);
@@ -147,6 +180,9 @@ exports.getProfile = function(id, cb) {
         accessToken: user.accessToken,
         facebookId: user.facebookId,
         production: user.production,
+        householdId: householdId,
+        pendingHouseholdInvites: pendingHouseholdInvites,
+        pendingCommunityInvites: pendingCommunityInvites,
         leaves: totalLeaves,
         energyConsumption: {} // TODO
       });

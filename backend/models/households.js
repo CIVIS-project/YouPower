@@ -3,6 +3,7 @@
 //var config = require('../config');
 
 var mongoose = require('mongoose');
+var _ = require('underscore');
 var Schema = mongoose.Schema;
 
 //Appliance Schema
@@ -19,7 +20,7 @@ var HouseSchema = new Schema({
   },
   address: {
     type: String,
-    required: true
+    default: 'N/A'
   },
   appliancesList: {
     type: [
@@ -45,16 +46,26 @@ var HouseSchema = new Schema({
       default: 0
     }},
   energyVal: {
-    type: String,
+    type: String
+  },
+  ownerId: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
     required: true
   },
   members: [
     {
       type: Schema.Types.ObjectId,
       ref: 'User',
-      required: true
+      default: []
     }
-  ]
+  ],
+  pendingInvites: {
+    type: [
+      Schema.Types.ObjectId
+    ],
+    default: []
+  }
 });
 
 var Household = mongoose.model('Household', HouseSchema);
@@ -69,7 +80,7 @@ exports.create = function(household, cb) {
     familyComposition: household.familyComposition,
     appliancesList: household.appliancesList,
     energyVal: household.energyVal,
-    members: household.members // TODO : need to verify.
+    ownerId: household.ownerId
   }, cb);
 };
 
@@ -85,6 +96,94 @@ exports.get = function(id, cb) {
     } else {
       household = household.toObject();
       cb(null, household);
+    }
+  });
+};
+
+// find user's household by userId
+exports.getByUserId = function(userId, cb) {
+  Household.findOne({
+    $or: [
+      {members: {$in: [userId]}},
+      {ownerId: userId}
+    ]
+  }, function(err, household) {
+    if (err) {
+      cb(err);
+    } else if (!household) {
+      cb(null, null);
+    } else {
+      household = household.toObject();
+      cb(null, household);
+    }
+  });
+};
+// invite userId to owner's household
+exports.invite = function(ownerId, userId, cb) {
+  if (ownerId === userId) {
+    return cb('Can\'t add owner to their own household!');
+  }
+  Household.findOne({
+    ownerId: ownerId
+  }, function(err, household) {
+    if (err) {
+      cb(err);
+    } else if (!household) {
+      cb('Household for user with id: ' + ownerId + ' not found!');
+    } else {
+      // check that user is not already invited
+      if (household.pendingInvites.indexOf(userId) !== -1) {
+        return cb('User has already been invited!');
+      }
+
+      if (household.members.indexOf(userId) !== -1) {
+        return cb('User already belongs to household');
+      }
+
+      household.pendingInvites.push(userId);
+      household.save(cb);
+    }
+  });
+};
+
+exports.findInvites = function(userId, cb) {
+  Household.find({
+    pendingInvites: {$in: [userId]}
+  }, function(err, households) {
+    if (err) {
+      cb(err);
+    } else if (!households) {
+      cb(null, []);
+    } else {
+      var householdIds = [];
+      _.each(households, function(household) {
+        householdIds.push(household._id);
+      });
+      cb(null, householdIds);
+    }
+  });
+};
+
+// accept or deny a household invite
+exports.handleInvite = function(householdId, userId, accepted, cb) {
+  Household.findOne({
+    _id: householdId
+  }, function(err, household) {
+    if (err) {
+      cb(err);
+    } else if (!household) {
+      cb('Household not found by id: ' + householdId + '!');
+    } else {
+      var index = household.pendingInvites.indexOf(userId);
+      // check that user has indeed been invited
+      if (index === -1) {
+        return cb('Invitation to household not found!');
+      }
+
+      household.pendingInvites.splice(index, 1);
+      household.members.push(userId);
+
+      household.save(cb);
     }
   });
 };
