@@ -9,6 +9,7 @@ var escapeStringRegexp = require('escape-string-regexp');
 var achievements = require('../common/achievements');
 var actionComments = require('./actionComments');
 var communityComments = require('./communityComments');
+var households = require('./households');
 var async = require('async');
 var _ = require('underscore');
 
@@ -113,7 +114,18 @@ exports.getProfile = function(id, cb) {
     // leaves for feedback: 1 leaf / feedback
     totalLeaves += user.numFeedback;
 
+    var householdId = null;
+
     async.parallel([
+      function(cb) {
+        households.getByUserId(user._id, function(err, household) {
+          if (household) {
+            householdId = household._id;
+          }
+
+          cb();
+        });
+      },
       function(cb) {
         actionComments.getByUser(user, null, null, function(err, aComments) {
           if (err) {
@@ -147,6 +159,7 @@ exports.getProfile = function(id, cb) {
         accessToken: user.accessToken,
         facebookId: user.facebookId,
         production: user.production,
+        householdId: householdId,
         leaves: totalLeaves,
         energyConsumption: {} // TODO
       });

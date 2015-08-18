@@ -16,7 +16,10 @@ var Log = require('../models').logs;
  * @apiParam {json}   members Member ids and names in the household
  *
  * @apiExample {curl} Example usage:
- *  curl -i -X POST -H "Content-Type: application/json" -d \
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X POST -H "Authorization: Bearer $API_TOKEN" -H "Content-Type: application/json" -d \
  *  '{
  *    "apartmentId": "XYZ",
  *    "appliancesList": [
@@ -74,13 +77,90 @@ var Log = require('../models').logs;
  *   }
  */
 router.post('/', auth.authenticate(), function(req, res) {
-  Household.create(req.body, res.successRes);
+  var household = req.body;
+  household.ownerId = req.user._id;
+  Household.create(household, res.successRes);
 
   Log.create({
     userId: req.user._id,
     category: 'Household',
     type: 'create',
-    data: req.body
+    data: household
+  });
+});
+
+/**
+ * @api {post} /household/invite Invite a user to your household
+ * @apiGroup Household
+ *
+ * @apiExample {curl} Example usage:
+ *  curl -i -X POST -H "Content-Type: application/json" -d \
+ *  '{
+ *    "apartmentId": "XYZ",
+ *    "appliancesList": [
+ *       {
+ *       "appliance": "Washing Machine",
+ *       "quantity": 2
+ *       },
+ *       {
+ *        "appliance": "Heater",
+ *        "quantity": 4
+ *       }
+ *    ],
+ *    "address": "Konemiehentie 2, Espoo, 02150",
+ *    "members": [
+ *       {
+ *         "_id": "testUser1",
+ *         "name": "Jane",
+ *       },
+ *        {
+ *         "_id": "testUser2",
+ *         "name": "Jack",
+ *       }
+ *     ]
+ *  }' \
+ *  http://localhost:3000/api/household
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "__v": 0,
+ *     "_id": "555f0163688305b57c7cef6c",
+ *     "apartmentId": "XYZ",
+ *     "appliancesList': [
+ *       {
+ *         "appliance":"Washing Machine",
+ *         "quanity":2
+ *       },
+ *       {
+ *         "appliance":"Heater",
+ *         "quanity":4
+ *       }
+ *     ],
+ *     "address": "Konemiehentie 2, Otaniemi, Espoo, 02150",
+ *      "members": [
+ *        "User":
+ *         {
+ *          "_id": "testUser1",
+ *          "name": "Jane",
+ *        },
+ *       "User" :
+ *        {
+ *         "_id": "testUser2",
+ *         "name": "Jack",
+ *       }
+ *     ]
+ *   }
+ */
+router.post('/invite/:userId', auth.authenticate(), function(req, res) {
+  var household = req.body;
+  household.ownerId = req.user._id;
+  Household.invite(req.user._id, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Household',
+    type: 'invite',
+    data: household
   });
 });
 

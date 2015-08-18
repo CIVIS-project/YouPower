@@ -129,9 +129,7 @@ exports.households = [
       NumKids: 0
     },
     energyVal: '42',
-    members: [
-      exports.users[0]._id
-    ]
+    ownerId: exports.users[0]._id
   },
   {
     _id: newId(),
@@ -144,9 +142,7 @@ exports.households = [
       NumKids: 1
     },
     energyVal: '43',
-    members: [
-      exports.users[1]._id
-    ]
+    ownerId: exports.users[1]._id
   }
 ];
 

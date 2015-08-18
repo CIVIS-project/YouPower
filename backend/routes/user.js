@@ -111,6 +111,7 @@ router.post('/register', function(req, res) {
  *       "na": {}
  *     },
  *     "leaves": 42,
+ *     "householdId": null,
  *     "energyConsumption": {},
  *     "production": 0
  *   }
@@ -291,6 +292,7 @@ router.post('/profilePicture', auth.authenticate(), function(req, res) {
  *     "na": {}
  *   },
  *   "leaves": 42,
+ *   "householdId": null,
  *   "energyConsumption": {},
  *   "production": 0
  *  }
