@@ -66,6 +66,51 @@ router.get('/appliance/:id', auth.authenticate(), function(req, res) {
 });
 
 /**
+ * @api {get} /consumption/getSensors list of sensors and appliances for that user
+ * @apiGroup Consumption
+ *
+ * @apiExample {curl} Example usage
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *  curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
+ *  http://localhost:3000/api/consumption/getSensors
+ *
+ * @apiSuccessExample {[json]} Success-Response:
+ *   [
+ *    {
+ *        "appliances": [
+ *            {
+ *                "appliance": "Washing Machine",
+ *                "quantity": 2,
+ *                "_id": "55d2f971dfe4845d50451705"
+ *            },
+ *            {
+ *                "appliance": "Heater",
+ *                "quantity": 4,
+ *                "_id": "55d2f971dfe4845d50451704"
+ *            }
+ *        ]
+ *    },
+ *    {
+ *        "sensors": [
+ *            {
+ *                "_id": "55d2ef2f739304394f9f079f",
+ *                "sensorNumber": 0,
+ *                "sensorType": 0,
+ *                "measureUnit": "Wh",
+ *                "label": "Consumo Elettrico",
+ *                "lastSampleTimestamp": "2015-07-10T15:42:11.000Z",
+ *                "_apartmentId": "55d2ef2f739304394f9f0795",
+ *                "__v": 0
+ *            },..
+ *        ]
+ *    }
+ */
+router.get('/getSensors', auth.authenticate(), function(req, res) {
+  Consumption.getAllSensorsForUser(req.user._id, res.successRes);
+});
+
+/**
  * @api {get} /consumption/last Last reading of consumption data
  * @apiGroup Consumption
  *

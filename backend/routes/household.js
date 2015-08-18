@@ -73,7 +73,8 @@ var Log = require('../models').logs;
  *         "_id": "testUser2",
  *         "name": "Jack",
  *       }
- *     ]
+ *     ],
+ *     "energyVal": 0
  *   }
  */
 router.post('/', auth.authenticate(), function(req, res) {
