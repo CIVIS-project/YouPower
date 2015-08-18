@@ -72,9 +72,7 @@ router.get('/appliance/:id', auth.authenticate(), function(req, res) {
  * @apiExample {curl} Example usage
  *  # Get API token via /api/user/token
  *  export API_TOKEN=fc35e6b2f27e0f5ef...
- *  curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
- *  http://localhost:3000/api/consumption/getSensors
- *
+ *  curl -i -X GET -H "Authorization: Bearer $API_TOKEN" http://localhost:3000/api/consumption/getSensors
  * @apiSuccessExample {[json]} Success-Response:
  *   [
  *    {
