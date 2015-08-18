@@ -107,7 +107,7 @@ exports.getUserCommunities = function(id, cb) {
     });
 };
 
-//add member to the Community
+//add self to the Community
 exports.addMember = function(id, userId, cb) {
   Community.findById({
     _id: id
@@ -116,11 +116,45 @@ exports.addMember = function(id, userId, cb) {
       cb(err);
     } else if (!community) {
       cb('Community not found');
+    } else if (community.members.indexOf(userId) !== -1) {
+      cb (' User already a member of the community');
+    } else if (community.privacy === 'Closed') {
+      cb ('The community is \'invite-only\'');
     } else {
-      if (community.members.indexOf(userId) === -1) {
-        community.members.push(userId);
-      }
+      community.members.push(userId);
       community.save(cb);
+    }
+  });
+};
+
+//Invite for Private (Closed) communities
+exports.inviteMember = function(id, ownerId, userId, cb) {
+  if (ownerId === userId) {
+    return cb('Can\'t add owner to the community!');
+  }
+  Community.findById({
+    _id: id
+  }, function(err, community) {
+    if (err) {
+      cb(err);
+    } else if (!community) {
+      cb('Community not found');
+    } else if (community.members.indexOf(userId) !== -1) {
+      cb (' User already a member of the community');
+    } else {
+      User.model
+      .find({email: userId})
+      .exec(function(err, user) {
+        /* istanbul ignore if: db errors are hard to unit test */
+        if (err) {
+          cb(err);
+        } else if (!user) {
+          cb('User is not valid');
+        } else {
+          community.members.push(userId);
+          community.save(cb);
+        }
+      });
     }
   });
 };
@@ -138,6 +172,8 @@ exports.removeMember = function(id, userId, authId, cb) {
     } else if (authId.toString() === community.ownerId.toString()) {
       community.members.remove(userId);
       community.save(cb);
+    } else if (authId.toString() === userId.toString()) {
+      cb('Can\'t remove owner from community');
     } else {
       return cb('User not authorized');
     }

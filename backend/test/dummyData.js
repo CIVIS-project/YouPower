@@ -110,7 +110,6 @@ exports.communities = [
     name: 'dummy community 2',
     members: [
       exports.users[0]._id,
-      exports.users[1]._id
     ],
     ownerId: exports.users[0]._id,
     privacy: 'Closed'

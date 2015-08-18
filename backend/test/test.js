@@ -1109,7 +1109,7 @@ describe('models', function() {
 
     it('should add member to community', function(done) {
       // TODO: more thorough testing (add more than one member etc)
-      models.communities.addMember(dbCommunities[0]._id, dbUsers[0]._id, function(err) {
+      models.communities.addMember(dbCommunities[0]._id, dbUsers[1]._id, function(err) {
         if (err) {
           return done(err);
         }
@@ -1119,6 +1119,21 @@ describe('models', function() {
         });
       });
     });
+
+    it('should let owner invite member to \'Closed\' community', function(done) {
+      // TODO: more thorough testing (add more than one member etc)
+      models.communities.inviteMember(dbCommunities[1]._id,
+        dbUsers[0]._id, dbUsers[1]._id, function(err) {
+        if (err) {
+          return done(err);
+        }
+        models.communities.get(dbCommunities[1]._id, null, function(err, community) {
+          community.members.should.contain(dbUsers[1]._id);
+          done(err);
+        });
+      });
+    });
+
     it('should return error when adding to bogus community id', function(done) {
       models.communities.addMember(dummyData.ids[0], dbUsers[0]._id, function(err) {
         done(err ? null : 'bogus community id member add did not return error!');
@@ -1198,9 +1213,6 @@ describe('models', function() {
 
         async.parallel([
           // add users to community
-          function(cb) {
-            models.communities.addMember(dbCommunities[0]._id, dbUsers[0]._id, cb);
-          },
           function(cb) {
             models.communities.addMember(dbCommunities[0]._id, dbUsers[1]._id, cb);
           },
