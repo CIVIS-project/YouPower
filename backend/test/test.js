@@ -1150,6 +1150,14 @@ describe('models', function() {
       });
     });
 
+    it('should not invite invalid user to community', function(done) {
+      // TODO: more thorough testing (add more than one member etc)
+      models.communities.inviteMember(dbCommunities[1]._id,
+        dbUsers[0]._id, 'foo', function(err) {
+        done(err ? null : 'adding invalid user to community did not return error!');
+      });
+    });
+
     it('should let owner invite member to \'Closed\' community', function(done) {
       // TODO: more thorough testing (add more than one member etc)
       models.communities.inviteMember(dbCommunities[1]._id,

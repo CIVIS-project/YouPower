@@ -143,7 +143,7 @@ exports.inviteMember = function(id, ownerId, userId, cb) {
       cb (' User already a member of the community');
     } else {
       User.model
-      .find({email: userId})
+      .find({_id: userId})
       .exec(function(err, user) {
         /* istanbul ignore if: db errors are hard to unit test */
         if (err) {
