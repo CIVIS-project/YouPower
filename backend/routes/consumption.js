@@ -107,6 +107,12 @@ router.get('/appliance/:id', auth.authenticate(), function(req, res) {
  */
 router.get('/getSensors', auth.authenticate(), function(req, res) {
   Consumption.getAllSensorsForUser(req.user._id, res.successRes);
+  Log.create({
+    userId: req.user._id,
+    category: 'consumption',
+    type: 'getSensors',
+    data: req.user._id
+  });
 });
 
 /**

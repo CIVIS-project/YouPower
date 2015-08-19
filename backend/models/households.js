@@ -5,7 +5,7 @@
 var mongoose = require('mongoose');
 var _ = require('underscore');
 var Schema = mongoose.Schema;
-
+var usagePoint = require('./usagePoint');
 //Appliance Schema
 var applianceSchema = new Schema({
   appliance: String,
@@ -17,6 +17,19 @@ var HouseSchema = new Schema({
     type: String,
     required: true,
     unique: true
+  },
+  /*'connected' Tells whether the house is connected to a UsagePoint
+    If TRUE, _apartmentId gives the REAL apartmentId according to Energy meter UsagePoint
+  */
+  connected: {
+    type: Boolean,
+    default: false
+  },
+  _usagePoint: {
+    type: Schema.Types.ObjectId,
+    ref: 'UsagePoint',
+    required: false
+    //unique: true
   },
   address: {
     type: String,
@@ -313,6 +326,43 @@ exports.getHouseholdByUserId = function(id, cb) {
     } else {
       household = household.toObject();
       cb(null, household);
+    }
+  });
+};
+
+//Connect a household with energy data
+// CHECKING if FAMILYID= to the given UsagePoint FamilyID secret is pending
+exports.connectUsagePoint = function(usagepoint, cb) {
+  usagePoint.getUsagePoint(usagepoint.apartmentId, function(err, up) {
+    if (err) {
+      cb(err);
+    } else {
+      Household.findOne({_usagePoint: up._id}, false, function(err, hh) {
+        if (err) {
+          cb(err);
+        } else if (hh) {
+          cb('Cannot connect, another household is connected to the UsagePoint');
+        } else {
+          exports.getByUserId(usagepoint.userId, function(err, household) {
+            if (err) {
+              cb(err);
+            } else {
+              Household.findByIdAndUpdate(household._id, {
+                $set : {
+                  _usagePoint: up._id,
+                  connected: true
+                }
+              }, function(err, householdf) {
+                if (err) {
+                  cb(err);
+                } else {
+                  cb(null, householdf);
+                }
+              });
+            }
+          });
+        }
+      });
     }
   });
 };
