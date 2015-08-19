@@ -132,13 +132,16 @@ exports.inviteMember = function(id, ownerId, userId, cb) {
   if (ownerId === userId) {
     return cb('Can\'t add owner to the community!');
   }
-  Community.findById({
-    _id: id
+  Community.findOne({
+    $and: [
+      {_id: id},
+      {members: {$in: [ownerId]}}
+    ]
   }, function(err, community) {
     if (err) {
       cb(err);
     } else if (!community) {
-      cb('Community not found');
+      cb('Invalid community or user');
     } else if (community.members.indexOf(userId) !== -1) {
       cb (' User already a member of the community');
     } else {

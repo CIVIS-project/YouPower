@@ -1142,6 +1142,14 @@ describe('models', function() {
       });
     });
 
+    it('should allow only members to invite users to community', function(done) {
+      // TODO: more thorough testing (add more than one member etc)
+      models.communities.inviteMember(dbCommunities[1]._id,
+        dbUsers[1]._id, dbUsers[2]._id, function(err) {
+        done(err ? null : 'adding owner to community did not return error!');
+      });
+    });
+
     it('should not invite existing member to community', function(done) {
       // TODO: more thorough testing (add more than one member etc)
       models.communities.inviteMember(dbCommunities[1]._id,
