@@ -16,6 +16,19 @@ var HouseSchema = new Schema({
   apartmentId: {
     type: String,
     required: true,
+    //unique: true
+  }, 
+  /*'connected' Tells whether the house is connected to a UsagePoint
+    If TRUE, _apartmentId gives the REAL apartmentId according to Energy meter UsagePoint
+  */
+  connected: { 
+    type: Boolean,
+    default: false
+  },
+  _usagePoint: {
+    type: Schema.Types.ObjectId,
+    ref: 'UsagePoint',
+    required: false,
     unique: true
   },
   address: {
@@ -72,6 +85,7 @@ var Household = mongoose.model('Household', HouseSchema);
 
 // create household entity
 exports.create = function(household, cb) {
+  console.log("HOUSEHOLD", household)
   Household.create({
     apartmentId: household.apartmentId,
     address: household.address,
@@ -317,4 +331,42 @@ exports.getHouseholdByUserId = function(id, cb) {
   });
 };
 
+//Connect a household with energy data
+exports.connectUsagePoint = function(usagepoint, cb) {
+  exports.getByUserId(usagepoint.userId, function(err, household) {
+    if (err) {
+      cb(err);
+    } else {
+      console.log('HOUSEHOLDConnect',household);
+    }
+  }); 
+};
+//delete everythn below this
+exports.getByUserId = function(userId, cb) {
+  Household.findOne({
+    $or: [
+      {members: {$in: [userId]}},
+      {ownerId: userId}
+    ]
+  }, function(err, household) {
+    if (err) {
+      cb(err);
+    } else if (!household) {
+      cb(null, null);
+    } else {
+      household = household.toObject();
+      cb(null, household);
+    }
+  });
+};
+//update address and in turn update apartment size and type.
+exports.updateAddress = function(id, newAddress, size, type, cb) {
+  Household.findByIdAndUpdate(id, {
+    $set : {
+      address: newAddress,
+      householdType: type,
+      householdSize: size
+    }
+  }, cb);
+};
 exports.model = Household;

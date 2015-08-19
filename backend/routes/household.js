@@ -438,4 +438,59 @@ router.put('/removemember/:id', auth.authenticate(), function(req, res) {
   }
 });
 
+/**
+ * @api {post} /household/connectUsagePoint household to a usagepoint
+ * @apiGroup Household
+ *
+ * @apiExample {curl} Example usage:
+ *  curl -i -X POST -H "Content-Type: application/json" -d \
+ *  '{
+ *    "apartmentId": "XYZ",
+ *    "familyId": "family secret"
+ *  }' \
+ *  http://localhost:3000/api/household/connectUsagePoint
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "__v": 0,
+ *     "_id": "555f0163688305b57c7cef6c",
+ *     "apartmentId": "XYZ",
+ *     "appliancesList': [
+ *       {
+ *         "appliance":"Washing Machine",
+ *         "quanity":2
+ *       },
+ *       {
+ *         "appliance":"Heater",
+ *         "quanity":4
+ *       }
+ *     ],
+ *     "address": "Konemiehentie 2, Otaniemi, Espoo, 02150",
+ *      "members": [
+ *        "User":
+ *         {
+ *          "_id": "testUser1",
+ *          "name": "Jane",
+ *        },
+ *       "User" :
+ *        {
+ *         "_id": "testUser2",
+ *         "name": "Jack",
+ *       }
+ *     ]
+ *   }
+ */
+router.post('/connectUsagePoint', auth.authenticate(), function(req, res) {
+  var usagepoint = req.body;
+  usagepoint.userId = req.user._id;
+  Household.connectUsagePoint(usagepoint, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Household',
+    type: 'connectUsagePoint',
+    data: usagepoint
+  });
+});
+
 module.exports = router;
