@@ -439,46 +439,46 @@ router.put('/removemember/:id', auth.authenticate(), function(req, res) {
 });
 
 /**
- * @api {post} /household/connectUsagePoint household to a usagepoint
+ * @api {post} /household/connectUsagePoint Connect Household to a usagepoint
  * @apiGroup Household
  *
  * @apiExample {curl} Example usage:
  *  curl -i -X POST -H "Content-Type: application/json" -d \
  *  '{
- *    "apartmentId": "XYZ",
+ *    "apartmentId": "UsagePoint apartmentId",
  *    "familyId": "family secret"
  *  }' \
  *  http://localhost:3000/api/household/connectUsagePoint
  *
  * @apiSuccessExample {json} Success-Response:
  *   {
- *     "__v": 0,
- *     "_id": "555f0163688305b57c7cef6c",
- *     "apartmentId": "XYZ",
- *     "appliancesList': [
- *       {
- *         "appliance":"Washing Machine",
- *         "quanity":2
- *       },
- *       {
- *         "appliance":"Heater",
- *         "quanity":4
- *       }
- *     ],
- *     "address": "Konemiehentie 2, Otaniemi, Espoo, 02150",
- *      "members": [
- *        "User":
- *         {
- *          "_id": "testUser1",
- *          "name": "Jane",
- *        },
- *       "User" :
- *        {
- *         "_id": "testUser2",
- *         "name": "Jack",
- *       }
- *     ]
- *   }
+ *  "_id": "55d46b3c39659b8018435238",
+ *  "apartmentId": "17",
+ *  "energyVal": "0",
+ *  "ownerId": "55d2ea529e8773a54c2814fb",
+ *  "__v": 0,
+ *  "_usagePoint": "55d2ef2f739304394f9f0796",
+ *  "pendingInvites": [],
+ *  "members": [],
+ *  "familyComposition": {
+ *      "NumKids": 0,
+ *      "NumAdults": 0
+ *  },
+ *  "appliancesList": [
+ *      {
+ *          "appliance": "Washing Machine",
+ *          "quantity": 2,
+ *          "_id": "55d46b3c39659b801843523a"
+ *      },
+ *      {
+ *          "appliance": "Heater",
+ *          "quantity": 4,
+ *          "_id": "55d46b3c39659b8018435239"
+ *      }
+ *  ],
+ *  "address": "Konemiehentie 2, Espoo, 02150",
+ *  "connected": true
+ *}
  */
 router.post('/connectUsagePoint', auth.authenticate(), function(req, res) {
   var usagepoint = req.body;
