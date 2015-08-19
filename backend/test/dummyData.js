@@ -31,6 +31,16 @@ exports.users = [
       dob: new Date(43),
       photo: 'http://dummy2'
     }
+  },
+  {
+    _id: newId(),
+    email: 'testUser3@foo.com',
+    password: 'foobar3',
+    profile: {
+      name: 'my nick3',
+      dob: new Date(43),
+      photo: 'http://dummy3'
+    }
   }
 ];
 
@@ -110,6 +120,7 @@ exports.communities = [
     name: 'dummy community 2',
     members: [
       exports.users[0]._id,
+      exports.users[2]._id
     ],
     ownerId: exports.users[0]._id,
     privacy: 'Closed'
