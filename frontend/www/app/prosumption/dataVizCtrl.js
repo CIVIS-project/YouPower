@@ -6,18 +6,96 @@ angular.module('civis.youpower.prosumption').service('getRandomData', getRandomD
 function getRandomData() {
     return Math.floor((Math.random()*6)+1);
 }
+function getRandomTrend() {
+    return Math.floor((Math.random()*6)-3);
+}
+function printablePercentage(n) {
+    return (n<=0?'':'+') + String(n)+'%';
+}
+function positiveNegativeColor(n) {
+    return (n<=0? 'energized': 'balanced');
+}
+function isPriceGood(price) {
+    var threshold = 2; //totally random threshold, to be replaced at some point
+    return (price<=threshold? true : false);
+}
+
 
 function dataVizCtrl($scope, $state, User, $http) {
 	//just loads the content of the window once the tabs have been generated
 	//$state.go('main.prosumption.yours');
 console.log('loaded dataVizCtrl');
+console.log('state= '+String($scope));
 //DM: generates random stuff, need to be replaced with calls to the backend endpoints once available
-// function getRandomData() {
-// 	return Math.floor((Math.random()*6)+1);
-// }
+
+///fetch data for the yours/ tab
+$scope.currentPrice= getRandomData();
+var isPriceOk = isPriceGood($scope.currentPrice);
+if (isPriceOk) {
+    $scope.priceIcon='ion-happy-outline';
+    $scope.priceIconColor="balanced";
+}
+else {
+    $scope.priceIcon='ion-sad-outline';
+    $scope.priceIconColor="energized";
+}
 
 $scope.lastConsumption= getRandomData();
 $scope.lastProduction = getRandomData();
+
+var productionArray = [];
+var consumptionArray = [];
+var limit = 12; //number of entries, based on a monthly sampling
+for (var i =0; i<limit; i++) {
+    productionArray.push(20*getRandomData());
+    consumptionArray.push(20*getRandomData());
+    console.log('dato:'+String(productionArray[i]));
+}
+console.log(productionArray);
+// $scope.chartConfigComparisonHistorical={
+//     series: [{
+//     }],
+// }
+// $scope.chartConfigComparisonHistorical.series.push({
+//             data: productionArray
+//         })
+// $scope.chartConfigComparisonHistorical.series.push({
+//             data: consumptionArray
+//         })
+//fetch data for the appliances tab
+
+//fetch data for the community tab
+
+$scope.totalCommunityConsumption = 10*getRandomData();
+$scope.totalCommunityProduction = 10*getRandomData();
+tmp1=getRandomTrend();
+//console.log('trend: '+colorTrend);
+$scope.communityConsumptionTrend= printablePercentage(tmp1);
+$scope.colorSpan= positiveNegativeColor(tmp1);
+tmp2=getRandomTrend();
+//console.log('trend: '+colorTrend2);
+$scope.communityProductionTrend= printablePercentage(tmp2);
+$scope.colorSpan2= positiveNegativeColor(tmp2);
+
+//configuration for the various graphs
+$scope.chartConfigComparisonHistorical= {
+   options: {
+     chart: {
+         type: 'column',
+     }
+ },
+ title: {
+     text: 'Storico Dati',
+ },
+ series: [{
+         name: 'Produzione',
+         data: productionArray
+              },
+              {
+             name: 'Consumo',
+             data: consumptionArray,   
+             }], 
+};
 ///////////////////////////////////////////
 //example: basic horizontal bar chart
 // $scope.chartConfig = {
@@ -135,7 +213,7 @@ $scope.lastProduction = getRandomData();
 //     };
 ///////////////////////////////////////////
 //DM: example: solidgauge
-$scope.chartConfig = {
+$scope.chartConfigLastConsumption = {
         options: {
             chart: {
                 type: 'solidgauge'
@@ -192,5 +270,92 @@ $scope.chartConfig = {
         },
         loading: false
     };
+$scope.chartConfigLastProduction = {
+        options: {
+            chart: {
+                type: 'solidgauge'
+            },
+            pane: {
+                center: ['50%', '50%'],
+                size: '60%',
+                startAngle: -90,
+                endAngle: 90,
+                background: {
+                    backgroundColor:'#EEE',
+                    innerRadius: '60%',
+                    outerRadius: '100%',
+                    shape: 'arc'
+                }
+            },
+            solidgauge: {
+                dataLabels: {
+                    y: -30,
+                    borderWidth: 0,
+                    useHTML: true
+                }
+            }
+        },
+        series: [{
+            data: [$scope.lastProduction],
+            dataLabels: {
+                format: '<div style="text-align:center"><span style="font-size:15px;color:black">{y}</span><br/>' + 
+                    '<span style="font-size:12px;color:silver">kWh</span></div>'
+            }
+        }],
+        title: {
+            text: 'Consumption',
+            y: 20
+        },
+        yAxis: {
+            currentMin: 0,
+            currentMax: 20,
+            title: {
+                y: 140
+            },      
+            stops: [
+                [0.1, '#55BF3B'],  // green
+                [0.9, '#DF5353'], // red
+                [0.5, '#DDDF0D'], // yellow
+            ],
+            lineWidth: 0,
+            tickInterval: 20,
+            tickPixelInterval: 400,
+            tickWidth: 0,
+            labels: {
+                y: 15
+            }   
+        },
+        loading: false
+    };
+$scope.chartConfigCommunityBalance = {
+        options: {
+            chart: {
+                type: 'pie',
+                lotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+            },
+            plotOptions: {
+                pie: {
+                    dataLabels: {
+                        enabled: false
+                    },
+                    showInLegend: true
+                }
+            },
+            colors: ['#50B432', '#24CBE5'],
+        },
+        series: [{
+             type: 'pie',
+            data: [
+                ['Produzione', $scope.totalCommunityProduction],
+                ['Energia acquistata',$scope.totalCommunityConsumption-$scope.totalCommunityProduction]
+                ]
+                    }],
+        title: {
+            text: 'Community Balance',
+        },
+        loading: false
+    };
+    //end of controller
 }
-

@@ -4,24 +4,26 @@
 <div class="list card">
   <div class="item item-divider">Energy Meteo</div>
   <div class="item item-text-wrap">
-  Visualization icon smile/sad
+  <i class="icon-large {{priceIcon}} {{priceIconColor}}"></i> &nbsp The current estimated price is {{currentPrice}} &euro;/kWh 
   </div>
 </div>
 
 <div class="list card">
   <div class="item item-divider"> Actual Consumption/Production Level</div>
-  <div class="item item-text-wrap">
-  Last measured consumption: {{lastConsumption}} kWh <a ui-sref="main.prosumption.vizConsumption" ui-view="tab-prosumption-yours-viz"><i class="icon ion-arrow-graph-up-right" ></i></a><br>
-  Last measured production: {{lastProduction}} kWh <br>
-  
-  </div>
+  <a class="item item-icon-right" ui-sref="main.prosumption.vizConsumption" ui-view="tab-prosumption-yours"> 
+    <!-- <div class="item item-text-wrap"> -->
+    Last measured consumption: {{lastConsumption}} kWh &nbsp  &nbsp  &nbsp <i class="icon-large ion-arrow-graph-up-right" ></i>
+<!-- </div>
+ --></a>
+<a class="item item-icon-right" ui-sref="main.prosumption.vizProduction" ui-view="tab-prosumption-yours">
+  Last measured production: {{lastProduction}} kWh &nbsp  &nbsp  &nbsp<i class="icon-large ion-arrow-graph-up-right" font-size:larger></i>
+  </a>
 </div>
 
 <div class="list card">
   <div class="item item-divider">Historical Consumption/Production Level</div>
   <div class="item item-text-wrap">
-  Visualization histogram plus data
-  </div>
+<div><highchart id="chart4" config="chartConfigComparisonHistorical"></highchart> </div>
 </div>
 
 </ion-content>
