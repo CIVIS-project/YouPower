@@ -27,8 +27,6 @@ angular.module('civis.youpower', [
   // Making underscore available in the angular expressions
   $rootScope._=_;
 
-  HOST = 'http://civis.tbm.tudelft.nl';
-
   $rootScope.getNumber = function(num) {
     return new Array(num);
   }

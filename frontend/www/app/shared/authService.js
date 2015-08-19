@@ -2,7 +2,7 @@
 
 angular.module('civis.youpower')
 
-.service('AuthService', function($q, $http, $window, $timeout, Base64, $firebaseObject) {
+.service('AuthService', function($q, $http, $window, $timeout, Base64, Config) {
   var LOCAL_TOKEN_KEY = 'CIVIS_TOKEN';
   var isAuthenticated = false;
 
@@ -33,26 +33,11 @@ angular.module('civis.youpower')
 
   var login = function(username, password) {
     return $q(function(resolve, reject) {
-      /* Dummy authentication for old Firebase data
-       ----------------------------------------------*/
-      // var ref = new Firebase('https://youpower.firebaseio.com/users');
-      // $firebaseObject(ref).$loaded().then(function(data){
-      //   var userid = _.findKey(data,function(user){return user && user.username == username});
-      //   if (userid) {
-      //     storeUserCredentials(userid);
-      //     resolve('Login success.');
-      //   } else {
-      //     reject('Login Failed.');
-      //   }
-      // })
-
-      /* Use this for real authentication
-       ----------------------------------------------*/
       var headers = {
         'Authorization':'Basic ' + Base64.encode(username + ':' + password)
       }
 
-      $http.get(HOST + '/api/user/token', {headers:headers})
+      $http.get(Config.host + '/api/user/token', {headers:headers})
        .success(function (data) {
         storeUserCredentials(data.token);
         resolve('Login success.');
