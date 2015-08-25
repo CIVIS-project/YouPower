@@ -1,0 +1,31 @@
+<ion-view view-title={{"Settings"|translate}}>
+<ion-content>
+
+<div class="list card">
+<div class="item item-divider">Energy Data Account</div>
+  
+  <a href="#" class="item item-divider item-icon-left">
+    <i class="icon ion-android-add"></i>
+    Link Data Account
+  </a>
+</div>
+
+<div class="list card">
+  <div class="item item-divider">App Preferences</div>
+  <label class="item item-input item-select">
+    <span class="input-label" translate>Language</span>
+    <select ng-model="currentUser.language" ng-change="save()">
+      <option value=0 translate>English</option>
+      <option value=1 translate>Italian</option>
+    </select>
+  </label>
+  <ion-toggle ng-model="currentUser.profile.reminder" toggle-class="toggle-calm">Reminder</ion-toggle>
+  <!-- shall do auto-save -->
+  <!-- <div class="button-bar">
+    <a href="#" class="button button-balanced" translate>Cancel</a>
+    <a href="#" class="button button-balanced" ng-click="save()" translate>Save</a>
+  </div> -->
+</div>
+
+</ion-content>
+</ion-view>

@@ -1,0 +1,30 @@
+<!--
+Create tabs with an icon and label, using the tabs-positive style.
+Each tab's child <ion-nav-view> directive will have its own
+navigation history that also transitions its views in and out.
+-->
+<ion-tabs class="tabs-stable tabs-top tabs-striped">
+
+
+  <!-- Settings Overview -->
+  <ion-tab icon="ion-gear-a" href="#/app/settings">
+    <ion-nav-view name="tab-index"></ion-nav-view>
+  </ion-tab>
+
+  <!-- Personal Settings -->
+  <ion-tab icon="ion-person" href="#/app/settings/personal">
+    <ion-nav-view name="tab-personal"></ion-nav-view>
+  </ion-tab>
+
+  <!-- Household Settings -->
+  <ion-tab icon="ion-home" href="#/app/settings/household">
+    <ion-nav-view name="tab-household"></ion-nav-view>
+  </ion-tab>
+
+  <!-- Preferences Tab -->
+  <!-- <ion-tab icon="ion-gear-a" href="#/app/settings/preferences">
+    <ion-nav-view name="tab-preferences"></ion-nav-view>
+  </ion-tab> -->
+
+  </div>
+</ion-tabs>

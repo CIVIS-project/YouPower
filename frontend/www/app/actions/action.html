@@ -1,42 +1,36 @@
 <ion-view view-title="Suggested Action">
 <ion-content>
 
+	<div class="list card">
+		<div class="item item-divider item-icon-left item-text-wrap">
+			<i class="icon ion-android-arrow-forward energized"></i>
+			{{action.name}}
+		</div>
+		<div class="item item-body">
 
-<!-- <div from="users user" where = "user.id=currentUser.id" provider="firebase" loaded="init(user)"> -->
-	<div from="actions action" where = "action.id=id" provider="firebase">
+			<ng-include src="'app/actions/actionDescription.html'"></ng-include>
 
-		<div class="list card">
-			<div class="item item-divider item-icon-left item-text-wrap">
-				<i class="icon ion-ios-lightbulb-outline balanced"></i>
-				<h2>{{action.title}}</h2>
-			</div>
-			<div class="item item-body">
+			<p><a href="#" class="subdued">{{action.participants}} Participant{{action.participants > 1 ? 's' : ''}}.</a></p>
 
-				<ng-include src="'app/actions/actionDescription.html'"></ng-include>
+			<a class="item item-icon-left" ng-click="changeActionState('alreadyDoing')">
+				<i class="icon ion-android-done positive"></i>
+				I already do this.
+			</a>
+			<a class="item item-icon-left" ng-click="changeActionState('inProgress')">
+				<i class="icon ion-leaf balanced"></i>
+				I want to do this.
+			</a>
+			<a class="item item-icon-left" ng-click="changeActionState('declined')">
+				<i class="icon ion-android-close assertive"></i>
+				I don't want to do this.
+			</a>
+			<a class="item item-icon-left" ng-click="changeActionState('na')">
+				<i class="icon ion-android-remove energized"></i>
+				This doesn't apply to me.
+			</a>
 
-				<p><a href="#" class="subdued">{{action.participants}} Participant{{action.participants > 1 ? 's' : ''}}.</a></p>
-				
-				<a class="item item-icon-left" insert-into="user.actionsDoing" ng-click="insert({id:action.id, date: Date.now()});nextTip(user,true)">
-					<i class="icon ion-ios-checkmark-outline positive"></i>
-					I already do this. 
-				</a>
-				<a class="item item-icon-left" insert-into="user.actionsActive" ng-click="insert({id:action.id, date: Date.now()});nextTip(user,true)">
-					<i class="icon ion-leaf balanced"></i>
-					I want to do this.
-				</a>
-				<a class="item item-icon-left" insert-into="user.actionsNotInterested" ng-click="insert({id:action.id, date: Date.now()});nextTip(user, true)">
-					<i class="icon ion-ios-close-outline assertive"></i>
-					I don't want to do this.
-				</a>
-				<a class="item item-icon-left" insert-into="user.actionsNA" ng-click="insert({id:action.id, date: Date.now()});nextTip(user,true)">
-					<i class="icon ion-ios-minus-outline energized"></i>
-					This doesn't apply to me. 
-				</a>
-
-			</div>
-		</div> 
+		</div>
 	</div>
-<!-- </div> -->
 
 
 </ion-content>

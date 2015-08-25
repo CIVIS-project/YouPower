@@ -4,6 +4,11 @@
   "devDependencies": {
     "ionic": "driftyco/ionic-bower#1.0.0",
     "angular-translate": "~2.7.0",
-    "endev": "~0.2.1"
+    "angular-resource": "~1.4.3"
+  },
+  "dependencies": {
+    "firebase": "~2.2.9",
+    "angularfire": "~1.1.2",
+    "underscore": "~1.8.3"
   }
 }

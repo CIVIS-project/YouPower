@@ -1,43 +1,45 @@
-// Ionic Starter App
+// CIVIS YouPower App
 
-endev.autoStart = false;
-endev.firebaseProvider = {
-  path: "https://youpower.firebaseio.com/"
-};
+angular.module('civis.youpower.actions',[]);
+angular.module('civis.youpower.communities',[]);
+angular.module('civis.youpower.settings',[]);
+angular.module('civis.youpower.welcome',[]);
 
+angular.module('civis.youpower', [
+  'ionic',
+  'ionic.rating',
+  'ngResource',
+  'firebase',
+  'pascalprecht.translate',
+  'civis.youpower.main',
+  'civis.youpower.actions',
+  'civis.youpower.communities',
+  'civis.youpower.settings',
+  'civis.youpower.welcome',
+  'civis.youpower.services',
+  'civis.youpower.translations',
+  ])
 
-var controllers = angular.module('starter.controllers', []);
-var sharedServices = angular.module('starter.sharedServices', []);
+.run(function($ionicPlatform, $rootScope, $window, AuthService) {
 
+  $rootScope.scale = 5;
 
-
-// angular.module is a global place for creating, registering and retrieving Angular modules
-// 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
-// the 2nd parameter is an array of 'requires'
-// 'starter.services' is found in services.js
-// 'starter.controllers' is found in controllers.js
-var starter = angular.module('starter', ['ionic', 'ionic.rating', 'Endev', 'starter.controllers', 'starter.sharedServices', 'pascalprecht.translate'])
-
-.run(function($ionicPlatform, $rootScope, $window) {
-
-  $rootScope.scale = 5; 
-
+  // Making underscore available in the angular expressions
   $rootScope._=_;
 
-  // Fix for remembaring the user between refresh
-  $rootScope.currentUser = $window.localStorage['username'] ? {username: $window.localStorage['username'], lang: "en"} : {};
-
-  $rootScope.$watch("currentUser.username",function(newValue, oldValue){
-    if(newValue && oldValue !== newValue) {
-      $window.localStorage['username'] = newValue;
-    }
-  })
-
-  //$rootScope.currentUser = {username:"jmayer@energyup.eu"};
-
   $rootScope.getNumber = function(num) {
-      return new Array(num);   
+    return new Array(num);
   }
+
+  $rootScope.$on('$stateChangeStart', function (event,next, nextParams, fromState) {
+    if (!AuthService.isAuthenticated()) {
+      if (next.name !== 'welcome') {
+        event.preventDefault();
+        $state.go('welcome');
+      }
+    }
+  });
+
 
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -55,6 +57,7 @@ var starter = angular.module('starter', ['ionic', 'ionic.rating', 'Endev', 'star
   });
 })
 
+
 .config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider, $translateProvider) {
 
   // Ionic uses AngularUI Router which uses the concept of states
@@ -69,29 +72,39 @@ var starter = angular.module('starter', ['ionic', 'ionic.rating', 'Endev', 'star
     controller: 'WelcomeCtrl'
   })
 
-  // setup an abstract state for the tabs directive
-  .state('tab', {
-    url: "/tab",
+  // setup an abstract state that will contain the main navigation (i.e. menu)
+  .state('main', {
+    url: "/app",
     abstract: true,
-    templateUrl: "app/tabs/tabs.html",
-    controller: 'TabCtrl'
+    templateUrl: "app/app/menu.html",
+    controller: 'AppCtrl'
   })
 
-  // Each tab has its own nav history stack:
-
-  .state('tab.actions', {
-    cache: false, 
+  .state('main.actions', {
     url: '/actions',
+    abstract:true,
     views: {
-      'tab-actions': {
-        templateUrl: 'app/actions/tab-actions.html',
+      'menuContent': {
+        templateUrl: 'app/actions/tabs.html',
         controller: 'ActionsCtrl'
       }
     }
   })
 
-  .state('tab.action', {
-    url: '/actions/:id',
+
+  .state('main.actions.yours', {
+    url: '/yours',
+    views: {
+      'tab-actions': {
+        templateUrl: 'app/actions/index.html',
+        controller: 'ActionCtrl' 
+      }
+    }
+  })
+
+
+  .state('main.actions.action', {
+    url: '/suggested/:id',
     views: {
       'tab-actions': {
         templateUrl: 'app/actions/action.html',
@@ -100,55 +113,162 @@ var starter = angular.module('starter', ['ionic', 'ionic.rating', 'Endev', 'star
     }
   })
 
-  .state('tab.action-details', {
-    url: '/actions/:type/:index',
-    views: {
-      'tab-actions': {
-        templateUrl: 'app/actions/action-details.html',
-        controller: 'ActionsCtrl'
-      }
-    }
-  })
 
-  .state('tab.action-completed', {
-    url: '/action-completed/:id',
-    views: {
-      'tab-actions': {
-        templateUrl: 'app/actions/action-completed.html',
-        controller: 'FormsCtrl'
-      }
-    }
-  })
 
-  .state('tab.action-abandoned', {
-    url: '/action-abandoned/:id',
-    views: {
-      'tab-actions': {
-        templateUrl: 'app/actions/action-abandoned.html',
-        controller: 'FormsCtrl'
-      }
-    }
-  })
+    // .state('main.actions.action', {
+    //   url: '/:id',
+    //   templateUrl: 'app/actions/action.html',
+    //   controller: 'ActionCtrl'
+    // })
 
-  .state('tab.home', {
-    url: '/home',
-    views: {
-      'tab-home': {
-        templateUrl: 'app/home/tab-home.html',
-        controller: 'HomeCtrl'
-      }
+.state('main.actions.details', {
+  url: '/:type/:index',
+  views: {
+    'tab-actions': {
+      templateUrl: 'app/actions/action-details.html',
+      controller: 'ActionsListCtrl'
     }
-  })
+  }
+})
 
-  .state('tab.community', {
-    url: '/community',
-    views: {
-      'tab-community': {
-        templateUrl: 'templates/tab-community.html',
-        controller: 'CommunityCtrl'
-      }
+
+
+.state('main.actions.completed', {
+  url: '/:id/completed',
+  views: {
+    'tab-actions': {
+      templateUrl: 'app/actions/action-completed.html',
+      controller: 'FormsCtrl'
     }
-  })
+  }
+})
+
+.state('main.actions.abandoned', {
+  url: '/:id/abandoned',
+  views: {
+    'tab-actions': {
+      templateUrl: 'app/actions/action-abandoned.html',
+      controller: 'FormsCtrl'
+    }
+  }
+})
+
+///////
+
+.state('main.actions.household', {
+  url: '/household',
+  views: {
+    'tab-household': {
+      templateUrl: 'app/household/index.html',
+    }
+  }
+})
+
+.state('main.actions.communities', {
+  url: '/communities',
+  views: {
+    'tab-communities': {
+      templateUrl: 'app/communities/index.html',
+    }
+  }
+})
+
+.state('main.actions.achievements', {
+  url: '/achievements',
+  views: {
+    'tab-achievements': {
+      templateUrl: 'app/achievements/index.html',
+    }
+  }
+})
+
+
+
+
+.state('main.prosumption', {
+  url: '/prosumption',
+  views: {
+    'menuContent': {
+      templateUrl: 'app/prosumption/index.html',
+          // controller: 'HouseholdCtrl'
+        }
+      }
+    })
+
+.state('main.brf', {
+  url: '/brf',
+  views: {
+    'menuContent': {
+      templateUrl: 'app/brf/index.html',
+    }
+  }
+})
+
+.state('main.communities', {
+  url: '/communities',
+  views: {
+    'menuContent': {
+      templateUrl: 'app/communities/index.html',
+      controller: 'CommunitiesCtrl'
+    }
+  }
+})
+
+.state('main.settings', {
+  url: '/settings',
+  abstract: true,
+  views: {
+    'menuContent': {
+      templateUrl: 'app/settings/tabs.html',
+      controller: 'SettingsCtrl'
+    }
+  }
+})
+
+.state('main.settings.index', {
+  url: '',
+  views: {
+    'tab-index': {
+      templateUrl: 'app/settings/index.html',
+    }
+  }
+})
+
+.state('main.settings.personal', {
+  url: '/personal',
+  views: {
+    'tab-personal': {
+      templateUrl: 'app/settings/personal.html',
+    }
+  }
+})
+
+.state('main.settings.household', {
+  url: '/household',
+  views: {
+    'tab-household': {
+      templateUrl: 'app/settings/household.html'
+    }
+  }
+})
+
+.state('main.settings.preferences', {
+  url: '/preferences',
+  views: {
+    'tab-preferences': {
+      templateUrl: 'app/settings/preferences.html',
+    }
+  }
+})
+
+.state('main.about', {
+  url: '/about',
+  views: {
+    'menuContent': {
+      templateUrl: 'app/about/index.html',
+    }
+  }
+})
 
   // .state('tab.performance', {
   //   url: '/performance',
@@ -170,82 +290,12 @@ var starter = angular.module('starter', ['ionic', 'ionic.rating', 'Endev', 'star
   //   }
   // })
 
-  /*
-  .state('tab.chats', {
-      url: '/chats',
-      views: {
-        'tab-chats': {
-          templateUrl: 'templates/tab-chats.html',
-          controller: 'ChatsCtrl'
-        }
-      }
-    })
-    .state('tab.chat-detail', {
-      url: '/chats/:chatId',
-      views: {
-        'tab-chats': {
-          templateUrl: 'templates/chat-detail.html',
-          controller: 'ChatDetailCtrl'
-        }
-      }
-    })
-*/
-
-.state('tab.settings', {
-  url: '/settings',
-  views: {
-    'tab-settings': {
-      templateUrl: 'app/settings/tab-settings.html',
-      controller: 'SettingsCtrl'
-    }
-  }
-})
-
-.state('tab.personal', {
-  url: '/personal-profile',
-  views: {
-    'tab-settings': {
-      templateUrl: 'app/settings/settingsPersonal.html',
-      controller: 'SettingsCtrl'
-    }
-  }
-})
-
-.state('tab.household', {
-  url: '/household-profile',
-  views: {
-    'tab-settings': {
-      templateUrl: 'app/settings/settingsHousehold.html'
-    }
-  }
-})
-
-
-.state('tab.preferences', {
-  url: '/preferences',
-  views: {
-    'tab-settings': {
-      templateUrl: 'app/settings/settingsPreferences.html'
-    }
-  }
-})
-
 ;
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/welcome');
 
-  for(lang in translations){
-    $translateProvider.translations(lang, translations[lang]);
-  }
-  
-  $translateProvider
-  .preferredLanguage('en')
-  .fallbackLanguage('en');
-
 });
-
-
 
 
 

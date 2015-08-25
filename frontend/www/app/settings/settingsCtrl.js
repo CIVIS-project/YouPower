@@ -1,32 +1,30 @@
 
-//angular.module('starter.controllers').controller('SettingsCtrl', function($scope, $filter, $translate) {
-
-controllers.controller('SettingsCtrl', SettingsCtrl); 
+angular.module('civis.youpower.settings').controller('SettingsCtrl', SettingsCtrl);
 
 // Inject my dependencies
 //SettingsCtrl.$inject = ['$scope', '$filter', '$translate'];
 
-function SettingsCtrl($scope, $filter, $translate, PersonalProfile) { 
+function SettingsCtrl($scope, $filter, $translate, PersonalProfile) {
 
 	$scope.person = PersonalProfile.personalData;
 
 	$scope.person.birthday = $filter("date")($scope.person.birthday, 'yyyy-MM-dd');
 
-	$scope.person.isDataComplete = true; 
-	
-	$scope.personDataView = []; 
+	$scope.person.isDataComplete = true;
 
-	$scope.languages = ["English", "Italian"]; 
+	$scope.personDataView = [];
+
+	$scope.languages = ["English", "Italian"];
 
 	$scope.$on("$ionicView.loaded", function() {
 		$scope.setPersonDataView();
 	});
 
 	$scope.setPersonDataView = function() {
-		$scope.addPersonDataView("Password", PersonalProfile.getPwdDate()); 
-		$scope.addPersonDataView("Name", PersonalProfile.getFullName()); 
-		$scope.addPersonDataView("Birthday", $scope.person.birthday); 
-		$scope.addPersonDataView("Language", $scope.languages[$scope.person.language]); 
+		$scope.addPersonDataView("Password", PersonalProfile.getPwdDate());
+		$scope.addPersonDataView("Name", PersonalProfile.getFullName());
+		$scope.addPersonDataView("Birthday", $scope.person.birthday);
+		$scope.addPersonDataView("Language", $scope.languages[$scope.person.language]);
 	};
 
 
@@ -36,7 +34,7 @@ function SettingsCtrl($scope, $filter, $translate, PersonalProfile) {
 	};
 
 	$scope.save = function () {
-		if ($scope.person.language == 1){
+		if ($scope.currentUser.language == 1){
 			$translate.use("it");
 		}else $translate.use("en");
 	};

@@ -1,55 +1,47 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-    <title></title>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+	<title></title>
 
-    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
+	<link href="css/ionic.app.css" rel="stylesheet">
 
-    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
-    <link href="css/ionic.app.css" rel="stylesheet">
-    -->
+	<!-- ionic/angularjs js -->
+	<script src="lib/ionic/js/ionic.bundle.js"></script>
 
-    <!-- ionic/angularjs js -->
-    <script src="lib/ionic/js/ionic.bundle.js"></script>
+	<!-- cordova script (this will be a 404 during development) -->
+	<script src="cordova.js"></script>
 
-    <!-- cordova script (this will be a 404 during development) -->
-    <script src="cordova.js"></script>
-
-    <script src="lib/angular-translate/angular-translate.js"></script>
-    <script src="lib/firebase/firebase.js"></script>
-    <script src="lib/angularfire/dist/angularfire.js"></script>
-    <script src="lib/underscore/underscore.js"></script>
-    <script src="lib/endev/dist/endev.js"></script>
+	<script src="lib/angular-translate/angular-translate.js"></script>
+	<script src="lib/angular-resource/angular-resource.js"></script>
+	<script src="lib/firebase/firebase.js"></script>
+	<script src="lib/angularfire/dist/angularfire.js"></script>
+	<script src="lib/underscore/underscore.js"></script>
 
 
-    <!-- your app's js -->
-    <script src="app/app.js"></script>
-    <script src="app/tabs/tabCtrl.js"></script>
-    <script src="js/controllers.js"></script>
-    <script src="app/settings/settingsCtrl.js"></script>
-    <script src="app/welcome/welcomeCtrl.js"></script>
-    <script src="app/actions/actionsCtrl.js"></script>
-    <script src="app/actions/actionCtrl.js"></script>
-    <script src="app/actions/formsCtrl.js"></script>
-    <script src="app/shared/translations.js"></script>
-    <script src="app/shared/rating.js"></script>
-  </head>
-  <body ng-app="starter">
-    <!--
-      The nav bar that will be updated as we navigate between views.
-    -->
-    <ion-nav-bar class="bar-balanced tabs-top">
-      <ion-nav-back-button>
-      </ion-nav-back-button>
-    </ion-nav-bar>
-    <!--
-      The views will be rendered in the <ion-nav-view> directive below
-      Templates are in the /templates folder (but you could also
-      have templates inline in this html file if you'd like).
-    -->
-    <ion-nav-view></ion-nav-view>
-  </body>
+	<!-- your app's js -->
+	<script src="app/app.js"></script>
+	<!-- inject:js -->
+	<script src="app/actions/actionCtrl.js"></script>
+	<script src="app/actions/actionsCtrl.js"></script>
+	<script src="app/actions/actionsListCtrl.js"></script>
+	<script src="app/actions/formsCtrl.js"></script>
+	<script src="app/app/AppCtrl.js"></script>
+	<script src="app/communities/communitiesCtrl.js"></script>
+	<script src="app/settings/settingsCtrl.js"></script>
+	<script src="app/shared/actions.js"></script>
+	<script src="app/shared/authService.js"></script>
+	<script src="app/shared/config.js"></script>
+	<script src="app/shared/personalProfile-service.js"></script>
+	<script src="app/shared/rating.js"></script>
+	<script src="app/shared/translations.js"></script>
+	<script src="app/shared/user.js"></script>
+	<script src="app/welcome/welcomeCtrl.js"></script>
+	<!-- endinject -->
+</head>
+<body ng-app="civis.youpower">
+  <ion-nav-view>
+  </ion-nav-view>
+</body>
 </html>
