@@ -9,11 +9,11 @@ function WelcomeCtrl($translate, $scope, $rootScope, $state,AuthService) {
   // $scope.loginData.emailAddress = 'civisuser@test.com';
   // $scope.loginData.password = "test";
 
-  $scope.loginData.emailAddress = "testuser5@test.com";
-  $scope.loginData.password = "topsecret50";
+  // $scope.loginData.emailAddress = "testuser5@test.com";
+  // $scope.loginData.password = "topsecret50";
 
-  // $scope.loginData.emailAddress = "foo";
-  // $scope.loginData.password = "bar";
+  $scope.loginData.emailAddress = "foo";
+  $scope.loginData.password = "bar";
 
 
 	$scope.changeLanguage = function (langKey) {
