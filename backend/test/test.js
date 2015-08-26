@@ -781,36 +781,6 @@ describe('models', function() {
         });
       });
     });
-    // this is probably not relevant anymore?
-    xit('should return error if removing an action that has not been started', function(done) {
-      var user = dbUsers[0];
-      user.actions.done[dbActions[0]._id] = dbActions[0];
-      user.markModified('actions.done');
-      user.actions.declined[dbActions[1]._id] = dbActions[1];
-      user.markModified('actions.declined');
-      user.save(function(err) {
-        if (err) {
-          return done(err);
-        }
-        async.parallel([
-          function(cb) {
-            models.users.setActionState(user, dbActions[0]._id, 'declined', null, function(err) {
-              cb(err ? null : 'completed action was declined without error!');
-            });
-          },
-          function(cb) {
-            models.users.setActionState(user, dbActions[1]._id, 'declined', null, function(err) {
-              cb(err ? null : 'already declined action was declined without error!');
-            });
-          }
-        ], function(err) {
-          should.not.exist(user.actions.declined[dbActions[0]._id]);
-          should.exist(user.actions.done[dbActions[0]._id]);
-          should.exist(user.actions.declined[dbActions[1]._id]);
-          done(err);
-        });
-      });
-    });
     it('should return error when trying to cancel bogus action id', function(done) {
       models.users.setActionState(dbUsers[0], dummyData.ids[0], 'declined', null, function(err) {
         done(err ? null : 'no error returned!');
@@ -837,38 +807,6 @@ describe('models', function() {
           user.actions.inProgress[dbActions[1]._id].name.should.equal(dbActions[1].name);
           should.not.exist(user.actions.declined[dbActions[0]._id]);
           should.not.exist(user.actions.declined[dbActions[1]._id]);
-          done(err);
-        });
-      });
-    });
-    // this is probably not relevant anymore?
-    xit('should return error if completing an action that has not been started', function(done) {
-      var user = dbUsers[0];
-      user.actions.done[dbActions[0]._id] = dbActions[0];
-      user.markModified('actions.done');
-      user.actions.declined[dbActions[1]._id] = dbActions[1];
-      user.markModified('actions.declined');
-      user.save(function(err) {
-        if (err) {
-          return done(err);
-        }
-        async.parallel([
-          function(cb) {
-            models.users.setActionState(user, dbActions[0]._id, 'done', null, function(err) {
-              cb(err ? null : 'already completed action was completed without error!');
-            });
-          },
-          function(cb) {
-            models.users.setActionState(user, dbActions[1]._id, 'done', null, function(err) {
-              cb(err ? null : 'declined action was completed without error!');
-            });
-          }
-        ], function(err) {
-          should.not.exist(user.actions.done[dbActions[1]._id]);
-          should.exist(user.actions.done[dbActions[0]._id]);
-          user.actions.done[dbActions[0]._id].name.should.equal(dbActions[0].name);
-          should.exist(user.actions.declined[dbActions[1]._id]);
-          user.actions.declined[dbActions[1]._id].name.should.equal(dbActions[1].name);
           done(err);
         });
       });
