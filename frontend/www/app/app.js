@@ -31,7 +31,7 @@ angular.module('civis.youpower', [
   // Making underscore available in the angular expressions
   $rootScope._=_;
 
-  HOST = 'http://civis.tbm.tudelft.nl';
+  HOST = 'https://app.civisproject.eu';//http://civis.tbm.tudelft.nl';
 
   $rootScope.getNumber = function(num) {
     return new Array(num);
@@ -203,7 +203,7 @@ angular.module('civis.youpower', [
 
 
   .state('main.prosumption.yours', {
-    url: '/prosumption/yours',
+    url: '/yours',
     views: {
       'tab-prosumption-yours': {
         templateUrl: 'app/prosumption/index_yours.html',
@@ -212,7 +212,7 @@ angular.module('civis.youpower', [
     }
   })
 .state('main.prosumption.appliances', {
-    url: '/prosumption/appliances',
+    url: '/appliances',
     views: {
       'tab-prosumption-appliances': {
         templateUrl: 'app/prosumption/index_appliances.html',
@@ -220,26 +220,43 @@ angular.module('civis.youpower', [
       }
     }
   })
+
 .state('main.prosumption.community', {
-    url: '/prosumption/community',
+    url: '/community',
     views: {
       'tab-prosumption-community': {
         templateUrl: 'app/prosumption/index_community.html',
-       //controller: 'dataVizCtrl' 
+       controller: 'dataVizCtrl' 
       }
     }
   })
 .state('main.prosumption.vizConsumption', {
-  url: '/prosumption/viz',
+  url: '/viz',
   views: {
-    'tab-prosumption-yours-viz': {
+    'tab-prosumption-yours': {
     templateUrl: 'app/prosumption/viz_consumption_yours.html',
     controller: 'dataVizCtrl' ,
     }
   }
 })
-
-
+.state('main.prosumption.vizProduction', {
+  url: '/viz2',
+  views: {
+    'tab-prosumption-yours': {
+    templateUrl: 'app/prosumption/viz_production_yours.html',
+    controller: 'dataVizCtrl' ,
+    }
+  }
+})
+.state('main.prosumption.vizAppliance', {
+    url: '/vizAppliance',
+    views: {
+      'tab-prosumption-appliances': {
+        templateUrl: 'app/prosumption/viz_appliance.html',
+       controller: 'dataVizCtrl' 
+      }
+    }
+  })
 .state('main.brf', {
   url: '/brf',
   views: {

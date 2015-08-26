@@ -62,7 +62,14 @@ console.log(productionArray);
 // $scope.chartConfigComparisonHistorical.series.push({
 //             data: consumptionArray
 //         })
+
 //fetch data for the appliances tab
+var applianceArrayData = [];
+var limit = 100; //number of entries, based on a monthly sampling
+for (var i =0; i<limit; i++) {
+    applianceArrayData.push(getRandomData());
+    //console.log('dato:'+String(applianceArrayData[i]));
+}
 
 //fetch data for the community tab
 
@@ -331,7 +338,7 @@ $scope.chartConfigCommunityBalance = {
         options: {
             chart: {
                 type: 'pie',
-                lotBackgroundColor: null,
+                plotBackgroundColor: null,
                 plotBorderWidth: null,
                 plotShadow: false,
             },
@@ -357,5 +364,110 @@ $scope.chartConfigCommunityBalance = {
         },
         loading: false
     };
+$scope.chartConfigAppliance = {
+        options: {
+            chart: {
+                type: 'area',
+            },
+        },
+        title: {
+            text: 'Consumption Pattern',
+        },
+             series : [{
+                name : 't',
+                data : applianceArrayData,
+                gapSize: 5,
+                tooltip: {
+                    valueDecimals: 2
+                },
+                fillColor : {
+                    linearGradient : {
+                        x1: 0,
+                        y1: 0,
+                        x2: 0,
+                        y2: 1
+                    },
+                    stops : [
+                        [0, Highcharts.getOptions().colors[0]],
+                        [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                    ]
+                },
+                threshold: null
+            }],
+            plotOptions: {
+                area: {
+                    //space for specific options to be passed to highcharts constructor
+                }
+            },
+        loading: false
+    };
+    $scope.chartConfigAppliance2 = {
+        options: {
+            chart: {
+                type: 'area',
+                zoomType: 'x'
+            },
+             legend: {
+                enabled: false
+            },
+        },
+        title: {
+            text: 'Consumption Pattern',
+        },
+         xAxis: {
+                type: 'datetime'
+            },
+             yAxis: {
+                title: {
+                    text: null
+                }
+            },
+           
+             series : [{
+                name : 't',
+                data : [
+[Date.UTC(2013,5,2),0.7695],
+[Date.UTC(2013,5,3),0.7648],
+[Date.UTC(2013,5,4),0.7645],
+[Date.UTC(2013,5,5),0.7638],
+[Date.UTC(2013,5,6),0.7549],
+[Date.UTC(2013,5,7),0.7562],
+[Date.UTC(2013,5,9),0.7574],
+[Date.UTC(2013,5,10),0.7543],
+[Date.UTC(2013,5,11),0.7510],
+[Date.UTC(2013,5,12),0.7498],
+[Date.UTC(2013,5,13),0.7477],
+[Date.UTC(2013,5,14),0.7492],
+[Date.UTC(2013,5,16),0.7487]],
+                fillColor : {
+                    linearGradient : {
+                        x1: 0,
+                        y1: 0,
+                        x2: 0,
+                        y2: 1
+                    },
+                    stops : [
+                        [0, Highcharts.getOptions().colors[0]],
+                        [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                    ]
+                },
+                threshold: null
+            }],
+        loading: false
+    };
     //end of controller
+// $scope.chartConfigAppliance2 = {
+//  options: {
+//      chart: {
+//          type: 'bar',
+//          title: "puppa",
+//      }
+//  },
+//  title: {
+//      text: 'puppa',
+//  },
+//  series: [{
+//          data: [$scope.lastConsumption, $scope.lastProduction]//[10, 15, 12, 8, 7]
+//              }],
+// };
 }
