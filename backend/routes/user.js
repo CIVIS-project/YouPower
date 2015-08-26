@@ -459,4 +459,57 @@ router.get('/:userId/achievements', auth.authenticate(), function(req, res) {
   });
 });
 
+/**
+ * @api {get} /user/:userId/fbfriends Get user's friends from facebook
+ * @apiGroup User
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/user/555f0163688305b57c7cef6c/fbfriends
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   [
+ *      {
+ *          "_id": "55db07f688c54b2331c1536d",
+ *          "profile": {
+ *              "name": "John Amicifhiijch Rosenthalberg",
+ *              "gender": "male",
+ *              "dob": "1980-08-07T22:00:00.000Z"
+ *          }
+ *      },
+ *      {
+ *          "_id": "55dd7f4b313bc4551d8cecbe",
+ *          "profile": {
+ *              "name": "Betty Amifjibhgdbg Fergieson",
+ *              "gender": "female",
+ *              "dob": "1980-08-07T22:00:00.000Z"
+ *          }
+ *      },..
+ *    ]
+ *
+ * @apiVersion 1.0.0
+ */
+router.get('/:userId/fbfriends', auth.authenticate(), function(req, res) {
+  User.find({_id: req.params.userId}, false, null, null, function(err, user) {
+    if (err) {
+      return res.successRes(err);
+    }
+    if (!user) {
+      return res.successRes('user not found');
+    }
+
+    User.fbfriends(user, res.successRes);
+  });
+
+  Log.create({
+    userId: req.user._id,
+    category: 'User Find fb friends',
+    type: 'get',
+    data: req.params.userId
+  });
+});
+
 module.exports = router;

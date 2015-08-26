@@ -12,6 +12,7 @@ var communityComments = require('./communityComments');
 var households = require('./households');
 var async = require('async');
 var _ = require('underscore');
+var FB = require('fb');
 
 var UserSchema = new Schema({
   token: String,
@@ -273,7 +274,7 @@ exports.find = function(q, multi, limit, skip, cb) {
     new RegExp('^' + escapeStringRegexp(String(q[key])), 'i');
 
   var query = User.find(filteredQ);
-  query.select('email profile actions achievements recentAchievements');
+  query.select('email profile actions achievements recentAchievements accessToken');
   query.limit(limit);
   query.skip(skip);
   query.exec(function(err, res) {
@@ -385,4 +386,41 @@ exports.getAchievements = function(user, cb) {
   });
 };
 
+exports.fbfriends = function(user, cb) {
+  var acct=user.accessToken  ;
+  FB.setAccessToken(acct);
+  FB.api('me/friends', function (res) {
+    if(!res || res.error) {
+     cb('No data Received');
+    }
+    var tempArr = [];
+    async.each(res.data, function(obj, callback) {
+        User.findOne({facebookId: obj.id}, '_id profile', function(err, user) {
+          if (err) {
+            callback();
+          } else if (!user) {
+            callback();
+          } else {
+            tempArr.push(user);
+            callback();
+          }
+        });
+      }, function(err) {
+        if (err) {
+          cb(err);
+        }
+        cb(null, tempArr);
+      });
+  });
+};
+
+
+/*var body = 'My first post using facebook-node-sdk';
+FB.api('me/feed', 'post', { message: body}, function (res) {
+  if(!res || res.error) {
+    console.log(!res ? 'error occurred' : res.error);
+    return;
+  }
+  console.log('Post Id: ' + res.id);
+});*/
 exports.model = User;
