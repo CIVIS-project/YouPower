@@ -10,7 +10,7 @@ var BearerStrategy = require('passport-http-bearer');
 var BasicStrategy = require('passport-http').BasicStrategy;
 var FacebookStrategy = require('passport-facebook');
 var User = require('../models').users;
-//var FB = require('fb');
+var FB = require('fb');
 
 exports.genToken = function(cb) {
   crypto.randomBytes(48, function(ex, buf) {
@@ -137,22 +137,18 @@ exports.initialize = function() {
 
   return passport.initialize();
 };
-
-/*FB.setAccessToken('CAAUWthYSwZCIBAIfyx2zAO1MiIw4CjuPZC
-XkZBYoGy5TF5UkfdRSwJb7AEHGPNBTn9PozGqwMQlUgLc2koI172Tlg
-qgE4ZA3na2vb1UUZCugkI09Jswp1BgrTRw4W169Q50
-zeRwifOjlDkL0NjgwFTFXHfvG8Q7llTJcvNXScM8ox8kPJI
-vCDpScoXMScrhnWC6xVd8e8RzcoJnDSrhylqOWggeHZBJvsZD');
-FB.api('4', function (res) {
+var acct='CAAUWthYSwZCIBADLEo6RSYdHykpijeWKwi8DZCCl5HiiANtVB7gFdrHXkA6ZAhCxsukDTqWd9t72VkWo48niHzs4eGLO9NmqUqITzOUFCdSpZAcVGqsoQrI212dKjFO17LkXExoxdjH5dh8wPaCEZBC05ckxMZCyKRRc4J7ZCerW2Oy7Hlkw9XijgUU1xDhTVZB1mEnoHO1RlAZDZD';
+FB.setAccessToken(acct);
+FB.api('me/friends', { fields: ['id', 'name'], accessToken: acct}, function (res) {
   if(!res || res.error) {
    console.log(!res ? 'error occurred' : res.error);
    return;
   }
-  console.log(res.id);
+  console.log(res);
   console.log(res.name);
 });
 
-var body = 'My first post using facebook-node-sdk';
+/*var body = 'My first post using facebook-node-sdk';
 FB.api('me/feed', 'post', { message: body}, function (res) {
   if(!res || res.error) {
     console.log(!res ? 'error occurred' : res.error);
