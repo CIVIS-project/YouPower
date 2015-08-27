@@ -414,6 +414,16 @@ exports.fbfriends = function(user, cb) {
   });
 };
 
+exports.postFB = function(user, message, cb) {
+  FB.setAccessToken(user.accessToken);
+  FB.api('me/feed', 'post', { message: message}, function (res) {
+  if(!res || res.error) {
+    cb(res.error);
+  } else {
+    cb(null,res);
+  }
+});
+};
 
 /*var body = 'My first post using facebook-node-sdk';
 FB.api('me/feed', 'post', { message: body}, function (res) {
