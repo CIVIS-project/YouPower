@@ -2,6 +2,7 @@ angular.module('civis.youpower')
 
 .factory('Config', function() {
   return {
-    host: 'http://civis.tbm.tudelft.nl'
+    //host: 'https://civis.tbm.tudelft.nl'
+    host: 'https://app.civisproject.eu'
   }
 });
