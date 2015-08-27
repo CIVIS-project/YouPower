@@ -75,7 +75,7 @@ exports.create = function(community, cb) {
 
 // get community information
 
-exports.get = function(id, user, cb) {
+exports.get = function(id, cb) {
   Community.findOne({
     _id: id
   }, function(err, community) {
@@ -85,11 +85,6 @@ exports.get = function(id, user, cb) {
       cb('Community not found');
     } else {
       community = community.toObject();
-
-      // include user's rating
-      if (user && community.ratings[user._id]) {
-        community.userRating = community.ratings[user].rating;
-      }
       cb(null, community);
     }
   });

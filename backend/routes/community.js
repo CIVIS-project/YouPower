@@ -294,7 +294,7 @@ router.get('/:id', auth.authenticate(), function(req, res) {
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    Community.getCommunityInfo(req.params.id, res.successRes);
+    Community.get(req.params.id, res.successRes);
 
     Log.create({
       userId: req.user._id,
