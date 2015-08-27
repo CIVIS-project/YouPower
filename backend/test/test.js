@@ -923,7 +923,7 @@ describe('models', function() {
           return done(err);
         }
 
-        models.communities.get(id, null, function(err, community) {
+        models.communities.get(id, function(err, community) {
           if (err) {
             return done(err);
           }
@@ -942,7 +942,7 @@ describe('models', function() {
         if (err) {
           return done(err);
         }
-        models.communities.get(id, null, function(err, community) {
+        models.communities.get(id, function(err, community) {
           if (err) {
             return done(err);
           }
@@ -1009,27 +1009,27 @@ describe('models', function() {
     });
 
     it('should return first community by id', function(done) {
-      models.communities.get(dbCommunities[0]._id, null, function(err, community) {
+      models.communities.get(dbCommunities[0]._id, function(err, community) {
         community.name.should.equal(dbCommunities[0].name);
         done(err);
       });
     });
 
     it('should return no community for bogus id', function(done) {
-      models.communities.get(dummyData.ids[0], null, function(err) {
+      models.communities.get(dummyData.ids[0], function(err) {
         done(err ? null : 'bogus community fetch did return a community!');
       });
     });
 
     it('should return no community for invalid id', function(done) {
-      models.communities.get('foo bar', null, function(err) {
+      models.communities.get('foo bar', function(err) {
         done(err ? null : 'invalid community fetch did return a community!');
       });
     });
 
     it('should delete community by id', function(done) {
       models.communities.delete(dbCommunities[0]._id, function() {
-        models.communities.get(dbCommunities[0]._id, null, function(err) {
+        models.communities.get(dbCommunities[0]._id, function(err) {
           done(err ? null : 'community was not deleted successfully');
         });
       });
@@ -1041,7 +1041,7 @@ describe('models', function() {
         if (err) {
           return done(err);
         }
-        models.communities.get(dbCommunities[0]._id, null, function(err, community) {
+        models.communities.get(dbCommunities[0]._id, function(err, community) {
           community.members[0].toString().should.equal(dbUsers[0]._id.toString());
           done(err);
         });
@@ -1101,7 +1101,7 @@ describe('models', function() {
         if (err) {
           return done(err);
         }
-        models.communities.get(dbCommunities[1]._id, null, function(err, community) {
+        models.communities.get(dbCommunities[1]._id, function(err, community) {
           community.members.should.contain(dbUsers[1]._id);
           done(err);
         });
@@ -1137,7 +1137,7 @@ describe('models', function() {
         if (err) {
           return done(err);
         }
-        models.communities.get(dbCommunities[0]._id, null, function(err, community) {
+        models.communities.get(dbCommunities[0]._id, function(err, community) {
           community.members[0].should.not.equal(dbUsers[0]._id);
           done(err);
         });
@@ -1161,7 +1161,7 @@ describe('models', function() {
         if (err) {
           return done(err);
         }
-        models.communities.get(dbCommunities[0]._id, null, function(err, community) {
+        models.communities.get(dbCommunities[0]._id, function(err, community) {
           should.exist(community.members[0]);
           done(err);
         });
