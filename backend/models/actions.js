@@ -200,12 +200,6 @@ exports.rate = function(id, user, rating, effort, cb) {
   if (!user || !user._id || !user.profile || !user.profile.name) {
     return cb('Missing/invalid user');
   }
-  if (!_.isNumber(rating) || (rating !== 1 && rating !== 0)) {
-    return cb('Missing/invalid rating');
-  }
-  if (!effort || !_.isNumber(effort) || effort < 1 || effort > 5) {
-    return cb('Missing/invalid effort estimate');
-  }
 
   // make sure we're dealing with integers
   rating = parseInt(rating);
@@ -219,9 +213,34 @@ exports.rate = function(id, user, rating, effort, cb) {
     } else if (!action) {
       cb('Action not found');
     } else {
+      var oldRating;
+      var oldEffort;
+
+      if (action.ratings[user._id]) {
+        // rating already exists, store old values
+        oldRating = action.ratings[user._id].rating;
+        oldEffort = action.ratings[user._id].effort;
+
+        // check that the values are sane
+        if (_.isNumber(rating) && rating !== 1 && rating !== 0) {
+          return cb('Invalid rating estimate');
+        }
+        if (effort < 1 || effort > 5) {
+          return cb('Invalid effort estimate');
+        }
+      } else {
+        // rating did not exist, require both a rating and effort estimate
+        if (!_.isNumber(rating) || (rating !== 1 && rating !== 0)) {
+          return cb('Missing/invalid rating');
+        }
+        if (!effort || !_.isNumber(effort) || effort < 1 || effort > 5) {
+          return cb('Missing/invalid effort estimate');
+        }
+      }
+
       action.ratings[user._id] = {
-        rating: rating,
-        effort: effort,
+        rating: _.isNumber(rating) ? parseInt(rating) : oldRating,
+        effort: _.isNumber(effort) ? parseInt(effort) : oldEffort,
         name: user.profile.name,
         date: new Date()
       };

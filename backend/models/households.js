@@ -367,4 +367,20 @@ exports.connectUsagePoint = function(usagepoint, cb) {
   });
 };
 
+// get household by id for consortium
+exports.getForConsortium = function(id, cb) {
+  Household.findOne({
+    _id: id,
+    connected: true
+  }).populate('_usagePoint').exec(function(err, household) {
+    if (err) {
+      cb(err);
+    } else if (!household) {
+      cb(null);
+    } else {
+      household = household.toObject();
+      cb(null, household);
+    }
+  });
+};
 exports.model = Household;

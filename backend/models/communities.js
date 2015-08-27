@@ -8,6 +8,9 @@ var _ = require('underscore');
 
 var User = require('./users');
 var Action = require('./actions');
+var Household = require('./households');
+var Consumption = require('./consumption');
+var async = require('async');
 
 //Community Schema
 var CommunitySchema = new Schema({
@@ -75,7 +78,7 @@ exports.create = function(community, cb) {
 
 // get community information
 
-exports.get = function(id, user, cb) {
+exports.get = function(id, cb) {
   Community.findOne({
     _id: id
   }, function(err, community) {
@@ -85,11 +88,6 @@ exports.get = function(id, user, cb) {
       cb('Community not found');
     } else {
       community = community.toObject();
-
-      // include user's rating
-      if (user && community.ratings[user._id]) {
-        community.userRating = community.ratings[user].rating;
-      }
       cb(null, community);
     }
   });
@@ -312,6 +310,91 @@ exports.rate = function(id, userId, rating, cb) {
         cb(err);
       });
     }
+  });
+};
+
+// fetch energy data for entire community
+
+exports.getAllHouseholds = function(id, cb) {
+  Community.findOne({
+    _id: id
+  }, function(err, community) {
+    if (err) {
+      cb(err);
+    } else if (!community) {
+      cb('Community not found');
+    } else {
+      var tempArr = [];
+      var members = community.members;
+      async.each(members, function(obj, callback) {
+          User.getProfile(obj, function(err, success) {
+            if (err) {
+              callback();
+            } else {
+              if (tempArr.indexOf(success.householdId) === -1) {
+                tempArr.push(success.householdId);
+              }
+              callback();
+            }
+          });
+        }, function(err) {
+          if (err) {
+            cb(err);
+          } else {//filtering duplicate households from array
+            var householdArr = tempArr.filter(function(elem, pos) {
+              return tempArr.indexOf(elem) === pos;
+            });
+            cb(null, householdArr);
+          }
+        }
+      );
+    }
+  });
+};
+
+exports.consortium = function(households, from, to, resType, ctype, cb) {
+  var usagepoints = [];
+  var tempArr = [];
+  async.each(households, function(obj, callback) {
+    Household.getForConsortium(obj, function(err, success) {
+      if (err || !success) {
+        callback();
+      } else {
+        if (success.connected && tempArr.indexOf(success._usagePoint.apartmentId) === -1) {
+          tempArr.push(success._usagePoint.apartmentId);
+          usagepoints.push({
+            householdId: obj,
+            usagePointId: success._usagePoint.apartmentId
+          });
+        }
+        callback();
+      }
+    });
+  }, function(err) {
+    if (err) {
+      cb(err);
+    }
+    var finalArr = [];
+    async.each(usagepoints, function(obj, callback) {
+      Consumption.downloadMyData(
+        obj.usagePointId, from, to, resType, ctype, function(err, conData) {
+        if (err || !conData) {
+          callback();
+        } else {
+          finalArr.push({
+            refObject: obj,
+            consumptionData: conData
+          });
+          callback();
+        }
+      });
+    }, function(err) {
+      if (err) {
+        cb(err);
+      } else {
+        cb(null, finalArr);
+      }
+    });
   });
 };
 

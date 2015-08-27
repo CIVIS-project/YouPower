@@ -4,7 +4,7 @@ angular.module('civis.youpower.actions').controller('FormsCtrl', FormsCtrl);
 // Inject my dependencies
 //SettingsCtrl.$inject = ['$scope', '$filter', '$translate'];
 
-function FormsCtrl($scope, $timeout, $state, $stateParams, $ionicHistory, $ionicPopup, User) {
+function FormsCtrl($scope, $timeout, $state, $stateParams, $ionicHistory, $firebaseObject, $ionicPopup, User) {
 
 	$scope.actionId = $stateParams.id;
 

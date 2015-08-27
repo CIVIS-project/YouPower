@@ -65,11 +65,11 @@ function ActionsListCtrl($scope, $state, $stateParams, Actions) {
     });
   }
 
-  // dont change state now, a user can still come back afterwards
+  // don't change state now, a user can still come back afterwards
+  // the state is changed after the form is sent
   $scope.actionCompleted = function(action){
 
     $state.go('main.actions.completed', {id: action._id});
-
     
   }
 
