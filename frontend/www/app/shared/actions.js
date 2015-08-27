@@ -2,6 +2,10 @@ angular.module('civis.youpower')
 
 .factory('Actions', function($resource, Config) {
   return $resource(Config.host + '/api/user/action/suggested', {}, {
+    getActionById : {
+      method: 'GET',
+      url: Config.host + '/api/action/:id'
+    },
     postComment : {
       method: 'POST',
       url: Config.host + '/api/action/:actionId/comment'

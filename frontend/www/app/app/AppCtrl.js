@@ -10,6 +10,11 @@ function AppCtrl($scope,User,Actions) {
 
 	$scope.userPictures = {}; 
 
+	$scope.comments = []; 
+
+	$scope.actions = {}; 
+
+
 	User.get().$promise.then(function(data) {
 
 		$scope.currentUser = data;
@@ -17,26 +22,38 @@ function AppCtrl($scope,User,Actions) {
 		//get user picture
 		User.getPicture({userId: $scope.currentUser._id}).$promise.then(function(data){
 			
-			console.log("user picture");
-			console.log(data); 
+			console.log("user picture TODO");
+			//console.log(data); 
 			var b64 = btoa(data); //this doesnot work 
-			console.log(b64); 
+			//console.log(b64); 
 			$scope.userPictures[$scope.currentUser._id]=({_id: $scope.currentUser._id, image: b64});
-
-			console.log($scope.userPictures); 
+			//console.log($scope.userPictures); 
 
 		});
 
 		$scope.loadComments($scope.currentUser.actions); 
 
-		console.log("load user data");
+		$scope.loadActionDetails($scope.currentUser.actions.inProgress); 
+
+		console.log("user data");
 		console.log($scope.currentUser); 
 	});
 
 
-	$scope.loadComments = function(actions){
 
-		$scope.comments = []; 
+	$scope.loadActionDetails = function(actions){
+		for (var action in actions) {
+			Actions.getActionById({id:action}).$promise.then(function(data){
+				$scope.actions[data._id] = data;
+
+				console.log("actions");
+				console.log($scope.actions); 
+			});
+		}
+	}
+
+
+	$scope.loadComments = function(actions){
 
 		for (var actionType in actions) {
 			if (actions.hasOwnProperty(actionType)) {
@@ -47,12 +64,15 @@ function AppCtrl($scope,User,Actions) {
 
 							$scope.comments = $scope.comments.concat(data);
 
+							console.log("comments");
+							console.log($scope.comments); 
+
 							data.forEach(function(comment) {
 								//load user picture
 
 								
 
-							    console.log(comment);
+							    //console.log(comment);
 
 							});
 

@@ -12,7 +12,7 @@
   </div>
   <div class="item item-body">
     <ng-include src="'app/actions/actionDescription.html'"></ng-include>
-    <span class="text-small">You started on {{action.startedDate | date: "yyyy-MM-dd"}}. <a href="#" class="balanced">{{num=3}} Participant{{num>0 ? 's':''}}</a> 
+    <span class="text-small">You started on {{action.startedDate | date: "yyyy-MM-dd"}}. <a href="#" class="balanced">{{num=actions[action._id].numUsers}} Participant{{num > 1 ? 's':''}} TODO</a> 
     <!-- {{num=action.participant}}  -->
     </span>
   </div>
@@ -38,7 +38,7 @@
   <div class="item item-divider tabs tabs-secondary tabs-icon-left">
     <a class="tab-item" href="#">
       <i class="icon ion-thumbsup"></i>
-      {{action.rating}} Like
+      {{num2=actions[action._id].numLikes}} Like{{num2 > 1 ? 's':''}}
     </a>
     <a class="tab-item" ng-click="comment.show=!comment.show">
       <i class="icon ion-chatbox"></i>
@@ -59,7 +59,7 @@
     <img ng-src="comment.picture"><h3>{{comment.name}} <span class="text-small">{{comment.date| date: "yyyy-MM-dd"}}</span></h3>
     <p>{{comment.comment}}</p>
     <a class="button button-clear button-stable icon-left ion-close button-small" ng-if="comment.userId == currentUser._id" ng-click="deleteComment(comment)"> Delete</a>
-    <a class="button button-clear button-stable icon-left ion-thumbsup button-small" ng-click="likeComment(comment)"> {{num=comment.numLikes}} Like{{num>0? 's':''}}</a>
+    <a class="button button-clear button-stable icon-left ion-thumbsup button-small" ng-click="likeComment(comment)"> {{num=comment.numLikes}} Like{{num>1? 's':''}}</a>
   </div>
 </div>
 
