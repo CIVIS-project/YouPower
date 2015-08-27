@@ -459,4 +459,107 @@ router.get('/:userId/achievements', auth.authenticate(), function(req, res) {
   });
 });
 
+/**
+ * @api {get} /user/:userId/fbfriends Get user's friends from facebook
+ * @apiGroup User
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/user/555f0163688305b57c7cef6c/fbfriends
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   [
+ *      {
+ *          "_id": "55db07f688c54b2331c1536d",
+ *          "profile": {
+ *              "name": "John Amicifhiijch Rosenthalberg",
+ *              "gender": "male",
+ *              "dob": "1980-08-07T22:00:00.000Z"
+ *          }
+ *      },
+ *      {
+ *          "_id": "55dd7f4b313bc4551d8cecbe",
+ *          "profile": {
+ *              "name": "Betty Amifjibhgdbg Fergieson",
+ *              "gender": "female",
+ *              "dob": "1980-08-07T22:00:00.000Z"
+ *          }
+ *      },..
+ *    ]
+ *
+ * @apiVersion 1.0.0
+ */
+router.get('/:userId/fbfriends', auth.authenticate(), function(req, res) {
+  User.find({_id: req.params.userId}, false, null, null, function(err, user) {
+    if (err) {
+      return res.successRes(err);
+    }
+    if (!user) {
+      return res.successRes('user not found');
+    }
+
+    User.fbfriends(user, res.successRes);
+  });
+
+  Log.create({
+    userId: req.user._id,
+    category: 'User Find fb friends',
+    type: 'get',
+    data: req.params.userId
+  });
+});
+
+/**
+ * @api {post} /user/postFB Post on FB (always ask user before posting)
+ * @apiGroup User
+ *
+ * @apiParam {String} [message] Message to be posted
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/profile
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
+ *  '{
+ *    "message": "Hey I completed xyz challenge. (You can also add a link to a photograph)"
+ *  }' \
+ *  http://localhost:3000/api/user/postFB
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * {//id is post_id from facebook
+ *   "id":"10155784135330422_10156011152545422"
+ * }
+ *
+ * @apiErrorExample {json} Error-Response:
+ * {//if error occurs
+ *  "message": "Duplicate status message",
+ *  "type": "FacebookApiException",
+ *  "code": 506,
+ *  "error_subcode": 1455006,
+ *  "is_transient": false,
+ *  "error_user_title": "Duplicate Status Update",
+ *  "error_user_msg": "This status update is identical to the last one.."
+ * }
+ */
+router.post('/postFB', auth.authenticate(), function(req, res) {
+  req.checkBody('message').optional().notEmpty();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    User.postFB(req.user, req.body.message, res.successRes);
+  }
+
+  Log.create({
+    userId: req.user._id,
+    category: 'POST on FB',
+    type: 'post',
+    data: req.body
+  });
+});
+
 module.exports = router;
