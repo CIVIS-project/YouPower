@@ -144,16 +144,6 @@ describe('models', function() {
           models.actions.rate(dbActions[0]._id, null, d.rating, d.effort, function(err) {
             cb(err ? null : 'missing user parameter did not cause error!');
           });
-        },
-        function(cb) {
-          models.actions.rate(dbActions[0]._id, user, null, d.effort, function(err) {
-            cb(err ? null : 'missing rating field did not cause error!');
-          });
-        },
-        function(cb) {
-          models.actions.rate(dbActions[0]._id, user, d.rating, null, function(err) {
-            cb(err ? null : 'missing effort field did not cause error!');
-          });
         }
       ], function(err) {
         done(err);
