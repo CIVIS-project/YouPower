@@ -324,7 +324,6 @@ exports.getAllHouseholds = function(id, cb) {
     } else if (!community) {
       cb('Community not found');
     } else {
-      //community = community.members.toObject();
       var tempArr = [];
       var members = community.members;
       async.each(members, function(obj, callback) {
@@ -332,7 +331,7 @@ exports.getAllHouseholds = function(id, cb) {
             if (err) {
               callback();
             } else {
-              if (tempArr.indexOf(success.householdId)==-1) {
+              if (tempArr.indexOf(success.householdId) === -1) {
                 tempArr.push(success.householdId);
               }
               callback();
@@ -343,13 +342,12 @@ exports.getAllHouseholds = function(id, cb) {
             cb(err);
           } else {//filtering duplicate households from array
             var householdArr = tempArr.filter(function(elem, pos) {
-              return tempArr.indexOf(elem) == pos;
+              return tempArr.indexOf(elem) === pos;
             });
             cb(null, householdArr);
           }
-
-      });
-      
+        }
+      );
     }
   });
 };
@@ -358,49 +356,46 @@ exports.consortium = function(households, from, to, resType, ctype, cb) {
   var usagepoints = [];
   var tempArr = [];
   async.each(households, function(obj, callback) {
-          Household.getForConsortium(obj, function(err, success) {
-            if (err || !success) {
-              callback();
-            } else {
-              if (success.connected && tempArr.indexOf(success._usagePoint.apartmentId)==-1) {
-                //console.log(success)
-                tempArr.push(success._usagePoint.apartmentId);
-                usagepoints.push({
-                  householdId: obj,
-                  usagePointId: success._usagePoint.apartmentId
-                });
-              }
-              callback();
-            }
+    Household.getForConsortium(obj, function(err, success) {
+      if (err || !success) {
+        callback();
+      } else {
+        if (success.connected && tempArr.indexOf(success._usagePoint.apartmentId) === -1) {
+          tempArr.push(success._usagePoint.apartmentId);
+          usagepoints.push({
+            householdId: obj,
+            usagePointId: success._usagePoint.apartmentId
           });
-        }, function(err) {
-          if (err) {
-            cb(err);
-          }
-            //cb(null,usagepoints)
-          var finalArr = [];  
-          async.each(usagepoints, function(obj, callback) {
-            Consumption.downloadMyData(obj.usagePointId, from, to, resType, ctype, function(err, conData) {
-              if (err || !conData) {
-              callback();
-              } else {
-                console.log(conData);
-                finalArr.push({
-                  refObject: obj,
-                  consumptionData: conData
-                });
-                callback();
-              }
-            });
-
-          }, function(err){
-            if (err) {
-              cb(err);
-            } else {
-              cb(null, finalArr);
-            }
+        }
+        callback();
+      }
+    });
+  }, function(err) {
+    if (err) {
+      cb(err);
+    }
+    var finalArr = [];
+    async.each(usagepoints, function(obj, callback) {
+      Consumption.downloadMyData(
+        obj.usagePointId, from, to, resType, ctype, function(err, conData) {
+        if (err || !conData) {
+          callback();
+        } else {
+          finalArr.push({
+            refObject: obj,
+            consumptionData: conData
           });
+          callback();
+        }
       });
+    }, function(err) {
+      if (err) {
+        cb(err);
+      } else {
+        cb(null, finalArr);
+      }
+    });
+  });
 };
 
 exports.model = Community;

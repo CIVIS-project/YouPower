@@ -672,6 +672,7 @@ router.get('/:id/households', auth.authenticate(), function(req, res) {
  * @api {get} /community/:id/consortium Fetch CONSORTIUM data for commmunity
  * @apiGroup Community
  *
+ * @apiParam {String} id MongoId of community
  * @apiParam {Date} from Starting Date to fetch data from
  * @apiParam {Date} to Ending Date to fetch data from
  * @apiParam {String} [res='MONTHLY'] Other types RAW/DAILY/WEEKLY/MONTHLY. Stream will be
@@ -683,11 +684,11 @@ router.get('/:id/households', auth.authenticate(), function(req, res) {
  *  export API_TOKEN=fc35e6b2f27e0f5ef...
  *
  *  curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d '{
- *   "from": "2015-06-01",
+ *  "from": "2015-06-01",
  *  "to":"2015-06-06",
  *  "ctype":"S_CONS",
  *  "res":"MONTHLY
- *  }' http://localhost:3000/api/consumption/downloadMyData
+ *  }' http://localhost:3000/api/community/55df054e92ffe001537ff727/consortium
  *
  * @apiSuccessExample {json} Success-Response:
  *   {
