@@ -596,4 +596,171 @@ router.put('/rate/:id', auth.authenticate(), function(req, res) {
   }
 });
 
+/**
+ * @api {get} /community/:id/households Fetch list of households for commmunity
+ * @apiGroup Community
+ *
+ * @apiParam {String} id MongoId of community
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/community/555ecb997aa6360e40f26451
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "__v": 8,
+ *     "_id": "555ef84b2fd41ffc6e078a34",
+ *      "name": "Otaniemi Community",
+ *     "challenges": [
+ *       {
+ *       "id": "555eda2531039c1853352b7f",
+ *       "name": "Reduce energy consumption by 10%"
+ *       },
+ *       {
+ *        "id": "455eda2531039c1853335b7f",
+ *       "name": "Save for 2 solar panels for the area"
+ *       }
+ *    ],
+ *     "actions": [
+ *       {
+ *       "id": "345eda2531039c1853352b7f",
+ *       "name": "Use the clothes washer/dryer only once per week"
+ *       },
+ *       {
+ *        "id": "7645eda34531039c1853352b7f",
+ *       "name": "Turn off lights during the day in Summer"
+ *       }
+ *    ],
+ *     "members": [
+ *       {
+ *         "_id": "testUser1",
+ *         "name": "Jane",
+ *       },
+ *        {
+ *         "_id": "testUser2",
+ *         "name": "Jack",
+ *       },
+ *       ...
+ *     ],
+ *     "date": "2015-07-01T12:04:33.599Z"
+ *   }
+ */
+
+router.get('/:id/households', auth.authenticate(), function(req, res) {
+  req.checkParams('id', 'Invalid community id').isMongoId();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    Community.getAllHouseholds(req.params.id, res.successRes);
+
+    Log.create({
+      userId: req.user._id,
+      category: 'Community',
+      type: 'get',
+      data: {
+        actionId: req.params.id
+      }
+    });
+  }
+});
+
+/**
+ * @api {get} /community/:id/consortium Fetch CONSORTIUM data for commmunity
+ * @apiGroup Community
+ *
+ * @apiParam {Date} from Starting Date to fetch data from
+ * @apiParam {Date} to Ending Date to fetch data from
+ * @apiParam {String} [res='MONTHLY'] Other types RAW/DAILY/WEEKLY/MONTHLY. Stream will be
+ * saved in db only if its MONTHLY.
+ * @apiParam {String} [ctype='S_CONS'] S_CONS/S_PROD
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d '{
+ *   "from": "2015-06-01",
+ *  "to":"2015-06-06",
+ *  "ctype":"S_CONS",
+ *  "res":"MONTHLY
+ *  }' http://localhost:3000/api/consumption/downloadMyData
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "__v": 8,
+ *     "_id": "555ef84b2fd41ffc6e078a34",
+ *      "name": "Otaniemi Community",
+ *     "challenges": [
+ *       {
+ *       "id": "555eda2531039c1853352b7f",
+ *       "name": "Reduce energy consumption by 10%"
+ *       },
+ *       {
+ *        "id": "455eda2531039c1853335b7f",
+ *       "name": "Save for 2 solar panels for the area"
+ *       }
+ *    ],
+ *     "actions": [
+ *       {
+ *       "id": "345eda2531039c1853352b7f",
+ *       "name": "Use the clothes washer/dryer only once per week"
+ *       },
+ *       {
+ *        "id": "7645eda34531039c1853352b7f",
+ *       "name": "Turn off lights during the day in Summer"
+ *       }
+ *    ],
+ *     "members": [
+ *       {
+ *         "_id": "testUser1",
+ *         "name": "Jane",
+ *       },
+ *        {
+ *         "_id": "testUser2",
+ *         "name": "Jack",
+ *       },
+ *       ...
+ *     ],
+ *     "date": "2015-07-01T12:04:33.599Z"
+ *   }
+ */
+
+router.get('/:id/consortium', auth.authenticate(), function(req, res) {
+  req.checkParams('id', 'Invalid community id').isMongoId();
+  req.checkBody('from').isDate();
+  req.checkBody('to').isDate();
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    Community.getAllHouseholds(req.params.id, function(err, households) {
+      if (err) {
+        res.successRes;
+      } else {
+        Community.consortium(
+          households,
+          req.body.from,
+          req.body.to,
+          req.body.res || 'MONTHLY',
+          req.body.ctype || 'S_CONS',
+          res.successRes
+        );
+      }
+    });
+
+    Log.create({
+      userId: req.user._id,
+      category: 'Community',
+      type: 'get',
+      data: {
+        actionId: req.params.id
+      }
+    });
+  }
+});
+
 module.exports = router;
