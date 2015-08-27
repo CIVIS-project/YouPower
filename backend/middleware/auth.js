@@ -53,7 +53,7 @@ exports.initialize = function() {
     passport.use(new FacebookStrategy({
     clientID: process.env.FACEBOOK_APP_ID,
     clientSecret: process.env.FACEBOOK_APP_SECRET,
-    callbackURL: process.env.FACEBOOK_CALLBACK_URL+'/api/auth/facebook/callback',
+    callbackURL: process.env.FACEBOOK_CALLBACK_URL + '/api/auth/facebook/callback',
     profileFields: ['id', 'displayName', 'gender', 'email', 'birthday'],
     enableProof: false
   },
@@ -106,7 +106,7 @@ exports.initialize = function() {
     passport.use('facebook-authz', new FacebookStrategy({
       clientID: process.env.FACEBOOK_APP_ID,
       clientSecret: process.env.FACEBOOK_APP_SECRET,
-      callbackURL: process.env.FACEBOOK_CALLBACK_URL+'/api/auth/facebook/callbackfb',
+      callbackURL: process.env.FACEBOOK_CALLBACK_URL + '/api/auth/facebook/callbackfb',
       profileFields: ['id', 'displayName', 'gender', 'email', 'birthday']
     },
     function(accessToken, refreshToken, profile, done) {

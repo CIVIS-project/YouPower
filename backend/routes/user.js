@@ -541,7 +541,7 @@ router.get('/:userId/fbfriends', auth.authenticate(), function(req, res) {
  *  "error_subcode": 1455006,
  *  "is_transient": false,
  *  "error_user_title": "Duplicate Status Update",
- *  "error_user_msg": "This status update is identical to the last one you posted. Try posting something different, or delete your previous update."
+ *  "error_user_msg": "This status update is identical to the last one.."
  * }
  */
 router.post('/postFB', auth.authenticate(), function(req, res) {

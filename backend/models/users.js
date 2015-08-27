@@ -387,11 +387,11 @@ exports.getAchievements = function(user, cb) {
 };
 
 exports.fbfriends = function(user, cb) {
-  var acct=user.accessToken  ;
+  var acct = user.accessToken  ;
   FB.setAccessToken(acct);
-  FB.api('me/friends', function (res) {
-    if(!res || res.error) {
-     cb('No data Received');
+  FB.api('me/friends', function(res) {
+    if (!res || res.error) {
+      cb('No data Received');
     }
     var tempArr = [];
     async.each(res.data, function(obj, callback) {
@@ -416,11 +416,11 @@ exports.fbfriends = function(user, cb) {
 
 exports.postFB = function(user, message, cb) {
   FB.setAccessToken(user.accessToken);
-  FB.api('me/feed', 'post', { message: message}, function (res) {
-  if(!res || res.error) {
+  FB.api('me/feed', 'post', {message: message}, function(res) {
+  if (!res || res.error) {
     cb(res.error);
   } else {
-    cb(null,res);
+    cb(null, res);
   }
 });
 };
