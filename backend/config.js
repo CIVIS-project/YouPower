@@ -19,7 +19,7 @@ var getUserConfig = function() {
 
 var defaultConfig = {
   //civisURL: 'http://civis.cloud.reply.eu/Civis/EnergyPlatform.svc'
-  civisURL: 'http://civis.cloud.reply.eu/CivisEnergy'
+  replyURL: 'http://civis.cloud.reply.eu/CivisEnergy'
 };
 
 module.exports = _.defaults(getUserConfig(), defaultConfig);

@@ -10,8 +10,9 @@ var sensor = require('./sensor');
 var intervalBlock = require('./intervalBlock');
 var intervalReading = require('./intervalReading');
 var Household = require('./households');
+var Reply = require('./reply');
 
-exports.create = function(usagePt, cb1) {
+/*exports.create = function(usagePt, cb1) {
   //console.log('TETS', usagePt);
   usagePoint.create(usagePt.ApartmentID, function(err, up) {
     if (err) {
@@ -28,49 +29,24 @@ exports.create = function(usagePt, cb1) {
       });
     }
   });
-};
+};*/
 
 exports.getAllUsagePointsData = function(usagepoint, cb) {
-
-  request({
-    url: config.civisURL + '/energyplatform.svc/getallsensors',
-    qs: {
-    }
-  }, function(err, res, body) {
-    if (err) {
-      cb(err);
-    } else {
-      var parser = new xml2js.Parser({
-        explicitArray: false
-      });
-      parser.parseString(body, function(err, result) {
-        if (err) {
-          cb(err);
-        }
-        var tempArr = [];
-
-        async.each(result.entry.content.usagePoint, function(obj, callback) {
-          exports.create(obj, function(err, success) {
-            if (err) {
-              tempArr.push(success);
-              callback();
-            } else {
-              tempArr.push(success);
-              callback();
-            }
-          });
-        }, function(err) {
-          if (err) {cb(err);}
-          cb(null, tempArr);
-        });
-      });
-    }
-  });
+  switch(usagepoint.dataProvider) {//switch for differnt data providers
+    case 'reply': {
+      Reply.getAllUsagePointsData(usagepoint, cb);
+    } break;
+    default: {
+      Reply.getAllUsagePointsData(usagepoint, cb);
+    } break;
+  }
 };
 
+//Wont be working, need to fix it by first finding out the usagepoint
+//belonging to the specified user
 exports.get = function(params, cb) {
   request({
-    url: config.civisURL + '/downloadMyData',
+    url: config.replyURL + '/downloadMyData',
     qs: {
       email: params.userId,
       token: params.token,

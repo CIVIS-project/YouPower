@@ -187,6 +187,8 @@ router.get('/tou', auth.authenticate(), function(req, res) {
  *   with new sensor data if available
  * @apiParam {[Number]} [ApartmentId] Adds/Updates the value of only
  *  that particular ApartmentId/Ids
+ * @apiParam {String} [dataProvider] Mention the DataProvider from where data
+ *  needs to be fetched
  * @apiExample {curl} Example usage(PENDING-For now only data is fetched!!):
  *  # Get API token via /api/user/token
  *  export API_TOKEN=fc35e6b2f27e0f5ef...
@@ -195,7 +197,8 @@ router.get('/tou', auth.authenticate(), function(req, res) {
  *  '{
  *    'AddUsagePoints': true,
  *    'UpdateUsagePoints': true,
- *    'ApartmentId': [14,17]
+ *    'ApartmentId': [14,17],
+ *    'dataProvider': 'reply'
  *  }' \
  *  http://localhost:3000/api/consumption/getAllUsagePointsData
  *

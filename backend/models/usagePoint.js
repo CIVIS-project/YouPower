@@ -9,6 +9,11 @@ var UsagePointSchema = new Schema({
     required: true,
     index: {unique: true}
   },
+  dataProvider: {
+    type: String,
+    required: true,
+    default: 'reply'
+  },
   city: {
     type: String,
     required: false
@@ -42,9 +47,10 @@ var UsagePointSchema = new Schema({
 
 var UsagePoint = mongoose.model('UsagePoint', UsagePointSchema);
 
-exports.create = function(usagepoint, cb1) {
+exports.create = function(usagepoint, dataProvider, cb1) {
   UsagePoint.create({
-    apartmentId: usagepoint
+    apartmentId: usagepoint,
+    dataProvider: dataProvider
   }, function(err, up) {
     if (err) {
       cb1 (err);
