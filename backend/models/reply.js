@@ -9,7 +9,6 @@ var usagePoint = require('./usagePoint');
 var sensor = require('./sensor');
 var intervalBlock = require('./intervalBlock');
 var intervalReading = require('./intervalReading');
-var Household = require('./households');
 
 exports.create = function(usagePt, cb1) {
   usagePoint.create(usagePt.ApartmentID, 'reply', function(err, up) {
@@ -29,7 +28,7 @@ exports.create = function(usagePt, cb1) {
 };
 
 exports.getAllUsagePointsData = function(usagePoint, cb) {
-	request({
+  request({
     url: config.replyURL + '/energyplatform.svc/getallsensors',
     qs: {
     }
@@ -60,6 +59,89 @@ exports.getAllUsagePointsData = function(usagePoint, cb) {
           if (err) {cb(err);}
           cb(null, tempArr);
         });
+      });
+    }
+  });
+};
+
+var pushIR = function(ir, cb) {//helper function for downloadMyData
+  var tempIr = {'value': ir.value, 'timeslot': ir.timeslot, 'timePeriod': ir.timePeriod};
+  cb(null, tempIr);
+};
+
+exports.downloadMyData = function(usagepoint, from, to, resType, ctype, cb) {
+  request({
+    url: config.replyURL + '/InterfaceWP3.svc/downloadmydata',
+    qs: {
+      usagepoint: usagepoint,
+      from: moment(from).format('YYYY-MM-DD'),
+      to: moment(to).format('YYYY-MM-DD'),
+      res: resType,
+      type: ctype
+    }
+  }, function(err, res, body) {
+    if (err) {
+      cb(err);
+    } else {
+      var parser = new xml2js.Parser({
+        explicitArray: false
+      });
+      parser.parseString(body, function(err, result) {
+        if (err) {
+          cb(err);
+        }
+        var tempArr = {'IntervalBlock':[], 'IntervalReadings':[]};
+        if (false) {// if commented for not saving anything in the database
+          usagePoint.getUsagePoint(result.feed.UsagePoint.ApartmentID, function(err, up) {
+            if (err) {
+              cb(err);
+            }
+            if (!up) {
+              cb(null, 'UsagePoint not found');
+            }
+            //console.log('UP',up);
+            intervalBlock.create(result.feed.UsagePoint, up._id, from, to, function(err, ib) {
+              if (err) {
+                cb(err);
+              }
+              tempArr.IntervalBlock.push(ib);
+              async.each(result.feed.IntervalBlock.IntervalReading, function(obj, callback) {
+                intervalReading.create(obj, ib._id, function(err, ir) {
+                  if (err) {
+                    tempArr.IntervalReadings.push(err);
+                    callback();
+                  } else {
+                    tempArr.IntervalReadings.push(ir);
+                    callback();
+                  }
+                });
+              }, function(err) {
+                if (err) {cb(err);}
+                cb(null, tempArr);
+              });
+            });
+          });
+        } else {
+          tempArr.IntervalBlock.push({
+            'apartmentId': result.feed.UsagePoint.ApartmentID,
+            'type': result.feed.UsagePoint.Type,
+            'kind': result.feed.UsagePoint.ServiceCategory.kind
+          });
+          async.each(result.feed.IntervalBlock.IntervalReading, function(obj, callback) {
+                pushIR(obj, function(err, ir) {
+                  if (err) {
+                    tempArr.IntervalReadings.push(err);
+                    callback();
+                  } else {
+                    tempArr.IntervalReadings.push(ir);
+                    callback();
+                  }
+                });
+              }, function(err) {
+                if (err) {cb(err);}
+                cb(null, tempArr);
+              });
+        }
       });
     }
   });
