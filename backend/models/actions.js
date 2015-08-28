@@ -230,10 +230,10 @@ exports.rate = function(id, user, rating, effort, cb) {
         }
       } else {
         // rating did not exist, require both a rating and effort estimate
-        if (!_.isNumber(rating) || (rating !== 1 && rating !== 0)) {
+        if (_.isNumber(rating) && (rating !== 1 && rating !== 0)) {
           return cb('Missing/invalid rating');
         }
-        if (!effort || !_.isNumber(effort) || effort < 1 || effort > 5) {
+        if (_.isNumber(effort) && (effort < 1 || effort > 5)) {
           return cb('Missing/invalid effort estimate');
         }
       }
