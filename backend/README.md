@@ -25,10 +25,12 @@ MONGO_URL=mongodb://user:pass@my.db/name npm start
 If you're on a mac, then install and run MongoDB such: http://docs.mongodb.org/manual/tutorial/install-mongodb-on-os-x/ (otherwise see http://docs.mongodb.org/manual/)
 
 Then: 
+```
 # run server 
 npm start
 # or run server with automatic restart 
 npm restart
+```
 
 ## Running unit tests
 
