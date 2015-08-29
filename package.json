@@ -5,6 +5,7 @@
   "main": "backend/app.js",
   "scripts": {
     "start": "MONGOOSE_DISABLE_STABILITY_WARNING=1 node backend/app.js",
+    "restart": "MONGOOSE_DISABLE_STABILITY_WARNING=1 nodemon backend/app.js",
     "test": "cd backend && NODE_ENV=test MONGOOSE_DISABLE_STABILITY_WARNING=1 mocha",
     "coverage": "cd backend && NODE_ENV=test MONGOOSE_DISABLE_STABILITY_WARNING=1 istanbul cover _mocha -- -R spec"
   },

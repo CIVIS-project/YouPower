@@ -91,8 +91,10 @@ router.post('/', auth.authenticate(), function(req, res) {
 });
 
 /**
- * @api {post} /household/invite Invite a user to your household
+ * @api {post} /household/invite/:userId Invite a user to your household
  * @apiGroup Household
+ * 
+ * @apiParam {String} id MongoId of an user
  *
  * @apiExample {curl} Example usage:
  *  curl -i -X POST -H "Content-Type: application/json" -d \
