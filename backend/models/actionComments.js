@@ -52,12 +52,13 @@ var calcRating = function(aComment, userId) {
   aComment.numLikes = totalRating;
 
   // include user's rating
+  // console.log("uuuserId: "+userId);
   userId = String(userId);
   if (userId && aComment.ratings && aComment.ratings[userId]) {
-    aComment.userRating = aComment.ratings[userId].rating;
+    aComment.userRating = aComment.ratings[userId].value;
   }
-
   delete(aComment.ratings);
+  // console.log("aComment2: "+JSON.stringify(aComment, null, 4));
 };
 
 exports.create = function(aComment, cb) {

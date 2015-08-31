@@ -170,7 +170,7 @@ router.get('/comment/:commentId/picture', auth.authenticate(), function(req, res
  * ]
  */
 router.get('/:actionId/comments', auth.authenticate(), function(req, res) {
-  ActionComment.get(req.params.actionId, req.body.limit || 10, req.body.skip || 0, null,
+  ActionComment.get(req.params.actionId, req.body.limit || 10, req.body.skip || 0, req.user,
       res.successRes);
 
   Log.create({
