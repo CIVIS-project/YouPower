@@ -30,8 +30,8 @@
   <a href="#" class="item item-icon-left item-icon-right">
     <i class="icon ion-leaf balanced"></i>
     <span class="leafs balanced">
-      <b>{{user.points ? user.points : 0}}</b>
-    </span> Leafs earned in total
+      <b>{{currentUser.leaves ? currentUser.leaves : 0}}</b>
+    </span> {{currentUser.leaves > 1 ? 'Leaves':'Leaf'}} earned in total
     <i class="icon ion-chevron-right icon-accessory"></i>
   </a>
 </div>

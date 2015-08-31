@@ -14,6 +14,14 @@ angular.module('civis.youpower')
       method: 'DELETE',
       url: Config.host + '/api/action/:actionId/comment/:commentId'
     },
+    likeAction : {
+      method: 'PUT',
+      url: Config.host + '/api/action/rate/:id'
+    },
+    rateEffort : {
+      method: 'PUT',
+      url: Config.host + '/api/action/rate/:id'
+    },
     likeComment : {
       method: 'PUT',
       url: Config.host + '/api/action/:actionId/comment/:commentId/rate'

@@ -13,7 +13,6 @@
   <div class="item item-body">
     <ng-include src="'app/actions/actionDescription.html'"></ng-include>
     <span class="text-small">You started on {{action.startedDate | date: "yyyy-MM-dd"}}. <a href="#" class="balanced">{{num=actions[action._id].numUsers}} Participant{{num > 1 ? 's':''}} TODO</a> 
-    <!-- {{num=action.participant}}  -->
     </span>
   </div>
 </div>
@@ -36,7 +35,7 @@
 
 <div class="list card">
   <div class="item item-divider tabs tabs-secondary tabs-icon-left">
-    <a class="tab-item" href="#">
+    <a class="tab-item" ng-click="likeAction(actions[action._id])">
       <i class="icon ion-thumbsup"></i>
       {{num2=actions[action._id].numLikes}} Like{{num2 > 1 ? 's':''}}
     </a>

@@ -38,6 +38,31 @@ function ActionsListCtrl($scope, $state, $stateParams, Actions) {
     });
   }
 
+  //toggle like action
+  $scope.likeAction = function(action){
+    
+    if (!action.userRating || action.userRating == 0){
+
+      //like
+      Actions.likeAction(
+        {id: action._id}, {rating: 1}).$promise.then(function(data){
+
+          action.userRating = 1; 
+          action.numLikes++; 
+      });
+
+    }else{
+      //unlike
+      Actions.likeAction(
+        {id: action._id}, {rating: 0}).$promise.then(function(data){
+
+          action.userRating = 0; 
+          action.numLikes--;
+      });
+    }
+    
+  }
+
   $scope.deleteComment = function(comment){
 
     Actions.deleteComment(
@@ -52,17 +77,32 @@ function ActionsListCtrl($scope, $state, $stateParams, Actions) {
     });
   }
 
+
+  //toggle like comment 
   $scope.likeComment = function(comment){
 
-    Actions.likeComment(
+    if (!comment.userRating || comment.userRating == 0)
+    {
+      //like
+      Actions.likeComment(
         {actionId: comment.actionId, commentId: comment._id}, {rating: 1}).$promise.then(function(data){
 
-          console.log(comment);
-          console.log(data);
+          comment.userRating = 1;
+          comment.numLikes++;
 
-          //delete action in list 
+      });
+    }else{
+      //unlike
+      Actions.likeComment(
+        {actionId: comment.actionId, commentId: comment._id}, {rating: 0}).$promise.then(function(data){
 
-    });
+          comment.userRating = 0;
+          comment.numLikes--;
+
+      });
+    }
+
+    
   }
 
   // dont change state now, a user can still come back afterwards
