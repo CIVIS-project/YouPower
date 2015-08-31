@@ -28,7 +28,7 @@ Then:
 ```
 # run server 
 npm start
-# or run server with automatic restart 
+# or run server with automatic restart (with nodemon)
 npm restart
 ```
 
