@@ -6,7 +6,7 @@
   "scripts": {
     "start": " cd frontend && node server.js",
     "test": "cd backend && mocha",
-    "postinstall": " cd frontend && npm install bower cordova ionic gulp && npm install && bower install && gulp"
+    "postinstall": ""bash ./post_install.sh" 
   },
   "keywords": [
     "civis",
