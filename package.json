@@ -6,7 +6,7 @@
   "scripts": {
     "start": " cd frontend && node server.js",
     "test": "cd backend && mocha",
-    "postinstall": "bower install && gulp"
+    "postinstall": " cd frontend && bower install && gulp"
   },
   "keywords": [
     "civis",
