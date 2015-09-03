@@ -1,10 +1,10 @@
 {
-  "name": "youpower-backend",
+  "name": "youpower-frontend",
   "version": "0.0.1",
-  "description": "YouPower app backend",
+  "description": "YouPower app frontend",
   "main": "index.js",
   "scripts": {
-    "start": "node backend/app.js",
+    "start": "node frontned/server.js",
     "test": "cd backend && mocha"
   },
   "keywords": [
