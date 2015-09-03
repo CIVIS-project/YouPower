@@ -4,7 +4,7 @@
   "description": "YouPower app frontend",
   "main": "index.js",
   "scripts": {
-    "start": "node frontned/server.js",
+    "start": "node frontend/server.js",
     "test": "cd backend && mocha"
   },
   "keywords": [
