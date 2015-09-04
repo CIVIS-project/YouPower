@@ -201,9 +201,13 @@ exports.rate = function(id, user, rating, effort, cb) {
     return cb('Missing/invalid user');
   }
 
-  // make sure we're dealing with integers
-  rating = parseInt(rating);
-  effort = parseInt(effort);
+  //commented out by Yilin. This code 
+  //make sure we're dealing with integers
+  //rating = parseInt(rating);
+  //effort = parseInt(effort);
+
+  //console.log("rating: "+JSON.stringify(rating, null, 4));
+  //console.log("effort: "+JSON.stringify(effort, null, 4));
 
   Action.findOne({
     _id: id

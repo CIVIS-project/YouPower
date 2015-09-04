@@ -378,8 +378,8 @@ router.post('/', auth.authenticate(), function(req, res) {
  * @apiGroup Action
  *
  * @apiParam {String} id MongoId of action
- * @apiParam {Number} rating Rating of action (0 = unlike, 1 = like)
- * @apiParam {Number} effort Effort estimate (1 [least] - 5 [most])
+ * @apiParam {Number} [rating] Rating of action (0 = unlike, 1 = like)
+ * @apiParam {Number} [effort] Effort estimate (1 [least] - 5 [most])
  *
  * @apiExample {curl} Example usage:
  *  # Get API token via /api/user/token
@@ -387,7 +387,13 @@ router.post('/', auth.authenticate(), function(req, res) {
  *
  *  curl -i -X PUT -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
  *  '{
- *    "rating": 1,
+ *    "rating": 1
+ *  }' \
+ *  http://localhost:3000/api/action/rate/555ef84b2fd41ffc6e078a34
+ * 
+ *  # or
+ *  curl -i -X PUT -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
+ *  '{
  *    "effort": 3
  *  }' \
  *  http://localhost:3000/api/action/rate/555ef84b2fd41ffc6e078a34
