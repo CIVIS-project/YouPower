@@ -15,11 +15,14 @@ function AppCtrl($scope,User,Actions) {
 	$scope.actions = {}; 
 
 
+	/*
+	load the data of the user ($scope.currentUser)
+	*/
 	User.get().$promise.then(function(data) {
 
 		$scope.currentUser = data;
 
-		//get user picture
+		//get the user's picture
 		User.getPicture({userId: $scope.currentUser._id}).$promise.then(function(data){
 			
 			console.log("user picture TODO");
@@ -32,6 +35,7 @@ function AppCtrl($scope,User,Actions) {
 		});
 
 		$scope.loadComments($scope.currentUser.actions); 
+		//todo: load the pictures of the users who made the comments
 
 		$scope.loadActionDetails($scope.currentUser.actions.inProgress); 
 
@@ -42,14 +46,27 @@ function AppCtrl($scope,User,Actions) {
 
 
 	$scope.loadActionDetails = function(actions){
-		for (var action in actions) {
-			Actions.getActionById({id:action}).$promise.then(function(data){
-				$scope.actions[data._id] = data;
 
-				console.log("actions");
-				console.log($scope.actions); 
-			});
+		//console.log("is array " + _.isArray(actions) + " " + JSON.stringify(actions, null, 4));
+		if (_.isArray(actions)){
+			for (var i=0; i< actions.length; i++) {
+				$scope.addActionById(actions[i]._id);
+			}
+		}else{
+			for (var action in actions) {
+				$scope.addActionById(action);
+			}
 		}
+	}
+
+	$scope.addActionById = function(actionId){
+
+		Actions.getActionById({id:actionId}).$promise.then(function(data){
+			$scope.actions[data._id] = data;
+
+			console.log("actions");
+			console.log($scope.actions); 
+		});
 	}
 
 
@@ -85,10 +102,9 @@ function AppCtrl($scope,User,Actions) {
 	}
 
 	$scope.salut = function(){
-		if ($scope.currentUser.profile.name) {
-			return 'Hi, ' + $scope.currentUser.profile.name + '! ';
-		}
-		else return ''; 
+
+		var name = $scope.currentUser.profile.name? $scope.currentUser.profile.name : $scope.currentUser.email; 
+		return 'Hi, ' + name + '!';
 	}
 
 

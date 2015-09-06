@@ -89,20 +89,14 @@ function ActionsListCtrl($scope, $state, $stateParams, Actions) {
     }
   }
 
-  //No change of the remote/local action list. A user can still cancel (come back) after the click. The remote/local action list is updated after the feedback form. 
+  /*  No change of the remote/local action list now. The list is changed after the feedback form. 
+      A user can still cancel (come back) after the click. 
+  */
   $scope.actionCompleted = function(action){
     $state.go('main.actions.completed', {id: action._id});
   }
   $scope.actionAbandoned = function(action){
     $state.go('main.actions.abandoned', {id: action._id});
-    // User.actionState(
-    //     {actionId: action.id},{state:'canceled'}).$promise.then(function(){
-
-    //       $scope.currentUser.actions.declined[action.id] = action;
-    //       delete $scope.currentUser.actions.inProgress[action.id]; 
-
-    //       $state.go('main.actions.abandoned', {id: action.id});
-    // });
   }
 
 

@@ -10,7 +10,7 @@
 
 			<ng-include src="'app/actions/actionDescription.html'"></ng-include>
 
-			<p><a href="#" class="subdued">{{action.participants}} Participant{{action.participants > 1 ? 's' : ''}}.</a></p>
+			<p><a href="#" class="balanced" ng-if="actions[action._id].numUsers>0">{{num=actions[action._id].numUsers}} Participant{{num > 1 ? 's':''}}</a></p>
 
 			<a class="item item-icon-left" ng-click="changeActionState('alreadyDoing')">
 				<i class="icon ion-android-done positive"></i>

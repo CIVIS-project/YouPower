@@ -6,16 +6,17 @@ angular.module('civis.youpower.actions').controller('FormsCtrl', FormsCtrl);
 
 function FormsCtrl($scope, $timeout, $state, $stateParams, $ionicHistory, $ionicPopup, User, Actions) {
 
+	// the user's completed/abandoned action 
 	$scope.currentAction = $scope.currentUser.actions.inProgress[$stateParams.id];
 
-	//for the ionic.rating module 
+	// used by the ionic.rating module 
 	$scope.data = { rating : 0,  max: 5 };
 
 	// $scope.$watch('data.rating', function() {
 	// 	console.log('New value: '+$scope.data.rating);
 	// });
 
-	//input box
+	// input box of the form 
 	$scope.feedback = {text: ""};
 
 	$scope.hasFeedback = false; 
@@ -129,15 +130,14 @@ function FormsCtrl($scope, $timeout, $state, $stateParams, $ionicHistory, $ionic
 
 	}
 
+	//change the action state of the user's completed/abandoned action ('done'/'canceled')
 	$scope.changeActionState = function(state){
 
 		//change action state
 		User.actionState({actionId: $scope.currentAction._id}, {state: state}).$promise.then(function(data){
 
-			console.log(data);
-
-			$scope.currentUser['actions'] = data; 
-			//update local list
+			// update local list
+			$scope.currentUser['actions'] = data;
 			// $scope.currentUser.actions.done[$scope.currentAction._id] = $scope.currentAction;
 			// delete $scope.currentUser.actions.inProgress[$scope.currentAction._id]; 
 		});
