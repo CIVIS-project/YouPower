@@ -10,7 +10,7 @@
   </div>
 </div>
 
-<button class="button button-full button-dark" ng-click="goForward();">
+<button class="button button-full button-dark" ng-click="gotoYourActions();">
  Click to give another try.
 </button>
 
@@ -21,18 +21,18 @@
       Feedback Form
     </div>
     <div class="item item-text-wrap">
-     This action is not for you? Please select each of the following that are true to you: 
+     This action is not for you? Please select each of the following that is true to you: 
     </div>
-    <ion-checkbox class="checkbox-balanced item-text-wrap" data-value="feedback.isNotUseful" ng-model="isNotUseful">This action is not useful.</ion-checkbox>
-    <ion-checkbox class="checkbox-balanced item-text-wrap" data-value="feedback.isEffort" ng-model="isEffort">This action takes too much effort.</ion-checkbox>
-    <ion-checkbox class="checkbox-balanced item-text-wrap" data-value="feedback.isExpensive" ng-model="isExpensive">This action is too expensive.</ion-checkbox>
-    <ion-checkbox class="checkbox-balanced item-text-wrap" data-value="feedback.isNotAppliable" ng-model="isNotAppliable">This action isn't appliable to you or your household any more.</ion-checkbox>
-    <ion-checkbox class="checkbox-balanced item-text-wrap" data-value="feedback.isNotLike" ng-model="isNotLike">You don't like to do this action.</ion-checkbox>
+    <ion-checkbox class="checkbox-balanced item-text-wrap" ng-model="feedback.isNotUseful">This action is not useful.</ion-checkbox>
+    <ion-checkbox class="checkbox-balanced item-text-wrap" ng-model="feedback.isTooMuchEffort">This action takes too much effort.</ion-checkbox>
+    <ion-checkbox class="checkbox-balanced item-text-wrap" ng-model="feedback.isTooExpensive">This action is too expensive.</ion-checkbox>
+    <ion-checkbox class="checkbox-balanced item-text-wrap" ng-model="feedback.isNotAppliable">This action isn't appliable to you or your household any more.</ion-checkbox>
+    <ion-checkbox class="checkbox-balanced item-text-wrap" ng-model="feedback.doNotLike">You don't like to do this action.</ion-checkbox>
 
     <div class="item item-text-wrap">
       Any other reasons that made you abandon the action? Or do you have other comments? 
       <label class="item item-input">
-        <textarea data-value="feedback.otherReasons" placeholder="Please specify so we know how to improve."></textarea>
+        <textarea ng-model="feedback.text" placeholder="Please specify so we know how to improve."></textarea>
       </label>
     </div>
 
@@ -40,7 +40,7 @@
   
   <div class="button-bar">
     <a class="button button-dark" ng-click="goBack()">Cancel</a>
-    <a class="button button-dark" ng-click="completed()">Done</a>
+    <a class="button button-dark" ng-click="abandoned()">Done</a>
   </div>
     <!-- user.points=user.points+Math.round(action.points/5); -->
 

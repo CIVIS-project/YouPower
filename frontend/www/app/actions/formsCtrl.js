@@ -18,28 +18,27 @@ function FormsCtrl($scope, $timeout, $state, $stateParams, $ionicHistory, $ionic
 	//input box
 	$scope.feedback = {text: ""};
 
-
 	$scope.hasFeedback = false; 
 
-$scope.goForward= function() {
-	$ionicHistory.nextViewOptions({
-		disableBack: true
-	});
-	$state.go('tab.actions');
-}
+	$scope.gotoYourActions = function() {
+		$ionicHistory.nextViewOptions({
+			disableBack: true
+		});
+		$state.go("main.actions.yours");
+	}
 
 
-$scope.goBack= function() {
-	$ionicHistory.goBack();
-}
+	$scope.goBack= function() {
+		$ionicHistory.goBack();
+	}
 
-$scope.setPoints = function(points) {
-	var userRef = new Firebase(endev.firebaseProvider.path + "users/" + $scope.user.$id);
-	$firebaseObject(userRef).$loaded().then(function(object){
-		object.points = points;
-		object.$save();
-	});
-}
+	// $scope.setPoints = function(points) {
+	// 	var userRef = new Firebase(endev.firebaseProvider.path + "users/" + $scope.user.$id);
+	// 	$firebaseObject(userRef).$loaded().then(function(object){
+	// 		object.points = points;
+	// 		object.$save();
+	// 	});
+	// }
 
 
 	$scope.showConfirm = function(completed){
@@ -49,28 +48,29 @@ $scope.setPoints = function(points) {
 		var alertPopup = $ionicPopup.confirm({
 			title: title,
 			scope: $scope, 
-			template: "<div>{{hasFeedback? 'Many thanks for your feedback!' : 'Congratulations!'}}</div> Do you want to add another action?",
+			template: "<div>{{hasFeedback? 'Many thanks for your feedback!' : ''}}</div> Would you like to add another action?", 
 			okText: "Yes",
 			cancelText: "Not now",
 			okType: "button-balanced"
 		});
-		alertPopup.then(function(res) {  //TODO
+		alertPopup.then(function(res) {
 			if(res) {
 				$scope.nextTip();
 			}else {
-				$state.go("main.actions.yours");
+				$scope.gotoYourActions();
 			}
 		});
 	}
 
-	$scope.askFeedback = function(){
+	$scope.askFeedback = function(completed){
 
-		var title = 'Feedback Form Empty';
+		var title = 'Your Feedback Form is Empty';
+		var temp = completed ? "the action? </br>We'd love to hear from you." : "what went wrong? </br>We'd love to know how to improve."; 
 
 		var alertPopup = $ionicPopup.confirm({
 			title: title,
 			scope: $scope, 
-			template: '<div>Your feedback form is empty.</div> Would you like to give us some feedback?',
+			template: "Would you like to give us some feedback on "+ temp,
 			okText: "Yes",
 			cancelText: "Let it be",
 			okType: "button-balanced"
@@ -79,7 +79,13 @@ $scope.setPoints = function(points) {
 			if(res) {
 				//
 			}else {
-				$scope.changeActionStateDone(); 
+				if (completed){
+					$scope.changeActionState('done'); 
+					$scope.showConfirm(true);
+				}else{
+					$scope.changeActionState('canceled');
+					$scope.showConfirm(false);
+				}
 			}
 		});
 	}
@@ -99,13 +105,13 @@ $scope.setPoints = function(points) {
 		      });
 		}
 
-		if ($scope.feedback.text != ""){
+		if ($scope.feedback.text){
 
 			$scope.hasFeedback = true; 
 
 			//the "feedback" text is an action comment (appear under action details)
 			Actions.postComment(
-		        {actionId: $scope.currentAction._id},{comment: $scope.feedback.text}).$promise.then(function(data){
+		        {actionId: $scope.currentAction._id}, {comment: $scope.feedback.text}).$promise.then(function(data){
 
 		          //add action comment to local list 
 		          $scope.comments.unshift(data);
@@ -114,44 +120,51 @@ $scope.setPoints = function(points) {
 		}
 
 		if (!$scope.hasFeedback){
-			$scope.askFeedback();
+			$scope.askFeedback(true);
 		}else{
-			$scope.changeActionStateDone();
+			$scope.changeActionState('done');
+			//show popup 
+			$scope.showConfirm(true);
 		}
 
 	}
 
-	$scope.changeActionStateDone = function(state){
+	$scope.changeActionState = function(state){
 
 		//change action state
-		User.actionState({actionId: $scope.currentAction._id}, {state: 'done'}).$promise.then(function(data){
+		User.actionState({actionId: $scope.currentAction._id}, {state: state}).$promise.then(function(data){
 
+			console.log(data);
+
+			$scope.currentUser['actions'] = data; 
 			//update local list
-			$scope.currentUser.actions.done[$scope.currentAction._id] = $scope.currentAction;
-			delete $scope.currentUser.actions.inProgress[$scope.currentAction._id]; 
-
-			//show popup 
-			$scope.showConfirm(true);
+			// $scope.currentUser.actions.done[$scope.currentAction._id] = $scope.currentAction;
+			// delete $scope.currentUser.actions.inProgress[$scope.currentAction._id]; 
 		});
 
 	}
 
-$scope.abandoned = function(user){
-	var alertPopup = $ionicPopup.confirm({
-		title: 'Action removed',
-		template: 'Do you want to add another action instead?',
-		okText: "Yes",
-		cancelText: "Not now",
-		okType: "button-balanced"
-	});
-	alertPopup.then(function(res) {
-		if(res) {
-			$scope.nextTip(user);
-		}else {
-			$state.go("tab.actions");
+
+	$scope.abandoned = function(){
+
+		if ($scope.feedback.text || _.keys($scope.feedback).length > 1){
+
+			$scope.hasFeedback = true; 
+
+			$scope.feedback._id = $scope.currentAction._id;
+
+			User.feedback({},{kind:'actionCanceled', content: $scope.feedback}).$promise.then(function(data){
+				console.log(data);
+			});
+
+			$scope.changeActionState('canceled');
+			//show popup 
+			$scope.showConfirm(false);
+
+		}else{
+			$scope.askFeedback(false);
 		}
-	});
-}
+	}
 };
 
 
