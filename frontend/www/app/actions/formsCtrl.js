@@ -127,23 +127,7 @@ function FormsCtrl($scope, $timeout, $state, $stateParams, $ionicHistory, $ionic
 			//show popup 
 			$scope.showConfirm(true);
 		}
-
 	}
-
-	//change the action state of the user's completed/abandoned action ('done'/'canceled')
-	$scope.changeActionState = function(state){
-
-		//change action state
-		User.actionState({actionId: $scope.currentAction._id}, {state: state}).$promise.then(function(data){
-
-			// update local list
-			$scope.currentUser['actions'] = data;
-			// $scope.currentUser.actions.done[$scope.currentAction._id] = $scope.currentAction;
-			// delete $scope.currentUser.actions.inProgress[$scope.currentAction._id]; 
-		});
-
-	}
-
 
 	$scope.abandoned = function(){
 
@@ -165,6 +149,14 @@ function FormsCtrl($scope, $timeout, $state, $stateParams, $ionicHistory, $ionic
 			$scope.askFeedback(false);
 		}
 	}
+
+	//change the action state of the user's completed/abandoned action ('done'/'canceled')
+	$scope.changeActionState = function(actionState){
+
+		$scope.postActionState($scope.currentAction._id, actionState); 
+
+	}
+	
 };
 
 

@@ -4,7 +4,7 @@ angular.module('civis.youpower.actions').controller('ActionsCtrl', ActionsCtrl);
 
 /* The controller that's shared over all the action states.
 -----------------------------------------------------------*/
-function ActionsCtrl($scope, $state, $ionicPopup, Actions) {
+function ActionsCtrl($scope, $state, $ionicPopup, Actions, User) {
 
 	$scope.idx = -1;
 	$scope.lastActionUsed = true; 
@@ -21,17 +21,8 @@ function ActionsCtrl($scope, $state, $ionicPopup, Actions) {
 			console.log("load suggested tips");
 			console.log($scope.suggestedActions);
 
-			if ($scope.suggestedActions.length == 0){
-
-				// there is no new action suggestions
-				$scope.askRehearse();
-
-			}else{
-				// load action details
-				$scope.loadActionDetails($scope.suggestedActions); 
-			}
+			$scope.loadActionDetails($scope.suggestedActions); 
 		});
-
 	};
 
 	$scope.loadSuggestedActions(); 
@@ -116,12 +107,28 @@ function ActionsCtrl($scope, $state, $ionicPopup, Actions) {
 
 			$state.go('main.actions.action', {id:$scope.suggestedActions[$scope.idx]._id});
 
-      	}else{
-      		$scope.idx = -1;
-      		$scope.lastActionUsed = true; 
+		}else{
+			$scope.idx = -1;
+			$scope.lastActionUsed = true; 
 
-      		$scope.loadSuggestedActions(); 
+			$scope.loadSuggestedActions(); 
+
+			if ($scope.suggestedActions.length == 0){
+
+				// there is no new action suggestions
+				$scope.askRehearse(); 
+			}
+		}
+	}
+
+
+	$scope.postActionState = function(actionId, actionState){
+      	User.actionState(
+      		{actionId: actionId}, {state: actionState}).$promise.then(function(data){
+
+      			console.log(data); 
+      			$scope.currentUser['actions'] = data; 
+      		});
       	}
-      }
-  };
+     }
 
