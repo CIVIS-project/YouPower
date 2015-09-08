@@ -6,12 +6,12 @@
       Oops! Sorry to hear that you are going to abandon the action: {{currentAction.name}}.
       <span class="balanced">You are so close to finish!</span> 
     </br>
-    You still can earn <b class="balanced text-large"><i style="font-size:32px;" class="icon ion-leaf icon-large balanced"></i> {{getFormBonus(currentAction)}}</b> by filling the feedback form. We'd love to hear from you and know how to improve.
+    You still can earn <i class="icon ion-leaf icon-large balanced"></i> <span class="balanced text-large">{{feedbackPoints}}</span> by filling the feedback form. We'd love to hear from you and know how to improve.
   </div>
 </div>
 
 <button class="button button-full button-dark" ng-click="gotoYourActions();">
- Click to give another try.
+ Click to give Another Try
 </button>
 
 
@@ -23,11 +23,11 @@
     <div class="item item-text-wrap">
      This action is not for you? Please select each of the following that is true to you: 
     </div>
-    <ion-checkbox class="checkbox-balanced item-text-wrap" ng-model="feedback.isNotUseful">This action is not useful.</ion-checkbox>
-    <ion-checkbox class="checkbox-balanced item-text-wrap" ng-model="feedback.isTooMuchEffort">This action takes too much effort.</ion-checkbox>
-    <ion-checkbox class="checkbox-balanced item-text-wrap" ng-model="feedback.isTooExpensive">This action is too expensive.</ion-checkbox>
-    <ion-checkbox class="checkbox-balanced item-text-wrap" ng-model="feedback.isNotAppliable">This action isn't appliable to you or your household any more.</ion-checkbox>
-    <ion-checkbox class="checkbox-balanced item-text-wrap" ng-model="feedback.doNotLike">You don't like to do this action.</ion-checkbox>
+    <ion-checkbox class="checkbox-balanced item-text-wrap" ng-change="deleteByVal(feedback,false)" ng-model="feedback.isNotUseful">This action is not useful.</ion-checkbox>
+    <ion-checkbox class="checkbox-balanced item-text-wrap" ng-change="deleteByVal(feedback,false)" ng-model="feedback.isTooMuchEffort">This action takes too much effort.</ion-checkbox>
+    <ion-checkbox class="checkbox-balanced item-text-wrap" ng-change="deleteByVal(feedback,false)" ng-model="feedback.isTooExpensive">This action is too expensive.</ion-checkbox>
+    <ion-checkbox class="checkbox-balanced item-text-wrap" ng-change="deleteByVal(feedback,false)" ng-model="feedback.isNotAppliable">This action isn't appliable to you or your household any more.</ion-checkbox>
+    <ion-checkbox class="checkbox-balanced item-text-wrap" ng-change="deleteByVal(feedback,false)" ng-model="feedback.doNotLike">You don't like to do this action.</ion-checkbox>
 
     <div class="item item-text-wrap">
       Any other reasons that made you abandon the action? Or do you have other comments? 

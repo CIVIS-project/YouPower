@@ -31,6 +31,8 @@ function ActionsListCtrl($scope, $state, $stateParams, Actions) {
           $scope.comment = {text: '', show: false}; 
           //add action comment to local list 
           $scope.comments.unshift(data);
+
+          $scope.addCommentPoints();
     });
   }
 
@@ -41,6 +43,8 @@ function ActionsListCtrl($scope, $state, $stateParams, Actions) {
 
           //delete action from local list 
           $scope.comments.splice($scope.comments.indexOf(comment), 1);
+
+          $scope.deductCommentPoints();
     });
   }
 

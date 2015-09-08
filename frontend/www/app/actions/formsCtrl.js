@@ -4,7 +4,7 @@ angular.module('civis.youpower.actions').controller('FormsCtrl', FormsCtrl);
 // Inject my dependencies
 //SettingsCtrl.$inject = ['$scope', '$filter', '$translate'];
 
-function FormsCtrl($scope, $timeout, $state, $stateParams, $ionicHistory, $ionicPopup, User, Actions) {
+function FormsCtrl($scope, $timeout, $stateParams, $ionicPopup, User, Actions) {
 
 	// the user's completed/abandoned action 
 	$scope.currentAction = $scope.currentUser.actions.inProgress[$stateParams.id];
@@ -21,18 +21,9 @@ function FormsCtrl($scope, $timeout, $state, $stateParams, $ionicHistory, $ionic
 
 	$scope.hasFeedback = false; 
 
-	$scope.gotoYourActions = function() {
-		$ionicHistory.nextViewOptions({
-			disableBack: true
-		});
-		$state.go("main.actions.yours");
-	}
+	$scope.points = 0; 
 
-
-	$scope.goBack= function() {
-		$ionicHistory.goBack();
-	}
-
+	
 	// $scope.setPoints = function(points) {
 	// 	var userRef = new Firebase(endev.firebaseProvider.path + "users/" + $scope.user.$id);
 	// 	$firebaseObject(userRef).$loaded().then(function(object){
@@ -46,17 +37,20 @@ function FormsCtrl($scope, $timeout, $state, $stateParams, $ionicHistory, $ionic
 
 		var title = completed ? 'Action completed' : 'Action removed';
 
+		var text = completed ? "Would you like to add another action?" : "We are sorry that action didn't suit you well. Would you like to try another one?";
+
 		var alertPopup = $ionicPopup.confirm({
 			title: title,
 			scope: $scope, 
-			template: "<div>{{hasFeedback? 'Many thanks for your feedback!' : ''}}</div> Would you like to add another action?", 
+			template: "<span ng-if='hasFeedback'>Many thanks for your feedback! </span><span ng-if='points>0'>You got {{points}} point{{points>1?'s':''}}. </span>" + text, 
 			okText: "Yes",
 			cancelText: "Not now",
 			okType: "button-balanced"
 		});
 		alertPopup.then(function(res) {
+			$scope.disableBack();
 			if(res) {
-				$scope.nextTip();
+				$scope.addActions();
 			}else {
 				$scope.gotoYourActions();
 			}
@@ -65,7 +59,7 @@ function FormsCtrl($scope, $timeout, $state, $stateParams, $ionicHistory, $ionic
 
 	$scope.askFeedback = function(completed){
 
-		var title = 'Your Feedback Form is Empty';
+		var title = 'Your Feedback Form is not Completed';
 		var temp = completed ? "the action? </br>We'd love to hear from you." : "what went wrong? </br>We'd love to know how to improve."; 
 
 		var alertPopup = $ionicPopup.confirm({
@@ -96,8 +90,6 @@ function FormsCtrl($scope, $timeout, $state, $stateParams, $ionicHistory, $ionic
 		//user rated the effort level of the actiion
 		if ($scope.data.rating != 0){
 
-			$scope.hasFeedback = true; 
-
 			Actions.rateEffort(
 		        {id: $scope.currentAction._id}, {effort: $scope.data.rating}).$promise.then(function(data){
 
@@ -117,6 +109,9 @@ function FormsCtrl($scope, $timeout, $state, $stateParams, $ionicHistory, $ionic
 		          //add action comment to local list 
 		          $scope.comments.unshift(data);
 		          console.log($scope.feedback.text); 
+
+		          $scope.addCommentPoints(); 
+		          $scope.points += $scope.commentPoints; 
 		    });
 		}
 
@@ -129,9 +124,18 @@ function FormsCtrl($scope, $timeout, $state, $stateParams, $ionicHistory, $ionic
 		}
 	}
 
+	$scope.deleteByVal = function(obj, val) {
+
+	    for (var key in obj) {
+	        if (obj[key] == val) delete obj[key];
+	    }
+	}
+
 	$scope.abandoned = function(){
 
-		if ($scope.feedback.text || _.keys($scope.feedback).length > 1){
+		$scope.deleteByVal($scope.feedback, false);
+
+		if (_.keys($scope.feedback).length > 0){
 
 			$scope.hasFeedback = true; 
 
@@ -139,6 +143,8 @@ function FormsCtrl($scope, $timeout, $state, $stateParams, $ionicHistory, $ionic
 
 			User.feedback({},{kind:'actionCanceled', content: $scope.feedback}).$promise.then(function(data){
 				console.log(data);
+				$scope.addFeedbackPoints();
+				$scope.points += $scope.feedbackPoints; 
 			});
 
 			$scope.changeActionState('canceled');
@@ -153,10 +159,14 @@ function FormsCtrl($scope, $timeout, $state, $stateParams, $ionicHistory, $ionic
 	//change the action state of the user's completed/abandoned action ('done'/'canceled')
 	$scope.changeActionState = function(actionState){
 
-		$scope.postActionState($scope.currentAction._id, actionState); 
+		if (actionState == "done"){
+			$scope.addActionPoints($scope.currentAction);
+			$scope.points += $scope.getActionPoints($scope.currentAction);
+		}
 
+		$scope.postActionState($scope.currentAction._id, actionState); 
 	}
-	
+
 };
 
 

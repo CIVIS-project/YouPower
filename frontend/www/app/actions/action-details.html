@@ -2,7 +2,7 @@
 <ion-nav-title>
 <span class="capitalize">{{actionsType}} Actions ({{_.size(actionsByType())}})</span>
 </ion-nav-title>
-<ion-content>
+<ion-content class="padding">
 <ion-slide-box active-slide="slideIdx" does-continue="false" show-pager="false">
 <ion-slide ng-repeat="action in actionsByType() track by $index">
 
@@ -61,6 +61,10 @@
     <a class="button button-clear button-stable icon-left ion-thumbsup button-small" ng-click="likeComment(comment)"> {{num=comment.numLikes}} Like{{num>1? 's':''}}</a>
   </div>
 </div>
+
+<button class="button button-full button-dark" ng-click="gotoYourActions();">
+ Back to Your Actions
+</button>
 
 </ion-slide>
 </ion-slide-box>

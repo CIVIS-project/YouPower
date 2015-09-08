@@ -5,20 +5,22 @@ hierarchy as it will be loaded with abstract main state.
 Here we can do the general app stuff like getting the user's
 details (since this is after the user logs in).
 ----------------------------------------------*/
-function AppCtrl($scope,User,Actions) {
-
+function AppCtrl($scope, $state, $ionicHistory, User,Actions) { 
 
 	$scope.userPictures = {}; 
 
-	$scope.comments = []; 
+	$scope.comments = []; // save comments of actions 
 
-	$scope.actions = {}; 
+	$scope.actions = {}; // save action details
+
+	$scope.commentPoints = 1; 
+	$scope.feedbackPoints = 1; 
 
 
 	/*
 	load the data of the user ($scope.currentUser)
 	*/
-	User.get().$promise.then(function(data) {
+	User.get().$promise.then(function(data){
 
 		$scope.currentUser = data;
 
@@ -29,13 +31,14 @@ function AppCtrl($scope,User,Actions) {
 			//console.log(data); 
 			var b64 = btoa(data); //this doesnot work 
 			//console.log(b64); 
-			$scope.userPictures[$scope.currentUser._id]=({_id: $scope.currentUser._id, image: b64});
+			$scope.userPictures[$scope.currentUser._id] = ({_id: $scope.currentUser._id, image: b64});
 			//console.log($scope.userPictures); 
-
 		});
 
-		$scope.loadComments($scope.currentUser.actions); 
-		//todo: load the pictures of the users who made the comments
+		//$scope.loadAllComments($scope.currentUser.actions); 
+		$scope.loadCommentsOfActions($scope.currentUser.actions.inProgress);
+		$scope.loadCommentsOfActions($scope.currentUser.actions.pending);
+		$scope.loadCommentsOfActions($scope.currentUser.actions.done);
 
 		$scope.loadActionDetails($scope.currentUser.actions.inProgress); 
 
@@ -59,52 +62,111 @@ function AppCtrl($scope,User,Actions) {
 		}
 	}
 
+	//update local list
 	$scope.addActionById = function(actionId){
 
 		Actions.getActionById({id:actionId}).$promise.then(function(data){
 			$scope.actions[data._id] = data;
 
-			console.log("actions");
+			console.log("action details");
 			console.log($scope.actions); 
 		});
 	}
 
+	//update local list 
+	$scope.removeActionById = function(actionId){
 
-	$scope.loadComments = function(actions){
+		delete $scope.actions[actionId];
 
+		console.log("delelte action details");
+		console.log($scope.actions); 
+	}
+
+
+	/*
+		load comments of all actions in the user's actions lists
+		actions: an object of a collection of objects of lists of actions
+	*/
+	$scope.loadAllComments = function(actions){
+
+		//actionType in {declined, done, inProgress, na, pending}
 		for (var actionType in actions) {
 			if (actions.hasOwnProperty(actionType)) {
-				for (var key in actions[actionType]) {
-					if (actions[actionType].hasOwnProperty(key)) {
-						var action = actions[actionType][key]
-						Actions.getComments({actionId: action._id}).$promise.then(function(data){
-
-							$scope.comments = $scope.comments.concat(data);
-
-							console.log("comments");
-							console.log($scope.comments); 
-
-							data.forEach(function(comment) {
-								//load user picture
-
-								
-
-							    //console.log(comment);
-
-							});
-
-
-						});
-					}
-				}
+				$scope.loadCommentsOfActions(actions[actionType]);
 			}
 		}
 	}
 
-	$scope.salut = function(){
+	/*
+		actions: an object of a collection of indivudual action objects 
+	*/
+	$scope.loadCommentsOfActions = function(actions){
+		for (var key in actions) {
+			if (actions.hasOwnProperty(key)) {
+				$scope.loadCommentsByActionId(actions[key]._id); 
+			}
+		}
+	}
 
+
+	$scope.loadCommentsByActionId = function(actionId){
+
+		Actions.getComments({actionId: actionId}).$promise.then(function(data){
+
+			$scope.comments = $scope.comments.concat(data);
+
+			console.log("load comments");
+			console.log(data); 
+
+			data.forEach(function(comment) {
+				//load user picture
+			    //console.log(comment);
+			});
+		});
+	}
+
+
+	$scope.addFeedbackPoints = function(){
+		$scope.currentUser.leaves += $scope.feedbackPoints; 
+	}
+
+	$scope.addCommentPoints = function(){
+		$scope.currentUser.leaves += $scope.commentPoints; 
+	}
+
+	$scope.deductCommentPoints = function(){
+		$scope.currentUser.leaves -= $scope.commentPoints; 
+	}
+
+	$scope.addActionPoints = function(action){
+		$scope.currentUser.leaves += action.impact + action.effort; 
+	}
+
+	$scope.getActionPoints = function(action){
+		return action.effort + action.impact; 
+	};
+
+	$scope.salut = function(){
 		var name = $scope.currentUser.profile.name? $scope.currentUser.profile.name : $scope.currentUser.email; 
 		return 'Hi, ' + name + '!';
+	}
+
+	$scope.gotoYourActions = function() {
+		$ionicHistory.nextViewOptions({
+			disableBack: true
+		});
+		$state.go("main.actions.yours");
+	}
+
+	$scope.disableBack = function() {
+		$ionicHistory.nextViewOptions({
+			disableBack: true
+		});
+	}
+
+
+	$scope.goBack= function() {
+		$ionicHistory.goBack();
 	}
 
 
