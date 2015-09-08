@@ -293,7 +293,7 @@ angular.module('civis.youpower', [
 ;
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/welcome');
+  $urlRouterProvider.otherwise('/app/actions/yours');
 
 });
 
