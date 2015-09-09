@@ -6,6 +6,7 @@ angular.module('civis.youpower.settings',[]);
 angular.module('civis.youpower.welcome',[]);
 //DM: added module
 angular.module('civis.youpower.prosumption',['highcharts-ng']);
+angular.module('civis.youpower.donation',[]);
 
 angular.module('civis.youpower', [
   'ionic',
@@ -22,6 +23,7 @@ angular.module('civis.youpower', [
   'civis.youpower.translations',
   //DM: added module
   'civis.youpower.prosumption',
+  'civis.youpower.donation',
   ])
 
 .run(function($ionicPlatform, $rootScope, $window, AuthService) {
@@ -189,7 +191,16 @@ angular.module('civis.youpower', [
 })
 
 
-
+.state('main.donation', {
+  url: '/donation',
+  views: {
+    'menuContent': {
+      templateUrl: 'app/donation/index.html',
+      controller: 'donationCtrl'
+    }
+  }
+}
+)
 
 .state('main.prosumption', {
   url: '/prosumption',
