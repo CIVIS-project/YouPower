@@ -230,6 +230,16 @@ angular.module('civis.youpower', [
       }
     }
   })
+.state('main.prosumption.vizEnergyMeteo', {
+  url: '/vizEnergyMeteo', 
+  views: {
+    'tab-prosumption-yours': {
+      templateUrl: 'app/prosumption/viz_energy_meteo.html',
+      controller: 'dataVizCtrl',
+    }
+  }
+}
+)
 .state('main.prosumption.vizConsumption', {
   url: '/viz',
   views: {
@@ -248,6 +258,26 @@ angular.module('civis.youpower', [
     }
   }
 })
+.state('main.prosumption.vizHistoricalPersonal', {
+  url: '/vizHistoricalPersonal',
+  views: {
+    'tab-prosumption-yours': {
+      templateUrl: 'app/prosumption/viz_historical_personal.html',
+      controller: 'dataVizCtrl',
+    }
+  }
+}
+)
+.state('main.prosumption.vizHistoricalComparison', {
+  url: '/vizHistoricalComparison',
+  views: {
+    'tab-prosumption-yours' : {
+      templateUrl: 'app/prosumption/viz_historical_comparison.html',
+      controller: 'dataVizCtrl',
+    }
+  }
+}
+)
 .state('main.prosumption.vizAppliance', {
     url: '/vizAppliance',
     views: {

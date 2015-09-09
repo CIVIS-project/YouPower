@@ -49,9 +49,14 @@ var limit = 12; //number of entries, based on a monthly sampling
 for (var i =0; i<limit; i++) {
     productionArray.push(20*getRandomData());
     consumptionArray.push(20*getRandomData());
-    console.log('dato:'+String(productionArray[i]));
+    // console.log('dato:'+String(productionArray[i]));
 }
-console.log(productionArray);
+// console.log(productionArray);
+var communityConsumptionArray = [];
+var limit = 12;
+for (var i=0; i<limit; i++) {
+    communityConsumptionArray.push(20*getRandomData());
+}
 // $scope.chartConfigComparisonHistorical={
 //     series: [{
 //     }],
@@ -470,4 +475,90 @@ $scope.chartConfigAppliance = {
 //          data: [$scope.lastConsumption, $scope.lastProduction]//[10, 15, 12, 8, 7]
 //              }],
 // };
+$scope.chartConfigHistoryComparison = {
+     options: {
+            chart: {
+                type: 'areaspline',
+            },
+             legend: {
+                enabled: true, 
+                borderWidth: 1,
+                align: 'left',
+            },
+            plotOptions: {
+                areaspline: {
+                    fillOpacity: 0.5
+                }
+            }
+        },
+        title: {
+            text: 'Consumption Comparison',
+        },
+        series: [{
+            data: consumptionArray,
+            name: 'You',
+        }, {
+            data: communityConsumptionArray,
+            name: 'Benchmark',
+        }]
+};
+//configure input vector for plotting meteo energy
+var limit = 16;
+var meteoEnergyPriceArray = [];
+for (var i=0; i<limit; i++) {
+    meteoEnergyPriceArray.push(0.5*getRandomData());
+}
+var thresholdTarif=1.2;
+var dataPlotMeteoEnergy = [];
+var dataDateTimeArray = [];
+for (var i=0; i<limit; i++) {
+    markerTmp='url(http://icons.iconarchive.com/icons/icons8/ios7/128/Messaging-Sad-icon.png)'
+    if (meteoEnergyPriceArray[i]<thresholdTarif) {
+        markerTmp='url(http://icons.iconarchive.com/icons/icons8/ios7/128/Messaging-Happy-icon.png)'
+    }
+    dataDateTimeArray.push(Date(2015,9,8,14+i).toString());
+    dataPlotMeteoEnergy.push({
+        y: meteoEnergyPriceArray[i],
+        marker: {
+            symbol: markerTmp,
+            width: 50,
+            height: 50,
+        }
+    })
+};
+$scope.chartConfigEnergyMeteo = {
+    options: {
+        chart: {
+            type: 'spline'
+        },
+        legend: {
+            enabled: false
+        },
+        xAxis: {
+            type: 'datetime',
+            categories : dataDateTimeArray
+        }
+    },
+    title: {
+        text: 'Tariff Prediction'
+    },
+    series: [{
+        name: 'Price',
+        color: "#003366",
+        marker: {
+            symbol: 'square'
+        },
+        lineWidth : 4,
+        data :  dataPlotMeteoEnergy,
+        // data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, {
+        //         y: 26.5,
+        //         marker: {
+        //             symbol: 'url(http://simpleicon.com/wp-content/uploads/sad.png)',
+        //             width: 50,
+        //             height: 50,
+        //         }
+        //     }, 23.3, 18.3, 13.9, 9.6]
+    }]
+};
+//end of dataVizCtrl controller
 }
