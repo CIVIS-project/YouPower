@@ -7703,8 +7703,17 @@ td {
   font-size: 32px; }
 
 .text-small {
-  font-size: 10px;
+  font-size: 12px;
   color: gray; }
+
+.text-large {
+  font-size: 32px; }
+
+.space-bottom {
+  margin-bottom: 6px; }
+
+.space-top {
+  margin-top: 6px; }
 
 .button-right {
   float: right;
