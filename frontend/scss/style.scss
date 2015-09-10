@@ -66,6 +66,12 @@ td {
   font-size: 12px;
   color: gray;
 }
+.text-medium {
+  font-size: 16px;
+}
+.text-medium-large {
+  font-size: 18px;
+}
 .text-large {
   font-size: 32px;
 }
@@ -106,6 +112,10 @@ hr {
   right: auto;
   padding: 13px 45px 15px 0;
   direction: ltr;
+}
+.errors {
+  color: red;
+  font-size: 14px;
 }
 ul.rating li {
   display: inline;

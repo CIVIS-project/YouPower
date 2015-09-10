@@ -312,6 +312,12 @@ var getUA = function(user, actionId) {
     {};
 };
 
+function isValidDate(d) { 
+  if ( Object.prototype.toString.call(d) !== "[object Date]" )
+    return false;
+  return !isNaN(d.getTime());
+}
+
 exports.setActionState = function(user, actionId, state, postponed, cb) {
   Action.get(actionId, null, function(err, actionResult) {
     if (err) {
@@ -338,7 +344,8 @@ exports.setActionState = function(user, actionId, state, postponed, cb) {
 
     // state-specific logic
     if (state === 'pending') {
-      if (!postponed || !_.isDate(postponed)) {
+      postponed = new Date(postponed);
+      if (!isValidDate(postponed)) {
         return cb('please provide a valid date in "postponed" field');
       }
       userAction.postponed = postponed;

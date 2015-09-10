@@ -15,10 +15,31 @@ var ActionSchema = new Schema({
     required: true,
     unique: true
   },
-  tag: {
+  type: {
+    type: String,
+    enum: 'onetime routine common regular irregular'.split(' '),
+    default: 'onetime'
+  },
+  // category:{
+      //TODO 
+  // },
+  season: {
+    type: String,
+    enum: 'spring autumn winter summer'.split(' ')
+  },
+  tag: { //old one, shall be deleted later. not deleted now - need to check first where it is used
     type: String,
     enum: 'daily onetime high-effort repeating'.split(' '),
     default: 'daily'
+  },
+  tags: {
+    type: [String]
+  },
+  locationIn: {
+    type: [String]
+  },
+  locationNotIn: {
+    type: [String]
   },
   activation: {
     configurable: {
@@ -48,7 +69,7 @@ var ActionSchema = new Schema({
     type: Schema.Types.Mixed,
     default: {}
   },
-  date: {
+  date: {  //date created
     type: Date,
     required: true
   },
@@ -93,6 +114,10 @@ exports.create = function(action, cb) {
   Action.create({
     name: action.name,
     tag: action.tag,
+    tags: action.tags,
+    locationIn: action.locationIn,
+    type: action.type, 
+    locationNotIn: action.locationNotIn,
     activation: action.activation,
     description: action.description,
     ratings: action.ratings || {},
@@ -262,6 +287,7 @@ exports.getSuggested = function(userActions, cb) {
       {_id: {$nin: _.keys(userActions.done)}},
       {_id: {$nin: _.keys(userActions.declined)}},
       {_id: {$nin: _.keys(userActions.na)}},
+      {_id: {$nin: _.keys(userActions.pending)}},
       {_id: {$nin: _.keys(userActions.inProgress)}}
     ]
   })

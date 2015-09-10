@@ -128,11 +128,11 @@ function ActionsCtrl($scope, $state, $ionicPopup, Actions, User) {
 	};
 
 
-	$scope.setSuggestedActionStateWithPreload = function(actionId, actionState){
+	$scope.setSuggestedActionStateWithPreload = function(actionId, actionState, date){
 
 		$scope.lastActionUsed = true; 
 
-		User.actionState({actionId: actionId}, {state: actionState}).$promise.then(function(data){
+		User.actionState({actionId: actionId}, {state: actionState, postponed: date}).$promise.then(function(data){
 
 			console.log(data); 
 			$scope.currentUser.actions = data; 

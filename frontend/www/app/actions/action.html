@@ -6,7 +6,7 @@
 		<i class="icon ion-android-arrow-forward energized"></i>
 		{{action.name}}
 	</div>
-	<div class="item item-body">
+	<div class="item item-body item-text-wrap">
 
 		<ng-include src="'app/actions/actionDescription.html'"></ng-include>
 
@@ -14,19 +14,23 @@
 
 
 		<div>
-			<a class="item item-icon-left" ng-click="chooseSuggestedAction('alreadyDoing')">
+			<a class="item item-icon-left" ng-click="chooseSuggestedAction('alreadyDoing')" ng-if="actions[action._id].type != 'regular' && actions[action._id].type != 'irregular'">
 				<i class="icon ion-android-done positive"></i>
-				I already do this.
+				I already do this<span ng-if="actions[action._id].type!='onetime'"> consistently</span>.
 			</a>
+			<a class="item item-icon-left" ng-click="inputDays()" ng-if="actions[action._id].type == 'regular' || actions[action._id].type == 'irregular'">
+				<i class="icon ion-more balanced"></i>
+				Remind me in ____ days</span>. 
+			</a> 
 			<a class="item item-icon-left" ng-click="chooseSuggestedAction('inProgress')">
 				<i class="icon ion-leaf balanced"></i>
-				I want to do this.
+				I want to do this<span ng-if="actions[action._id].type=='common'"> more consistently</span>.
 			</a>
 			<a class="item item-icon-left" ng-click="chooseSuggestedAction('declined')">
 				<i class="icon ion-android-close assertive"></i>
 				I don't want to do this.
 			</a>
-			<a class="item item-icon-left" ng-click="chooseSuggestedAction('na')">
+			<a class="item item-icon-left" ng-click="chooseSuggestedAction('na')" ng-if="actions[action._id].type != 'common'">
 				<i class="icon ion-android-remove energized"></i>
 				This doesn't apply to me.
 			</a>

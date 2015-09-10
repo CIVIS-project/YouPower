@@ -19,6 +19,9 @@ function ActionsListCtrl($scope, $state, $stateParams, Actions) {
     if ($stateParams.type == 'done') {
       return $scope.currentUser.actions.done;
     }
+    if ($stateParams.type == 'pending') {
+      return $scope.currentUser.actions.pending;
+    }
   }
 
   //post action comment (under action details)

@@ -41,6 +41,7 @@ function AppCtrl($scope, $state, $ionicHistory, User,Actions) {
 		$scope.loadCommentsOfActions($scope.currentUser.actions.done);
 
 		$scope.loadActionDetails($scope.currentUser.actions.inProgress); 
+		$scope.loadActionDetails($scope.currentUser.actions.pending); 
 
 		console.log("user data");
 		console.log($scope.currentUser); 

@@ -12,15 +12,15 @@
   </a>
 </div>
 
-<div class="list card" > <!-- ng-if="actionsPending.length > 0" -->
+<div class="list card" ng-if="_.size(currentUser.actions.pending) > 0"> 
   <div class="item item-divider">Pending Actions ({{_.size(currentUser.actions.pending)}})</div>
-  <a class="item item-icon-left item-icon-right" ng-repeat="action in currentUser.actions.pending" ng-href="#/app/actions/Pending/{{$index}}">
+  <a class="item item-icon-left item-icon-right" ng-repeat="action in currentUser.actions.pending" ng-href="#/app/actions/pending/{{$index}}">
     <!-- ng-repeat="(idx, action) in actions" > -->
-    <span class="balanced" >
-      <b>{{action.points}}</b>
+    <span class="leafs balanced" >
+      {{getActionPoints(action)}}
     </span>
     <i class="icon ion-leaf balanced"></i>
-    {{action.title}}
+    {{action.name}}
     <i class="icon ion-chevron-right icon-accessory"></i>
   </a>
 </div>
