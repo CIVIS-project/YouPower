@@ -1,0 +1,97 @@
+<ion-view view-title="My Cooperative">
+  <ion-content>
+    <div class="list">
+      <div class="item item-divider">Brf Solen</div>
+      <div class="item item-body">
+        <div class="row">
+          <div class="col">
+            <i class="icon ion-home"></i>
+            91 kWh/m2
+          </div>
+          <div class="col">
+            <span class="badge badge-energized">2</span>
+            Energy actions
+          </div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="button-bar">
+          <a class="button" ng-class="{active:period=='yearly'}" ng-click="toggleYear()">Yearly</a>
+          <a class="button" ng-class="{active:period=='monthly'}" ng-click="toggleYear()">Monthly</a>
+        </div>
+        <div class="button-bar padding-top padding-bottom">
+          <a class="button" ng-class="{active:isActive('heating')}" ng-click="toggleType('heating')">Heating</a>
+          <a class="button" ng-class="{active:isActive('hotWater')}" ng-click="toggleType('hotWater')">Hot water</a>
+          <a class="button" ng-class="{active:isActive('electricity')}" ng-click="toggleType('electricity')">Electricity</a>
+        </div>
+        <div>
+        <a class="button" href="#/tab/cooperative/setComparison">Compare</a>
+          <span ng-show="comparisons.current != comparisons.all[0]">
+            to {{comparisons.current.name}}
+          </span>
+        </div>
+        <div class="padding-top">
+          <h2>Energy use (MWh)</h2>
+          <table>
+            <tr>
+              <td class="padding-horizontal padding-top text-right">
+                max:
+              </td class="padding-horizontal">
+              <td>
+                <b>82</b> (Oct 2014)
+              </td>
+              <td class="padding-horizontal">
+                <b>94</b> (Dec 2014)
+              </td>
+            </tr>
+            <tr>
+              <td class="padding-horizontal text-right">
+                min:
+              </td class="padding-horizontal">
+              <td>
+                <b>41</b> (Jul 2014)
+              </td>
+              <td class="padding-horizontal">
+                <b>41</b> (Jul 2014)
+              </td>
+            </tr>
+            <tr>
+              <td class="padding-horizontal padding-bottom text-right">
+                average:
+              </td class="padding-horizontal">
+              <td>
+                <b>69</b>
+              </td>
+              <td class="padding-horizontal">
+                <b>76</b>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+      <highchart id="chart1" config="chartConfig"></highchart>
+      </div>
+      <a class="item" ng-click="showExtra = !showExtra">
+        <span class="badge badge-energized">2</span>
+        <h2>
+          Energy information to members
+        </h2>
+        <p>
+          2014-11-24
+        </p>
+        <p ng-show="showExtra">
+          Lowered the main thermostat with one degree
+        </p>
+      </a>
+      <div class="item">
+        <span class="badge badge-energized">1</span>
+        <h2>
+          Indoor temperature adjustment
+        </h2>
+        <p>
+          2014-11-24
+        </p>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>

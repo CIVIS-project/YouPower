@@ -5,19 +5,26 @@
 	<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
 	<title></title>
 
-	<link href="css/ionic.app.css" rel="stylesheet">
+  <link href="css/ionic.app.css" rel="stylesheet">
 
-	<!-- ionic/angularjs js -->
-	<script src="lib/ionic/js/ionic.bundle.js"></script>
+  <!-- jQuery required by highcharts -->
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 
-	<!-- cordova script (this will be a 404 during development) -->
-	<script src="cordova.js"></script>
+  <!-- ionic/angularjs js -->
+  <script src="lib/ionic/js/ionic.bundle.js"></script>
 
-	<script src="lib/angular-translate/angular-translate.js"></script>
-	<script src="lib/angular-resource/angular-resource.js"></script>
-	<script src="lib/firebase/firebase.js"></script>
-	<script src="lib/angularfire/dist/angularfire.js"></script>
-	<script src="lib/underscore/underscore.js"></script>
+  <!-- highcharts -->
+  <script src="http://code.highcharts.com/highcharts.js"></script>
+  <script src="lib/highcharts-ng/dist/highcharts-ng.js"></script>
+
+  <!-- cordova script (this will be a 404 during development) -->
+  <script src="cordova.js"></script>
+
+  <script src="lib/angular-translate/angular-translate.js"></script>
+  <script src="lib/angular-resource/angular-resource.js"></script>
+  <script src="lib/firebase/firebase.js"></script>
+  <script src="lib/angularfire/dist/angularfire.js"></script>
+  <script src="lib/underscore/underscore.js"></script>
 
 
 	<!-- your app's js -->
@@ -29,10 +36,12 @@
 	<script src="app/actions/formsCtrl.js"></script>
 	<script src="app/app/AppCtrl.js"></script>
 	<script src="app/communities/communitiesCtrl.js"></script>
+	<script src="app/cooperative/cooperativeCtrl.js"></script>
 	<script src="app/settings/settingsCtrl.js"></script>
 	<script src="app/shared/actions.js"></script>
 	<script src="app/shared/authService.js"></script>
 	<script src="app/shared/config.js"></script>
+	<script src="app/shared/energimolnetData.js"></script>
 	<script src="app/shared/personalProfile-service.js"></script>
 	<script src="app/shared/rating.js"></script>
 	<script src="app/shared/translations.js"></script>

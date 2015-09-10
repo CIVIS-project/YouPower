@@ -14,6 +14,7 @@ angular.module('civis.youpower', [
   'civis.youpower.main',
   'civis.youpower.actions',
   'civis.youpower.communities',
+  'civis.youpower.cooperatives',
   'civis.youpower.settings',
   'civis.youpower.welcome',
   'civis.youpower.services',
@@ -97,7 +98,7 @@ angular.module('civis.youpower', [
     views: {
       'tab-actions': {
         templateUrl: 'app/actions/index.html',
-        controller: 'ActionCtrl' 
+        controller: 'ActionCtrl'
       }
     }
   })
@@ -195,11 +196,14 @@ angular.module('civis.youpower', [
       }
     })
 
-.state('main.brf', {
-  url: '/brf',
+/* Cooperative states */
+
+.state('main.cooperative', {
+  url: '/cooperative',
   views: {
     'menuContent': {
-      templateUrl: 'app/brf/index.html',
+      templateUrl: 'app/cooperative/index.html',
+      controller: 'CooperativeCtrl'
     }
   }
 })

@@ -7,8 +7,9 @@
     "angular-resource": "~1.4.3"
   },
   "dependencies": {
-    "firebase": "~2.2.9",
     "angularfire": "~1.1.2",
+    "firebase": "~2.2.9",
+    "highcharts-ng": "~0.0.10",
     "underscore": "~1.8.3"
   }
 }
