@@ -79,8 +79,7 @@ function ActionCtrl($scope, $stateParams, $ionicPopup, $state) {
       $scope.loadCommentsByActionId($scope.action._id); 
     }
 
-    //todo: need to be conditional 
-    $state.go('main.actions.yours');
+    $scope.gotoYourActions();
 
   };
 

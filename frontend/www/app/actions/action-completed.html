@@ -39,8 +39,8 @@
   </div>
 
   <div class="button-bar">
-    <a class="button button-dark" ng-click="goBack()">Cancel</a>
-    <a class="button button-dark" ng-click="completed()">Done</a>
+    <button class="button button-dark" ng-click="goBack()"><b>Cancel</b></button>
+    <button class="button button-dark" ng-click="completed()"><b>Done</b></button>
   </div>
   <!-- 
   <a style="width:50%" class="button button-balanced" remove-from="action.feedback" ng-click="remove(feedback);goBack()">Cancel</a><a class="button button-balanced" style="width:50%" remove-from="user.actionsActive" from="user.actionsActive act" where="act.id=action.id" insert-into="user.actionsDone" loaded="_act={id:action.id, dateStarted:act.date, dateCompleted:Date.now()}" data-click="setPoints(user.points + action.points + (feedback.effort > 0 ? bonus : 0)); remove(act); insert(_act); completed(user)"> Done </a> -->

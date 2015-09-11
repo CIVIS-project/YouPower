@@ -16,7 +16,6 @@ function AppCtrl($scope, $state, $ionicHistory, User,Actions) {
 	$scope.commentPoints = 1; 
 	$scope.feedbackPoints = 1; 
 
-
 	/*
 	load the data of the user ($scope.currentUser)
 	*/
@@ -42,6 +41,7 @@ function AppCtrl($scope, $state, $ionicHistory, User,Actions) {
 
 		$scope.loadActionDetails($scope.currentUser.actions.inProgress); 
 		$scope.loadActionDetails($scope.currentUser.actions.pending); 
+		$scope.loadActionDetails($scope.currentUser.actions.done); 
 
 		console.log("user data");
 		console.log($scope.currentUser); 

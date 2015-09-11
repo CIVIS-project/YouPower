@@ -13,10 +13,10 @@ function ActionsListCtrl($scope, $state, $stateParams, Actions) {
 
   $scope.actionsByType = function(){
 
-    if ($stateParams.type == 'active') {
+    if ($stateParams.type == 'current') {
       return $scope.currentUser.actions.inProgress;
     }
-    if ($stateParams.type == 'done') {
+    if ($stateParams.type == 'completed') {
       return $scope.currentUser.actions.done;
     }
     if ($stateParams.type == 'pending') {
@@ -94,6 +94,13 @@ function ActionsListCtrl($scope, $state, $stateParams, Actions) {
           comment.numLikes--;
       });
     }
+  }
+
+
+  $scope.retakeAction = function(action){
+    //
+    $scope.postActionState(action._id, "inProgress");
+    $scope.gotoYourActions();
   }
 
   /*  No change of the remote/local action list now. The list is changed after the feedback form. 

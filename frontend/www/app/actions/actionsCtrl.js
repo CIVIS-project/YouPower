@@ -36,8 +36,8 @@ function ActionsCtrl($scope, $state, $ionicPopup, Actions, User) {
 		var title = $scope.salut();
 
 		var alertPopup = $ionicPopup.confirm({
-			title: title, 
-			template: "You've gone through all the actions in our database. Would you like to rehearse the actions?",
+			title: "<span class='text-medium-large'>" + title + "</span>", 
+			template: "<span class='text-medium'>You've gone through all the actions in our database. Would you like to rehearse the actions?</span>",
 			okText: "Yes",
 			cancelText: "Not now",
 			okType: "button-balanced"
@@ -59,9 +59,9 @@ function ActionsCtrl($scope, $state, $ionicPopup, Actions, User) {
 		var title = $scope.salut();
 
 		var alertPopup = $ionicPopup.confirm({
-			title: title,
+			title: "<span class='text-medium-large'>" + title + "</span>", 
 			scope: $scope, 
-			template: "You already have {{numberOfCurrentActions}} actions in progress. Are you sure you'd like to add more?",
+			template: "<span class='text-medium'>You already have {{numberOfCurrentActions}} actions in progress. Are you sure you'd like to add more?</span>",
 			okText: "Not now",
 			cancelText: "Add more",
 			okType: "button-balanced"
@@ -82,9 +82,9 @@ function ActionsCtrl($scope, $state, $ionicPopup, Actions, User) {
 		var title = $scope.salut();
 
 		var alertPopup = $ionicPopup.alert({
-			title: title,
+			title: "<span class='text-medium-large'>" + title + "</span>", 
 			scope: $scope, 
-			template: "You already have {{numberOfCurrentActions}} actions in progress. You can add more actions after some of those are completed. Keep on. You are doing great!",
+			template: "<span class='text-medium'>You already have {{numberOfCurrentActions}} actions in progress. You can add more actions after some of those are completed. Keep on. You are doing great!</span>",
 			//okText: "Yes",
 			okType: "button-balanced"
 		});
@@ -152,16 +152,15 @@ function ActionsCtrl($scope, $state, $ionicPopup, Actions, User) {
 
 	};
 
-	$scope.postActionState = function(actionId, actionState){
+	$scope.postActionState = function(actionId, actionState, date){
 
-		User.actionState({actionId: actionId}, {state: actionState}).$promise.then(function(data){
+		User.actionState({actionId: actionId}, {state: actionState, postponed: date}).$promise.then(function(data){
 
 			console.log(data); 
 			$scope.currentUser.actions = data; 
 
 			$scope.numberOfCurrentActions = _.size($scope.currentUser.actions.inProgress); 
   		});
-
 	};
 }
 

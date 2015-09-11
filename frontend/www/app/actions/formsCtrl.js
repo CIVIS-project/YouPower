@@ -40,9 +40,9 @@ function FormsCtrl($scope, $timeout, $stateParams, $ionicPopup, User, Actions) {
 		var text = completed ? "Would you like to add another action?" : "We are sorry that action didn't suit you well. Would you like to try another one?";
 
 		var alertPopup = $ionicPopup.confirm({
-			title: title,
+			title: "<span class='text-medium-large'>" + title + "</span>",
 			scope: $scope, 
-			template: "<span ng-if='hasFeedback'>Many thanks for your feedback! </span><span ng-if='points>0'>You got {{points}} point{{points>1?'s':''}}. </span>" + text, 
+			template: "<span class='text-medium'><span ng-if='hasFeedback'>Many thanks for your feedback! </span><span ng-if='points>0'>You got {{points}} point{{points>1?'s':''}}. </span>" + text + "</span>", 
 			okText: "Yes",
 			cancelText: "Not now",
 			okType: "button-balanced"
@@ -59,13 +59,13 @@ function FormsCtrl($scope, $timeout, $stateParams, $ionicPopup, User, Actions) {
 
 	$scope.askFeedback = function(completed){
 
-		var title = 'Your Feedback Form is not Completed';
+		var title = "<span class='text-medium-large'>Your Feedback Form is not Completed</span>";
 		var temp = completed ? "the action? </br>We'd love to hear from you." : "what went wrong? </br>We'd love to know how to improve."; 
 
 		var alertPopup = $ionicPopup.confirm({
 			title: title,
 			scope: $scope, 
-			template: "Would you like to give us some feedback on "+ temp,
+			template: "<span class='text-medium'>Would you like to give us some feedback on "+ temp + "</span>",
 			okText: "Yes",
 			cancelText: "Let it be",
 			okType: "button-balanced"
