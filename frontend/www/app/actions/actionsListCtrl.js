@@ -9,7 +9,7 @@ function ActionsListCtrl($scope, $state, $stateParams, Actions) {
 
   $scope.comment = {text: '', show: false}
 
-  $scope.actionsType = $stateParams.type;
+  $scope.actionsType = $stateParams.type; 
 
   $scope.actionsByType = function(){
 

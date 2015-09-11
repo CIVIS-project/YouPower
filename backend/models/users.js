@@ -108,7 +108,7 @@ exports.getProfile = function(id, cb) {
 
     _.each(user.actions.done, function(action) {
       // leaves for actions: impact + effort
-      totalLeaves += action.impact + action.effort;
+      totalLeaves += (action.impact + action.effort)*(action.alreadyDoingDate.length + action.doneDate.length);
     });
 
     // leaves for feedback: 1 leaf / feedback
@@ -326,6 +326,18 @@ exports.setActionState = function(user, actionId, state, postponed, cb) {
 
     // get old UA, if any
     var userAction = getUA(user, actionId);
+    if (_.isEmpty(userAction)){
+      console.log("emppty");
+      userAction.postponedDate = [];
+      userAction.acceptedDate = [];
+      userAction.startedDate = [];
+      userAction.alreadyDoingDate = [];
+      userAction.doneDate = [];
+      userAction.canceledDate = [];
+      userAction.declinedDate = [];
+      userAction.naDate = []; 
+    }
+
 
     // update the UA with new data
     userAction._id = actionId;
@@ -342,32 +354,37 @@ exports.setActionState = function(user, actionId, state, postponed, cb) {
     delete(user.actions.declined[actionId]);
     delete(user.actions.na[actionId]);
 
+    var today = new Date(); 
+    var oriState = state; 
+
     // state-specific logic
     if (state === 'pending') {
       postponed = new Date(postponed);
       if (!isValidDate(postponed)) {
         return cb('please provide a valid date in "postponed" field');
       }
-      userAction.postponed = postponed;
+      userAction.postponedDate.push(postponed);
+      userAction.acceptedDate.push(today);
     } else if (state === 'inProgress') {
-      userAction.startedDate = new Date();
+      userAction.startedDate.push(today);
     } else if (state === 'alreadyDoing') {
-      userAction.doneDate = new Date();
-      userAction.alreadyDoing = true;
+      userAction.alreadyDoingDate.push(today);
       state = 'done';
     } else if (state === 'done') {
-      userAction.doneDate = new Date();
+      userAction.doneDate.push(today);
     } else if (state === 'canceled') {
-      userAction.wasCanceled = true;
-      userAction.declineDate = new Date();
+      userAction.canceledDate.push(today);
       state = 'declined';
     } else if (state === 'declined') {
-      userAction.declineDate = new Date();
+      userAction.declinedDate.push(today);
     } else if (state === 'na') {
-      userAction.naDate = new Date();
+      userAction.naDate.push(today);
     } else {
       return cb('invalid value in "state" field');
     }
+
+    userAction.latestDate = today;
+    userAction.latestState = oriState;
 
     user.actions[state][actionId] = userAction;
 

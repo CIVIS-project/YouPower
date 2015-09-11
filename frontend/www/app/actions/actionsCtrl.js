@@ -9,6 +9,8 @@ function ActionsCtrl($scope, $state, $ionicPopup, Actions, User) {
 	$scope.preferredNumberOfActions = 3; 
 	$scope.maxNumberOfActions = 10; 
 
+	$scope.routineActionDuration = 3; //weeks
+
 	// get the suggested actions from the backend 
 	$scope.loadSuggestedActions = function(){
 
