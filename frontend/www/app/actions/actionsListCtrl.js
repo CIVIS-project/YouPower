@@ -3,7 +3,7 @@ angular.module('civis.youpower.actions').controller('ActionsListCtrl', ActionsLi
 
 /* The controller used for sliding slider over various action lists.
  ----------------------------------------------*/
-function ActionsListCtrl($scope, $state, $stateParams, $ionicPopup, Actions) {
+function ActionsListCtrl($scope, $state, $stateParams, $filter, $ionicPopup, Actions) {
 
   $scope.slideIdx = $stateParams.index ? $stateParams.index : 0;
 
@@ -13,14 +13,16 @@ function ActionsListCtrl($scope, $state, $stateParams, $ionicPopup, Actions) {
 
   $scope.actionsByType = function(){
 
+    var orderBy = $filter('orderBy'); 
+
     if ($stateParams.type == 'current') {
-      return $scope.currentUser.actions.inProgress;
+      return $filter('orderBy')(_.toArray($scope.currentUser.actions.inProgress),'-startedDate[startedDate.length-1]'); 
+    } 
+    if ($stateParams.type == 'pending') {
+      return $filter('orderBy')(_.toArray($scope.currentUser.actions.pending), 'postponedDate[postponedDate.length-1]');
     }
     if ($stateParams.type == 'completed') {
-      return $scope.currentUser.actions.done;
-    }
-    if ($stateParams.type == 'pending') {
-      return $scope.currentUser.actions.pending;
+      return $filter('orderBy')(_.toArray($scope.currentUser.actions.done), '-latestDate');
     }
   }
 

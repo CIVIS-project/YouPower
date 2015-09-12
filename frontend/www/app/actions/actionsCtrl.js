@@ -11,8 +11,7 @@ function ActionsCtrl($scope, $state, $ionicPopup, Actions, User) {
 	$scope.maxNumberOfActions = 10; 
 
 	//for showing at UI since the lists can be quite long
-	$scope.maxNrOfPending = 5;
-	$scope.maxNrOfCompleted = 10;
+	$scope.maxNumberShow = { inProgress: 2, pending: 2, done:2 };
 
 	//how long a routine action can be deemed completed
 	$scope.routineActionDuration = 3; //+weeks
@@ -48,6 +47,18 @@ function ActionsCtrl($scope, $state, $ionicPopup, Actions, User) {
 	    console.log(date);
 
 	    return date; 
+	}
+
+	$scope.showMore = function(type){
+		$scope.maxNumberShow[type] += 2; 
+		if ($scope.maxNumberShow[type] > _.size($scope.currentUser.actions[type]))
+			$scope.maxNumberShow[type] = _.size($scope.currentUser.actions[type]);
+	}
+
+	$scope.showLess = function(type){
+		$scope.maxNumberShow[type]  -= 2;
+		if ($scope.maxNumberShow[type] < 0)
+			$scope.maxNumberShow[type] = 0;
 	}
 
 	$scope.askRehearse = function(){
