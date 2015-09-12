@@ -8,18 +8,18 @@ function ActionCtrl($scope, $stateParams, $ionicPopup, $state) {
      console.log($scope.$parent.idx + " " + $scope.action._id);
   }
 
-  $scope.input = {}; 
-
   $scope.changed = function(){
     console.log($scope.input.days);
   }
+
+  $scope.input = {}; 
 
   $scope.inputDays = function(){
 
     var alertPopup = $ionicPopup.show({
       title: "<span class='text-medium-large'>Set a Pending Action</span>",
       scope: $scope, 
-      template: "<form name='popup' class='text-medium text-center'>Remind me of this action in <div><input name='inputDays' type='number' min='1' max='1000' class='text-center' ng-model='input.days' placeholder='a number of'> days </div> <div class='errors' ng-show='!popup.inputDays.$valid'>Please give a number between 1 and 1000!</div></form>", 
+      template: "<form name='popup' class='text-medium text-center'>Remind me of this action in <div><input name='inputDays' type='number' min='1' max='1000' class='text-center' ng-model='input.days' placeholder='a number of'> days! </div> <div class='errors' ng-show='!popup.inputDays.$valid'>Please give a number between 1 and 1000!</div></form>", 
       buttons: [
         { text: 'Cancel' },
         { text: 'Save',
@@ -40,24 +40,9 @@ function ActionCtrl($scope, $stateParams, $ionicPopup, $state) {
     });
   }
 
-
-  $scope.addDays = function(days){
-
-    var date = new Date(); 
-
-    if (days && _.isNumber(days)){
-      date.setDate(date.getDate() + days);
-    }
-
-    console.log(date);
-
-    return date; 
-  }
-
-
   $scope.setPendingAction = function(pendingDays) {
     
-      console.log(pendingDays);
+      console.log("set pending "+pendingDays);
 
       $scope.chooseSuggestedAction('pending', $scope.addDays(pendingDays)); 
   }

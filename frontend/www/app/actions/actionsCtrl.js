@@ -6,12 +6,18 @@ angular.module('civis.youpower.actions').controller('ActionsCtrl', ActionsCtrl);
 -----------------------------------------------------------*/
 function ActionsCtrl($scope, $state, $ionicPopup, Actions, User) {
 
+	//for recommending (current) actions
 	$scope.preferredNumberOfActions = 3; 
 	$scope.maxNumberOfActions = 10; 
 
-	$scope.routineActionDuration = 3; //weeks
+	//for showing at UI since the lists can be quite long
+	$scope.maxNrOfPending = 5;
+	$scope.maxNrOfCompleted = 10;
 
-	// get the suggested actions from the backend 
+	//how long a routine action can be deemed completed
+	$scope.routineActionDuration = 3; //+weeks
+
+	//get the suggested actions from the backend 
 	$scope.loadSuggestedActions = function(){
 
 		$scope.idx = -1;
@@ -30,6 +36,19 @@ function ActionsCtrl($scope, $state, $ionicPopup, Actions, User) {
 	};
 
 	$scope.loadSuggestedActions(); 
+
+	$scope.addDays = function(days){
+
+	    var date = new Date(); 
+
+	    if (days && _.isNumber(days)){
+	      date.setDate(date.getDate() + days);
+	    }
+
+	    console.log(date);
+
+	    return date; 
+	}
 
 	$scope.askRehearse = function(){
 
@@ -162,5 +181,6 @@ function ActionsCtrl($scope, $state, $ionicPopup, Actions, User) {
 			$scope.numberOfCurrentActions = _.size($scope.currentUser.actions.inProgress); 
   		});
 	};
+
 }
 

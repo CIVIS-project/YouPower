@@ -17,7 +17,7 @@
 </div>
 
 <div class="list card" ng-if="_.size(currentUser.actions.pending) > 0"> 
-  <div class="item item-divider">Pending Actions ({{_.size(currentUser.actions.pending)}})</div>
+  <div class="item item-divider">Pending ({{_.size(currentUser.actions.pending)}})</div>
   <a class="item item-icon-left item-icon-right" ng-repeat="action in currentUser.actions.pending" ng-href="#/app/actions/pending/{{$index}}">
     <!-- ng-repeat="(idx, action) in actions" > -->
     <span class="leafs balanced" >
@@ -30,7 +30,7 @@
 </div>
 
 <div class="list card" ng-if="_.size(currentUser.actions.done) > 0">
-  <div class="item item-divider">Completed Actions ({{_.size(currentUser.actions.done)}})</div>
+  <div class="item item-divider">Recently Completed ({{_.size(currentUser.actions.done)}})</div>
   <a class="item item-icon-left item-icon-right" ng-repeat="action in currentUser.actions.done" ng-href="#/app/actions/completed/{{$index}}">
     <!-- ng-repeat="(idx, action) in actions" > -->
     <span class="leafs balanced" >

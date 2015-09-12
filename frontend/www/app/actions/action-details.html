@@ -23,10 +23,14 @@
   </div>
 </div>
 
+<button class="button button-full icon-left button-dark" ng-if="actionsType == 'pending'" ng-click="takeActionNow(action);">
+  <i class="icon ion-android-add"></i>
+  <b>Take this Action Now</b>
+</button>
 
 <button class="button button-full icon-left button-dark" ng-if="actionsType == 'completed'" ng-click="retakeAction(action);">
-<i class="icon ion-android-add"></i>
- <b>Retake this Action</b>
+  <i class="icon ion-android-add"></i>
+  <b>Retake this Action</b>
 </button>
 
 <div class="list card" ng-if="actionsType == 'current'">
@@ -39,6 +43,10 @@
    <i class="icon ion-android-done positive"></i>
    I have done this<i ng-if="actions[action._id].type=='routine' || actions[action._id].type=='common'"> consistently for {{routineActionDuration}}+ weeks</i>.
  </a>
+ <a class="item item-icon-left item-text-wrap" ng-click="inputDaysAndReschedule(action)">
+  <i class="icon ion-more balanced"></i>
+  I want to postpone this action. 
+</a>
  <a class="item item-icon-left item-text-wrap" ng-click="actionAbandoned(action)">
   <i class="icon ion-android-close energized"></i>
   I don't want to do this any more. 

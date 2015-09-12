@@ -316,7 +316,15 @@ function isValidDate(d) {
   if ( Object.prototype.toString.call(d) !== "[object Date]" )
     return false;
   return !isNaN(d.getTime());
-}
+};
+
+Date.prototype.isSameDateAs = function(aDate) {
+  return (
+    this.getFullYear() === aDate.getFullYear() &&
+    this.getMonth() === aDate.getMonth() &&
+    this.getDate() === aDate.getDate()
+  );
+};
 
 exports.setActionState = function(user, actionId, state, postponed, cb) {
   Action.get(actionId, null, function(err, actionResult) {
@@ -327,7 +335,6 @@ exports.setActionState = function(user, actionId, state, postponed, cb) {
     // get old UA, if any
     var userAction = getUA(user, actionId);
     if (_.isEmpty(userAction)){
-      console.log("emppty");
       userAction.postponedDate = [];
       userAction.acceptedDate = [];
       userAction.startedDate = [];
@@ -355,7 +362,7 @@ exports.setActionState = function(user, actionId, state, postponed, cb) {
     delete(user.actions.na[actionId]);
 
     var today = new Date(); 
-    var oriState = state; 
+    var latestState = state; 
 
     // state-specific logic
     if (state === 'pending') {
@@ -363,8 +370,25 @@ exports.setActionState = function(user, actionId, state, postponed, cb) {
       if (!isValidDate(postponed)) {
         return cb('please provide a valid date in "postponed" field');
       }
+
+      //does the scheudling as usual 
       userAction.postponedDate.push(postponed);
       userAction.acceptedDate.push(today);
+
+      if (userAction.latestState === 'pending'){
+        //this is rescheduling 
+        if (postponed.isSameDateAs(today) || +postponed < +today){
+          //frontend wants to reschudle to today or a past date (time)
+          //activate the action (change state automatically to inProgess)
+          userAction.startedDate.push(today);
+          latestState = 'inProgress';
+          state = 'inProgress';
+        }else{
+          //reschduel to a future date (starting from tomorrow), the reschdueld date may still be earlier than the last scheduled date.
+        }
+      }else{
+        //this is change of state (the usual case), schedule to a future date
+      }
     } else if (state === 'inProgress') {
       userAction.startedDate.push(today);
     } else if (state === 'alreadyDoing') {
@@ -384,7 +408,7 @@ exports.setActionState = function(user, actionId, state, postponed, cb) {
     }
 
     userAction.latestDate = today;
-    userAction.latestState = oriState;
+    userAction.latestState = latestState;
 
     user.actions[state][actionId] = userAction;
 

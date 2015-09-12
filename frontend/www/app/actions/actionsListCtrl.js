@@ -3,7 +3,7 @@ angular.module('civis.youpower.actions').controller('ActionsListCtrl', ActionsLi
 
 /* The controller used for sliding slider over various action lists.
  ----------------------------------------------*/
-function ActionsListCtrl($scope, $state, $stateParams, Actions) {
+function ActionsListCtrl($scope, $state, $stateParams, $ionicPopup, Actions) {
 
   $scope.slideIdx = $stateParams.index ? $stateParams.index : 0;
 
@@ -96,21 +96,71 @@ function ActionsListCtrl($scope, $state, $stateParams, Actions) {
     }
   }
 
+  /*/
+    Reschedule the pending date from Future to Now
+    The original state is NOT validated! 
+  /*/
+  $scope.takeActionNow = function(action){
+    
+    $scope.postActionState(action._id, "pending", new Date());
+    $scope.gotoYourActions();
+  }
 
+  /*/
+    Change state from completed to inProgress
+    The original state is NOT validated!
+  /*/
   $scope.retakeAction = function(action){
-    //
+    
     $scope.postActionState(action._id, "inProgress");
     $scope.gotoYourActions();
   }
 
-  /*  No change of the remote/local action list now. The list is changed after the feedback form. 
+  /*/
+      No change of the remote/local action list now. The list is changed after the feedback form. 
       A user can still cancel (come back) after the click. 
-  */
+  /*/
   $scope.actionCompleted = function(action){
     $state.go('main.actions.completed', {id: action._id});
   }
   $scope.actionAbandoned = function(action){
     $state.go('main.actions.abandoned', {id: action._id});
+  }
+
+  $scope.input = {}; 
+
+  $scope.inputDaysAndReschedule = function(action){
+
+    var alertPopup = $ionicPopup.show({
+      title: "<span class='text-medium-large'>Postpone an Action</span>",
+      scope: $scope, 
+      template: "<form name='popup' class='text-medium text-center'>I don't want to do this now. Remind me of this action in <div><input name='inputDays' type='number' min='1' max='1000' class='text-center' ng-model='input.days' placeholder='a number of'> days! </div> <div class='errors' ng-show='!popup.inputDays.$valid'>Please give a number between 1 and 1000!</div></form>", 
+      buttons: [
+        { text: 'Cancel' },
+        { text: 'Save',
+          type: 'button-balanced',
+          onTap: function(e) {
+            if (!$scope.input.days) { 
+              //don't allow the user to close unless he enters a number
+              e.preventDefault();
+            } else {  return $scope.input.days; }
+          }
+        }
+      ]
+    });
+    alertPopup.then(function(res) {
+      if(res) {
+        $scope.reschduleAction(action, res); 
+      }
+    });
+  }
+
+  //reschedule an action 
+  $scope.reschduleAction = function(action, pendingDays) {
+    
+      console.log("reschedule");
+      $scope.postActionState(action._id, "pending", $scope.addDays(pendingDays));
+      $scope.gotoYourActions();
   }
 
 
