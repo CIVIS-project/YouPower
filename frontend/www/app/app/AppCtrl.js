@@ -10,6 +10,8 @@ function AppCtrl($scope, $state, $ionicHistory, User,Actions) {
 	$scope.userPictures = {}; 
 
 	$scope.comments = []; // save comments of actions 
+	$scope.nrToLoad = 20; 
+	$scope.moreComments = {}; 
 
 	$scope.actions = {}; // save action details
 
@@ -109,15 +111,21 @@ function AppCtrl($scope, $state, $ionicHistory, User,Actions) {
 		}
 	}
 
-
+	//initial load of comments, load 20 comments 
 	$scope.loadCommentsByActionId = function(actionId){
 
-		Actions.getComments({actionId: actionId}).$promise.then(function(data){
+		Actions.getComments({actionId: actionId, limit: $scope.nrToLoad, skip: 0}).$promise.then(function(data){
 
 			$scope.comments = $scope.comments.concat(data);
 
 			console.log("load comments");
 			console.log(data); 
+
+			if (data.length >= $scope.nrToLoad){
+		         $scope.setHasMoreComments(actionId);
+		      }else{
+		         $scope.setNoMoreComments(actionId);
+		      }
 
 			data.forEach(function(comment) {
 				//load user picture
@@ -125,6 +133,20 @@ function AppCtrl($scope, $state, $ionicHistory, User,Actions) {
 			});
 		});
 	}
+
+
+
+    $scope.setNoMoreComments = function(actionId){
+    	$scope.moreComments[actionId] = false; 
+    }
+    $scope.setHasMoreComments = function(actionId){
+    	$scope.moreComments[actionId] = true; 
+    }
+    $scope.hasMoreComments = function(actionId){
+    	if ($scope.moreComments[actionId]){
+    		return $scope.moreComments[actionId]; 
+    	}else return false; 
+    }
 
 
 	$scope.addFeedbackPoints = function(){

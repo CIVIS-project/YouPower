@@ -53,6 +53,11 @@
 </a>
 </div>
 
+<button class="button button-full button-dark icon-left" ng-click="gotoYourActions();">
+  <i class="icon ion-ios-arrow-back"></i>
+  <b>Back to Your Actions</b>
+</button>
+
 <div class="list card">
   <div class="item item-divider tabs tabs-secondary tabs-icon-left">
     <a class="tab-item" ng-click="likeAction(actions[action._id])">
@@ -61,7 +66,7 @@
     </a>
     <a class="tab-item" ng-click="comment.show=!comment.show">
       <i class="icon ion-chatbox"></i>
-      {{size = (comments | filter: {actionId: action._id}).length}} Comment{{size > 1 ? 's' : ''}}
+      {{size=actions[action._id].numComments}} Comment{{size > 1 ? 's' : ''}}
     </a>
     <a class="tab-item" href="#">
       <i class="icon ion-share"></i>
@@ -82,10 +87,8 @@
   </div>
 </div>
 
-<button class="button button-full button-dark icon-left" ng-click="gotoYourActions();">
-  <i class="icon ion-ios-arrow-back"></i>
-  <b>Back to Your Actions</b>
-</button>
+<ion-infinite-scroll ng-if="hasMoreComments(action._id)" on-infinite="loadMoreComments(action._id)" distance="0%">
+</ion-infinite-scroll>
 
 </ion-slide>
 </ion-slide-box>

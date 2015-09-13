@@ -28,6 +28,7 @@ angular.module('civis.youpower')
     },
     getComments : {
       method: 'GET',
+      params:{limit:10, skip:0},
       isArray: true,
       url: Config.host + '/api/action/:actionId/comments'
     },

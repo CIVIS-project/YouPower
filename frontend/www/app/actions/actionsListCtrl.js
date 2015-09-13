@@ -38,6 +38,8 @@ function ActionsListCtrl($scope, $state, $stateParams, $filter, $ionicPopup, Act
           $scope.comments.unshift(data);
 
           $scope.addCommentPoints();
+
+          $scope.actions[action._id].numComments++; 
     });
   }
 
@@ -50,6 +52,8 @@ function ActionsListCtrl($scope, $state, $stateParams, $filter, $ionicPopup, Act
           $scope.comments.splice($scope.comments.indexOf(comment), 1);
 
           $scope.deductCommentPoints();
+
+          $scope.actions[comment.actionId].numComments--; 
     });
   }
 
@@ -164,6 +168,43 @@ function ActionsListCtrl($scope, $state, $stateParams, $filter, $ionicPopup, Act
       $scope.postActionState(action._id, "pending", $scope.addDays(pendingDays));
       $scope.gotoYourActions();
   }
+
+  $scope.moreCommentCanBeLoaded = function(actionId) {
+
+    return $scope.hasMoreComments(actionId);
+
+  }
+
+  $scope.loadMoreComments = function(actionId) {
+
+    var size = ($filter('filter')($scope.comments, {actionId: actionId})).length;
+
+    console.log("size: " + $scope.comments.length + ":" + size); 
+
+    Actions.getComments({actionId: actionId, limit: $scope.nrToLoad, skip: size}).$promise.then(function(data){
+
+      $scope.comments = $scope.comments.concat(data);
+
+      if (data.length >= $scope.nrToLoad){
+         $scope.setHasMoreComments(actionId);
+      }else{
+         $scope.setNoMoreComments(actionId);
+      }
+
+      console.log("load comments");
+      console.log(data); 
+
+      data.forEach(function(comment) {
+        //load user picture
+          //console.log(comment);
+      });
+
+      $scope.$broadcast('scroll.infiniteScrollComplete');
+
+    });
+
+  };
+
 
 
 };
