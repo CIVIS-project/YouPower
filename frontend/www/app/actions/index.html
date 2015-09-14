@@ -14,8 +14,8 @@
     </span>{{action.name}}
     <i class="icon ion-chevron-right icon-accessory"></i>
   </a>
-  <div href="#" class="item item-divider text-right" ng-if="_.size(currentUser.actions.inProgress) >= maxNumberShow.inProgress">
-    <a ng-if="maxNumberShow.inProgress>0" class="button button-clear button-stable icon-left ion-chevron-up button-small" ng-click="showLess('inProgress')">Show me less</a>
+  <div class="text-right" ng-if="_.size(currentUser.actions.inProgress) >= maxNumberShow.inProgress">
+    <a ng-if="maxNumberShow.inProgress>sNr" class="button button-clear button-stable icon-left ion-chevron-up button-small" ng-click="showLess('inProgress')">Show me less</a>
     <a ng-if="maxNumberShow.inProgress<_.size(currentUser.actions.inProgress)" class="button button-clear button-stable icon-left ion-chevron-down button-small" ng-click="showMore('inProgress')"> Show me more</a>
   </div>
 </div>
@@ -31,8 +31,8 @@
     {{action.name}}
     <i class="icon ion-chevron-right icon-accessory"></i>
   </a>
-  <div href="#" class="item item-divider text-right" ng-if="_.size(currentUser.actions.pending) >= maxNumberShow.pending">
-    <a ng-if="maxNumberShow.pending>0" class="button button-clear button-stable icon-left ion-chevron-up button-small" ng-click="showLess('pending')">Show me less</a>
+  <div class="text-right" ng-if="_.size(currentUser.actions.pending) >= maxNumberShow.pending">
+    <a ng-if="maxNumberShow.pending>sNr" class="button button-clear button-stable icon-left ion-chevron-up button-small" ng-click="showLess('pending')">Show me less</a>
     <a ng-if="maxNumberShow.pending<_.size(currentUser.actions.pending)" class="button button-clear button-stable icon-left ion-chevron-down button-small" ng-click="showMore('pending')"> Show me more</a>
   </div>
 </div>
@@ -48,8 +48,8 @@
     {{action.name}}
     <i class="icon ion-chevron-right icon-accessory"></i>
   </a>
-  <div href="#" class="item item-divider text-right" ng-if="_.size(currentUser.actions.done) >= maxNumberShow.done">
-    <a ng-if="maxNumberShow.done>0" class="button button-clear button-stable icon-left ion-chevron-up button-small" ng-click="showLess('done')">Show me less</a>
+  <div class="text-right" ng-if="_.size(currentUser.actions.done) >= maxNumberShow.done">
+    <a ng-if="maxNumberShow.done>sNr" class="button button-clear button-stable icon-left ion-chevron-up button-small" ng-click="showLess('done')">Show me less</a>
     <a ng-if="maxNumberShow.done<_.size(currentUser.actions.done)" class="button button-clear button-stable icon-left ion-chevron-down button-small" ng-click="showMore('done')"> Show me more</a>
   </div>
 </div>

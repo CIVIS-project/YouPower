@@ -33,28 +33,53 @@ function FormsCtrl($scope, $timeout, $stateParams, $ionicPopup, User, Actions) {
 	// }
 
 
+	/*/
+		Confirm the points the user got. 
+		And if the user's inProgess is less than $scope.preferredNumberOfActions, ask the user whether he wants a new suggestion. 
+	/*/
 	$scope.showConfirm = function(completed){
 
 		var title = completed ? 'Action completed' : 'Action removed';
+		var text = "";
+		var alertPopup = {} ; 
 
-		var text = completed ? "Would you like to add another action?" : "We are sorry that action didn't suit you well. Would you like to try another one?";
+		console.log ("Size:" + _.size($scope.currentUser.actions.inProgress));
 
-		var alertPopup = $ionicPopup.confirm({
-			title: "<span class='text-medium-large'>" + title + "</span>",
-			scope: $scope, 
-			template: "<span class='text-medium'><span ng-if='hasFeedback'>Many thanks for your feedback! </span><span ng-if='points>0'>You got {{points}} point{{points>1?'s':''}}. </span>" + text + "</span>", 
-			okText: "Yes",
-			cancelText: "Not now",
-			okType: "button-balanced"
-		});
-		alertPopup.then(function(res) {
-			$scope.disableBack();
-			if(res) {
-				$scope.addActions();
-			}else {
+		if (_.size($scope.currentUser.actions.inProgress) <= $scope.preferredNumberOfActions) {
+
+			text = completed ? "Would you like to add another action?" : "We are sorry that this action didn't suit you well. Would you like to try another one?"; 
+
+			alertPopup = $ionicPopup.confirm({
+				title: "<span class='text-medium-large'>" + title + "</span>",
+				scope: $scope, 
+				template: "<span class='text-medium'><span ng-if='hasFeedback'>Many thanks for your feedback! </span><span ng-if='points>0'>You got {{points}} point{{points>1?'s':''}}. </span>" + text + "</span>", 
+				okText: "Yes",
+				cancelText: "Not now",
+				okType: "button-balanced"
+			});
+			alertPopup.then(function(res) {
+				$scope.disableBack();
+				console.log (res); 
+				if(res) {
+					$scope.addActions();
+				}else {
+					$scope.gotoYourActions();
+				}
+			});
+		} else {
+			text = completed ? "Congratulations!" : "We are sorry that this action didn't suit you well. Please keep on trying others."; 
+
+			alertPopup = $ionicPopup.alert({
+				title: "<span class='text-medium-large'>" + title + "</span>",
+				scope: $scope, 
+				template: "<span class='text-medium'><span ng-if='hasFeedback' class='text-medium'>Many thanks for your feedback! </span><span ng-if='points>0'>You got {{points}} point{{points>1?'s':''}}. </span>" + text + "</span>", 
+				okType: "button-dark"
+			});
+			alertPopup.then(function(res) {
+				console.log (res); 
 				$scope.gotoYourActions();
-			}
-		});
+			}); 
+		}
 	}
 
 	$scope.askFeedback = function(completed){
@@ -119,7 +144,6 @@ function FormsCtrl($scope, $timeout, $stateParams, $ionicPopup, User, Actions) {
 			$scope.askFeedback(true);
 		}else{
 			$scope.changeActionState('done');
-			//show popup 
 			$scope.showConfirm(true);
 		}
 	}
@@ -148,7 +172,6 @@ function FormsCtrl($scope, $timeout, $stateParams, $ionicPopup, User, Actions) {
 			});
 
 			$scope.changeActionState('canceled');
-			//show popup 
 			$scope.showConfirm(false);
 
 		}else{

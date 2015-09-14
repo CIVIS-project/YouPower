@@ -144,7 +144,7 @@ function ActionsListCtrl($scope, $state, $stateParams, $filter, $ionicPopup, Act
       buttons: [
         { text: 'Cancel' },
         { text: 'Save',
-          type: 'button-balanced',
+          type: 'button-dark',
           onTap: function(e) {
             if (!$scope.input.days) { 
               //don't allow the user to close unless he enters a number
@@ -163,8 +163,7 @@ function ActionsListCtrl($scope, $state, $stateParams, $filter, $ionicPopup, Act
 
   //reschedule an action 
   $scope.reschduleAction = function(action, pendingDays) {
-    
-      console.log("reschedule");
+      
       $scope.postActionState(action._id, "pending", $scope.addDays(pendingDays));
       $scope.gotoYourActions();
   }
@@ -183,7 +182,7 @@ function ActionsListCtrl($scope, $state, $stateParams, $filter, $ionicPopup, Act
 
     Actions.getComments({actionId: actionId, limit: $scope.nrToLoad, skip: size}).$promise.then(function(data){
 
-      $scope.comments = $scope.comments.concat(data);
+      $scope.addMoreComments(data);
 
       if (data.length >= $scope.nrToLoad){
          $scope.setHasMoreComments(actionId);

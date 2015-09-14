@@ -5,13 +5,9 @@ hierarchy as it will be loaded with abstract main state.
 Here we can do the general app stuff like getting the user's
 details (since this is after the user logs in).
 ----------------------------------------------*/
-function AppCtrl($scope, $state, $ionicHistory, User,Actions) { 
+function AppCtrl($scope, $state, $ionicHistory, $ionicViewSwitcher, User,Actions) { 
 
 	$scope.userPictures = {}; 
-
-	$scope.comments = []; // save comments of actions 
-	$scope.nrToLoad = 20; 
-	$scope.moreComments = {}; 
 
 	$scope.actions = {}; // save action details
 
@@ -25,6 +21,10 @@ function AppCtrl($scope, $state, $ionicHistory, User,Actions) {
 
 		$scope.currentUser = data;
 
+		//whether the user wants to rehearse the actions, inite the variable 
+		//this can be loaded from the backend TODO post the data to the backend
+		$scope.currentUser.toRehearse = { setByUser: false} ;
+
 		//get the user's picture
 		User.getPicture({userId: $scope.currentUser._id}).$promise.then(function(data){
 			
@@ -36,19 +36,47 @@ function AppCtrl($scope, $state, $ionicHistory, User,Actions) {
 			//console.log($scope.userPictures); 
 		});
 
-		//$scope.loadAllComments($scope.currentUser.actions); 
-		$scope.loadCommentsOfActions($scope.currentUser.actions.inProgress);
-		$scope.loadCommentsOfActions($scope.currentUser.actions.pending);
-		$scope.loadCommentsOfActions($scope.currentUser.actions.done);
-
 		$scope.loadActionDetails($scope.currentUser.actions.inProgress); 
 		$scope.loadActionDetails($scope.currentUser.actions.pending); 
 		$scope.loadActionDetails($scope.currentUser.actions.done); 
+
+		//comments are loaded later automatically at the action details view
 
 		console.log("user data");
 		console.log($scope.currentUser); 
 	});
 
+	$scope.toRehearseSelectAll = function() {
+		$scope.currentUser.toRehearse = { 
+			setByUser: true, 
+			declined: true, 
+			done: true, 
+			na: true
+		}; 
+	}
+
+	$scope.toRehearseDeselectAll = function() {
+		$scope.currentUser.toRehearse = { 
+			setByUser: true, 
+			declined: false, 
+			done: false, 
+			na: false
+		}; 
+	} 
+
+	$scope.isToRehearse = function() {
+		var a = $scope.currentUser.toRehearse; 
+		return a.setByUser && (a.declined || a.done || a.na); 
+	}
+
+	$scope.isNotToRehearse = function() {
+		var a = $scope.currentUser.toRehearse; 
+		return a.setByUser && !a.declined && !a.done && !a.na; 
+	}
+
+	$scope.isSetRehearse = function() {
+		return $scope.currentUser.toRehearse.setByUser; 
+	}
 
 
 	$scope.loadActionDetails = function(actions){
@@ -65,88 +93,30 @@ function AppCtrl($scope, $state, $ionicHistory, User,Actions) {
 		}
 	}
 
-	//update local list
+	
 	$scope.addActionById = function(actionId){
 
-		Actions.getActionById({id:actionId}).$promise.then(function(data){
-			$scope.actions[data._id] = data;
+		if (!$scope.actions[actionId]){
+			Actions.getActionById({id:actionId}).$promise.then(function(data){
+				
+				$scope.actions[data._id] = data;
 
-			console.log("action details");
-			console.log($scope.actions); 
-		});
+				console.log("action details");
+				console.log($scope.actions); 
+			});
+		}
 	}
 
 	//update local list 
 	$scope.removeActionById = function(actionId){
 
-		delete $scope.actions[actionId];
+		if ($scope.actions[actionId]){
 
-		console.log("delelte action details");
-		console.log($scope.actions); 
-	}
-
-
-	/*
-		load comments of all actions in the user's actions lists
-		actions: an object of a collection of objects of lists of actions
-	*/
-	$scope.loadAllComments = function(actions){
-
-		//actionType in {declined, done, inProgress, na, pending}
-		for (var actionType in actions) {
-			if (actions.hasOwnProperty(actionType)) {
-				$scope.loadCommentsOfActions(actions[actionType]);
-			}
+			delete $scope.actions[actionId];
+			console.log("delete action details");
+			console.log($scope.actions); 
 		}
 	}
-
-	/*
-		actions: an object of a collection of indivudual action objects 
-	*/
-	$scope.loadCommentsOfActions = function(actions){
-		for (var key in actions) {
-			if (actions.hasOwnProperty(key)) {
-				$scope.loadCommentsByActionId(actions[key]._id); 
-			}
-		}
-	}
-
-	//initial load of comments, load 20 comments 
-	$scope.loadCommentsByActionId = function(actionId){
-
-		Actions.getComments({actionId: actionId, limit: $scope.nrToLoad, skip: 0}).$promise.then(function(data){
-
-			$scope.comments = $scope.comments.concat(data);
-
-			console.log("load comments");
-			console.log(data); 
-
-			if (data.length >= $scope.nrToLoad){
-		         $scope.setHasMoreComments(actionId);
-		      }else{
-		         $scope.setNoMoreComments(actionId);
-		      }
-
-			data.forEach(function(comment) {
-				//load user picture
-			    //console.log(comment);
-			});
-		});
-	}
-
-
-
-    $scope.setNoMoreComments = function(actionId){
-    	$scope.moreComments[actionId] = false; 
-    }
-    $scope.setHasMoreComments = function(actionId){
-    	$scope.moreComments[actionId] = true; 
-    }
-    $scope.hasMoreComments = function(actionId){
-    	if ($scope.moreComments[actionId]){
-    		return $scope.moreComments[actionId]; 
-    	}else return false; 
-    }
 
 
 	$scope.addFeedbackPoints = function(){
@@ -179,6 +149,22 @@ function AppCtrl($scope, $state, $ionicHistory, User,Actions) {
 			disableBack: true
 		});
 		$state.go("main.actions.yours");
+	}
+
+	$scope.gotoSettings = function() {
+		// $ionicHistory.nextViewOptions({
+		// 	disableBack: true
+		// });
+		$ionicViewSwitcher.nextDirection('forward'); // forward, back, enter, exit, swap
+		$state.go("main.settings.index");
+	}
+
+	$scope.gotoYourSettings = function() {
+		// $ionicHistory.nextViewOptions({
+		// 	disableBack: true
+		// });
+		$ionicViewSwitcher.nextDirection('forward'); // forward, back, enter, exit, swap
+		$state.go("main.settings.personal");
 	}
 
 	$scope.disableBack = function() {

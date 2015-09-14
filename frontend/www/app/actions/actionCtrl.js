@@ -49,20 +49,16 @@ function ActionCtrl($scope, $stateParams, $ionicPopup, $state) {
 
   $scope.chooseSuggestedAction = function(actionState, date) {
 
-    $scope.setSuggestedActionStateWithPreload($scope.action._id, actionState, date); 
-
-    if (actionState == "declined" || actionState == "na") {
-
+    if (actionState === "declined" || actionState === "na") {
       $scope.removeActionById($scope.action._id);
-
     }else{
-
-      if (actionState == "alreadyDoing"){
+      //the points for alreadyDoing will only be added once for this action 
+      if (actionState === "alreadyDoing" && !$scope.action.alreadyDoingDate){
         $scope.addActionPoints($scope.action);
       }
-
-      $scope.loadCommentsByActionId($scope.action._id); 
     }
+
+    $scope.setSuggestedActionStateWithPreload($scope.action._id, actionState, date); 
 
     $scope.gotoYourActions();
 
