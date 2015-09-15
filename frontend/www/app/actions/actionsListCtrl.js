@@ -138,7 +138,7 @@ function ActionsListCtrl($scope, $state, $stateParams, $filter, $ionicPopup, Act
   $scope.inputDaysAndReschedule = function(action){
 
     var alertPopup = $ionicPopup.show({
-      title: "<span class='text-medium-large'>Postpone an Action</span>",
+      title: "<span class='text-medium-large'>Postpone Action</span>",
       scope: $scope, 
       template: "<form name='popup' class='text-medium text-center'>I don't want to do this now. Remind me of this action in <div><input name='inputDays' type='number' min='1' max='1000' class='text-center' ng-model='input.days' placeholder='a number of'> days! </div> <div class='errors' ng-show='!popup.inputDays.$valid'>Please give a number between 1 and 1000!</div></form>", 
       buttons: [
