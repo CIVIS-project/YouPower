@@ -1,7 +1,7 @@
 <ion-view view-title="My Cooperative">
   <ion-content>
     <div class="list">
-      <div class="item item-divider">Brf Solen</div>
+      <div class="item item-divider">{{cooperative.name}}</div>
       <div class="item item-body">
         <div class="row">
           <div class="col">
@@ -9,7 +9,7 @@
             91 kWh/m2
           </div>
           <div class="col">
-            <span class="badge badge-energized">2</span>
+            <span class="badge badge-energized">{{cooperative.actions.length}}</span>
             Energy actions
           </div>
         </div>
@@ -20,9 +20,8 @@
           <a class="button" ng-class="{active:period=='monthly'}" ng-click="toggleYear()">Monthly</a>
         </div>
         <div class="button-bar padding-top padding-bottom">
-          <a class="button" ng-class="{active:isActive('heating')}" ng-click="toggleType('heating')">Heating</a>
-          <a class="button" ng-class="{active:isActive('hotWater')}" ng-click="toggleType('hotWater')">Hot water</a>
-          <a class="button" ng-class="{active:isActive('electricity')}" ng-click="toggleType('electricity')">Electricity</a>
+          <a class="button" ng-class="{active:isActive('hh')}" ng-click="toggleType('hh')">Heating & Hot water</a>
+          <a class="button" ng-class="{active:isActive('el')}" ng-click="toggleType('el')">Electricity</a>
         </div>
         <div>
         <a class="button" href="#/tab/cooperative/setComparison">Compare</a>
@@ -71,26 +70,23 @@
 
       <highchart id="chart1" config="chartConfig"></highchart>
       </div>
-      <a class="item" ng-click="showExtra = !showExtra">
-        <span class="badge badge-energized">2</span>
+      <a ng-repeat="action in cooperative.actions" class="item" ng-click="action.showExtra = !showExtra">
+        <span class="badge badge-energized">{{cooperative.actions.length - $index}}</span>
         <h2>
-          Energy information to members
+          {{action.name}}
         </h2>
         <p>
-          2014-11-24
+          {{action.date | date:"yyyy-MM-dd"}}
         </p>
         <p ng-show="showExtra">
-          Lowered the main thermostat with one degree
+          {{action.description}}
         </p>
       </a>
-      <div class="item">
-        <span class="badge badge-energized">1</span>
-        <h2>
-          Indoor temperature adjustment
-        </h2>
-        <p>
-          2014-11-24
-        </p>
+      <div>
+        <input ng-model="action.name"/>
+        <input ng-model="action.description"/>
+        <input ng-model="action.date"/>
+        <a class="button" ng-click="addAction(action)">Add action</a>
       </div>
     </div>
   </ion-content>
