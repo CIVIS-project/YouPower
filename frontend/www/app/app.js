@@ -21,7 +21,7 @@ angular.module('civis.youpower', [
   'civis.youpower.translations',
   ])
 
-.run(function($ionicPlatform, $rootScope, $window, AuthService) {
+.run(function($ionicPlatform, $rootScope, $window, AuthService, $state) {
 
   $rootScope.scale = 5;
 
