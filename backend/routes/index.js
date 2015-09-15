@@ -12,5 +12,6 @@ router.use('/feedback', require('./feedback'));
 router.use('/auth', require('./auth'));
 router.use('/household', require('./household'));
 router.use('/community', require('./community'));
+router.use('/cooperative', require('./cooperative'));
 
 module.exports = router;
