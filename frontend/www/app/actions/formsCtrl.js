@@ -39,7 +39,7 @@ function FormsCtrl($scope, $timeout, $stateParams, $ionicPopup, User, Actions) {
 	/*/
 	$scope.showConfirm = function(completed){
 
-		var title = completed ? 'Action completed' : 'Action removed';
+		var title = completed ? 'Action Completed' : 'Action Removed';
 		var text = "";
 		var alertPopup = {} ; 
 
@@ -182,7 +182,7 @@ function FormsCtrl($scope, $timeout, $stateParams, $ionicPopup, User, Actions) {
 			template: "<span class='text-medium'>Congratulations <i class='ion-happy-outline'></i> " + pointsText + "Would you like to make a schdule to retake this action in the future?</span>", 
 			okText: "Yes",
 			cancelText: "Not now",
-			okType: "button-balanced"
+			okType: "button-dark"
 		});
 		alertPopup.then(function(res) { 
 			if(res) {
@@ -204,7 +204,7 @@ function FormsCtrl($scope, $timeout, $stateParams, $ionicPopup, User, Actions) {
 			template: "<span class='text-medium'>Would you like to give us some feedback on "+ temp + "</span>",
 			okText: "Yes",
 			cancelText: "Let it be",
-			okType: "button-balanced"
+			okType: "button-dark"
 		});
 		alertPopup.then(function(res) {
 			if(res) {

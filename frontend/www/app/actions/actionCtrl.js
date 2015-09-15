@@ -23,7 +23,7 @@ function ActionCtrl($scope, $stateParams, $ionicPopup, $state) {
       buttons: [
         { text: 'Cancel' },
         { text: 'Save',
-          type: 'button-balanced',
+          type: 'button-dark',
           onTap: function(e) {
             if (!$scope.input.days) {
               //don't allow the user to close unless he enters a number
