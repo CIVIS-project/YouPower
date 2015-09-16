@@ -21,9 +21,14 @@ function AppCtrl($scope, $state, $ionicHistory, $ionicViewSwitcher, User,Actions
 
 		$scope.currentUser = data;
 
+		if ($scope.currentUser.profile.dob){
+			$scope.currentUser.profile.dob = new Date($scope.currentUser.profile.dob);
+		}
+
 		//whether the user wants to rehearse the actions, inite the variable 
 		//this can be loaded from the backend TODO post the data to the backend
-		$scope.currentUser.toRehearse = { setByUser: false} ;
+		//$scope.currentUser.profile.toRehearse = { setByUser: false } ;
+		//$scope.currentUser.profile.language = 'English' ;
 
 		//get the user's picture
 		User.getPicture({userId: $scope.currentUser._id}).$promise.then(function(data){
@@ -47,7 +52,7 @@ function AppCtrl($scope, $state, $ionicHistory, $ionicViewSwitcher, User,Actions
 	});
 
 	$scope.toRehearseSelectAll = function() {
-		$scope.currentUser.toRehearse = { 
+		$scope.currentUser.profile.toRehearse = { 
 			setByUser: true, 
 			declined: true, 
 			done: true, 
@@ -56,7 +61,7 @@ function AppCtrl($scope, $state, $ionicHistory, $ionicViewSwitcher, User,Actions
 	}
 
 	$scope.toRehearseDeselectAll = function() {
-		$scope.currentUser.toRehearse = { 
+		$scope.currentUser.profile.toRehearse = { 
 			setByUser: true, 
 			declined: false, 
 			done: false, 
@@ -64,19 +69,24 @@ function AppCtrl($scope, $state, $ionicHistory, $ionicViewSwitcher, User,Actions
 		}; 
 	} 
 
+	$scope.toRehearseSet = function() {
+		$scope.currentUser.profile.toRehearse.setByUser = true; 
+	} 
+	$scope.isSetRehearse = function() {
+		return $scope.currentUser.profile.toRehearse.setByUser; 
+	}
+
 	$scope.isToRehearse = function() {
-		var a = $scope.currentUser.toRehearse; 
+		var a = $scope.currentUser.profile.toRehearse; 
 		return a.setByUser && (a.declined || a.done || a.na); 
 	}
 
 	$scope.isNotToRehearse = function() {
-		var a = $scope.currentUser.toRehearse; 
+		var a = $scope.currentUser.profile.toRehearse; 
 		return a.setByUser && !a.declined && !a.done && !a.na; 
 	}
 
-	$scope.isSetRehearse = function() {
-		return $scope.currentUser.toRehearse.setByUser; 
-	}
+	
 
 
 	$scope.loadActionDetails = function(actions){

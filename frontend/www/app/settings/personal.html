@@ -9,33 +9,36 @@
     </a>
     <label class="item item-input">
       <span class="input-label" translate>Password</span>
-      <button class="button button-small button-outline button-balanced ion-key" style="width: 40%" translate>CHANGE</button>
+      <button class="button button-small button-outline button-balanced ion-key" style="width: 40%" translate>CHANGE TODO</button>
     </label>
+    <form name='profile'>
     <label class="item item-input">
       <span class="input-label" translate>Name</span>
-      <input type="text" ng-model="currentUser.profile.name" placeholder="Name">
+      <input type="text" name="name" ng-model="currentUser.profile.name" ng-change="setPersonalProfileChanged()" placeholder="Your Name is required" required>
+       <span class="errors_icon pos_left" ng-show="profile.name.$error.required"><i class="icon ion-alert-circled"></i></span>
     </label>
+    </form>
     <label class="item item-input" >
       <span class="input-label" translate>Nickname</span>
-      <input type="text" ng-model="currentUser.profile.nickname" placeholder="Nickname">
+      <input type="text" ng-model="currentUser.profile.nickname" placeholder="Select your nickname" ng-change="setPersonalProfileChanged()">
     </label>
     <label class="item item-input item-select">
       <span class="input-label" translate>Gender</span>
-      <select ng-model="currentUser.profile.gender">
-        <option></option>
-        <option value=0 translate>Male</option>
-        <option value=1 translate>Female</option>
+      <select ng-model="currentUser.profile.gender" ng-change="setPersonalProfileChanged()">
+        <option translate>Male</option>
+        <option translate>Female</option>
       </select>
     </label>
     <label class="item item-input">
       <span class="input-label" translate>Birthday</span>
-      <input type="date" value={{currentUser.profile.birthday}}>
+      <input type="date" ng-model="currentUser.profile.dob" ng-change="setPersonalProfileChanged()">
     </label>
     <label class="item item-input item-select">
-      <span class="input-label" translate>Language</span>
-      <select ng-model="currentUser.language" ng-change="save()">
-        <option value=0 translate>English</option>
-        <option value=1 translate>Italian</option>
+      <span class="input-label" translate>Preferred Language</span>
+      <select ng-model="currentUser.profile.language" ng-change="setPersonalProfileChanged()">
+        <option translate>English</option>
+        <option translate>Italian</option>
+        <option translate>Swedish</option>
       </select>
     </label>
     <!-- shall do auto-save -->

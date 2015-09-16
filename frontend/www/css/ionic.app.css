@@ -7715,6 +7715,9 @@ td {
 .text-large {
   font-size: 32px; }
 
+.text-bold {
+  font-weight: bold; }
+
 .space-bottom {
   margin-bottom: 6px; }
 
@@ -7750,6 +7753,14 @@ hr {
 .errors {
   color: red;
   font-size: 14px; }
+
+.errors_icon {
+  color: red;
+  font-size: 20px; }
+
+.pos_left {
+  position: relative;
+  left: -20px; }
 
 ul.rating li {
   display: inline;

@@ -101,13 +101,13 @@ function ActionsCtrl($scope, $state, $ionicPopup, $filter, Actions, User) {
 
 		var actions = []; 
 
-		if ($scope.currentUser.toRehearse.done){
+		if ($scope.currentUser.profile.toRehearse.done){
 			actions = actions.concat(_.toArray($scope.currentUser.actions.done));
 		}
-		if ($scope.currentUser.toRehearse.declined){
+		if ($scope.currentUser.profile.toRehearse.declined){
 			actions = actions.concat(_.toArray($scope.currentUser.actions.declined));
 		}
-		if ($scope.currentUser.toRehearse.na){
+		if ($scope.currentUser.profile.toRehearse.na){
 			actions = actions.concat(_.toArray($scope.currentUser.actions.na));
 		}
 

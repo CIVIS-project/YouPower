@@ -1,7 +1,7 @@
 angular.module('civis.youpower.welcome').controller('WelcomeCtrl', WelcomeCtrl);
 
 
-function WelcomeCtrl($translate, $scope, $rootScope, $state,AuthService) {
+function WelcomeCtrl($translate, $scope, $rootScope, $state, AuthService) {
 
 	$scope.loginData = {}
 	
@@ -20,14 +20,12 @@ function WelcomeCtrl($translate, $scope, $rootScope, $state,AuthService) {
 		$translate.use(langKey);
 	};
 
-  $scope.login = function() {
+  $scope.signin = function() {
     AuthService.login($scope.loginData.emailAddress, $scope.loginData.password)
     .then(function(){
-      // $state.go('main.actions');
       console.log("logged in"); 
       $state.go('main.actions.yours');
     })
-
 
   }
 

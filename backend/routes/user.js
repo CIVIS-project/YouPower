@@ -191,8 +191,7 @@ router.get('/actions', auth.authenticate(), function(req, res) {
  * }
  */
 router.post('/profile', auth.authenticate(), function(req, res) {
-  req.checkBody('name').optional().notEmpty();
-  req.checkBody('photo').optional().notEmpty();
+  req.checkBody('dob').optional().isDate();
 
   var err;
   if ((err = req.validationErrors())) {

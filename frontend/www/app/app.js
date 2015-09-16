@@ -20,7 +20,7 @@ angular.module('civis.youpower', [
   'civis.youpower.translations',
   ])
 
-.run(function($ionicPlatform, $rootScope, $window, AuthService) {
+.run(function($ionicPlatform, $rootScope, $window, $state, AuthService) {
 
   $rootScope.scale = 5;
 
@@ -230,6 +230,7 @@ angular.module('civis.youpower', [
   views: {
     'tab-index': {
       templateUrl: 'app/settings/index.html',
+      controller: 'PersonalSettingsCtrl' 
     }
   }
 })
@@ -238,7 +239,8 @@ angular.module('civis.youpower', [
   url: '/personal',
   views: {
     'tab-personal': {
-      templateUrl: 'app/settings/personal.html',
+      templateUrl: 'app/settings/personal.html', 
+      controller: 'PersonalSettingsCtrl' 
     }
   }
 })
@@ -247,19 +249,11 @@ angular.module('civis.youpower', [
   url: '/household',
   views: {
     'tab-household': {
-      templateUrl: 'app/settings/household.html'
+      templateUrl: 'app/settings/household.html',
+      controller: 'HouseholdSettingsCtrl' 
     }
   }
-})
-
-.state('main.settings.preferences', {
-  url: '/preferences',
-  views: {
-    'tab-preferences': {
-      templateUrl: 'app/settings/preferences.html',
-    }
-  }
-})
+}) 
 
 .state('main.about', {
   url: '/about',

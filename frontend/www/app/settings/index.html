@@ -1,30 +1,30 @@
 <ion-view view-title={{"Settings"|translate}}>
-<ion-content>
+<ion-content class="padding">
+
 
 <div class="list card">
-<div class="item item-divider">Energy Data Account</div>
-  
-  <a href="#" class="item item-divider item-icon-left">
-    <i class="icon ion-android-add"></i>
-    Link Data Account
-  </a>
-</div>
-
-<div class="list card">
-  <div class="item item-divider">App Preferences</div>
-  <label class="item item-input item-select">
-    <span class="input-label" translate>Language</span>
-    <select ng-model="currentUser.language" ng-change="save()">
-      <option value=0 translate>English</option>
-      <option value=1 translate>Italian</option>
-    </select>
-  </label>
-  <ion-toggle ng-model="currentUser.profile.reminder" toggle-class="toggle-calm">Reminder</ion-toggle>
+  <div class="item item-divider item-text-wrap">Suggest actions that ...</div>
+  <ion-toggle ng-model="currentUser.profile.toRehearse.done" ng-change="toRehearseSet(); setPersonalProfileChanged()" toggle-class="toggle-balanced">
+    you completed
+    <span class="item-note item-text-wrap">to rehearse.</span>
+  </ion-toggle>
+  <ion-toggle ng-model="currentUser.profile.toRehearse.declined" ng-change="toRehearseSet(); setPersonalProfileChanged()" toggle-class="toggle-balanced">
+    you declined 
+    <span class="item-note item-text-wrap">to reconsider.</span>
+  </ion-toggle>
+  <ion-toggle ng-model="currentUser.profile.toRehearse.na" ng-change="toRehearseSet(); setPersonalProfileChanged()" toggle-class="toggle-balanced">
+    were not appliable
+    <span class="item-note item-text-wrap">to reassess.</span>
+  </ion-toggle> 
   <!-- shall do auto-save -->
   <!-- <div class="button-bar">
     <a href="#" class="button button-balanced" translate>Cancel</a>
     <a href="#" class="button button-balanced" ng-click="save()" translate>Save</a>
   </div> -->
+</div>
+
+<div class="button-bar"> <!-- href="#/tab/actions/0"  -->
+  <a class="button button-dark text-bold" ng-click="signout()" >Sign out</a>
 </div>
 
 </ion-content>

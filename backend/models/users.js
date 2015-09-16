@@ -19,9 +19,26 @@ var UserSchema = new Schema({
   accessToken: String,
   profile: {
     name: String,
+    nickname: String,
+    gender: {
+      type: String,
+      enum: 'Male Female'.split(' ')
+    },
     dob: Date,
     photo: String,
-    gender: String
+    language: {
+      type: String,
+      default: 'English'
+    },
+    toRehearse: {
+      setByUser: {
+        type: Boolean, 
+        default: false 
+      },
+      declined: Boolean, 
+      done: Boolean, 
+      na: Boolean
+    }
   },
   // contains state of each achievement
   achievements: {
@@ -287,15 +304,25 @@ exports.find = function(q, multi, limit, skip, cb) {
 // passport-local-mongoose gives us the user model after each a successful
 // authentication, and it would be wasteful to fetch it again here
 
-exports.updateProfile = function(user, profile, cb) {
+exports.updateProfile = function(user, profile, cb) { 
+
   // update any fields that are defined
   user.profile.name  = profile.name  || user.profile.name;
+  user.profile.nickname  = profile.nickname  || user.profile.nickname;
+  user.profile.gender   = profile.gender   || user.profile.gender;
   user.profile.dob   = profile.dob   || user.profile.dob;
   user.profile.photo = profile.photo || user.profile.photo;
+  user.profile.language = profile.language || user.profile.language;
+  user.profile.toRehearse =  profile.toRehearse || user.profile.toRehearse;
 
-  user.markModified('profile.name');
-  user.markModified('profile.dob');
-  user.markModified('profile.photo');
+  user.markModified('profile');
+  // user.markModified('profile.name');
+  // user.markModified('profile.nickname');
+  // user.markModified('profile.gender');
+  // user.markModified('profile.dob');
+  // user.markModified('profile.photo');
+  // user.markModified('profile.language');
+  // user.markModified('profile.toRehearse');
 
   user.save(function(err) {
     cb(err, user.profile);
