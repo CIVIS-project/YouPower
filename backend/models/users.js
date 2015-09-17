@@ -306,14 +306,42 @@ exports.find = function(q, multi, limit, skip, cb) {
 
 exports.updateProfile = function(user, profile, cb) { 
 
+  //console.log("profile: "+JSON.stringify(profile, null, 4));
+  //console.log("user.profile1: "+JSON.stringify(user.profile, null, 4));
+
+
   // update any fields that are defined
-  user.profile.name  = profile.name  || user.profile.name;
-  user.profile.nickname  = profile.nickname  || user.profile.nickname;
-  user.profile.gender   = profile.gender   || user.profile.gender;
-  user.profile.dob   = profile.dob   || user.profile.dob;
-  user.profile.photo = profile.photo || user.profile.photo;
-  user.profile.language = profile.language || user.profile.language;
-  user.profile.toRehearse =  profile.toRehearse || user.profile.toRehearse;
+  // not sure about this: need to see how to do this automatically 
+  if (profile.name !== undefined) 
+    user.profile.name = profile.name; 
+  if (user.profile.name === null) 
+    user.profile.name = undefined; 
+  if (profile.nickname !== undefined)
+    user.profile.nickname = profile.nickname;
+  if (user.profile.nickname === null) 
+    user.profile.nickname = undefined; 
+  if (profile.gender !== undefined)
+    user.profile.gender = profile.gender;
+  if (user.profile.gender === null)  
+    user.profile.gender = undefined; 
+  if (profile.dob !== undefined)
+    user.profile.dob = profile.dob;
+  if (user.profile.dob === null) 
+    user.profile.dob = undefined; 
+  if (profile.photo !== undefined)
+    user.profile.photo = profile.photo;
+  if (user.profile.photo === null) 
+    user.profile.photo = undefined; 
+  if (profile.language !== undefined)
+    user.profile.language = profile.language;
+  if (user.profile.language === null) 
+    user.profile.language  = undefined; 
+  if (profile.toRehearse !== undefined)
+    user.profile.toRehearse = profile.toRehearse;
+  if (user.profile.toRehearse === null) 
+    user.profile.toRehearse = undefined;  
+
+  //console.log("user.profile2: "+JSON.stringify(user.profile, null, 4));
 
   user.markModified('profile');
   // user.markModified('profile.name');

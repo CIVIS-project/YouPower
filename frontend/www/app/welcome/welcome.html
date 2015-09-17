@@ -1,5 +1,6 @@
 <ion-view view-title="CIVIS">
 <ion-content class="padding">
+
   <div class="list card">
     <div class="item item-divider">
       <h1 class="text-center">  <!-- padding-vertical -->
@@ -23,19 +24,31 @@
     <p>1. Please use a mobile phone, or adjust your browser (preferrable Chrome) to mobile screen size.</p>
     <p>2. Use your <i>Email address</i> to create or retrieve an account.</p>
   </div> -->
+
+  <div class="button-bar">
+    <a ng-click="gotoSignup()" class="button button-energized text-bold">Not a member? Join now</a>
+  </div>
+
   <div class="list card">
     <label class="item item-input">
       <span class="input-label">Email</span>
-      <input type="text" placeholder="Your Email address" ng-model="loginData.emailAddress">
+      <input type="text" placeholder="Your Email address" ng-model="loginData.emailAddress" ng-change="clearSigninClicked()">
     </label>
     <label class="item item-input">
       <span class="input-label">Password</span>
-      <input type="password" placeholder="Your password" ng-model="loginData.password">
+      <input type="password" placeholder="Your password" ng-model="loginData.password" ng-change="clearSigninClicked()">
     </label>
   </div>
 
   <div class="button-bar">
-    <a class="button button-dark text-bold" ng-click="signin()" >Sign in</a>
+    <a class="button button-dark text-bold" ng-click="signin()">Login</a>
+  </div>
+
+  <div>
+    <p class="text-center" ng-show="signinClicked && isRejected">
+      <span class="errors text-center" ></br>Hmm, that's not the right Email/Password.</br> Please try again or </span>
+      <a href="#" class="errors">request a new password</a>.
+    </p>
   </div>
 
 </ion-content>

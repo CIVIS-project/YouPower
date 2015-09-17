@@ -31,10 +31,11 @@ angular.module('civis.youpower', [
     return new Array(num);
   }
 
-  $rootScope.$on('$stateChangeStart', function (event,next, nextParams, fromState) {
+  $rootScope.$on('$stateChangeStart', function (event, next, nextParams, fromState) {
     if (!AuthService.isAuthenticated()) {
-      if (next.name !== 'welcome') {
+      if (next.name !== 'welcome' && next.name !== 'signup' ) {
         event.preventDefault();
+        console.log(fromState.name + " " + next.name);
         $state.go('welcome');
       }
     }
@@ -69,6 +70,12 @@ angular.module('civis.youpower', [
   .state('welcome', {
     url: "/welcome",
     templateUrl: "app/welcome/welcome.html",
+    controller: 'WelcomeCtrl'
+  })
+
+  .state('signup', {
+    url: "/signup",
+    templateUrl: "app/welcome/signup.html",
     controller: 'WelcomeCtrl'
   })
 
@@ -181,9 +188,6 @@ angular.module('civis.youpower', [
     }
   }
 })
-
-
-
 
 .state('main.prosumption', {
   url: '/prosumption',

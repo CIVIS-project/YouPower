@@ -5,7 +5,7 @@ hierarchy as it will be loaded with abstract main state.
 Here we can do the general app stuff like getting the user's
 details (since this is after the user logs in).
 ----------------------------------------------*/
-function AppCtrl($scope, $state, $ionicHistory, $ionicViewSwitcher, User,Actions) { 
+function AppCtrl($scope, $state, $ionicHistory, $ionicViewSwitcher, User, Actions, AuthService) { 
 
 	$scope.userPictures = {}; 
 
@@ -21,7 +21,7 @@ function AppCtrl($scope, $state, $ionicHistory, $ionicViewSwitcher, User,Actions
 
 		$scope.currentUser = data;
 
-		if ($scope.currentUser.profile.dob){
+		if ($scope.currentUser.profile.dob && $scope.currentUser.profile.dob !== null){
 			$scope.currentUser.profile.dob = new Date($scope.currentUser.profile.dob);
 		}
 
@@ -186,6 +186,62 @@ function AppCtrl($scope, $state, $ionicHistory, $ionicViewSwitcher, User,Actions
 
 	$scope.goBack= function() {
 		$ionicHistory.goBack();
+	}
+
+
+	$scope.toSignout = false; 
+
+	$scope.isToSignout = function(){
+		return $scope.toSignout; 
+	}
+
+	$scope.clearToSignout = function(){
+		return $scope.toSignout = false; 
+	}
+
+	$scope.profileChanged = {personal: false, household: false};
+
+	$scope.setPersonalProfileChanged = function(){
+		$scope.profileChanged.personal = true; 
+	}
+
+	$scope.clearPersonalProfileChanged = function(){
+		$scope.profileChanged.personal = false; 
+	}
+
+	$scope.setHouseholdProfileChanged = function(){
+		$scope.profileChanged.household = true; 
+	}
+
+	$scope.clearHouseholdProfileChanged = function(){
+		$scope.profileChanged.household = false; 
+	}
+
+	$scope.isPersonalProfileChanged = function(){
+		return $scope.profileChanged.personal; 
+	}
+
+	$scope.isHouseholdProfileChanged = function(){
+		return $scope.profileChanged.household; 
+	}
+
+
+	$scope.signout = function() {
+
+		if ($scope.isPersonalProfileChanged()){
+			$scope.toSignout = true; 
+			$state.go('welcome'); 
+		}else{
+			$scope.logout();
+		}
+	}
+	
+	
+	$scope.logout = function(){
+
+		console.log('logout'); 
+		AuthService.logout();
+		$state.go('welcome'); 
 	}
 
 
