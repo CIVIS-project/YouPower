@@ -5,6 +5,7 @@ var Action = require('./actions');
 //var Community = require('./communities');
 var Schema = mongoose.Schema;
 var passportLocalMongoose = require('passport-local-mongoose');
+var nodemailer = require('nodemailer'); 
 var escapeStringRegexp = require('escape-string-regexp');
 var achievements = require('../common/achievements');
 var actionComments = require('./actionComments');
@@ -374,6 +375,40 @@ exports.updateProfile = function(user, profile, cb) {
     cb(err, user.profile);
   });
 };
+
+exports.mailHouseholdMember = function(user, mail, cb) { 
+
+  var title = 'Hello world from ' + user.profile.name + ' to ' + mail.name + '</br>';
+
+  var mailOptions = {
+      from: user.profile.name + ' via YouPower <youpower.app@gmail.com>', // sender address
+      to: mail.name + '<' + mail.email + '>', // list of receivers
+      subject: 'Invitation to Join', // Subject line
+      // text: mail.message, // plaintext body or HTML body instead
+      html: '<b>' + title 
+            + 'This is a message from YouPower. </br>'
+            + 'Private message: ' + mail.message + '</b>'
+  };
+
+  sendMail(mailOptions, cb);
+};
+
+
+var sendMail = function(mailOptions, cb) { 
+
+  var transporter = nodemailer.createTransport({
+      service: 'Gmail',
+      auth: {
+          user: 'youpower.app@gmail.com', // YouPower email id
+          pass: 'S+bk@4uQ<A6wk0<u3~.o]q6iA' // YouPower email password
+      }
+  });
+
+  transporter.sendMail(mailOptions, function(err, info){
+    cb(err, mailOptions);
+  });
+};
+
 
 // fetch user action by id
 var getUA = function(user, actionId) {

@@ -209,6 +209,71 @@ router.post('/profile', auth.authenticate(), function(req, res) {
 });
 
 /**
+ * @api {post} /user/sendMail/:type Send an Email invitation
+ * @apiGroup User
+ *
+ * @apiParam {String} type Type of the invitation. Can be one of:
+ *
+ *   - **householdMember**: The mail receiver is invited to sign up YouPower and to join the sender's household
+ *   - **TODO**: The mail receiver is invited to sign up YouPower
+ * 
+ * @apiParam {String} email Email address of the receiver
+ * @apiParam {String} [name] Name of the receiver
+ * @apiParam {String} [message] The sender's private message to the receiver
+ * 
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/profile
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
+ *  '{
+ *    "name": "Receiver Name",
+ *    "email": "receiver@example.com",
+ *    "message": "A private message"
+ *  }' \
+ *  http://localhost:3000/api/user/user/sendMail/householdMember
+ *
+ */
+router.post('/sendMail/:type', auth.authenticate(), function(req, res) {
+  req.checkBody('email').notEmpty(); 
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else if (req.params.type === 'householdMember'){
+    User.mailHouseholdMember(req.user, req.body, res.successRes);
+  } else {
+    res.successRes
+  }
+
+  Log.create({
+    userId: req.user._id,
+    category: 'User Mail Invite',
+    type: req.params.type,
+    data: req.body
+  });
+});
+
+
+router.post('/sendMail/householdMember', auth.authenticate(), function(req, res) {
+  req.checkBody('email').notEmpty(); 
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    User.mailHouseholdMember(req.user, req.body, res.successRes);
+  }
+
+  Log.create({
+    userId: req.user._id,
+    category: 'User Mail Invite',
+    type: 'householdMember',
+    data: req.body
+  });
+});
+
+/**
  * @api {get} /user/profilePicture/:userId Get user's profile picture
  * @apiGroup User
  *
@@ -463,5 +528,8 @@ router.get('/:userId/achievements', auth.authenticate(), function(req, res) {
     data: req.params.userId
   });
 });
+
+
+
 
 module.exports = router;
