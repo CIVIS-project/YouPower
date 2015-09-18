@@ -280,14 +280,32 @@ exports.getUserActions = function(id, type, cb) {
 };*/
 
 exports.find = function(q, multi, limit, skip, cb) {
+
+  //console.log("q:" + JSON.stringify(q,null,4));
+
+  var aQ = JSON.parse(JSON.stringify(q));
+
+  for(var key in aQ) {
+    if(aQ.hasOwnProperty(key)) {
+
+      if(key === 'name') {
+        aQ['profile.name'] = aQ['name'];
+        delete aQ['name'];
+      }else if(key === 'userId') {
+        aQ['_id'] = aQ['userId'];
+        delete aQ['userId'];
+      }
+    }
+  }
+
   // pick any key that is present from the list [_id, profile.name, email]
-  var keys = _.keys(q);
+  var keys = _.keys(aQ);
   var key = _.first(_.intersection(keys, ['_id', 'profile.name', 'email']));
 
   // if searching by _id require exact match, otherwise do a regexp search
   var filteredQ = {};
-  filteredQ[key] = key === '_id' ? q[key].toString() :
-    new RegExp('^' + escapeStringRegexp(String(q[key])), 'i');
+  filteredQ[key] = key === '_id' ? aQ[key].toString() :
+    new RegExp('^' + escapeStringRegexp(String(aQ[key])) + '|' + escapeStringRegexp(String(aQ[key])) + '$', 'i'); 
 
   var query = User.find(filteredQ);
   query.select('email profile actions achievements recentAchievements');

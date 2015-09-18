@@ -317,8 +317,9 @@ router.get('/profile/:userId', auth.authenticate(), function(req, res) {
  * @api {get} /user/search Search for users
  * @apiGroup User
  *
- * @apiParam {String} [email] Search by email TODO: do we allow this?
- * @apiParam {String} [name] Search by name
+ * @apiParam {String} [email] Search by email
+ * @apiParam {String} [name] Search by user's profile name 
+ * @apiParam {String} [userId] Search by user's MongoId
  *
  * @apiExample {curl} Example usage:
  *  # Get API token via /api/user/token
@@ -326,7 +327,7 @@ router.get('/profile/:userId', auth.authenticate(), function(req, res) {
  *
  *  curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
  *  '{
- *    "email": "test"
+ *    "name": "Test User"
  *  }' \
  *  http://localhost:3000/api/user/search
  *
@@ -346,13 +347,18 @@ router.get('/profile/:userId', auth.authenticate(), function(req, res) {
  * @apiVersion 1.0.0
  */
 router.get('/search', auth.authenticate(), function(req, res) {
-  User.find(req.body, true, 50, null, res.successRes);
+
+  // console.log("req.params:" + JSON.stringify(req.params, null, 4)); 
+  // console.log("req.body:" + JSON.stringify(req.body, null, 4)); 
+  // console.log("req.query:" + JSON.stringify(req.query, null, 4)); 
+
+  User.find(req.query, true, 50, null, res.successRes); 
 
   Log.create({
     userId: req.user._id,
     category: 'User Profile',
     type: 'find',
-    data: req.body
+    data: req.query
   });
 });
 
