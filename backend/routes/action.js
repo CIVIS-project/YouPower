@@ -179,8 +179,8 @@ router.get('/:actionId/comments', auth.authenticate(), function(req, res) {
     type: 'get',
     data: {
       actionId: req.params.actionId,
-      limit: req.body.limit,
-      skip: req.body.skip
+      limit: req.query.limit,
+      skip: req.query.skip
     }
   });
 });
