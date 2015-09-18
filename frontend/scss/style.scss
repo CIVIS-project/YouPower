@@ -40,8 +40,6 @@ $color_gray_nurse_approx: #e8e8e8;
 h1 { 
     font-size: 1.5em;
 }
-
-
 .capitalize {
     text-transform: capitalize;
 }
@@ -83,6 +81,14 @@ td {
 }
 .space-top {
   margin-top: 6px;
+}
+.button-top-right{
+  float: right;
+  position: absolute;
+  top: 15px;
+  right: 10px;
+  // margin-bottom: 5px;
+  width: 30%;
 }
 .button-right{
   float: right;
@@ -126,6 +132,17 @@ hr {
 .pos_left {
     position: relative;
     left: -20px;
+}
+.errors_icon_float_label {
+    position: absolute;
+    top: 35px;
+    right: 10px;
+}
+.message {
+    position: relative;
+    left: 20px;
+    color: gray;
+    width: 90%;
 }
 ul.rating li {
   display: inline;

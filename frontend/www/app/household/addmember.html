@@ -1,0 +1,65 @@
+<ion-view view-title="Add Household Member">
+<ion-content class="padding">
+
+<!-- <div class="item-input-inset">
+  <div class="item-input-wrapper">
+    <i class="icon ion-search placeholder-icon"></i>
+    <input type="search" placeholder="Search user by name" ng-model="input.search" ng-change="input.typing=true" ng-enter="searchUser()"/>
+  </div>
+  <a class="button-icon icon ion-backspace-outline text-small" ng-click="clearSearch()"></a>
+</div> 
+<p class="search-message" ng-show="!input.typing && noResult">No result found for '{{input.search}}'.</p>-->
+
+<div class="list card">
+  <div class="item item-input">
+    <i class="icon ion-search placeholder-icon item-text-wrap"></i>
+    <input type="search" placeholder="Search user by name" ng-model="search.input.text" ng-change="search.input.typing=true" ng-enter="searchUser()"/>
+    <a class="button-icon icon ion-backspace-outline text-small" ng-click="clearSearch()"></a>
+  </div>
+  <a class="item item-avatar" ng-click="inviteToHousehold(user)" ng-repeat="user in search.users">
+      <img ng-if="user.profile.photo" src="user.profile.photo">
+      <img ng-if="!user.profile.photo" src="/img/eco.jpg">
+      <h2>{{user.profile.name}}<span ng-if="user._id===currentUser._id" class="item-note item-text-wrap">You</span></h2>
+      <p>{{user.email}}</p>
+  </a>
+</div>
+
+<p class="message" ng-show="!search.input.typing && search.noResult">Sorry, we can not find '{{search.input.text}}' among YouPower users. Please try another name.</p>
+
+<div class="card" ng-show="search.noResult">
+  <div class="item item-text-wrap item-divider">
+    <h2>Can not find the one you are looking for?</h2> 
+  </div>
+
+  <a ng-show="!email.showForm" ng-click="email.showForm=true; email.sent=false;email.err=null" class="item item-icon-left">
+    <i class="icon ion-ios-email-outline"></i>
+    Send an Invitation by Email
+  </a>
+
+  <form name="emailHousehold" ng-show="email.showForm" >
+  <label class="item item-input item-floating-label">
+    <span class="input-label">Email address</span>
+    <input type="email" name="email" ng-change="check(emailHousehold.email.$error)" ng-model="emailHouseholdInput.email" placeholder="Email address" required>
+    <span class="errors_icon errors_icon_float_label" ng-show="emailHousehold.email.$error.required || emailHousehold.email.$error.email"><i class="icon ion-alert-circled"></i></span>
+  </label>
+   <label class="item item-input item-floating-label">
+    <span class="input-label">Name</span>
+    <input type="text" ng-model="emailHouseholdInput.name" placeholder="Name">
+  </label>
+  <label class="item item-input item-floating-label">
+    <span class="input-label">You Message</span>
+    <textarea ng-model="emailHouseholdInput.message" placeholder="Your Message"></textarea>
+  </label>
+  </form>
+</div>
+
+<button ng-show="email.showForm" ng-disabled="!_.isEmpty(emailHousehold.$error)" class="button button-full button-dark" ng-click="sendMail()">
+  Send Email
+</button>
+
+<p class="message" ng-show="email.sending">Sending your invitation to {{emailHouseholdInput.email}}...</p>
+<p class="message" ng-show="email.sent">Your invitation is sent to {{email.to}}.</p>
+<p class="message" ng-show="email.err">We can not send your invitation to {{emailHouseholdInput.email}}. An error occurred.</p>
+
+  </ion-content>
+</ion-view>

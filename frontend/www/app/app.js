@@ -120,14 +120,6 @@ angular.module('civis.youpower', [
     }
   })
 
-
-
-    // .state('main.actions.action', {
-    //   url: '/:id',
-    //   templateUrl: 'app/actions/action.html',
-    //   controller: 'ActionCtrl'
-    // })
-
 .state('main.actions.details', {
   url: '/:type/:index',
   views: {
@@ -160,13 +152,23 @@ angular.module('civis.youpower', [
   }
 })
 
-///////
 
 .state('main.actions.household', {
   url: '/household',
   views: {
     'tab-household': {
       templateUrl: 'app/household/index.html',
+      controller: 'HouseholdCtrl'
+    }
+  }
+})
+
+.state('main.actions.addmember', {
+  url: '/household/members/add',
+  views: {
+    'tab-household': {
+      templateUrl: 'app/household/addmember.html',
+      controller: 'MemberCtrl'
     }
   }
 })

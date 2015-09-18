@@ -5,13 +5,13 @@ function WelcomeCtrl($translate, $scope, $rootScope, $state, $ionicViewSwitcher,
 
 	$scope.loginData = {}
 
-  $scope.loginData.emailAddress = "foo";
-  $scope.loginData.password = "bar"; 
+  // $scope.loginData.emailAddress = "foo";
+  // $scope.loginData.password = "bar"; 
 
-  // $scope.loginData.emailAddress = "yilin@gmx.us";
-  // $scope.loginData.name = "Yilin";
-  // $scope.loginData.password = "barbar"; 
-  // $scope.loginData.password2 = "barbar"; 
+  $scope.loginData.emailAddress = "yilin@gmx.us";
+  $scope.loginData.name = "Yilin";
+  $scope.loginData.password = "barbar"; 
+  $scope.loginData.password2 = "barbar"; 
 
 
   $scope.comparePasswords = function(){ 

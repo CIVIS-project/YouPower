@@ -7724,6 +7724,13 @@ td {
 .space-top {
   margin-top: 6px; }
 
+.button-top-right {
+  float: right;
+  position: absolute;
+  top: 15px;
+  right: 10px;
+  width: 30%; }
+
 .button-right {
   float: right;
   width: 30%; }
@@ -7761,6 +7768,17 @@ hr {
 .pos_left {
   position: relative;
   left: -20px; }
+
+.errors_icon_float_label {
+  position: absolute;
+  top: 35px;
+  right: 10px; }
+
+.message {
+  position: relative;
+  left: 20px;
+  color: gray;
+  width: 90%; }
 
 ul.rating li {
   display: inline;

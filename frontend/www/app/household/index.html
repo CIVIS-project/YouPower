@@ -1,5 +1,25 @@
 <ion-view view-title="Household Actions">
+  <ion-nav-buttons side="right">
+    <button class="button button-clear button-dark icon ion-ios-personadd" ng-click="addMember()">&#8200;</button>
+  </ion-nav-buttons>
   <ion-content class="padding">
+
+
+  <div class="list card" ng-if="currentUser.pendingHouseholdInvites.length> 0">
+  <div class="item item-divider">New Invitation{{currentUser.pendingHouseholdInvites.length>1?'s':''}} to Join Household ({{currentUser.pendingHouseholdInvites.length}})</div>
+  <a class="item item-icon-left item-icon-right" ng-repeat="action in _.toArray(currentUser.actions.inProgress) | orderBy: '-startedDate[startedDate.length-1]' | limitTo: maxNumberShow.inProgress" ng-href="#/app/actions/current/{{$index}}">
+    <i class="icon ion-leaf balanced"></i>
+    <span class="leafs balanced">
+      {{getActionPoints(action)}}
+    </span>{{action.name}}
+    <i class="icon ion-chevron-right icon-accessory"></i>
+  </a>
+  <div class="text-right" ng-if="_.size(currentUser.actions.inProgress) >= maxNumberShow.inProgress">
+    <a ng-if="maxNumberShow.inProgress>sNr" class="button button-clear button-stable icon-left ion-chevron-up button-small" ng-click="showLess('inProgress')">Show me less</a>
+    <a ng-if="maxNumberShow.inProgress<_.size(currentUser.actions.inProgress)" class="button button-clear button-stable icon-left ion-chevron-down button-small" ng-click="showMore('inProgress')"> Show me more</a>
+  </div>
+</div>
+
     <div class="list card">
       <span ng-repeat="member in user.familyMembers">
         <span from="users familyMember" where="familyMember.id=member.id" provider="firebase">
@@ -22,11 +42,16 @@
           </div>
         </span>
       </span>
-      <a href="#" class="item item-divider item-icon-left">
+      <!-- <a href="#" class="item item-divider item-icon-left">
         <i class="icon ion-android-add"></i>
         Add family member
-      </a>
+      </a> -->
     </div>
+
+    <button class="button icon-left button-full button-dark" ng-click="addMember()">
+      <i class="icon ion-android-add"></i>
+      <b>Add Member to Your Household</b>
+    </button>
 <!--     <div class="list card">
       <div class="item item-divider">Your Energy Consumption</div>
       <a href="#" class="item item-icon-left item-icon-right">
