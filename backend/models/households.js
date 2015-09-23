@@ -13,11 +13,12 @@ var applianceSchema = new Schema({
 });
 
 var HouseSchema = new Schema({
-  apartmentId: {
-    type: String,
-    required: true,
-    unique: true
-  },
+  // apartmentId: {
+  //   type: String,
+  //   // required: true,
+  //   unique: true 
+  // },
+  apartmentId: String, 
   /*'connected' Tells whether the house is connected to a UsagePoint
     If TRUE, _apartmentId gives the REAL apartmentId according to Energy meter UsagePoint
   */
@@ -85,8 +86,11 @@ var Household = mongoose.model('Household', HouseSchema);
 
 // create household entity
 exports.create = function(household, cb) {
+
+  console.log("ok");
+
   Household.create({
-    apartmentId: household.apartmentId,
+    // apartmentId: household.apartmentId,
     address: household.address,
     householdType: household.householdType,
     householdSize: household.householdSize,
@@ -150,7 +154,7 @@ exports.invite = function(ownerId, userId, cb) {
       }
 
       if (household.members.indexOf(userId) !== -1) {
-        return cb('User already belongs to household');
+        return cb('User already belongs to this household');
       }
 
       household.pendingInvites.push(userId);
@@ -194,8 +198,14 @@ exports.handleInvite = function(householdId, userId, accepted, cb) {
       }
 
       household.pendingInvites.splice(index, 1);
-      household.members.push(userId);
 
+      if (accepted.toLowerCase()==="true") {
+        console.log('accepted?'+accepted);
+        household.members.push(userId);
+      }
+
+      console.log("household.members: "+JSON.stringify(household.members, null, 4));
+    
       household.save(cb);
     }
   });
@@ -283,7 +293,7 @@ exports.addMember = function(id, userId, cb) {
       cb('Household not found');
     } else {
       household.members.push(userId);
-      // Increase family adults count by 1.
+      // Increase family adults count by 1. ???? 
       household.familyComposition.NumAdults++;
       household.save(cb);
     }
