@@ -57,6 +57,10 @@ td {
   //Instead of the line below you could use @include word-break($value)
   word-break: normal;
 }
+.header{
+  background-color: #f5f5f5;
+  z-index: 3 !important;
+}
 .icon-large {
   font-size: 32px;
 }
@@ -95,6 +99,10 @@ td {
   width: 30%;
   // margin-bottom: 5px;
 }
+.button-40{ 
+  width: 40%;
+  margin-top: 5px;
+}
 hr {
   color: $color_gray_nurse_approx;
   border-color: $color_gray_nurse_approx;
@@ -115,6 +123,21 @@ hr {
   right: 10px;
   font-size: 20px;
   font-weight: bold;
+}
+.leaves-nr {
+  position: relative;
+  top: -5px;
+  right: 12px;
+  font-size: 22px;
+  // font-weight: bold;
+  text-shadow:
+    // -1px -1px 0 white,
+    // 1px -1px 0 white,
+    // -1px 1px 0 white,
+    // 1px 1px 0 white ;  
+    white 0px 0px 4px,   white 0px 0px 4px,   white 0px 0px 4px,
+    white 0px 0px 4px,   white 0px 0px 4px,   white 0px 0px 4px,
+    white 0px 0px 4px,   white 0px 0px 4px,   white 0px 0px 4px;
 }
 .item-select select {
   right: auto;

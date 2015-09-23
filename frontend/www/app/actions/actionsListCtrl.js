@@ -11,21 +11,6 @@ function ActionsListCtrl($scope, $state, $stateParams, $filter, $ionicPopup, Act
 
   $scope.actionsType = $stateParams.type; 
 
-  $scope.actionsByType = function(){
-
-    var orderBy = $filter('orderBy'); 
-
-    if ($stateParams.type == 'current') {
-      return $filter('orderBy')(_.toArray($scope.currentUser.actions.inProgress),'-startedDate[startedDate.length-1]'); 
-    } 
-    if ($stateParams.type == 'pending') {
-      return $filter('orderBy')(_.toArray($scope.currentUser.actions.pending), 'postponedDate[postponedDate.length-1]');
-    }
-    if ($stateParams.type == 'completed') {
-      return $filter('orderBy')(_.toArray($scope.currentUser.actions.done), '-latestDate');
-    }
-  }
-
   //post action comment (under action details)
   $scope.postComment = function(action){
 

@@ -1,11 +1,11 @@
 <ion-view>
 <ion-nav-title>
-<span class="capitalize">{{actionsType}} Actions ({{_.size(actionsByType())}})</span>
+<span class="capitalize">{{actionsType}} Actions ({{_.size(actionsByType(actionsType))}})</span>
 </ion-nav-title>
 <ion-content class="padding">
 
 <ion-slide-box active-slide="slideIdx" does-continue="false" show-pager="false">
-<ion-slide ng-repeat="action in actionsByType() track by $index">
+<ion-slide ng-repeat="action in actionsByType(actionsType) track by $index">
 
 <div class="list card">
   <div class="item item-divider item-text-wrap">
@@ -76,11 +76,13 @@
   <div class="item item-text-wrap" ng-show="comment.show">
     <label class="item-input">
       <textarea type="text" ng-model="comment.text" placeholder="Give your comment ..."></textarea>
-    </label><button class="button button-small button-dark button-right " ng-show="comment.text != ''" ng-click="postComment(action)"> Post </button>
+    </label><button class="button button-small button-dark button-right " ng-disabled="comment.text === ''" ng-click="postComment(action)"> Post </button>
     <p> &nbsp; <!-- dont remove this --> </p>
   </div>
   <div class="item item-avatar item-text-wrap" ng-repeat="comment in comments | filter: {actionId: action._id}" > <!-- ng-if="comment.actionId == action._id" -->
-    <img ng-src="comment.picture"><h3>{{comment.name}} <span class="text-small">{{comment.date| date: "yyyy-MM-dd"}}</span></h3>
+    <img ng-if="comment.photo" ng-src="comment.picture">
+    <img ng-if="!comment.photo" src="/img/eco.jpg">
+    <h3>{{comment.name}} <span class="item-note" ng-if="comment.userId == currentUser._id">You</span><span class="text-small">{{comment.date| date: "yyyy-MM-dd"}}</span></h3>
     <p>{{comment.comment}}</p>
     <a class="button button-clear button-stable icon-left ion-close button-small" ng-if="comment.userId == currentUser._id" ng-click="deleteComment(comment)"> Delete</a>
     <a class="button button-clear button-stable icon-left ion-thumbsup button-small" ng-click="likeComment(comment)"> {{num=comment.numLikes}} Like{{num>1? 's':''}}</a>

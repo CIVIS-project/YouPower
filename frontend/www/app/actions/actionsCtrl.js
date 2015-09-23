@@ -12,7 +12,11 @@ function ActionsCtrl($scope, $state, $ionicPopup, $filter, Actions, User) {
 
 	//for showing items at UI since the lists can be quite long
 	$scope.sNr = 2;
-	$scope.maxNumberShow = { inProgress: $scope.sNr, pending: $scope.sNr, done: $scope.sNr };
+	$scope.maxNumberShow = { 
+		inProgress: $scope.sNr, 
+		pending: $scope.sNr, 
+		done: $scope.sNr 
+	};
 
 
 	//how long a routine action can be deemed completed
@@ -22,6 +26,23 @@ function ActionsCtrl($scope, $state, $ionicPopup, $filter, Actions, User) {
 	$scope.comments = []; // save comments of actions 
 	$scope.nrToLoad = 20; // number of comments to load each time  
 	$scope.moreComments = {}; //a set of boolen indicates whether an action has more comments to load
+
+
+	$scope.actionsByType = function(type){
+
+		var orderBy = $filter('orderBy'); 
+
+		if (type == 'current') {
+			return $filter('orderBy')(_.toArray($scope.currentUser.actions.inProgress),'-startedDate[startedDate.length-1]'); 
+		} 
+		if (type == 'pending') {
+			return $filter('orderBy')(_.toArray($scope.currentUser.actions.pending), 'postponedDate[postponedDate.length-1]');
+		}
+		if (type == 'completed') {
+			return $filter('orderBy')(_.toArray($scope.currentUser.actions.done), '-latestDate');
+		}
+	}
+
 
 
 	//get the suggested actions from the backend 
@@ -46,15 +67,15 @@ function ActionsCtrl($scope, $state, $ionicPopup, $filter, Actions, User) {
 
 	$scope.addDays = function(days){
 
-	    var date = new Date(); 
+		var date = new Date(); 
 
-	    if (days && _.isNumber(days)){
-	      date.setDate(date.getDate() + days);
-	    }
+		if (days && _.isNumber(days)){
+			date.setDate(date.getDate() + days);
+		}
 
-	    console.log(date);
+		console.log(date);
 
-	    return date; 
+		return date; 
 	}
 
 	$scope.showMore = function(type){
@@ -229,78 +250,78 @@ function ActionsCtrl($scope, $state, $ionicPopup, $filter, Actions, User) {
 	/*	Checks the user's current number of actions first. 
 		(1) No new action will be shown if the user already has too many (maxNumberOfActions) actions in progress 
 		(2) Shows a new tip when the user does not have enough (preferredNumberOfActions) actions or when the user confirms to add more. 
-	*/
-	$scope.addActions = function(){
-
-		$scope.numberOfCurrentActions = _.size($scope.currentUser.actions.inProgress); 
-
-		if ($scope.numberOfCurrentActions < $scope.preferredNumberOfActions)
-		{
-			$scope.showNextTip();
-		}else if ($scope.numberOfCurrentActions > $scope.maxNumberOfActions - 1 )
-		{
-			$scope.alertTooManyActions(); 
-		}else{
-			$scope.askConfirmation(); 
-		}		
-	};
-
-	$scope.showNextTip = function(){
-
-		if ($scope.lastActionUsed){
-			$scope.idx++;
-			$scope.lastActionUsed = false; 
-		}
-
-		if (_.size($scope.suggestedActions) > $scope.idx){
-
-			$state.go('main.actions.action', {id:$scope.suggestedActions[$scope.idx]._id});
-
-		}else{
-			$scope.checkRehearse(); 
-		}
-	};
-
-
-	$scope.setSuggestedActionStateWithPreload = function(actionId, actionState, date){
-
-		$scope.lastActionUsed = true; 
-
-		User.actionState({actionId: actionId}, {state: actionState, postponed: date}).$promise.then(function(data){
-
-			console.log(data); 
-			$scope.currentUser.actions = data; 
+		*/
+		$scope.addActions = function(){
 
 			$scope.numberOfCurrentActions = _.size($scope.currentUser.actions.inProgress); 
+
+			if ($scope.numberOfCurrentActions < $scope.preferredNumberOfActions)
+			{
+				$scope.showNextTip();
+			}else if ($scope.numberOfCurrentActions > $scope.maxNumberOfActions - 1 )
+			{
+				$scope.alertTooManyActions(); 
+			}else{
+				$scope.askConfirmation(); 
+			}		
+		};
+
+		$scope.showNextTip = function(){
+
+			if ($scope.lastActionUsed){
+				$scope.idx++;
+				$scope.lastActionUsed = false; 
+			}
+
+			if (_.size($scope.suggestedActions) > $scope.idx){
+
+				$state.go('main.actions.action', {id:$scope.suggestedActions[$scope.idx]._id});
+
+			}else{
+				$scope.checkRehearse(); 
+			}
+		};
+
+
+		$scope.setSuggestedActionStateWithPreload = function(actionId, actionState, date){
+
+			$scope.lastActionUsed = true; 
+
+			User.actionState({actionId: actionId}, {state: actionState, postponed: date}).$promise.then(function(data){
+
+				console.log(data); 
+				$scope.currentUser.actions = data; 
+
+				$scope.numberOfCurrentActions = _.size($scope.currentUser.actions.inProgress); 
 
   			/*
   				Pre-load new suggested actions if the used action is the last suggested action.
   				This has to be called after the change of action state. 
-  			*/
-  			if ( ! (_.size($scope.suggestedActions) > $scope.idx + 1) ){
-  				$scope.loadSuggestedActions(); 
-  			}
-  		});
+  				*/
+  				if ( ! (_.size($scope.suggestedActions) > $scope.idx + 1) ){
+  					$scope.loadSuggestedActions(); 
+  				}
+  			});
 
-	};
+		};
 
-	$scope.postActionState = function(actionId, actionState, date){
+		$scope.postActionState = function(actionId, actionState, date){
 
-		User.actionState({actionId: actionId}, {state: actionState, postponed: date}).$promise.then(function(data){
+			User.actionState({actionId: actionId}, {state: actionState, postponed: date}).$promise.then(function(data){
 
-			console.log(data); 
-			$scope.currentUser.actions = data; 
+				console.log(data); 
+				$scope.currentUser.actions = data; 
 
-			$scope.numberOfCurrentActions = _.size($scope.currentUser.actions.inProgress); 
-  		});
-	};
+				$scope.numberOfCurrentActions = _.size($scope.currentUser.actions.inProgress); 
+			});
+		};
 
 
 	/*/
 		load comments of all actions in the user's actions lists
 		actions: an object of a collection of objects of lists of actions
-	/*/
-	$scope.loadAllComments = function(actions){
+		/*/
+		$scope.loadAllComments = function(actions){
 
 		//actionType in {declined, done, inProgress, na, pending}
 		for (var actionType in actions) {
@@ -312,14 +333,14 @@ function ActionsCtrl($scope, $state, $ionicPopup, $filter, Actions, User) {
 
 	/*/
 		actions: an object of a collection of indivudual action objects 
-	/*/
-	$scope.loadCommentsOfActions = function(actions){
-		for (var key in actions) {
-			if (actions.hasOwnProperty(key)) {
-				$scope.loadCommentsByActionId(actions[key]._id); 
+		/*/
+		$scope.loadCommentsOfActions = function(actions){
+			for (var key in actions) {
+				if (actions.hasOwnProperty(key)) {
+					$scope.loadCommentsByActionId(actions[key]._id); 
+				}
 			}
 		}
-	}
 
 	//initial load of comments, load 20 comments 
 	$scope.loadCommentsByActionId = function(actionId){
@@ -332,10 +353,10 @@ function ActionsCtrl($scope, $state, $ionicPopup, $filter, Actions, User) {
 			console.log(data); 
 
 			if (data.length >= $scope.nrToLoad){
-		         $scope.setHasMoreComments(actionId);
-		      }else{
-		         $scope.setNoMoreComments(actionId);
-		      }
+				$scope.setHasMoreComments(actionId);
+			}else{
+				$scope.setNoMoreComments(actionId);
+			}
 
 			data.forEach(function(comment) {
 				//load user picture
@@ -348,17 +369,17 @@ function ActionsCtrl($scope, $state, $ionicPopup, $filter, Actions, User) {
 		$scope.comments = $scope.comments.concat(comments);
 	}
 
-    $scope.setNoMoreComments = function(actionId){
-    	$scope.moreComments[actionId] = false; 
-    }
-    $scope.setHasMoreComments = function(actionId){
-    	$scope.moreComments[actionId] = true; 
-    }
-    $scope.hasMoreComments = function(actionId){
-    	if ($scope.moreComments[actionId] === undefined){
-    		return true; 
-    	}else return $scope.moreComments[actionId]; 
-    }
+	$scope.setNoMoreComments = function(actionId){
+		$scope.moreComments[actionId] = false; 
+	}
+	$scope.setHasMoreComments = function(actionId){
+		$scope.moreComments[actionId] = true; 
+	}
+	$scope.hasMoreComments = function(actionId){
+		if ($scope.moreComments[actionId] === undefined){
+			return true; 
+		}else return $scope.moreComments[actionId]; 
+	}
 
 }
 

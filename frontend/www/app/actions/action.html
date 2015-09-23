@@ -1,5 +1,5 @@
 <ion-view view-title="Suggested Action">
-<ion-content>
+<ion-content class="padding">
 
 <div class="list card">
 	<div class="item item-divider item-icon-left item-text-wrap">
@@ -11,8 +11,6 @@
 		<ng-include src="'app/actions/actionDescription.html'"></ng-include>
 
 		<div class="text-small space-top"><span class="balanced" ng-if="actions[action._id].numUsers>0">{{num=actions[action._id].numUsers}} Participant{{num > 1 ? 's':''}}</span> <span class="balanced" ng-if="actions[action._id].numLikes>0">{{num2=actions[action._id].numLikes}} Like{{num2 > 1 ? 's':''}}</span> Take this action to see more.</div>
-
-
 		<div>
 			<a class="item item-icon-left" ng-click="chooseSuggestedAction('alreadyDoing')" ng-if="actions[action._id].type != 'regular' && actions[action._id].type != 'irregular'">
 				<i class="icon ion-android-done positive"></i>
@@ -20,7 +18,7 @@
 			</a>
 			<a class="item item-icon-left" ng-click="inputDays()" ng-if="actions[action._id].type == 'regular' || actions[action._id].type == 'irregular'">
 				<i class="icon ion-more balanced"></i>
-				Remind me in ____ days</span>. 
+				Remind me in ____ days. 
 			</a> 
 			<a class="item item-icon-left" ng-click="chooseSuggestedAction('inProgress')">
 				<i class="icon ion-leaf balanced"></i>
@@ -37,6 +35,11 @@
 		</div>
 	</div>
 </div>
+
+<button class="button button-full button-dark icon-left" ng-click="gotoYourActions();">
+	<i class="icon ion-ios-arrow-back"></i>
+	<b>Back to Your Actions</b>
+</button>
 
 </ion-content>
 </ion-view>

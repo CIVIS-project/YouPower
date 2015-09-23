@@ -3,9 +3,16 @@ angular.module('civis.youpower.actions').controller('ActionCtrl', ActionCtrl);
 
 function ActionCtrl($scope, $stateParams, $ionicPopup, $state) {
 
-  if ($scope.$parent.idx > -1){
-     $scope.action = $scope.$parent.suggestedActions[$scope.$parent.idx];
-     console.log($scope.$parent.idx + " " + $scope.action._id);
+  // if ($scope.$parent.idx > -1){
+  //    $scope.action = $scope.$parent.suggestedActions[$scope.$parent.idx];
+  //    console.log($scope.$parent.idx + " " + $scope.action._id);
+  // }
+
+  $scope.action =  $scope.actions[$stateParams.id];
+
+  if ($scope.action === undefined && $scope.$parent.idx > -1) {
+    $scope.action = $scope.$parent.suggestedActions[$scope.$parent.idx];
+    console.log($scope.$parent.idx + " " + $scope.action._id);
   }
 
   $scope.changed = function(){
