@@ -97,75 +97,56 @@ router.post('/', auth.authenticate(), function(req, res) {
  * @apiParam {String} id MongoId of an user
  *
  * @apiExample {curl} Example usage:
- *  curl -i -X POST -H "Content-Type: application/json" -d \
- *  '{
- *    "apartmentId": "XYZ",
- *    "appliancesList": [
- *       {
- *       "appliance": "Washing Machine",
- *       "quantity": 2
- *       },
- *       {
- *        "appliance": "Heater",
- *        "quantity": 4
- *       }
- *    ],
- *    "address": "Konemiehentie 2, Espoo, 02150",
- *    "members": [
- *       {
- *         "_id": "testUser1",
- *         "name": "Jane",
- *       },
- *        {
- *         "_id": "testUser2",
- *         "name": "Jack",
- *       }
- *     ]
- *  }' \
- *  http://localhost:3000/api/household
- *
- * @apiSuccessExample {json} Success-Response:
- *   {
- *     "__v": 0,
- *     "_id": "555f0163688305b57c7cef6c",
- *     "apartmentId": "XYZ",
- *     "appliancesList': [
- *       {
- *         "appliance":"Washing Machine",
- *         "quanity":2
- *       },
- *       {
- *         "appliance":"Heater",
- *         "quanity":4
- *       }
- *     ],
- *     "address": "Konemiehentie 2, Otaniemi, Espoo, 02150",
- *      "members": [
- *        "User":
- *         {
- *          "_id": "testUser1",
- *          "name": "Jane",
- *        },
- *       "User" :
- *        {
- *         "_id": "testUser2",
- *         "name": "Jack",
- *       }
- *     ]
- *   }
+ *  curl -i -X POST -H "Content-Type: application/json" -d \ 
+ *  http://localhost:3000/api/household/invite/555f0163688305b57c7cef6c
+ * 
  */
 router.post('/invite/:userId', auth.authenticate(), function(req, res) {
-  var household = req.body;
-  household.ownerId = req.user._id;
-  Household.invite(req.user._id, res.successRes);
+  req.checkParams('userId', 'Invalid user id').isMongoId();
+  Household.invite(req.user._id, req.params.userId, res.successRes);
 
   Log.create({
     userId: req.user._id,
     category: 'Household',
     type: 'invite',
-    data: household
+    data: req.params.userId
   });
 });
+
+
+
+/**
+ * @api {put} /household/invite/:id Accept or reject a household invite
+ * @apiGroup Household
+ * 
+ * @apiParam {String} id MongoId of the household (that sent the invitation)
+ * @apiParam {Boolean} accepted TRUE if the received invitation is accepted, FALSE otherwise
+ *
+ * @apiExample {curl} Example usage:
+ *  curl -i -X POST -H "Content-Type: application/json" -d \
+ *  '{
+ *    "accepted": "true",
+ *  }' \
+ *  http://localhost:3000/api/household/555f0163688305b57c7cef6c
+ * 
+ */
+router.put('/invite/:id', auth.authenticate(), function(req, res) {
+  req.checkParams('id', 'Invalid household id').isMongoId();
+  req.checkQuery('accepted', 'Accepted must be true or false').isBoolean();
+
+  console.log("req.params: "+JSON.stringify(req.params, null, 4));
+  console.log("req.query: "+JSON.stringify(req.query, null, 4));
+
+  Household.handleInvite(req.params.id, req.user._id, req.query.accepted, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Household',
+    type: 'handle invite',
+    data: req.params
+  });
+});
+
 
 /**
  * @api {get} /household/:id Fetch a household by id
@@ -212,7 +193,7 @@ router.get('/:id', auth.authenticate(), function(req, res) {
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    Household.getApartmentInfo(req.params.id, res.successRes);
+    Household.get(req.params.id, res.successRes);
 
     Log.create({
       userId: req.user._id,
@@ -402,11 +383,11 @@ router.put('/addmember/:id', auth.authenticate(), function(req, res) {
 });
 
 /**
- * @api {put} /household/removemember/:id Remove member from household
+ * @api {put} /household/removemember/:householdId/:userId Remove a member from household
  * @apiGroup Household
  *
- * @apiParam {String} id MongoId of action
- * @apiParam {Array} List of members in the household
+ * @apiParam {String} householdId MongoId of the household
+ * @apiParam {String} userId MongoId of the user (a member of the household)
  *
  * @apiExample {curl} Example usage:
  *  curl -i -X PUT \
@@ -422,20 +403,20 @@ router.put('/addmember/:id', auth.authenticate(), function(req, res) {
  *  }' \
  *  http://localhost:3000/api/household/removemember/555ef84b2fd41ffef6e078a34
  */
-router.put('/removemember/:id', auth.authenticate(), function(req, res) {
-  req.checkParams('id', 'Invalid household id').isMongoId();
+router.put('/removemember/:householdId/:userId', auth.authenticate(), function(req, res) {
+  req.checkParams('householdId', 'Invalid household id').isMongoId(); 
 
   var err;
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    Household.removeMember(req.body, res.successRes);
+    Household.removeMember(req.params.householdId, req.params.userId, res.successRes);
 
     Log.create({
       userId: req.user._id,
       category: 'Household',
       type: 'removeMember',
-      data: req.body
+      data: req.params
     });
   }
 });
