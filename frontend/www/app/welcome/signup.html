@@ -25,10 +25,8 @@
     <p>2. Use your <i>Email address</i> to create or retrieve an account.</p>
   </div> -->
 
-  <div class="button-bar">
-  <a ng-click="gotoSignin()" class="button button-balanced text-bold">Member login</a>
-</div>
-  <form class="list card" name="input">
+  
+  <form class="list" name="input">
     <label class="item item-input">
       <span class="input-label">Email</span>
       <input type="email" name="email" placeholder="Your email address" ng-model="loginData.emailAddress" ng-change="clearSigninClicked()" required>
@@ -49,18 +47,14 @@
       <input type="password" name="password2" placeholder="Repeat your password" ng-model="loginData.password2" ng-change="comparePasswords()" required>
       <span class="errors_icon pos_left" ng-show="!isPasswordsSame"><i class="icon ion-alert-circled"></i></span>
     </label>
-  </form>
-
-  <div class="button-bar">
-    <a class="button button-dark text-bold" ng-disabled="!_.isEmpty(input.$error) || !isPasswordsSame" ng-click="signup(input.$error)">Sign up</a>
-  </div>
-
-  <div>
-    <p class="text-center" ng-show="signinClicked && isRejected">
-      <span class="errors text-center" ></br>Hmm, that's not the right Email/Password.</br> Please try again or </span>
-      <a href="#" class="errors">request a new password</a>.
+     <a class="button button-dark button-full text-bold" ng-disabled="!_.isEmpty(input.$error) || !isPasswordsSame" ng-click="signup(input.$error)">Sign up</a>
+     <p class="errors text-center" ng-show="signinClicked && isRejected">
+      {{loginData.err}}. Please try again. 
     </p>
-  </div>
+  </form> 
+
+  <a ng-click="gotoSignin()" class="button button-balanced button-full text-bold">Already a member? Login here</a>
+
 
 </ion-content>
 </ion-view>

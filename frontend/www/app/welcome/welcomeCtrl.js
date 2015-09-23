@@ -3,13 +3,10 @@ angular.module('civis.youpower.welcome').controller('WelcomeCtrl', WelcomeCtrl);
 
 function WelcomeCtrl($translate, $scope, $rootScope, $state, $ionicViewSwitcher, AuthService) {
 
-	$scope.loginData = {}; 
+	$scope.loginData = {emailAddress:'', password:'', err: ''}; 
 
   // $scope.loginData.emailAddress = "foo";
   // $scope.loginData.password = "bar"; 
-
-  $scope.loginData.emailAddress = "";
-  $scope.loginData.password = ""; 
 
   // $scope.loginData.emailAddress = "yilin@gmx.us";
   // $scope.loginData.password = "barbar"; 
@@ -52,7 +49,7 @@ function WelcomeCtrl($translate, $scope, $rootScope, $state, $ionicViewSwitcher,
 
     $scope.signinClicked = true; 
 
-    AuthService.login($scope.loginData.emailAddress, $scope.loginData.password)
+    AuthService.login($scope.loginData.emailAddress.toLowerCase(), $scope.loginData.password)
     .then(function(data){
 
       $scope.signinClicked = false; 
@@ -60,6 +57,7 @@ function WelcomeCtrl($translate, $scope, $rootScope, $state, $ionicViewSwitcher,
 
     }, function(err){
       $scope.isRejected = true; 
+      $scope.loginData.err = err;
     })
   }
 
@@ -68,16 +66,16 @@ function WelcomeCtrl($translate, $scope, $rootScope, $state, $ionicViewSwitcher,
     $scope.signinClicked = true; 
 
     if (_.isEmpty(err) && $scope.isPasswordsSame){
-      console.log("signup now");
 
-        AuthService.signup($scope.loginData.emailAddress, $scope.loginData.name, $scope.loginData.password)
+        AuthService.signup($scope.loginData.emailAddress.toLowerCase(), $scope.loginData.name, $scope.loginData.password)
         .then(function(data){
 
           $scope.signinClicked = false; 
           $state.go('main.actions.yours'); 
 
-        }, function(err){
+        }, function(err){ 
           $scope.isRejected = true; 
+          $scope.loginData.err = err; 
         })
       }
   }

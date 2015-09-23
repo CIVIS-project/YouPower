@@ -36,11 +36,11 @@ angular.module('civis.youpower')
 
       $http.post(Config.host + '/api/user/register', {email:email, name:name, password:password})
        .success(function (data) {
-        storeUserCredentials(data.token);
-        resolve('Sign success.');
+          storeUserCredentials(data.token);
+          resolve('Sign success.');
        })
        .error(function(data){
-        reject('Sign failed.');
+          reject(data);
        });
 
     });
@@ -57,11 +57,11 @@ angular.module('civis.youpower')
 
       $http.get(Config.host + '/api/user/token', {headers:headers})
        .success(function (data) {
-        storeUserCredentials(data.token);
-        resolve('Login success.');
+          storeUserCredentials(data.token);
+          resolve('Login success.');
        })
        .error(function(data){
-        reject('Login failed.');
+          reject(data); 
        });
 
     });

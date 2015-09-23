@@ -55,8 +55,8 @@ router.post('/register', function(req, res) {
       }
     }, req.body.password, function(err, user) {
       if (err) {
-        return res.status(500).end('error while registering: ' + err);
-      }
+        return res.status(500).send('Error while registering. ' + err);
+      } 
 
       auth.newUserToken(user, function(err, token) {
         if (achievements.isBeta) {
@@ -454,6 +454,12 @@ router.post('/token', auth.basicauth(), function(req, res) {
     res.successRes(err, {
       token: token
     });
+  });
+
+  Log.create({
+    userId: req.user._id,
+    category: 'User Token',
+    type: 'post'
   });
 });
 
