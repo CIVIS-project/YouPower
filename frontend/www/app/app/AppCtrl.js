@@ -29,6 +29,8 @@ function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $i
 			$scope.currentUser.profile.dob = new Date($scope.currentUser.profile.dob);
 		}
 
+		//$scope.users[$scope.currentUser._id] = $scope.currentUser;
+
 		$scope.loadHouseholdProfile($scope.currentUser.householdId);
 
 		// which households invited the current user to join? 

@@ -1,6 +1,17 @@
 <ion-view view-title="Household Profile">
 <ion-content>
 
+  <ion-refresher
+    pulling-text="Pull to refresh..."
+    on-refresh="doRefresh()">
+  </ion-refresher> 
+
+  <div ng-if="currentUser.householdId===null" class="item card item-text-wrap">
+    <p>You don't belong to any household at the mement. Household profile setting is disabled.</p>
+  </div>
+
+  <div ng-if="currentUser.householdId!==null">
+
   <div class="list card">
   <div class="item item-divider">Energy Data Account</div>
   
@@ -44,6 +55,7 @@
     <i class="icon ion-android-add"></i>
     Add more
   </a>
+</div>
 </div>
 
 

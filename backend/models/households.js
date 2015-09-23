@@ -97,7 +97,8 @@ exports.create = function(household, cb) {
     familyComposition: household.familyComposition,
     appliancesList: household.appliancesList,
     energyVal: household.energyVal,
-    ownerId: household.ownerId
+    ownerId: household.ownerId,
+    members: [household.ownerId]
   }, cb);
 };
 

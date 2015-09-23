@@ -56,7 +56,7 @@ function HouseholdCtrl($scope, $filter, $translate, $state, $window, $ionicPopup
 		// } 
 
 		if ($scope.currentUser.householdId !== null && 
-			$scope.households[$scope.currentUser.householdId].members.length > 0) {
+			$scope.households[$scope.currentUser.householdId].members.length > 1) {
 
 			$scope.showHasHousehold(householdId); 
 		}else {
@@ -70,7 +70,7 @@ function HouseholdCtrl($scope, $filter, $translate, $state, $window, $ionicPopup
 			$scope.currentUser.householdId = data._id; 
 			$scope.households[data._id] = data; 
 			//load more household details  
-			$scope.loadHouseholdProfile(data._id); 
+			$scope.loadHouseholdProfile(data._id);
 		});
 	}
 
@@ -130,7 +130,7 @@ function HouseholdCtrl($scope, $filter, $translate, $state, $window, $ionicPopup
 		var alertPopup = $ionicPopup.confirm({
 			title: "<span class='text-medium-large'>" + title + "</span>", 
 			scope: $scope, 
-			template: "<span class='text-medium'>You are about to accept the invitation from "+  $scope.users[$scope.households[householdId].ownerId].profile.name + ". Afterwards you will become a member of that household. <span ng-show='currentUser.householdId !== null && households[currentUser.householdId].members.length === 0'>Your current household will be removed. </span>All members in the same household can see each other's actions, basic profile and household information. Would you like to continue?</span>",
+			template: "<span class='text-medium'>You are about to accept the invitation from "+  $scope.users[$scope.households[householdId].ownerId].profile.name + ". Afterwards you will become a member of that household. <span ng-show='currentUser.householdId !== null && households[currentUser.householdId].members.length === 1'>Your current household will be removed. </span>All members in the same household can see each other's actions, basic profile and household information. Would you like to continue?</span>",
 			okText: "Accept",
 			cancelText: "Cancel",
 			okType: "button-dark"
@@ -140,7 +140,7 @@ function HouseholdCtrl($scope, $filter, $translate, $state, $window, $ionicPopup
 			if (res){
 				//accept 
 				if ($scope.currentUser.householdId !== null && 
-					$scope.households[$scope.currentUser.householdId].members.length === 0){
+					$scope.households[$scope.currentUser.householdId].members.length === 1){
 
 					$scope.removeOwnHouseholdAndAcceptInvite(householdId);
 				}else{
@@ -238,7 +238,6 @@ function HouseholdCtrl($scope, $filter, $translate, $state, $window, $ionicPopup
 
 	}
 
-
 	$scope.responseInvite = function(householdId, accepted){
 
 		Household.responseInvite({id: householdId, accepted: accepted},{}).$promise.then(function(data){
@@ -256,14 +255,6 @@ function HouseholdCtrl($scope, $filter, $translate, $state, $window, $ionicPopup
 			$scope.currentUser.pendingHouseholdInvites.splice($scope.currentUser.pendingHouseholdInvites.indexOf(householdId), 1); 
 		});
 	}
-
-	// $scope.doRefresh = function() {
-	    
-	//     $scope.$broadcast('scroll.refreshComplete');
-	//     $scope.$apply(); 
- //  	};
-
-	
 
 };
 
