@@ -7739,3 +7739,23 @@ ul.rating li {
   padding: 5px 10px; }
   ul.rating li i {
     font-size: 30px; }
+
+.chart-container {
+  padding-left: 38px;
+  padding-right: 38px;
+  position: relative; }
+  .chart-container #chart {
+    height: 300px; }
+  .chart-container .chart-navigation {
+    position: absolute;
+    height: 300px;
+    line-height: 300px;
+    top: 0;
+    max-height: none;
+    font-size: 30px; }
+    .chart-container .chart-navigation.ion-chevron-right {
+      right: 0; }
+    .chart-container .chart-navigation.ion-chevron-left {
+      left: 0; }
+    .chart-container .chart-navigation:before, .chart-container .chart-navigation:after {
+      vertical-align: middle; }

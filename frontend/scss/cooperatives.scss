@@ -1,0 +1,32 @@
+$chartHeight: 300px;
+
+.chart-container {
+  padding-left: 38px;
+  padding-right: 38px;
+  position: relative;
+
+  #chart {
+    height: $chartHeight;
+  }
+  .chart-navigation {
+    position: absolute;
+    height: $chartHeight;
+    line-height: $chartHeight;
+    top: 0;
+    max-height: none;
+    font-size: 30px;
+
+
+    &.ion-chevron-right {
+      right: 0;
+    }
+
+    &.ion-chevron-left {
+      left: 0;
+    }
+
+    &:before, &:after {
+      vertical-align: middle;
+    }
+  }
+}

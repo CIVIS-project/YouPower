@@ -16,19 +16,22 @@
       </div>
       <div class="item">
         <div class="button-bar">
-          <a class="button" ng-class="{active:period=='yearly'}" ng-click="toggleYear()">Yearly</a>
-          <a class="button" ng-class="{active:period=='monthly'}" ng-click="toggleYear()">Monthly</a>
+          <a class="button" ng-class="{active:period=='monthly'}" ng-click="togglePeriod()">Monthly</a>
+          <a class="button" ng-class="{active:period=='yearly'}" ng-click="togglePeriod()">Yearly</a>
         </div>
         <div class="button-bar padding-top padding-bottom">
           <a class="button" ng-class="{active:isActive('hh')}" ng-click="toggleType('hh')">Heating & Hot water</a>
           <a class="button" ng-class="{active:isActive('el')}" ng-click="toggleType('el')">Electricity</a>
         </div>
         <div>
-        <a class="button" href="#/tab/cooperative/setComparison">Compare</a>
-          <span ng-show="comparisons.current != comparisons.all[0]">
-            to {{comparisons.current.name}}
-          </span>
-        </div>
+         <label class="item item-input item-select">
+          <div class="input-label">
+            Compare to
+          </div>
+          <select ng-model="settings.compareTo" ng-change="changeComparison()">
+            <option ng-repeat="option in comparisons" value="ng-option">{{option.name}}</option>
+          </select>
+        </label>
         <div class="padding-top">
           <h2>Energy use (MWh)</h2>
           <table>
@@ -37,10 +40,10 @@
                 max:
               </td class="padding-horizontal">
               <td>
-                <b>82</b> (Oct 2014)
+                <b>{{getMainMax().y}}</b> ({{getMainMax().x | date:"MMM yyyy"}})
               </td>
-              <td class="padding-horizontal">
-                <b>94</b> (Dec 2014)
+              <td class="padding-horizontal" ng-if="settings.compareTo">
+                <b>{{getComparedMax().y}}</b> ({{getComparedMax().x | date:"MMM yyyy"}})
               </td>
             </tr>
             <tr>
@@ -48,10 +51,10 @@
                 min:
               </td class="padding-horizontal">
               <td>
-                <b>41</b> (Jul 2014)
+                <b>{{getMainMin().y}}</b> ({{getMainMin().x | date:"MMM yyyy"}})
               </td>
-              <td class="padding-horizontal">
-                <b>41</b> (Jul 2014)
+              <td class="padding-horizontal" ng-if="settings.compareTo">
+                <b>{{getComparedMin().y}}</b> ({{getComparedMin().x | date:"MMM yyyy"}})
               </td>
             </tr>
             <tr>
@@ -59,16 +62,19 @@
                 average:
               </td class="padding-horizontal">
               <td>
-                <b>69</b>
+                <b>{{getMainAvg() | number:2}}</b>
               </td>
-              <td class="padding-horizontal">
-                <b>76</b>
+              <td class="padding-horizontal" ng-if="settings.compareTo">
+                <b>{{getComparedAvg() | number:2}}</b>
               </td>
             </tr>
           </table>
         </div>
-
-      <highchart id="chart1" config="chartConfig"></highchart>
+      <div class="chart-container">
+        <a class="button button-clear button-stable chart-navigation ion-chevron-left" ng-click="moveBwd()"></a>
+        <highchart id="chart" config="chartConfig"></highchart>
+        <a class="button button-clear button-stable chart-navigation ion-chevron-right" ng-click="moveFwd()"></a>
+      </div>
       </div>
       <a ng-repeat="action in cooperative.actions" class="item" ng-click="action.showExtra = !showExtra">
         <span class="badge badge-energized">{{cooperative.actions.length - $index}}</span>

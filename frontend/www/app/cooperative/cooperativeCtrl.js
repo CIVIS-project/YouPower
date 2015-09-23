@@ -1,17 +1,24 @@
+'use strict';
+
 angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
 
-.controller('CooperativeCtrl', function($scope,Cooperatives) {
+.controller('CooperativeCtrl', function($scope,$timeout,Cooperatives) {
 
+
+  // Get the cooperative, currently hardcoded
   Cooperatives.get({id:'55f14ce337d4bef728a861ab'},function(data){
     $scope.cooperative = data;
-    //This is not a highcharts object. It just looks a little like one!
+
+    // Setup highcharts
     $scope.chartConfig = {
 
+      // Standard configuration option
       options: {
           //This is the Main Highcharts chart config. Any Highchart options are valid here.
           //will be overriden by values specified below.
           chart: {
-              type: 'column'
+            animation: true,
+            type: 'column'
           },
           legend: {
             enabled: false
@@ -30,70 +37,104 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
             }
           }],
       },
-      //The below properties are watched separately for changes.
 
-      //Series object (optional) - a list of series using normal highcharts series options.
+      //The below properties are watched separately for changes.
       series: [{
-         data: [85, 91, 81, 70, 64, 50, 41, 53, 60, 89, 82, 94],
+         data: demoData([85, 91, 81, 70, 64, 50, 41, 53, 60, 89, 82, 94]),
          // pointPadding: 0.001,
          groupPadding: 0.01
       },{
-        data:  [81, 92, 84, 75, 61, 55, 42, 58, 62, 81, 87, 91],
+        data:  demoData([81, 92, 84, 75, 61, 55, 42, 58, 62, 81, 87, 91]),
         type: 'spline'
       }],
-      //Title configuration (optional)
+
       title: {
          text: null
       },
-      //Boolean to control showng loading status on chart (optional)
-      //Could be a string if you want to show specific loading text.
-      loading: false,
-      //Configuration for the xAxis (optional). Currently only one x axis can be dynamically controlled.
-      //properties currentMin and currentMax provied 2-way binding to the chart's maximimum and minimum
-      xAxis: {
-        categories: $scope.categories,
-        tickWidth: 0,
-        tickLength: 20,
-        labels: {
-          y: -10,
-          useHTML: true,
-          formatter: function(){
-            console.log("Entered formatter")
-            if($scope.cooperative) {
-              console.log("Entered formatter 2")
-              var currentPeriod = this.value;
-              var actionsInPeriod = _.reduce($scope.cooperative.actions,function(result, action, index){
-                var date = new Date(action.date);
-                if(currentPeriod.value == date.getMonth()){
-                  result = result + (result.length ? ", " : "") + (index + 1);
-                }
-                return result;
-              },"");
-              return this.value.label + "<br><span class='badge badge-energized'>" + actionsInPeriod + "</span>";
-            } else return this.value.label;
-          }
-        },
 
+      xAxis: {
+        // categories: $scope.categories,
+        type: 'datetime',
+        // tickWidth: 0,
+        // tickLength: 20,
+        // labels: {
+        //   y: -10,
+        //   useHTML: true,
+        //   formatter: function(){
+        //     if($scope.cooperative) {
+        //       var currentPeriod = this.value;
+        //       var actionsInPeriod = _.reduce($scope.cooperative.actions,function(result, action, index){
+        //         var date = new Date(action.date);
+        //         if(currentPeriod.value == date.getMonth()){
+        //           result = result + (result.length ? ", " : "") + (index + 1);
+        //         }
+        //         return result;
+        //       },"");
+        //       return this.value.label + "<br><span class='badge badge-energized'>" + actionsInPeriod + "</span>";
+        //     } else return this.value.label;
+        //   }
+        // },
       },
-      //Whether to use HighStocks instead of HighCharts (optional). Defaults to false.
-      useHighStocks: false,
-      //size (optional) if left out the chart will default to size of the div or something sensible.
-      size: {
-       width: 400,
-       height: 300
-      },
-      //function (optional)
-      func: function (chart) {
-       //setup some logic for the chart
+      func: function(chart) {
+        $timeout(function(){
+          chart.series[1].setVisible(false);
+          $scope.getMainMax = function(){
+            // var chart = $scope.chartConfig.getHighcharts();
+            return _.max(chart.series[0].data,function(value){return value.y});
+          }
+
+          $scope.getMainMin = function(){
+            // var chart = $scope.chartConfig.getHighcharts();
+            return _.min(chart.series[0].data,function(value){return value.y});
+          }
+
+          $scope.getMainAvg = function(){
+            // var chart = $scope.chartConfig.getHighcharts();
+            return _.reduce(chart.series[0].data,function(memo, value){return memo + (value ? value.y : 0)},0)/chart.series[0].data.length;
+          }
+
+          $scope.getComparedMax = function(){
+            // var chart = $scope.chartConfig.getHighcharts();
+            return _.max(chart.series[1].data,function(value){return value.y});
+          }
+
+          $scope.getComparedMin = function(){
+            // var chart = $scope.chartConfig.getHighcharts();
+            return _.min(chart.series[1].data,function(value){return value.y});
+          }
+
+          $scope.getComparedAvg = function(){
+            // var chart = $scope.chartConfig.getHighcharts();
+            return _.reduce(chart.series[1].data,function(memo, value){return memo + (value ? value.y : 0)},0)/chart.series[1].data.length;
+          }
+        });
       }
     };
   });
 
+
   var energyType =[];
 
-  monthCategories = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D']
+  $scope.comparisons = [
+    {name: ""},
+    {name: "similar cooperatives (average)"},
+    {name: "previous year"},
+    {name: "previous year (normalized)"}
+  ]
 
-  // $scope.comparisons = Comparison;
+  $scope.settings = {
+    granularity: "monthly",
+    compareTo: ""
+  }
+
+  $scope.changeComparison = function(){
+    var chart = $scope.chartConfig.getHighcharts();
+    if($scope.settings.compareTo != "") {
+      chart.series[1].setVisible(true);
+    }else{
+      chart.series[1].setVisible(false);
+    }
+  };
 
   $scope.categories = [ { label: 'J', value: 0 },
   { label: 'F', value: 1 },
@@ -108,7 +149,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
   { label: 'N', value: 10 },
   { label: 'D', value: 11 } ];
 
-  $scope.period = 'yearly';
+  $scope.period = 'monthly';
 
   $scope.toggleType = function(type){
     if(energyType.indexOf(type)<0) {
@@ -117,7 +158,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
       energyType.splice(energyType.indexOf(type),1);
     }
   }
-  $scope.toggleYear = function(){
+  $scope.togglePeriod = function(){
     if($scope.period == 'yearly'){
       $scope.period = 'monthly'
     }
@@ -132,15 +173,45 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
   }
 
   $scope.moveFwd = function() {
-
+    var chart = $scope.chartConfig.getHighcharts();
+    var date = new Date(_.last(chart.series[0].data).x)
+    date.setMonth(date.getMonth()+1);
+    if(date < new Date()) {
+      chart.series[0].addPoint({x:date,y:_.random(40,95)},false,true);
+      chart.series[1].addPoint({x:date,y:_.random(40,95)},false,true);
+      chart.redraw();
+    }
   }
 
   $scope.moveBwd = function() {
-
+    var chart = $scope.chartConfig.getHighcharts();
+    chart.series[0].removePoint(11,false);
+    chart.series[1].removePoint(11,false);
+    var date = new Date(_.first(chart.series[0].data).x)
+    date.setMonth(date.getMonth()-1);
+    chart.series[0].addPoint({x:date,y:_.random(40,95)},false,false);
+    chart.series[1].addPoint({x:date,y:_.random(40,95)},false,false);
+    chart.redraw();
+    // $scope.categories.rotate(-1);
   }
 
   $scope.addAction = function(action){
     Cooperatives.addAction({id:$scope.cooperative._id},action)
+  }
+
+
+
+
+
+  var demoData = function(array){
+    var result = _.map(array, function(value,index){
+      var date = new Date();
+      date.setDate(1);
+      console.log("Value:", value, "Index:", index)
+      return {x: date.setMonth(date.getMonth()-index), y: value}
+    }).reverse();
+    console.log(result);
+    return result;
   }
 
 
