@@ -46,6 +46,12 @@
   </div>
 </div>
 
+<div class="list card" ng-if="currentUser.leaves>0">
+  <div class="item">
+  You gathered <i class="icon ion-leaf balanced icon-large"><span class="leaves-nr">{{currentUser.leaves}}</span></i>{{currentUser.leaves > 1 ? 'leaves':'leaf'}} in total <i class="icon ion-happy-outline"></i>
+  </div>
+</div>
+
 <button class="button icon-left button-full button-dark" ng-click="addActions()">
   <i class="icon ion-android-add"></i>
   <b>Add Action</b>

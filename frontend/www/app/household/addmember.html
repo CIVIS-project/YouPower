@@ -20,7 +20,7 @@
       <img ng-if="user.profile.photo" src="user.profile.photo">
       <img ng-if="!user.profile.photo" src="/img/eco.jpg">
       <h2>{{user.profile.name}}<span ng-if="user._id===currentUser._id" class="item-note">You</span><span ng-if="isInvitedToHousehold(user._id)" class="item-note">Invitation sent</span><span ng-if="user._id!==currentUser._id&&isInYourHousehold(user._id)" class="item-note">In Your Household</span></h2> 
-      <p>{{user.email}}</p>
+      <p>{{_.size(user.actions.inProgress)}} current actions</p>
   </div>
 </div>
 

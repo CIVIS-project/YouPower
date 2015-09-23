@@ -23,7 +23,7 @@
         <ion-item nav-clear menu-close href="#/app/actions/yours">
           Actions
         </ion-item>
-        <ion-item nav-clear menu-close href="#/app/prosumption">
+        <ion-item nav-clear menu-close ng-if="currentUser.householdId&&households[currentUser.householdId].connected===true" href="#/app/prosumption">
           Energy Data
         </ion-item>
        <!--  <ion-item nav-clear menu-close href="#/app/household">
@@ -32,7 +32,7 @@
         <ion-item nav-clear menu-close href="#/app/communities">
           Communities
         </ion-item> -->
-        <ion-item nav-clear menu-close href="#/app/brf">
+        <ion-item nav-clear menu-close ng-if="currentUser.brf" href="#/app/brf">
           Housing Cooperatives<!-- Bostadsrättsförening  -->
         </ion-item>
         <ion-item nav-clear menu-close href="#/app/settings">

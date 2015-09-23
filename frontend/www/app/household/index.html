@@ -13,7 +13,7 @@
       <img ng-if="users[households[householdId].ownerId].profile.photo" src="users[households[householdId].ownerId].profile.photo">
       <img ng-if="!users[households[householdId].ownerId].profile.photo" src="/img/eco.jpg">
       <h2>{{users[households[currentUser.householdId].ownerId].profile.name}}<span class="item-note">Household Owner</span></h2>
-      <p>{{_.size(users[households[currentUser.householdId].ownerId].actions.inProgress)}} current actions <i class="icon ion-leaf balanced"> {{users[households[currentUser.householdId].ownerId].leaves}}</i></p>
+      <p>{{_.size(users[households[currentUser.householdId].ownerId].actions.inProgress)}} current actions <i class="icon ion-leaf balanced">{{users[households[currentUser.householdId].ownerId].leaves}}</i></p>
     </div>
     <div class="item item-icon-left item-icon-right item-text-wrap" ng-repeat="action in users[households[currentUser.householdId].ownerId].actions.inProgress" ng-click="showAction(action)">
       <i class="icon ion-leaf balanced"><span class="leaves-nr">{{getActionPoints(action)}}</span></i>
@@ -35,7 +35,7 @@
       <img ng-if="users[memberId].profile.photo" src="users[memberId].profile.photo">
       <img ng-if="!users[memberId].profile.photo" src="/img/eco.jpg">
       <h2>{{users[memberId].profile.name}}</h2> 
-      <p>{{_.size(users[memberId].actions.inProgress)}} current actions <i class="icon ion-leaf balanced"> {{users[memberId].leaves}}</i></p>
+      <p>{{_.size(users[memberId].actions.inProgress)}} current actions <i class="icon ion-leaf balanced">{{users[memberId].leaves}}</i></p>
     </div>
     <div class="item item-icon-left item-icon-right item-text-wrap" ng-repeat="action in users[memberId].actions.inProgress" ng-click="showAction(action)">
       <i class="icon ion-leaf balanced"><span class="leaves-nr">{{getActionPoints(action)}}</span></i>
@@ -87,7 +87,7 @@
     <img ng-if="users[member].profile.photo" src="users[member].profile.photo">
     <img ng-if="!users[member].profile.photo" src="/img/eco.jpg">
     <h2>{{users[member].profile.name}}<span class="item-note">Waiting for reply</span></h2>
-    <p>{{_.size(users[member].actions.inProgress)}} current actions <i class="icon ion-leaf balanced"> {{users[member].leaves}}</i></p>
+    <p>{{_.size(users[member].actions.inProgress)}} current actions <i class="icon ion-leaf balanced">{{users[member].leaves}}</i></p>
   </div>
 </div>
 
