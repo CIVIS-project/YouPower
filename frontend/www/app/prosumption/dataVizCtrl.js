@@ -19,7 +19,9 @@ function isPriceGood(price) {
     var threshold = 2; //totally random threshold, to be replaced at some point
     return (price<=threshold? true : false);
 }
-
+function getTimeRemaining() {
+    return '1h';
+}
 
 function dataVizCtrl($scope, $state, User, $http) {
 	//just loads the content of the window once the tabs have been generated
@@ -39,6 +41,8 @@ else {
     $scope.priceIcon='ion-sad-outline';
     $scope.priceIconColor="energized";
 }
+
+$scope.timeRemaining = getTimeRemaining();
 
 $scope.lastConsumption= getRandomData();
 $scope.lastProduction = getRandomData();
