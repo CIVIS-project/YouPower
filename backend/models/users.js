@@ -21,10 +21,11 @@ var UserSchema = new Schema({
   profile: {
     name: String,
     nickname: String,
-    gender: {
-      type: String,
-      enum: 'Male Female'.split(' ')
-    },
+    gender: String,
+    // gender: {
+    //   type: String,
+    //   enum: 'Male Female'.split(' ')
+    // },
     dob: Date,
     photo: String,
     language: {
