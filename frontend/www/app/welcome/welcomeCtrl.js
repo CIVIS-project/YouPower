@@ -3,15 +3,15 @@ angular.module('civis.youpower.welcome').controller('WelcomeCtrl', WelcomeCtrl);
 
 function WelcomeCtrl($translate, $scope, $rootScope, $state, $ionicViewSwitcher, AuthService) {
 
-	$scope.loginData = {}
+	$scope.loginData = {}; 
 
   // $scope.loginData.emailAddress = "foo";
   // $scope.loginData.password = "bar"; 
 
   $scope.loginData.emailAddress = "yilin@gmx.us";
-  $scope.loginData.name = "Yilin";
   $scope.loginData.password = "barbar"; 
-  $scope.loginData.password2 = "barbar"; 
+  // $scope.loginData.name = "Yilin";
+  // $scope.loginData.password2 = "barbar"; 
 
 
   $scope.comparePasswords = function(){ 

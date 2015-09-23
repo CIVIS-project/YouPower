@@ -1,67 +1,117 @@
-<ion-view view-title="Household Actions">
-  <ion-nav-buttons side="right">
-    <button class="button button-clear button-dark icon ion-ios-personadd" ng-click="addMember()">&#8200;</button>
-  </ion-nav-buttons>
-  <ion-content class="padding">
+<ion-view cache-view="false" view-title="Household Actions">
+<ion-nav-buttons side="right">
+<button ng-show="currentUser.householdId===null || households[currentUser.householdId].ownerId===currentUser._id" class="button button-clear button-dark icon ion-ios-personadd" ng-click="addMember()">&#8200;</button>
+</ion-nav-buttons>
+<ion-content class="padding"> 
 
+<!-- <ion-refresher pulling-text="Pull to refresh" on-refresh="doRefresh()">
+</ion-refresher> -->
 
-  <div class="list card" ng-if="currentUser.pendingHouseholdInvites.length> 0">
-  <div class="item item-divider">New Invitation{{currentUser.pendingHouseholdInvites.length>1?'s':''}} to Join Household ({{currentUser.pendingHouseholdInvites.length}})</div>
-  <a class="item item-icon-left item-icon-right" ng-repeat="action in _.toArray(currentUser.actions.inProgress) | orderBy: '-startedDate[startedDate.length-1]' | limitTo: maxNumberShow.inProgress" ng-href="#/app/actions/current/{{$index}}">
-    <i class="icon ion-leaf balanced"></i>
-    <span class="leafs balanced">
-      {{getActionPoints(action)}}
-    </span>{{action.name}}
-    <i class="icon ion-chevron-right icon-accessory"></i>
-  </a>
-  <div class="text-right" ng-if="_.size(currentUser.actions.inProgress) >= maxNumberShow.inProgress">
-    <a ng-if="maxNumberShow.inProgress>sNr" class="button button-clear button-stable icon-left ion-chevron-up button-small" ng-click="showLess('inProgress')">Show me less</a>
-    <a ng-if="maxNumberShow.inProgress<_.size(currentUser.actions.inProgress)" class="button button-clear button-stable icon-left ion-chevron-down button-small" ng-click="showMore('inProgress')"> Show me more</a>
+<div class="list card" ng-if="currentUser.householdId !== null && households[currentUser.householdId].members.length > 0">
+  <div ng-if="households[currentUser.householdId].ownerId !== currentUser._id">
+    <div class="item item-avatar item-text-wrap header">
+      <img ng-if="users[households[householdId].ownerId].profile.photo" src="users[households[householdId].ownerId].profile.photo">
+      <img ng-if="!users[households[householdId].ownerId].profile.photo" src="/img/eco.jpg">
+      <h2>{{users[households[currentUser.householdId].ownerId].profile.name}}<span class="item-note">Household Owner</span></h2>
+      <p>{{_.size(users[households[currentUser.householdId].ownerId].actions.inProgress)}} current actions <i class="icon ion-leaf balanced"> {{users[households[currentUser.householdId].ownerId].leaves}}</i></p>
+    </div>
+    <div class="item item-icon-left item-icon-right item-text-wrap" ng-repeat="action in users[households[currentUser.householdId].ownerId].actions.inProgress" ng-click="showAction(action)">
+      <i class="icon ion-leaf balanced"><span class="leaves-nr">{{getActionPoints(action)}}</span></i>
+      {{action.name}}
+      <p class="text-small" ng-show="_.has(currentUser.actions.inProgress, action._id)">
+        You are doing this as well <i class="ion-happy-outline "></i>
+      </p>
+      <p class="text-small" ng-show="_.has(currentUser.actions.done, action._id)">
+        You have done this <i class="ion-checkmark"></i>
+      </p>
+      <p class="text-small" ng-show="_.has(currentUser.actions.pending, action._id)">
+        Your pending action <i class="ion-android-calendar"></i> {{_.last(currentUser.actions.pending[action._id].postponedDate) | date: "yyyy-MM-dd"}}
+      </p>
+      <i class="icon ion-chevron-right icon-accessory"></i>
+    </div>
+  </div>
+  <div ng-repeat="memberId in households[currentUser.householdId].members" ng-if="memberId !== currentUser._id">
+    <div class="item item-avatar item-text-wrap header">
+      <img ng-if="users[memberId].profile.photo" src="users[memberId].profile.photo">
+      <img ng-if="!users[memberId].profile.photo" src="/img/eco.jpg">
+      <h2>{{users[memberId].profile.name}}</h2> 
+      <p>{{_.size(users[memberId].actions.inProgress)}} current actions <i class="icon ion-leaf balanced"> {{users[memberId].leaves}}</i></p>
+    </div>
+    <div class="item item-icon-left item-icon-right item-text-wrap" ng-repeat="action in users[memberId].actions.inProgress" ng-click="showAction(action)">
+      <i class="icon ion-leaf balanced"><span class="leaves-nr">{{getActionPoints(action)}}</span></i>
+      {{action.name}}
+      <p class="text-small" ng-show="_.has(currentUser.actions.inProgress, action._id)">
+        You are doing this as well <i class="ion-happy-outline "></i>
+      </p>
+      <p class="text-small" ng-show="_.has(currentUser.actions.done, action._id)">
+        You have done this <i class="ion-checkmark"></i>
+      </p>
+      <p class="text-small" ng-show="_.has(currentUser.actions.pending, action._id)">
+      You have this one pending <i class="ion-android-calendar"></i>  {{_.last(currentUser.actions.pending[action._id].postponedDate) | date: "yyyy-MM-dd"}} 
+      </p>
+      <i class="icon ion-chevron-right icon-accessory"></i>
+    </div>
   </div>
 </div>
 
-    <div class="list card">
-      <span ng-repeat="member in user.familyMembers">
-        <span from="users familyMember" where="familyMember.id=member.id" provider="firebase">
-      <div class="item item-divider item-icon-left item-icon-right"><i class="icon ion-person"></i>
-              {{member.name}} ({{_.size(familyMember.actionsActive)}} actions)
-              <b class="balanced" style="float: right; white-space:pre"><i class="icon ion-leaf balanced"></i>         {{familyMember.points ? familyMember.points : 0}}</b></div>
-          <div class="item item-icon-left item-icon-right" ng-repeat="actionA in familyMember.actionsActive" ng-click="goToAction(user,actionA.id)">
-            <span from="actions action"  provider="firebase" where="action.id=actionA.id" >
-              <!-- ng-repeat="(idx, action) in actions" > -->
-              <span class="balanced" >
-                <b>{{action.points}}</b>
-              </span>
-              <i class="icon ion-leaf balanced"></i>
-              {{action.title}}
-            <span class="item-note" from="user.actionsActive act2" where="act2.id=action.id">
-            You are doing this as well
-            </span>
-              <i class="icon ion-chevron-right icon-accessory"></i>
-            </span>
-          </div>
-        </span>
+
+<div class="list card" ng-if="currentUser.pendingHouseholdInvites.length > 0">
+  <div class="item item-divider">
+    Pending Invitation ({{currentUser.pendingHouseholdInvites.length}})
+    <p class="item-note" ng-show="currentUser.pendingHouseholdInvites.length > 1">You may join one household only</p>
+  </div>
+  <a class="item item-avatar item-text-wrap"  ng-repeat="householdId in currentUser.pendingHouseholdInvites" ng-click="checkHouseholdInvite(householdId)">
+    <img ng-if="users[households[householdId].ownerId].profile.photo" src="users[households[householdId].ownerId].profile.photo">
+    <img ng-if="!users[households[householdId].ownerId].profile.photo" src="/img/eco.jpg">
+    <p>You are invited to join the household of {{users[households[householdId].ownerId].profile.name}}. 
+      <span ng-if="households[householdId].members.length > 0">
+        <span ng-repeat="memberId in households[householdId].members">
+          users[memberId].name {{$index}}
+        </span> already joined.
       </span>
-      <!-- <a href="#" class="item item-divider item-icon-left">
-        <i class="icon ion-android-add"></i>
-        Add family member
-      </a> -->
-    </div>
-
-    <button class="button icon-left button-full button-dark" ng-click="addMember()">
-      <i class="icon ion-android-add"></i>
-      <b>Add Member to Your Household</b>
+    </p>
+    <button class="button button-stable button-small button-40 text-bold" ng-click="confirmIgnore(householdId)">
+      IGNORE
     </button>
-<!--     <div class="list card">
-      <div class="item item-divider">Your Energy Consumption</div>
-      <a href="#" class="item item-icon-left item-icon-right">
-        <i class="icon ion-leaf"></i>
-        5 trees needed to offset this month's carbon emission
-        <i class="icon ion-chevron-right icon-accessory"></i>
-      </a>
-      <a href="#" class="item">
+    <button class="button button-dark button-small button-40 text-bold" ng-click="checkAccept(householdId)">
+      ACCEPT
+    </button>
+  </a>
+</div>
 
-      </a>
-    </div> -->
-  </ion-content>
+<div class="list card" ng-if="currentUser.householdId && households[currentUser.householdId].ownerId===currentUser._id && households[currentUser.householdId].pendingInvites.length!==0">
+  <div class="item item-divider">
+    Invited to Your Household ({{households[currentUser.householdId].pendingInvites.length}})
+  </div>
+  <div class="item item-avatar item-text-wrap"  ng-repeat="member in households[currentUser.householdId].pendingInvites">
+    <img ng-if="users[member].profile.photo" src="users[member].profile.photo">
+    <img ng-if="!users[member].profile.photo" src="/img/eco.jpg">
+    <h2>{{users[member].profile.name}}<span class="item-note">Waiting for reply</span></h2>
+    <p>{{_.size(users[member].actions.inProgress)}} current actions <i class="icon ion-leaf balanced"> {{users[member].leaves}}</i></p>
+  </div>
+</div>
+
+<button class="button icon-left button-full button-dark" ng-click="addMember()" ng-disabled="currentUser.householdId!==null && households[currentUser.householdId].ownerId !== currentUser._id">
+  <i class="icon ion-ios-personadd"></i>
+  <b>Invite Member to Your Household</b>
+</button>
+<p class="message" ng-show="currentUser.householdId!==null && households[currentUser.householdId].ownerId !== currentUser._id">Invite button is disabled. Only household owner can invite members.</p>
+
+<div ng-if="currentUser.householdId!==null">
+<button class="button icon-left button-full button-dark" ng-click="confirmLeaveCurrentHousehold()" ng-disabled="households[currentUser.householdId].ownerId===currentUser._id && households[currentUser.householdId].members.length > 0">
+  <i class="icon ion-android-close"></i>
+  <b>Leave Your Current Household</b>
+</button>
+<p class="message" ng-show="households[currentUser.householdId].ownerId===currentUser._id">You are a household owner. <span ng-show="households[currentUser.householdId].members.length > 0">Leave button is disabled because <span ng-show="households[currentUser.householdId].members.length > 1">there are still members</span><span ng-show="households[currentUser.householdId].members.length===1">there is still a member</span> in your household.</span></p>
+</div>
+
+<div ng-if="currentUser.householdId===null">
+<button class="button icon-left button-full button-dark" ng-click="createHousehold()">
+  <i class="icon ion-android-add"></i>
+  <b>Create Household by Your Own</b>
+</button>
+</div>
+
+
+</ion-content>
 </ion-view>

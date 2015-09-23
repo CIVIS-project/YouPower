@@ -17,7 +17,7 @@ angular.module('civis.youpower.actions')
 .controller('MemberCtrl', MemberCtrl);
 
 
-function MemberCtrl($scope, $filter, $translate, $state, User) {
+function MemberCtrl($scope, $filter, $translate, $state, $ionicPopup, User, Household) {
 
 	$scope.search = {
 		input: {text: '', typing:false}, 
@@ -41,9 +41,69 @@ function MemberCtrl($scope, $filter, $translate, $state, User) {
 
 	$scope.clearEmailHouseholdInput();
 
+
+	$scope.inviteToHousehold = function(user) {
+
+		//the user is the current user, do nothing
+		if ($scope.currentUser._id === user._id) return; 
+
+		if ($scope.currentUser.householdId === null) {
+			$scope.createHousehold(user, $scope.invite);
+		}else{
+			$scope.invite(user);
+		}
+	}
+
+	$scope.invite = function(user){ 
+
+		$scope.loadUserProfile(user._id); 
+		
+		Household.invite({userId: user._id},{}).$promise.then(function(data){
+			console.log("invite now");
+			$scope.households[data._id] = data;
+		});
+	}
+
+
+	$scope.confirmToInvite = function(user){
+
+		if (user._id === $scope.currentUser._id || 
+			($scope.currentUser.householdId !== null 
+				&& ($scope.isInvitedToHousehold(user._id) || $scope.isInYourHousehold(user._id))))
+			return; 
+
+		var title = "Confirm Invite";
+
+		var alertPopup = $ionicPopup.confirm({
+			title: "<span class='text-medium-large'>" + title + "</span>", 
+			template: "<span class='text-medium'>You are about to invite " + user.profile.name + " to your household. If the person accepts your invite, you both will be able to see each other's actions, basic profile and household information. Would you like to continue?</span>",
+			okText: "Yes",
+			cancelText: "Cancel",
+			okType: "button-dark"
+		});
+
+		alertPopup.then(function(res) { 
+			if (res){
+				$scope.inviteToHousehold(user); 
+			}
+		}); 
+	}
+
+	$scope.createHousehold = function(user, cb){
+
+		Household.create().$promise.then(function(data){ 
+			$scope.currentUser.householdId = data._id; 
+			$scope.households[data._id] = data; 
+			//load more household details  
+			$scope.loadHouseholdProfile(data._id); 
+			if (typeof cb === 'function' && user) cb(user); 
+		});
+	}
+
 	$scope.clearSearch = function(){
 		$scope.search.input.text = '';
 		$scope.search.noResult = false;
+		$scope.email.showForm = false; 
 	}
 
 	$scope.searchUser = function(){

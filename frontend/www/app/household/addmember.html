@@ -1,4 +1,4 @@
-<ion-view view-title="Add Household Member">
+<ion-view view-title="Invite Household Member">
 <ion-content class="padding">
 
 <!-- <div class="item-input-inset">
@@ -16,22 +16,29 @@
     <input type="search" placeholder="Search user by name" ng-model="search.input.text" ng-change="search.input.typing=true" ng-enter="searchUser()"/>
     <a class="button-icon icon ion-backspace-outline text-small" ng-click="clearSearch()"></a>
   </div>
-  <a class="item item-avatar" ng-click="inviteToHousehold(user)" ng-repeat="user in search.users">
+  <div class="item item-avatar" ng-click="confirmToInvite(user)" ng-repeat="user in search.users">
       <img ng-if="user.profile.photo" src="user.profile.photo">
       <img ng-if="!user.profile.photo" src="/img/eco.jpg">
-      <h2>{{user.profile.name}}<span ng-if="user._id===currentUser._id" class="item-note item-text-wrap">You</span></h2>
+      <h2>{{user.profile.name}}<span ng-if="user._id===currentUser._id" class="item-note">You</span><span ng-if="isInvitedToHousehold(user._id)" class="item-note">Invitation sent</span><span ng-if="user._id!==currentUser._id&&isInYourHousehold(user._id)" class="item-note">In Your Household</span></h2> 
       <p>{{user.email}}</p>
-  </a>
+  </div>
 </div>
 
 <p class="message" ng-show="!search.input.typing && search.noResult">Sorry, we can not find '{{search.input.text}}' among YouPower users. Please try another name.</p>
+
+
+<button class="button button-full button-dark icon-left" ng-click="gotoHouseholdActions();">
+  <i class="icon ion-ios-arrow-back"></i>
+  <b>Back to Household Actions</b>
+</button>
+
 
 <div class="card" ng-show="search.noResult">
   <div class="item item-text-wrap item-divider">
     <h2>Can not find the one you are looking for?</h2> 
   </div>
 
-  <a ng-show="!email.showForm" ng-click="email.showForm=true; email.sent=false;email.err=null" class="item item-icon-left">
+  <a ng-show="!email.showForm" ng-click="email.showForm=true;email.sent=false;email.err=null" class="item item-icon-left">
     <i class="icon ion-ios-email-outline"></i>
     Send an Invitation by Email
   </a>
@@ -60,6 +67,7 @@
 <p class="message" ng-show="email.sending">Sending your invitation to {{emailHouseholdInput.email}}...</p>
 <p class="message" ng-show="email.sent">Your invitation is sent to {{email.to}}.</p>
 <p class="message" ng-show="email.err">We can not send your invitation to {{emailHouseholdInput.email}}. An error occurred.</p>
+
 
   </ion-content>
 </ion-view>

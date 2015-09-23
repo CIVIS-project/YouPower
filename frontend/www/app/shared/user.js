@@ -18,6 +18,10 @@ angular.module('civis.youpower')
       method: 'POST',
       url: Config.host + '/api/user/profile'
     },
+    getUserProfile : {
+      method: 'GET',
+      url: Config.host + '/api/user/profile/:userId'
+    },
     search : {
       method: 'GET',
       isArray: true, 
@@ -30,12 +34,6 @@ angular.module('civis.youpower')
     mailHouseholdMember : {
       method: 'POST', 
       url: Config.host + '/api/user/sendMail/householdMember'
-    },
-
-
-
-    
-
-
+    }
   });
 });

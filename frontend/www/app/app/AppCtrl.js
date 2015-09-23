@@ -5,14 +5,18 @@ hierarchy as it will be loaded with abstract main state.
 Here we can do the general app stuff like getting the user's
 details (since this is after the user logs in).
 ----------------------------------------------*/
-function AppCtrl($scope, $state, $ionicHistory, $ionicViewSwitcher, User, Actions, AuthService) { 
+function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $ionicLoading, User, Actions, Household, AuthService) { 
 
 	$scope.userPictures = {}; 
 
-	$scope.actions = {}; // save action details
+	$scope.actions = {}; //save action details
 
 	$scope.commentPoints = 1; 
-	$scope.feedbackPoints = 1; 
+	$scope.feedbackPoints = 1;        
+
+	$scope.households = {}; //save information of households
+
+	$scope.users = {}; //save user details. not the current user, the other household members and invited members 
 
 	/*
 	load the data of the user ($scope.currentUser)
@@ -24,6 +28,11 @@ function AppCtrl($scope, $state, $ionicHistory, $ionicViewSwitcher, User, Action
 		if ($scope.currentUser.profile.dob && $scope.currentUser.profile.dob !== null){
 			$scope.currentUser.profile.dob = new Date($scope.currentUser.profile.dob);
 		}
+
+		$scope.loadHouseholdProfile($scope.currentUser.householdId);
+
+		// which households invited the current user to join? 
+		$scope.loadHouseholdsDetails($scope.currentUser.pendingHouseholdInvites);
 
 		//whether the user wants to rehearse the actions, inite the variable 
 		//this can be loaded from the backend TODO post the data to the backend
@@ -49,7 +58,55 @@ function AppCtrl($scope, $state, $ionicHistory, $ionicViewSwitcher, User, Action
 
 		console.log("user data");
 		console.log($scope.currentUser); 
-	});
+	}); 
+
+	
+	$scope.loadHouseholdsDetails = function(households) {
+
+		for (var i=0; i < households.length; i++) {
+			$scope.loadHouseholdProfile(households[i]);
+		}
+
+	}
+
+	$scope.loadHouseholdProfile = function(householdId, cb){
+
+		if (householdId === null) return; 
+
+		Household.get({id: householdId}).$promise.then(function(data){
+
+			$scope.households[householdId] = data; 
+
+			$scope.loadUsersDetails(data.members);
+			$scope.loadUsersDetails(data.pendingInvites);
+			$scope.loadUserProfile(data.ownerId);
+
+			console.log("load household data");
+			console.log($scope.households); 
+
+			if (typeof cb === 'function') cb(); 
+		});
+	}
+
+
+	$scope.loadUsersDetails = function(users) {
+
+		for (var i=0; i < users.length; i++) {
+			$scope.loadUserProfile(users[i]);
+		}
+	}
+
+
+	$scope.loadUserProfile = function(userId) {
+
+		if (userId === null || userId === $scope.currentUser._id) return; 
+
+		User.getUserProfile({userId : userId}).$promise.then(function(data){
+			$scope.users[userId] = data; 
+			console.log("proflie:");
+			console.log(data);
+		});
+	}
 
 	$scope.toRehearseSelectAll = function() {
 		$scope.currentUser.profile.toRehearse = { 
@@ -86,9 +143,6 @@ function AppCtrl($scope, $state, $ionicHistory, $ionicViewSwitcher, User, Action
 		return a.setByUser && !a.declined && !a.done && !a.na; 
 	}
 
-	
-
-
 	$scope.loadActionDetails = function(actions){
 
 		//console.log("is array " + _.isArray(actions) + " " + JSON.stringify(actions, null, 4));
@@ -102,9 +156,8 @@ function AppCtrl($scope, $state, $ionicHistory, $ionicViewSwitcher, User, Action
 			}
 		}
 	}
-
 	
-	$scope.addActionById = function(actionId){
+	$scope.addActionById = function(actionId, cb){
 
 		if (!$scope.actions[actionId]){
 			Actions.getActionById({id:actionId}).$promise.then(function(data){
@@ -113,8 +166,10 @@ function AppCtrl($scope, $state, $ionicHistory, $ionicViewSwitcher, User, Action
 
 				console.log("action details");
 				console.log($scope.actions); 
+
+				if (typeof cb === 'function') cb(); 
 			});
-		}
+		}else if (typeof cb === 'function') cb(); 
 	}
 
 	//update local list 
@@ -128,6 +183,23 @@ function AppCtrl($scope, $state, $ionicHistory, $ionicViewSwitcher, User, Action
 		}
 	}
 
+	$scope.isInvitedToHousehold = function(userId){ 
+
+		if ($scope.currentUser.householdId !== null && 
+			($scope.households[$scope.currentUser.householdId].pendingInvites.length > 0) && 
+			(_.indexOf($scope.households[$scope.currentUser.householdId].pendingInvites, userId) > -1)) { 
+			return true; 
+		} else return false; 
+	}
+
+	$scope.isInYourHousehold = function(userId){ 
+
+		if ($scope.currentUser.householdId && 
+			($scope.households[$scope.currentUser.householdId].ownerId === userId ||
+			_.indexOf($scope.households[$scope.currentUser.householdId].members, userId) > -1)) { 
+			return true; 
+		} else return false; 
+	}
 
 	$scope.addFeedbackPoints = function(){
 		$scope.currentUser.leaves += $scope.feedbackPoints; 
@@ -160,6 +232,14 @@ function AppCtrl($scope, $state, $ionicHistory, $ionicViewSwitcher, User, Action
 		});
 		$state.go("main.actions.yours");
 	}
+
+	$scope.gotoHouseholdActions = function() {
+		$ionicHistory.nextViewOptions({
+			disableBack: true
+		});
+		$state.go("main.actions.household");
+	}
+
 
 	$scope.gotoSettings = function() {
 		// $ionicHistory.nextViewOptions({
@@ -241,8 +321,26 @@ function AppCtrl($scope, $state, $ionicHistory, $ionicViewSwitcher, User, Action
 
 		console.log('logout'); 
 		AuthService.logout();
+
 		$state.go('welcome'); 
+
+		$timeout(function () {
+	        $ionicHistory.clearCache();
+	        $ionicHistory.clearHistory();
+	    }, 1500)
 	}
+
+	$scope.showLoading = function() {
+		console.log("show loading"); 
+		$ionicLoading.show({
+		  	template: '<ion-spinner icon="ion-load-a"></ion-spinner>',
+    		hideOnStageChange: true
+		});
+	};
+	$scope.hideLoading = function(){
+		console.log("hide loading");
+		$ionicLoading.hide();
+	};
 
 
 };
