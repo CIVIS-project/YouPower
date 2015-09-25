@@ -240,12 +240,13 @@ router.delete('/:id', auth.authenticate(), function(req, res) {
 });
 
 /**
- * @api {put} /household/:id Update address of household
+ * @api {put} /household/:id Update household profile
  * @apiGroup Household
  *
  * @apiParam {String} id MongoId of household
- * @apiParam {Address} Address String of household
- *
+ * @apiParam {Object} [address] Adress Object of household
+ * @apiParam {Object} [houseType] housetyp of household
+ * 
  * @apiExample {curl} Example usage:
  *  curl -i -X PUT \
  *  -H "Authorization: Bearer 615ea82f7fec0ffaee5..." \
@@ -262,13 +263,16 @@ router.put('/:id', auth.authenticate(), function(req, res) {
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    Household.updateAddress(req.body, res.successRes);
+    
+    //Household.updateAddress(req.body, res.successRes);
+
+    Household.update(req.params.id, req.body, res.successRes);
 
     Log.create({
       userId: req.user._id,
       category: 'Household',
-      type: 'update',
-      data: req.body
+      type: 'update ' + req.params.id,
+      data: req.body 
     });
   }
 });

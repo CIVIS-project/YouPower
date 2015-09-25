@@ -10,7 +10,7 @@ var usagePoint = require('./usagePoint');
 var applianceSchema = new Schema({
   appliance: String,
   quantity: Number
-});
+}); 
 
 var HouseSchema = new Schema({
   // apartmentId: {
@@ -33,34 +33,38 @@ var HouseSchema = new Schema({
     //unique: true
   },
   address: {
-    type: String,
-    default: 'N/A'
+    country: String,
+    city: String, 
+    postalCode: String,
+    street: String,
+    default: {}
   },
   appliancesList: {
-    type: [
-      applianceSchema
-    ],
+    type: [String],
     default: []
   },
-  householdType : {
+  houseType : {
+    type: String, 
+    enum : ['Apartment' , 'Town_house', 'Detached_house'],
+  },
+  ownership : {
     type: String,
-    enum : ['apartment' , 'house'],
+    enum : ['Rental' , 'Owner'], 
   },
-  householdSize : {
-    type: String
+  size : {
+    type: Number
   },
-  // TODO: When do you update kids count?
-  familyComposition : {
-    NumAdults: {
-      type: Number,
-      default: 0
+  composition : { 
+    numAdults: {
+      type: Number
     },
-    NumKids:  {
-      type: Number,
-      default: 0
-    }},
+    numChildren:  {
+      type: Number
+    }, 
+    default: {}
+  },
   energyVal: {
-    type: String
+    type: String 
   },
   ownerId: {
     type: Schema.Types.ObjectId,
@@ -87,14 +91,12 @@ var Household = mongoose.model('Household', HouseSchema);
 // create household entity
 exports.create = function(household, cb) {
 
-  console.log("ok");
-
   Household.create({
     // apartmentId: household.apartmentId,
     address: household.address,
     householdType: household.householdType,
     householdSize: household.householdSize,
-    familyComposition: household.familyComposition,
+    composition: household.composition,
     appliancesList: household.appliancesList,
     energyVal: household.energyVal,
     ownerId: household.ownerId,
@@ -241,14 +243,52 @@ exports.updateAddress = function(id, newAddress, size, type, cb) {
 };
 
 //update household details like family composition, household size and type.
-exports.updateHousehold = function(id, familyComposition, size, type, cb) {
-  Household.findByIdAndUpdate(id, {
-    $set : {
-      familyComposition: familyComposition,
-      householdSize: size,
-      householdType: type
+exports.update = function(id, profile, cb) {
+  // Household.findByIdAndUpdate(id, {
+  //   $set : {
+  //     composition: composition,
+  //     householdSize: size,
+  //     householdType: type
+  //   }
+  // }, cb);
+
+  Household.findById({
+    _id: id
+  }, function(err, household) {
+    if (err) {
+      cb(err);
+    } else if (!household) {
+      cb('Household not found');
+    } else {
+
+      if (profile.address) {
+        household.address = profile.address; 
+      }
+
+      if (profile.houseType) {
+        household.houseType = profile.houseType; 
+      }
+
+      if (profile.size) {
+        household.size = profile.size; 
+      }
+
+      if (profile.ownership) {
+        household.ownership = profile.ownership; 
+      }
+
+      if (profile.composition) {
+        household.composition = profile.composition; 
+      }
+
+      if (profile.appliancesList) {
+        household.appliancesList = profile.appliancesList; 
+      }
+
+      household.save(cb);
     }
-  }, cb);
+  });
+
 };
 
 //add appliances to the household
@@ -294,8 +334,6 @@ exports.addMember = function(id, userId, cb) {
       cb('Household not found');
     } else {
       household.members.push(userId);
-      // Increase family adults count by 1. ???? 
-      household.familyComposition.NumAdults++;
       household.save(cb);
     }
   });
