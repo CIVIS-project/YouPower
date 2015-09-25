@@ -4,11 +4,13 @@ angular.module('civis.youpower.actions').controller('ActionsCtrl', ActionsCtrl);
 
 /* The controller that's shared over all the action states.
 -----------------------------------------------------------*/
-function ActionsCtrl($scope, $state, $ionicPopup, $filter, Actions, User) {
+function ActionsCtrl($scope, $state, $ionicPopup, $filter, Actions, User, $translate) {
 
 	//for recommending actions (look at the length of inProgess actions)
 	$scope.preferredNumberOfActions = 3; //inProgress
 	$scope.maxNumberOfActions = 6; //inProgress
+
+	//$scope.variable = 'Hello <strong>World!</strong>'; 
 
 	//for showing items at UI since the lists can be quite long
 	$scope.sNr = 2;
@@ -96,11 +98,11 @@ function ActionsCtrl($scope, $state, $ionicPopup, $filter, Actions, User) {
 		var temp = "";
 
 		if ($scope.isNotToRehearse()) {
-			title = "Change Setting";
-			temp = "Action rehearsal options are all deactivated. You may change it in <samp>Settings</samp>."
+			title = $translate.instant("Change_Setting"); 
+			temp = "<span translate>ACTION_REHEARSAL_OPTIONS</span>"
 		}else{
-			title = "No Action to rehearse.";
-			temp = "There is no action to rehearse. You have all actions in progess or pending. You are doing awesome <i class='ion-happy-outline'></i>"
+			title = $translate.instant("No_Action_to_Rehearse");
+			temp = "<span translate>NO_ACTION_TO_REHEARSE</span>" + " <i class='ion-happy-outline'></i>"
 		}
 
 		var alertPopup = $ionicPopup.alert({
@@ -158,9 +160,9 @@ function ActionsCtrl($scope, $state, $ionicPopup, $filter, Actions, User) {
 
 		var alertPopup = $ionicPopup.confirm({
 			title: "<span class='text-medium-large'>" + title + "</span>", 
-			template: "<span class='text-medium'>Unfortunately, we have no more new actions in our database for the moment. If you want to rehearse your past actions, please go to <samp>Settings</samp>. Would you like to do this now?</span>",
-			okText: "Yes",
-			cancelText: "Not now",
+			template: "<span class='text-medium' translate>NO_MORE_ACTIONS_SETTING</span>",
+			okText: $translate.instant("Yes"),
+			cancelText: $translate.instant("Not_now"),
 			okType: "button-dark"
 		});
 		alertPopup.then(function(res) {
@@ -179,9 +181,9 @@ function ActionsCtrl($scope, $state, $ionicPopup, $filter, Actions, User) {
 
 		var alertPopup = $ionicPopup.confirm({
 			title: "<span class='text-medium-large'>" + title + "</span>", 
-			template: "<span class='text-medium'>We currently don't have new actions in our database. Would you like to rehearse the actions? (You can change this later in <samp>Settings</samp>.)</span>",
-			okText: "Yes",
-			cancelText: "Not now",
+			template: "<span class='text-medium'>NO_MORE_ACTIONS_REHEARSE</span>",
+			okText: $translate.instant("Yes"),
+			cancelText: $translate.instant("Not_now"),
 			okType: "button-dark"
 		});
 
@@ -214,7 +216,7 @@ function ActionsCtrl($scope, $state, $ionicPopup, $filter, Actions, User) {
 		var alertPopup = $ionicPopup.confirm({
 			title: "<span class='text-medium-large'>" + title + "</span>", 
 			scope: $scope, 
-			template: "<span class='text-medium'>You already have {{numberOfCurrentActions}} actions in progress. Are you sure you'd like to add more?</span>",
+			template: "<span class='text-medium' translate translate-values=\"{number: '{{numberOfCurrentActions}}'}\">ASK_ADD_MORE</span>",
 			okText: "Not now",
 			cancelText: "Add more",
 			okType: "button-dark"
@@ -237,7 +239,7 @@ function ActionsCtrl($scope, $state, $ionicPopup, $filter, Actions, User) {
 		var alertPopup = $ionicPopup.alert({
 			title: "<span class='text-medium-large'>" + title + "</span>", 
 			scope: $scope, 
-			template: "<span class='text-medium'>You already have {{numberOfCurrentActions}} actions in progress. You can add more actions after some of those are completed. Keep on! You are doing great <i class='ion-happy-outline'></span>",
+			template: "<span class='text-medium' translate translate-values=\"{number: '{{numberOfCurrentActions}}'}\">NO_ADD_MORE</span>"+ " <i class='ion-happy-outline'>",
 			//okText: "Yes",
 			okType: "button-dark"
 		});

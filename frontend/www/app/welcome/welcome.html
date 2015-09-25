@@ -8,42 +8,29 @@
       </h1>
     </div>
     <h1 class="text-center">
-      <i class="icon ion-earth"></i> Be more <span class="balanced">green.</span><br/>
-      <i class="icon ion-happy-outline"></i> Be more <span class="energized">social.</span><br/>
-      <i class="icon ion-checkmark-circled"></i> Take <span class="positive">actions!</span>
+      <i class="icon ion-earth"></i> <span translate>BE_MORE_GREEN</span><br/>
+      <i class="icon ion-happy-outline"> </i><span translate>BE_MORE_SOCIAL</span><br/>
+      <i class="icon ion-checkmark-circled"> <span translate>TAKE_ACTIONS</span></i> 
     </h1>
   </div>
-  <!-- or
-  <h2 class="text-center">
-    <i class="icon ion-earth balanced"></i> Be more green.</span><br/>
-    <i class="icon ion-happy-outline energized"></i> Be more social.<br/>
-    <i class="icon ion-checkmark-circled positive"></i> Take actions!
-  </h2> -->
- <!--  <div class="item  item-text-wrap">
-    <h3>To test the prototype:</h3>
-    <p>1. Please use a mobile phone, or adjust your browser (preferrable Chrome) to mobile screen size.</p>
-    <p>2. Use your <i>Email address</i> to create or retrieve an account.</p>
-  </div> --> 
-  
-  
-
   <div class="list">
     <label class="item item-input">
-      <span class="input-label">Email</span>
-      <input type="text" placeholder="Your Email address" ng-model="loginData.emailAddress" ng-change="clearSigninClicked()">
+      <span class="input-label" translate>Email</span>
+      <input type="text" placeholder={{"Your_email_address"|translate}} ng-model="loginData.emailAddress" ng-change="clearSigninClicked()">
     </label>
     <label class="item item-input">
-      <span class="input-label">Password</span>
-      <input type="password" placeholder="Your password" ng-model="loginData.password" ng-change="clearSigninClicked()">
+      <span class="input-label" translate>Password</span>
+      <input type="password" placeholder={{"Your_password"|translate}} ng-model="loginData.password" ng-change="clearSigninClicked()" ng-enter="signin()">
     </label>
-    <a class="button button-dark button-full text-bold" ng-click="signin()">Login</a>
+    <a class="button button-dark button-full text-bold" ng-click="signin()"  translate>Login</a>
     <div class="text-center" ng-show="signinClicked && isRejected">
-      <p class="errors text-center" >{{loginData.err}}. Please try again.</p>
+      <p class="errors text-center" >{{loginData.err}}. <span translate>TRY_AGAIN</span>
+      </p>
       <!-- <a href="#" class="errors">request a new password</a>. -->
     </div>
   </div>
 
-    <a ng-click="gotoSignup()" class="button button-energized button-full text-bold">Not a member? Join now</a>
+    <a ng-click="gotoSignup()" class="button button-energized button-full text-bold" translate>JOIN_NOW</a>
 
 </ion-content>
 </ion-view>

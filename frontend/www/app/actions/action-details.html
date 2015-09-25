@@ -1,6 +1,6 @@
 <ion-view>
 <ion-nav-title>
-<span class="capitalize">{{actionsType}} Actions ({{_.size(actionsByType(actionsType))}})</span>
+<span translate>{{actionsType}}</span> ({{_.size(actionsByType(actionsType))}})
 </ion-nav-title>
 <ion-content class="padding">
 
@@ -14,78 +14,79 @@
   <div class="item item-body">
     <ng-include src="'app/actions/actionDescription.html'"></ng-include>
     <span class="text-small">
-      <span ng-if="action.latestState==='inProgress'">You <span ng-show="action.startedDate.length>1">re</span>started on {{_.last(action.startedDate) | date: "yyyy-MM-dd"}}.</span>
-      <span ng-if="action.latestState==='pending'">Scheduled for {{_.last(action.postponedDate) | date: "yyyy-MM-dd"}}.</span>
-      <span ng-if="action.latestState==='done'">You completed on {{_.last(action.doneDate) | date: "yyyy-MM-dd"}}.</span>
-      <span ng-if="action.latestState==='alreadyDoing'">You confirmed doing this on {{_.last(action.alreadyDoingDate) | date: "yyyy-MM-dd"}}.</span>
-      <a href="#" class="balanced">{{num=actions[action._id].numUsers}} Participant{{num > 1 ? 's':''}}</a> 
+      <span ng-if="action.latestState==='inProgress'"><span translate>{{action.startedDate.length>1? 'You_restarted_on' : 'You_started_on'}}</span> {{action.startedDate[action.startedDate.length-1] | date: "yyyy-MM-dd"}}</span>
+      <!--  -->
+      <span ng-if="action.latestState==='pending'"><span translate>Scheduled_for</span> {{_.last(action.postponedDate) | date: "yyyy-MM-dd"}}.</span>
+      <span ng-if="action.latestState==='done'"><span translate>You completed on</span> {{_.last(action.doneDate) | date: "yyyy-MM-dd"}}.</span>
+      <span ng-if="action.latestState==='alreadyDoing'"><span translate>You_confirmed_doing_this_on</span> {{_.last(action.alreadyDoingDate) | date: "yyyy-MM-dd"}}.</span>
+      <span href="#" class="balanced">{{num=actions[action._id].numUsers}} <span translate>{{num > 1 ? 'Participants':'Participant'}}</span></span> 
     </span>
   </div>
 </div>
 
 <button class="button button-full icon-left button-dark" ng-if="actionsType == 'pending'" ng-click="takeActionNow(action);">
   <i class="icon ion-android-add"></i>
-  <b>Take this Action Now</b>
+  <b translate>Take_this_Action_Now</b>
 </button>
 
 <button class="button button-full icon-left button-dark" ng-if="actionsType == 'completed'" ng-click="retakeAction(action);">
   <i class="icon ion-android-add"></i>
-  <b>Retake this Action</b>
+  <b translate>Retake_this_Action</b>
 </button>
 
 <div class="list card" ng-if="actionsType == 'current'">
-  <div class="item item-divider item-text-wrap">
-    How are you doing?
+  <div class="item item-divider item-text-wrap" translate>
+    HOW_ARE_YOU
     <!--  <i class="icon ion-ios-chatbubble-outline balanced" style="font-size:35px;"></i> -->
   </div>
 
   <a class="item item-icon-left item-text-wrap" ng-click="actionCompleted(action)">
    <i class="icon ion-android-done positive"></i>
-   I have done this<i ng-if="actions[action._id].type=='routine' || actions[action._id].type=='common'"> consistently for {{routineActionDuration}}+ weeks</i>.
+   <span translate translate-values="{ number: '{{routineActionDuration}}'}">HAVE_DONE_THIS</span>
  </a>
  <a class="item item-icon-left item-text-wrap" ng-click="inputDaysAndReschedule(action)">
   <i class="icon ion-more balanced"></i>
-  I want to postpone this action. 
+  <span translate>POSTPONE_THIS</span>
 </a>
  <a class="item item-icon-left item-text-wrap" ng-click="actionAbandoned(action)">
   <i class="icon ion-android-close energized"></i>
-  I don't want to do this any more. 
+  <span translate>NOT_WANT_TO_DO_ANYMORE</span>
 </a>
 </div>
 
 <button class="button button-full button-dark icon-left" ng-click="gotoYourActions();">
   <i class="icon ion-ios-arrow-back"></i>
-  <b>Back to Your Actions</b>
+  <b translate>Back to Your Actions</b>
 </button>
 
 <div class="list card">
   <div class="item item-divider tabs tabs-secondary tabs-icon-left">
     <a class="tab-item" ng-click="likeAction(actions[action._id])">
       <i class="icon ion-thumbsup"></i>
-      {{num2=actions[action._id].numLikes}} Like{{num2 > 1 ? 's':''}}
+      {{num2=actions[action._id].numLikes}} <span translate>{{num2 > 1 ? 'Likes':'Like'}}</span>
     </a>
     <a class="tab-item" ng-click="comment.show=!comment.show">
       <i class="icon ion-chatbox"></i>
-      {{size=actions[action._id].numComments}} Comment{{size > 1 ? 's' : ''}}
+      {{size=actions[action._id].numComments}} <span translate>{{size > 1 ? 'Comments' : 'Comment'}}</span>
     </a>
-    <a class="tab-item" href="#">
+    <!-- <a class="tab-item" href="#">
       <i class="icon ion-share"></i>
-      {{action.share}} Share
-    </a>
+      {{action.share}} <span translate>Share</span>
+    </a> -->
   </div>
   <div class="item item-text-wrap" ng-show="comment.show">
     <label class="item-input">
-      <textarea type="text" ng-model="comment.text" placeholder="Give your comment ..."></textarea>
-    </label><button class="button button-small button-dark button-right " ng-disabled="comment.text === ''" ng-click="postComment(action)"> Post </button>
+      <textarea type="text" ng-model="comment.text" placeholder={{"Give_your_comment"|translate}}></textarea>
+    </label><button class="button button-small button-dark button-right " ng-disabled="comment.text === ''" ng-click="postComment(action)" translate>Post</button>
     <p> &nbsp; <!-- dont remove this --> </p>
   </div>
   <div class="item item-avatar item-text-wrap" ng-repeat="comment in comments | filter: {actionId: action._id}" > <!-- ng-if="comment.actionId == action._id" -->
     <img ng-if="comment.photo" ng-src="comment.picture">
     <img ng-if="!comment.photo" src="/img/eco.jpg">
-    <h3>{{comment.name}} <span class="item-note" ng-if="comment.userId == currentUser._id">You</span><span class="text-small">{{comment.date| date: "yyyy-MM-dd"}}</span></h3>
+    <h3>{{comment.name}} <span class="item-note" ng-if="comment.userId == currentUser._id" translate>You</span><span class="text-small">{{comment.date| date: "yyyy-MM-dd"}}</span></h3>
     <p>{{comment.comment}}</p>
-    <a class="button button-clear button-stable icon-left ion-close button-small" ng-if="comment.userId == currentUser._id" ng-click="deleteComment(comment)"> Delete</a>
-    <a class="button button-clear button-stable icon-left ion-thumbsup button-small" ng-click="likeComment(comment)"> {{num=comment.numLikes}} Like{{num>1? 's':''}}</a>
+    <a class="button button-clear button-stable icon-left ion-close button-small" ng-if="comment.userId == currentUser._id" ng-click="deleteComment(comment)" translate>Delete</a>
+    <a class="button button-clear button-stable icon-left ion-thumbsup button-small" ng-click="likeComment(comment)"> {{num=comment.numLikes}} <span translate>{{num>1? 'Likes':'Like'}}</span></a>
   </div>
 </div>
 

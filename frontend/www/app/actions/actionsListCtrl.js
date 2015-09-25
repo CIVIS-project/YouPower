@@ -3,7 +3,7 @@ angular.module('civis.youpower.actions').controller('ActionsListCtrl', ActionsLi
 
 /* The controller used for sliding slider over various action lists.
  ----------------------------------------------*/
-function ActionsListCtrl($scope, $state, $stateParams, $filter, $ionicPopup, Actions) {
+function ActionsListCtrl($scope, $state, $stateParams, $filter, $ionicPopup, $translate, Actions) {
 
   $scope.slideIdx = $stateParams.index ? $stateParams.index : 0;
 
@@ -123,12 +123,12 @@ function ActionsListCtrl($scope, $state, $stateParams, $filter, $ionicPopup, Act
   $scope.inputDaysAndReschedule = function(action){
 
     var alertPopup = $ionicPopup.show({
-      title: "<span class='text-medium-large'>Postpone Action</span>",
+      title: "<span class='text-medium-large'>" + $translate.instant("Postpone_Action") + "</span>",
       scope: $scope, 
-      template: "<form name='popup' class='text-medium text-center'>I don't want to do this now. Remind me of this action in <div><input name='inputDays' type='number' min='1' max='1000' class='text-center' ng-model='input.days' placeholder='a number of'> days! </div> <div class='errors' ng-show='!popup.inputDays.$valid'>Please give a number between 1 and 1000!</div></form>", 
+      template: "<form name='popup' class='text-medium text-center'>" + "<span translate>POSTPONE_ACTION</span>" + "<div><input name='inputDays' type='number' min='1' max='1000' class='text-center' ng-model='input.days' placeholder='a number of'> <span translate>days</span>! </div> <div class='errors' ng-show='!popup.inputDays.$valid' translate>NUMBER_1000</div></form>", 
       buttons: [
-        { text: 'Cancel' },
-        { text: 'Save',
+        { text: $translate.instant('Cancel') },
+        { text: $translate.instant('Save'),
           type: 'button-dark',
           onTap: function(e) {
             if (!$scope.input.days) { 

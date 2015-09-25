@@ -3,7 +3,7 @@
   <ion-side-menu-content>
     <ion-nav-bar class="bar-stable nav-title-slide-ios7">
       <!-- Adds the back button when needed -->
-      <ion-nav-back-button class="button-clear"><i class="icon ion-ios-arrow-back"></i> Back</ion-nav-back-button>
+      <ion-nav-back-button class="button-clear"><i class="icon ion-ios-arrow-back"></i> <span translate>Back</span></ion-nav-back-button>
       <!-- Adds the hamburger menu button -->
       <ion-nav-buttons side="left">
         <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
@@ -21,10 +21,10 @@
     <ion-content class="has-header">
       <ion-list>
         <ion-item nav-clear menu-close href="#/app/actions/yours">
-          Actions
+          <span translate>Actions</span>
         </ion-item>
-        <ion-item nav-clear menu-close ng-if="currentUser.householdId&&households[currentUser.householdId].connected===true" href="#/app/prosumption">
-          Energy Data
+        <ion-item nav-clear menu-close ng-show="currentUser.householdId&&households[currentUser.householdId].connected===true" href="#/app/prosumption">
+          <<span translate>Energy_Data</span>
         </ion-item>
        <!--  <ion-item nav-clear menu-close href="#/app/household">
           Household
@@ -32,17 +32,17 @@
         <ion-item nav-clear menu-close href="#/app/communities">
           Communities
         </ion-item> -->
-        <ion-item nav-clear menu-close ng-if="currentUser.brf" href="#/app/brf">
-          Housing Cooperatives<!-- Bostadsrättsförening  -->
+        <ion-item nav-clear menu-close ng-show="currentUser.brf" href="#/app/brf">
+          <span translate>Housing_Cooperatives</span> <!-- Bostadsrättsförening  -->
         </ion-item>
         <ion-item nav-clear menu-close href="#/app/settings">
-          Settings
+          <span translate>Settings</span>
         </ion-item>
         <ion-item nav-clear menu-close href="#/app/about">
-          About
+          <span translate>About</span>
         </ion-item>
         <ion-item nav-clear menu-close ng-click="signout()">
-          Log Out
+          <span translate>Log_Out</span>
         </ion-item>
       </ion-list>
     </ion-content>

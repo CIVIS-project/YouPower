@@ -1,11 +1,26 @@
-angular.module('civis.youpower.main',[]).controller('AppCtrl', AppCtrl);
+angular.module('civis.youpower.main',[])
+.directive('ngEnter', function () {
+    return function (scope, element, attrs) {
+        element.bind("keydown keypress", function (event) {
+            if (event.which === 13) {
+                scope.$apply(function () {
+                    scope.$eval(attrs.ngEnter, {
+                        'event': event
+                    });
+                });
+                event.preventDefault();
+            }
+        });
+    };
+})
+.controller('AppCtrl', AppCtrl);
 
 /* The controller that should always be on top of routing
 hierarchy as it will be loaded with abstract main state.
 Here we can do the general app stuff like getting the user's
 details (since this is after the user logs in).
 ----------------------------------------------*/
-function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $ionicLoading, User, Actions, Household, AuthService) { 
+function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $ionicLoading, User, Actions, Household, AuthService, $translate) { 
 
 	$scope.userPictures = {}; 
 
@@ -28,6 +43,8 @@ function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $i
 		if ($scope.currentUser.profile.dob && $scope.currentUser.profile.dob !== null){
 			$scope.currentUser.profile.dob = new Date($scope.currentUser.profile.dob);
 		}
+
+		$translate.use($scope.currentUser.profile.language); 
 
 		//$scope.users[$scope.currentUser._id] = $scope.currentUser;
 
@@ -225,7 +242,7 @@ function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $i
 
 	$scope.salut = function(){
 		var name = $scope.currentUser.profile.name? $scope.currentUser.profile.name : $scope.currentUser.email; 
-		return 'Hi, ' + name + '!';
+		return $translate.instant('Hi') + ' ' + name + '!';
 	}
 
 	$scope.gotoYourActions = function() {
@@ -278,10 +295,45 @@ function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $i
 	}
 
 	$scope.clearToSignout = function(){
-		return $scope.toSignout = false; 
+		$scope.toSignout = false; 
 	}
 
-	$scope.profileChanged = {personal: false, household: false};
+	$scope.profileChanged = {
+		personal: false, 
+		houseInfo: false,
+		householdComposition: false,
+		appliancesList: false
+	};
+
+	$scope.isProfileChanged = function(){
+		return $scope.profileChanged.personal || $scope.profileChanged.houseInfo || $scope.profileChanged.householdComposition || $scope.profileChanged.appliancesList; 
+	},
+	$scope.setHouseInfoChanged = function() {
+		$scope.profileChanged.houseInfo = true;
+	},
+	$scope.setHouseholdCompositionChanged = function() {
+		$scope.profileChanged.householdComposition = true;
+	},
+	$scope.setAppliancesListChanged = function() {
+		$scope.profileChanged.appliancesList = true;
+	},
+	$scope.clearHouseholdProfileChanged = function() {
+		$scope.profileChanged.houseInfo = false,
+		$scope.profileChanged.householdComposition = false,
+		$scope.profileChanged.appliancesList = false
+	},
+	$scope.isHouseholdProfileChanged = function() {
+		return $scope.profileChanged.houseInfo || $scope.profileChanged.householdComposition || $scope.profileChanged.appliancesList; 
+	},
+	$scope.isHouseInfoChanged = function() {
+		return $scope.profileChanged.houseInfo;
+	},
+	$scope.isHouseholdCompositionChanged = function() {
+		return $scope.profileChanged.householdComposition;
+	},
+	$scope.isAppliancesListChanged = function() {
+		return $scope.profileChanged.appliancesList;
+	},
 
 	$scope.setPersonalProfileChanged = function(){
 		$scope.profileChanged.personal = true; 
@@ -291,26 +343,14 @@ function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $i
 		$scope.profileChanged.personal = false; 
 	}
 
-	$scope.setHouseholdProfileChanged = function(){
-		$scope.profileChanged.household = true; 
-	}
-
-	$scope.clearHouseholdProfileChanged = function(){
-		$scope.profileChanged.household = false; 
-	}
-
 	$scope.isPersonalProfileChanged = function(){
 		return $scope.profileChanged.personal; 
-	}
-
-	$scope.isHouseholdProfileChanged = function(){
-		return $scope.profileChanged.household; 
 	}
 
 
 	$scope.signout = function() {
 
-		if ($scope.isPersonalProfileChanged()){
+		if ($scope.isProfileChanged()){
 			$scope.toSignout = true; 
 			$state.go('welcome'); 
 		}else{

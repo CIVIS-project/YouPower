@@ -4,12 +4,10 @@ angular.module('civis.youpower.settings').controller('PersonalSettingsCtrl', Per
 // Inject my dependencies
 //SettingsCtrl.$inject = ['$scope', '$filter', '$translate'];
 
-function PersonalSettingsCtrl($scope, $filter, $translate, $state) {
+function PersonalSettingsCtrl($scope, $filter, $state, $translate) { 
 
-	$scope.save = function () {
-		// if ($scope.currentUser.language == 1){
-		// 	$translate.use("it");
-		// }else $translate.use("en");
+	$scope.languageChanged = function () {
+		$translate.use($scope.currentUser.profile.language);
 	};
 
 

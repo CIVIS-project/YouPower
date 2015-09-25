@@ -22,9 +22,9 @@ angular.module('civis.youpower')
       method: 'PUT', 
       url: Config.host + '/api/household/removemember/:householdId/:userId'
     }, 
-    address : {
+    update : {
       method: 'PUT', 
-      url: Config.host + '/api/household/:id/:accepted'
+      url: Config.host + '/api/household/:id'
     }
 
   });

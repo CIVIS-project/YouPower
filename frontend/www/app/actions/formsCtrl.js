@@ -4,7 +4,7 @@ angular.module('civis.youpower.actions').controller('FormsCtrl', FormsCtrl);
 // Inject my dependencies
 // SettingsCtrl.$inject = ['$scope', '$filter', '$translate'];
 
-function FormsCtrl($scope, $timeout, $stateParams, $ionicPopup, User, Actions) {
+function FormsCtrl($scope, $timeout, $stateParams, $ionicPopup, User, Actions, $translate) {
 
 	// the user's completed/abandoned action 
 	$scope.currentAction = $scope.currentUser.actions.inProgress[$stateParams.id]; 
@@ -23,27 +23,17 @@ function FormsCtrl($scope, $timeout, $stateParams, $ionicPopup, User, Actions) {
 
 	$scope.points = 0; 
 
-	
-	// $scope.setPoints = function(points) {
-	// 	var userRef = new Firebase(endev.firebaseProvider.path + "users/" + $scope.user.$id);
-	// 	$firebaseObject(userRef).$loaded().then(function(object){
-	// 		object.points = points;
-	// 		object.$save();
-	// 	});
-	// }
-
-
 	/*/
 		Confirm the points the user got. 
 		And if the user's inProgess is less than $scope.preferredNumberOfActions, ask the user whether he wants a new suggestion. 
 	/*/
 	$scope.showConfirm = function(completed){
 
-		var title = completed ? 'Action Completed' : 'Action Removed';
+		var title = completed ? $translate.instant('Action_Completed') : $translate.instant('Action_Removed');
 		var text = "";
 		var alertPopup = {} ; 
 
-		var pointsText = "<span ng-if='hasFeedback'>Many thanks for your feedback! </span><span ng-if='points>0'>You got {{points}} point{{points>1?'s':''}}. </span>" 
+		var pointsText = "<span ng-if='hasFeedback'>Many thanks for your feedback!</span> <span ng-if='points>0'><span translate>You_got</span> {{points}} <span translate>{{points>1?'points':'point'}}</span>.</span>" 
 
 		console.log ("Size:" + _.size($scope.currentUser.actions.inProgress)); 
 
@@ -54,14 +44,14 @@ function FormsCtrl($scope, $timeout, $stateParams, $ionicPopup, User, Actions) {
 
 		}else if (_.size($scope.currentUser.actions.inProgress) <= $scope.preferredNumberOfActions) {
 
-			text = completed ? "Would you like to add another action?" : "We are sorry that this action didn't suit you well. Would you like to try another one?"; 
+			text = completed ? "<span translate>ASK_ADD_ANOTHER_ACTION</span>" : "<span translate>SORRY_ADD</span>"; 
 
 			alertPopup = $ionicPopup.confirm({
 				title: "<span class='text-medium-large'>" + title + "</span>",
 				scope: $scope, 
-				template: "<span class='text-medium'>" + pointsText + text + "</span>", 
-				okText: "Yes",
-				cancelText: "Not now",
+				template: "<span class='text-medium'>" + pointsText + " " + text + "</span>", 
+				okText: $translate.instant("Yes"),
+				cancelText: $translate.instant("Not now"),
 				okType: "button-dark"
 			});
 			alertPopup.then(function(res) {
@@ -74,12 +64,13 @@ function FormsCtrl($scope, $timeout, $stateParams, $ionicPopup, User, Actions) {
 				}
 			});
 		} else {
-			text = completed ? "Great that you took this action. Congrats!" : "We are sorry that this action didn't suit you well. Please keep on trying others."; 
+			text = completed ? "<span translate>CONGRATS</span>" : "<span translate>SORRY_NOT_SUIT</span>"; 
 
 			alertPopup = $ionicPopup.alert({
 				title: "<span class='text-medium-large'>" + title + "</span>",
 				scope: $scope, 
-				template: "<span class='text-medium'>" + pointsText + text + "</span>", 
+				template: "<span class='text-medium'>" + pointsText + " " + text + "</span>", 
+				okText: $translate.instant("OK"),
 				okType: "button-dark"
 			});
 			alertPopup.then(function(res) {
@@ -177,11 +168,11 @@ function FormsCtrl($scope, $timeout, $stateParams, $ionicPopup, User, Actions) {
 	$scope.askScheduleNext = function(pointsText){ 
 
 		var alertPopup = $ionicPopup.confirm({
-			title: "<span class='text-medium-large'>Action completed</span>",
+			title: "<span class='text-medium-large'>" + $translate.instant("Action_Completed")+ "</span>",
 			scope: $scope, 
-			template: "<span class='text-medium'>Congratulations <i class='ion-happy-outline'></i> " + pointsText + "Would you like to make a schdule to retake this action in the future?</span>", 
-			okText: "Yes",
-			cancelText: "Not now",
+			template: "<span class='text-medium'><span translate>Congratulations</span> <i class='ion-happy-outline'></i> " + pointsText + " <span translate>ASK_SCHEDULE</span>" +"</span>", 
+			okText: $translate.instant("Yes"),
+			cancelText: $translate.instant("Not_now"),
 			okType: "button-dark"
 		});
 		alertPopup.then(function(res) { 
@@ -195,15 +186,15 @@ function FormsCtrl($scope, $timeout, $stateParams, $ionicPopup, User, Actions) {
 
 	$scope.askFeedback = function(completed){
 
-		var title = "<span class='text-medium-large'>Your Feedback Form is not Completed</span>";
-		var temp = completed ? "the action? </br>We'd love to hear from you." : "what went wrong? </br>We'd love to know how to improve."; 
+		var title = "<span class='text-medium-large'>" + $translate.instant("FEEDBACK_NOT_COMPLETED") + "</span>";
+		var temp = completed ? "FEEDBACK_ACTION_COMPLETED" : "FEEDBACK_ACTION_NOT_COMPLETED"; 
 
 		var alertPopup = $ionicPopup.confirm({
 			title: title,
 			scope: $scope, 
-			template: "<span class='text-medium'>Would you like to give us some feedback on "+ temp + "</span>",
-			okText: "Yes",
-			cancelText: "Let it be",
+			template: "<span class='text-medium' translate>"+ temp + "</span>",
+			okText: $translate.instant("Yes"),
+			cancelText: $translate.instant("Let_it_be"),
 			okType: "button-dark"
 		});
 		alertPopup.then(function(res) {

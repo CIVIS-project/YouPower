@@ -99,6 +99,17 @@ td {
   width: 30%;
   // margin-bottom: 5px;
 }
+.button-float-right{
+  //float: right;
+  position: absolute; 
+  top: 0px; 
+  right: 0px;
+  font-size: 20px;
+}
+.button_pos_left {
+    position: relative;
+    left: -10px;
+}
 .button-40{ 
   width: 40%;
   margin-top: 5px;

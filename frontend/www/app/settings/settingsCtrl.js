@@ -4,7 +4,7 @@ angular.module('civis.youpower.settings').controller('SettingsCtrl', SettingsCtr
 // Inject my dependencies
 //SettingsCtrl.$inject = ['$scope', '$filter', '$translate'];
 
-function SettingsCtrl($scope, $filter, $translate, $state, User, AuthService) {
+function SettingsCtrl($scope, $filter, $translate, $state, User, Household) {
 
 	/*/
 		$ionicView.beforeLeave does not work with the tabs
@@ -26,7 +26,12 @@ function SettingsCtrl($scope, $filter, $translate, $state, User, AuthService) {
 
 		} else if (fromState.name === 'main.settings.household') {
 
-			console.log(fromState.name); 
+			if ($scope.isToSignout()){
+				$scope.clearToSignout(); 
+				$scope.postHouseholdProfile($scope.logout); 
+			}else{
+				$scope.postHouseholdProfile(); 
+			}
 
 		} else {
 			console.log("Do nothing: from state -- "+fromState.name); 
@@ -64,6 +69,50 @@ function SettingsCtrl($scope, $filter, $translate, $state, User, AuthService) {
 				if (typeof cb === 'function') cb(); 
 			});
 		}
+	}
+
+	$scope.postHouseholdProfile = function(cb){
+
+		if (!$scope.isHouseholdProfileChanged()) return; 
+
+		var data = {};
+
+		if ($scope.isHouseInfoChanged()) {
+			data.address = $scope.households[$scope.currentUser.householdId].address;
+			data.houseType = $scope.households[$scope.currentUser.householdId].houseType;
+			data.size = $scope.households[$scope.currentUser.householdId].size;
+			data.ownership = $scope.households[$scope.currentUser.householdId].ownership;
+		}
+
+		if ($scope.isHouseholdCompositionChanged()) {
+			data.composition = $scope.households[$scope.currentUser.householdId].composition;
+		}
+
+		if ($scope.isAppliancesListChanged()) {
+			data.appliancesList = $scope.households[$scope.currentUser.householdId].appliancesList;
+		}
+
+		// 	for(var key in profile) {
+		//         if(profile.hasOwnProperty(key) && profile[key] === null) {
+		//             delete profile[key]; 
+		//         }
+		//     }
+
+			Household.update({id: $scope.currentUser.householdId}, data).$promise.then(function(data) {
+
+				$scope.households[$scope.currentUser.householdId] = data; 
+
+				console.log(data);
+
+				// if (data.dob && data.dob !== null){
+				// 	$scope.currentUser.profile.dob = new Date(data.dob);
+				// }
+				$scope.clearHouseholdProfileChanged(); 
+				if (typeof cb === 'function') cb();
+			}, function(err){
+				console.log(err);
+				if (typeof cb === 'function') cb(); 
+			});
 	}
 	
 

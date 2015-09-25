@@ -3,18 +3,15 @@
 
 
 <div class="list card">
-  <div class="item item-divider item-text-wrap">Suggest actions that ...</div>
+  <div class="item item-divider item-text-wrap" translate>SUGGEST_ACTIONS</div>
   <ion-toggle ng-model="currentUser.profile.toRehearse.done" ng-change="toRehearseSet(); setPersonalProfileChanged()" toggle-class="toggle-balanced">
-    you completed
-    <span class="item-note item-text-wrap">to rehearse.</span>
+    <span translate>you_completed</span>
   </ion-toggle>
   <ion-toggle ng-model="currentUser.profile.toRehearse.declined" ng-change="toRehearseSet(); setPersonalProfileChanged()" toggle-class="toggle-balanced">
-    you declined 
-    <span class="item-note item-text-wrap">to reconsider.</span>
+    <span translate>you_declined</span>
   </ion-toggle>
   <ion-toggle ng-model="currentUser.profile.toRehearse.na" ng-change="toRehearseSet(); setPersonalProfileChanged()" toggle-class="toggle-balanced">
-    were not appliable
-    <span class="item-note item-text-wrap">to reassess.</span>
+    <span translate>were_not_appliable</span>
   </ion-toggle> 
 </div>
 

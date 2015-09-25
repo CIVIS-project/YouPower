@@ -1,19 +1,5 @@
 
-angular.module('civis.youpower.actions')
-.directive('ngEnter', function () {
-    return function (scope, element, attrs) {
-        element.bind("keydown keypress", function (event) {
-            if (event.which === 13) {
-                scope.$apply(function () {
-                    scope.$eval(attrs.ngEnter, {
-                        'event': event
-                    });
-                });
-                event.preventDefault();
-            }
-        });
-    };
-})
+angular.module('civis.youpower.actions') 
 .controller('MemberCtrl', MemberCtrl);
 
 
@@ -59,7 +45,6 @@ function MemberCtrl($scope, $filter, $translate, $state, $ionicPopup, User, Hous
 		$scope.loadUserProfile(user._id); 
 		
 		Household.invite({userId: user._id},{}).$promise.then(function(data){
-			console.log("invite now");
 			$scope.households[data._id] = data;
 		});
 	}
@@ -72,13 +57,16 @@ function MemberCtrl($scope, $filter, $translate, $state, $ionicPopup, User, Hous
 				&& ($scope.isInvitedToHousehold(user._id) || $scope.isInYourHousehold(user._id))))
 			return; 
 
-		var title = "Confirm Invite";
+		var title = $translate.instant("Confirm Invite");
+
+		$scope.name = user.profile.name; 
 
 		var alertPopup = $ionicPopup.confirm({
 			title: "<span class='text-medium-large'>" + title + "</span>", 
-			template: "<span class='text-medium'>You are about to invite " + user.profile.name + " to your household. If the person accepts your invite, you both will be able to see each other's actions, basic profile and household information. Would you like to continue?</span>",
-			okText: "Yes",
-			cancelText: "Cancel",
+			scope: $scope, 
+			template: "<span class='text-medium' translate translate-values='{name:name}'>CONFIRM_INVITE</span>",
+			okText: $translate.instant("Yes"),
+			cancelText: $translate.instant("Cancel"),
 			okType: "button-dark"
 		});
 
@@ -108,10 +96,10 @@ function MemberCtrl($scope, $filter, $translate, $state, $ionicPopup, User, Hous
 
 	$scope.searchUser = function(){
 
+		if (!$scope.search.input.text) return; 
+
 		$scope.search.input.typing = false; 
 		$scope.email.showForm = false; 
-
-		if (!$scope.search.input.text) return; 
 
 		User.search({name: $scope.search.input.text}).$promise.then(function(data){
 

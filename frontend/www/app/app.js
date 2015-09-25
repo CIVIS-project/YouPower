@@ -9,14 +9,13 @@ angular.module('civis.youpower', [
   'ionic',
   'ionic.rating',
   'ngResource',
-  'firebase',
+  'ngSanitize', 
   'pascalprecht.translate',
   'civis.youpower.main',
   'civis.youpower.actions',
   'civis.youpower.communities',
   'civis.youpower.settings',
-  'civis.youpower.welcome',
-  'civis.youpower.services',
+  'civis.youpower.welcome', 
   'civis.youpower.translations',
   ])
 
