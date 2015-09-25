@@ -6,9 +6,7 @@
     "angular-translate": "~2.7.0",
     "angular-resource": "~1.4.3"
   },
-  "dependencies": {
-    "firebase": "~2.2.9",
-    "angularfire": "~1.1.2",
+  "dependencies": { 
     "underscore": "~1.8.3"
   }
 }
