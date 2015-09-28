@@ -37,7 +37,7 @@ angular.module('civis.youpower.translations',[])
     RECEIVER_NAME: "Receiver's name", 
     Send_Invitation: "Send Invitation",
     SENDING_INVITATION: "Sending your invitation to {{email}}...",
-    INVITATION_SENT: "Your invitation is sent to {{email}}.",
+    INVITATION_SENT: "Your invitation is sent.",
     INVITATION_NOT_SENT: "We can not send your invitation to {{email}}. An error occurred.",
     Your_name: "Your name",
     Your_password: "Your password",
@@ -207,7 +207,7 @@ angular.module('civis.youpower.translations',[])
     About: "About", 
     Actions: "Actions",
     Log_Out: "Log Out",
-    Back: "Back",
+    BACK: "<i class='icon ion-ios-arrow-back'></i> Back",
     Energy_Data: "Energy Data",
     Housing_Cooperatives: "Housing Cooperatives", 
   });
@@ -229,7 +229,7 @@ angular.module('civis.youpower.translations',[])
     Save: "Salvare", 
     Settings: "Impostazioni",
     Username: "Nome Utente", 
-    Yes: "sì"
+    Yes: "sì",
   });
 
 

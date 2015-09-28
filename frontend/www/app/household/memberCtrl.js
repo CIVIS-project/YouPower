@@ -119,8 +119,8 @@ function MemberCtrl($scope, $filter, $translate, $state, $ionicPopup, User, Hous
 			console.log(data);
 			$scope.clearEmailHouseholdInput(); 
 
+			$scope.email.to = data.to; console.log($scope.email.to);
 			$scope.email.sent = true; 
-			$scope.email.to = data.to; 
 			$scope.email.sending = false; 
 		}, function(err){
 			$scope.email.err = err; 
