@@ -1,19 +1,20 @@
 
 angular.module('civis.youpower.actions').controller('ActionCtrl', ActionCtrl);
 
-function ActionCtrl($scope, $stateParams, $ionicPopup, $state, $translate) {
+function ActionCtrl($scope, $stateParams, $ionicPopup, $state, $translate) { 
+  
+  $scope.action = $scope.actions[$stateParams.id]; 
 
-  // if ($scope.$parent.idx > -1){
-  //    $scope.action = $scope.$parent.suggestedActions[$scope.$parent.idx];
-  //    console.log($scope.$parent.idx + " " + $scope.action._id);
+  // if ($scope.action === undefined && $scope.$parent.idx > -1) {
+  //     $scope.action = $scope.$parent.suggestedActions[$scope.$parent.idx];
+  //     console.log($scope.$parent.idx + " " + $scope.action._id);
   // }
 
-  $scope.action =  $scope.actions[$stateParams.id];
-
-  if ($scope.action === undefined && $scope.$parent.idx > -1) {
-    $scope.action = $scope.$parent.suggestedActions[$scope.$parent.idx];
-    console.log($scope.$parent.idx + " " + $scope.action._id);
-  }
+  $scope.$on('Action loaded', function(events, args){
+    if (args.actionId === $stateParams.id) {
+      $scope.action = $scope.actions[$stateParams.id];
+    }
+  });
 
   $scope.changed = function(){
     console.log($scope.input.days);

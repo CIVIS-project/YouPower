@@ -1,11 +1,11 @@
 <ion-view>
 <ion-nav-title>
-<span translate>{{actionsType}}</span> ({{_.size(actionsByType(actionsType))}})
+<span translate>{{actionsType}}</span> ({{_.size(actionsList)}})
 </ion-nav-title>
 <ion-content class="padding">
 
 <ion-slide-box active-slide="slideIdx" does-continue="false" show-pager="false">
-<ion-slide ng-repeat="action in actionsByType(actionsType) track by $index">
+<ion-slide ng-repeat="action in actionsList"> <!-- track by $index -->
 
 <div class="list card">
   <div class="item item-divider item-text-wrap">

@@ -3,7 +3,7 @@ angular.module('civis.youpower.actions').controller('ActionsListCtrl', ActionsLi
 
 /* The controller used for sliding slider over various action lists.
  ----------------------------------------------*/
-function ActionsListCtrl($scope, $state, $stateParams, $filter, $ionicPopup, $translate, Actions) {
+function ActionsListCtrl($scope, $state, $stateParams, $filter, $ionicPopup, $translate, Actions, $ionicSlideBoxDelegate) {
 
   $scope.slideIdx = $stateParams.index ? $stateParams.index : 0;
 
@@ -11,6 +11,22 @@ function ActionsListCtrl($scope, $state, $stateParams, $filter, $ionicPopup, $tr
 
   $scope.actionsType = $stateParams.type; 
 
+  $scope.actionsList = []; 
+
+  if ($scope.currentUser){
+    $scope.actionsList = $scope.actionsByType($scope.actionsType); 
+    $ionicSlideBoxDelegate.update();
+  }
+
+  console.log($scope.actionsList);
+
+
+  $scope.$on('Action loaded', function(events, args){ 
+    $scope.actionsList = $scope.actionsByType($scope.actionsType); 
+    $ionicSlideBoxDelegate.update();
+  }); 
+
+  
   //post action comment (under action details)
   $scope.postComment = function(action){
 

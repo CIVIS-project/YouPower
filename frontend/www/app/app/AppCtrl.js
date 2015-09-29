@@ -187,6 +187,8 @@ function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $i
 				console.log("action details");
 				console.log($scope.actions); 
 
+				$scope.$broadcast('Action loaded', {actionId: data._id}); 
+
 				if (typeof cb === 'function') cb(); 
 			});
 		}else if (typeof cb === 'function') cb(); 

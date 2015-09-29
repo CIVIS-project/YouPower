@@ -55,7 +55,7 @@ angular.module('civis.youpower.translations',[])
     Show_me_more: "Show me more", 
     Pending: "Pending",
     Recently_Completed: "Recently Completed",
-    LEAVES_COUNT: "You gathered <i class='icon ion-leaf balanced icon-large'><span class='leaves-nr'>{{number}}</span></i> leaves in total",
+    LEAVES_COUNT: "You gathered <i class='icon ion-leaf balanced icon-large'><span class='leaves-nr'>{{number}}</span></i>leaves in total",
     Add_Action: "Add Action", 
     Impact: "Impact",
     Effort: "Effort",
