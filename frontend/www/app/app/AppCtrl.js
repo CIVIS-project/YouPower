@@ -118,12 +118,12 @@ function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $i
 
 	$scope.loadUserProfile = function(userId) {
 
-		if (userId === null || userId === $scope.currentUser._id) return; 
+		if (userId === null || userId === $scope.currentUser._id || $scope.users[userId]) return; 
 
 		User.getUserProfile({userId : userId}).$promise.then(function(data){
 			$scope.users[userId] = data; 
 			$scope.loadActionDetails($scope.users[userId].actions.inProgress); 
-			console.log("proflie:");
+			console.log("profile:");
 			console.log(data);
 		});
 	}
