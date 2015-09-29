@@ -210,6 +210,16 @@ angular.module('civis.youpower.translations',[])
     BACK: "<i class='icon ion-ios-arrow-back'></i> Back",
     Energy_Data: "Energy Data",
     Housing_Cooperatives: "Housing Cooperatives", 
+    WHAT_UPOWER_T: "What is YouPower?",
+    WHAT_UPOWER_P: "YouPower is a social app for energy. You can use it to discover saving tips and share experiences about different energy practices. Researchers from the EU CIVIS project are developing YouPower.",
+    HOW_WORKS_T: "How it works?", 
+    HOW_WORKS_P: "YouPower is designed based on research to connect you to friends, family and neighbors so that you can learn and take energy actions that are relevant to you together. For completing actions, you receive leaves.", 
+    HOW_LEAVES_CALCULATED_T: "How are the leaves calculated?", 
+    HOW_LEAVES_CALCULATED_P: "Each energy action has an associated impact score and an effort score (expert evaluated combined with users’ feedback). The number of leaves you receive for completing the action is a sum of those two scores. You also get leaves by giving feedbacks and comments (1 leaf each).",
+    CREDIBILITY_T: "Credibility of the energy advice",
+    CREDIBILITY_P: "We carefully selected the initial set of actions from trusted sources such as different national energy departments and international energy agencies and associations." ,
+    EMAIL_T: "Other questions or comments?",
+    EMAIL_P: "YouPower is an ongoing project. We are happy to learn about what you think, what works for you and how we can do better. Contact us at <a href='mailto:youpower.app@gmail.com?Subject=YouPower%20Questions%20and%20Feedback' class='balanced'>YouPower.app@gmail.com</a>." 
   });
 
   $translateProvider.translations('Italian', {
