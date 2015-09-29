@@ -26,35 +26,35 @@ var ActionSchema = new Schema({
     enum: 'onetime routine common regular irregular'.split(' '),
     default: 'onetime'
   },
-  // category:{
-      //TODO 
-  // },
+  category:{
+    type: String
+  },
   season: {
     type: String,
     enum: 'spring autumn winter summer'.split(' ')
   },
-  tag: { //old one, shall be deleted later. not deleted now - need to check first where it is used
-    type: String,
-    enum: 'daily onetime high-effort repeating'.split(' '),
-    default: 'daily'
-  },
-  tags: {
-    type: [String]
-  },
-  locationIn: {
-    type: [String]
-  },
-  locationNotIn: {
-    type: [String]
-  },
-  activation: {
-    configurable: {
-      type: Boolean,
-      default: false
-    },
-    repeat: Number,
-    delay: Number
-  },
+  // tag: { //old one, shall be deleted later. not deleted now - need to check first where it is used
+  //   type: String,
+  //   enum: 'daily onetime high-effort repeating'.split(' '),
+  //   default: 'daily'
+  // },
+  // tags: {
+  //   type: [String]
+  // },
+  // locationIn: {
+  //   type: [String]
+  // },
+  // locationNotIn: {
+  //   type: [String]
+  // },
+  // activation: {
+  //   configurable: {
+  //     type: Boolean,
+  //     default: false
+  //   },
+  //   repeat: Number,
+  //   delay: Number
+  // },
   description: {
     type: String,
     required: true
@@ -125,13 +125,19 @@ var includeMeanEffort = function(action) {
 exports.create = function(action, cb) {
   Action.create({
     name: action.name,
-    tag: action.tag,
-    tags: action.tags,
-    locationIn: action.locationIn,
-    type: action.type, 
-    locationNotIn: action.locationNotIn,
-    activation: action.activation,
+    nameIt: action.nameIt,
+    nameSe: action.nameSe,
     description: action.description,
+    descriptionIt: action.descriptionIt,
+    descriptionSe: action.descriptionSe,
+    category: action.category, 
+    type: action.type, 
+    season: action.season, 
+    //tag: action.tag,
+    //tags: action.tags,
+    //locationIn: action.locationIn,
+    //locationNotIn: action.locationNotIn,
+    //activation: action.activation, 
     ratings: action.ratings || {},
     impact: action.impact,
     effort: action.effort,
