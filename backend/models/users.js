@@ -439,7 +439,7 @@ Date.prototype.isSameDateAs = function(aDate) {
 };
 
 exports.setActionState = function(user, actionId, state, postponed, cb) {
-  Action.get(actionId, null, function(err, actionResult) {
+  Action.get(actionId, user, function(err, actionResult) {
     if (err) {
       return cb(err);
     }

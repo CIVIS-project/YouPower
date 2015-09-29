@@ -15,6 +15,12 @@ var ActionSchema = new Schema({
     required: true,
     unique: true
   },
+  nameSe: {
+    type: String,
+  },
+  nameIt: {
+    type: String,
+  },
   type: {
     type: String,
     enum: 'onetime routine common regular irregular'.split(' '),
@@ -52,6 +58,12 @@ var ActionSchema = new Schema({
   description: {
     type: String,
     required: true
+  },
+  descriptionSe: {
+    type: String,
+  },
+  descriptionIt: {
+    type: String,
   },
   impact: {
     type: Number,
@@ -138,8 +150,24 @@ exports.get = function(id, user, cb) {
       cb('Action not found');
     } else {
       action = action.toObject();
+
+      //console.log("user: "+JSON.stringify(user, null, 4));
+
+      if (user.profile && user.profile.language === "Italian") {
+        action.name = action.nameIt || action.name;
+        action.description = action.descriptionIt || action.description;
+      }else if (user.profile && user.profile.language === "Swedish") { 
+        action.name = action.nameSe || action.name;
+        action.description = action.descriptionSe  || action.description;
+      }
+      action.nameIt = undefined; 
+      action.nameSe = undefined; 
+      action.descriptionSe = undefined; 
+      action.descriptionIt = undefined; 
+
       includeRatingStats(action);
       includeMeanEffort(action);
+
 
       // include user's rating
       if (user && action.ratings && action.ratings[user._id]) {
@@ -281,20 +309,89 @@ exports.rate = function(id, user, rating, effort, cb) {
   });
 };
 
-exports.getSuggested = function(userActions, cb) {
-  Action.find({
-    $and: [
-      {_id: {$nin: _.keys(userActions.done)}},
-      {_id: {$nin: _.keys(userActions.declined)}},
-      {_id: {$nin: _.keys(userActions.na)}},
-      {_id: {$nin: _.keys(userActions.pending)}},
-      {_id: {$nin: _.keys(userActions.inProgress)}}
-    ]
-  })
-  .sort('date')
-  .limit(3)
-  .select('name description impact effort')
-  .exec(cb);
+exports.getSuggested = function(user, cb) {
+
+  var userActions = user.actions; 
+
+  if (user.profile && user.profile.language === "Italian") {
+
+    Action.find({
+      $and: [
+        {_id: {$nin: _.keys(userActions.done)}},
+        {_id: {$nin: _.keys(userActions.declined)}},
+        {_id: {$nin: _.keys(userActions.na)}},
+        {_id: {$nin: _.keys(userActions.pending)}},
+        {_id: {$nin: _.keys(userActions.inProgress)}},
+        {nameIt: { $exists: true}}
+      ]
+    })
+    .sort('date')
+    .limit(3)
+    .select('nameIt descriptionIt impact effort')
+    .exec(function(err, actions) {
+      if (err) {
+        cb(err);
+      } else {
+
+        for (var i = 0; i < actions.length; i++) {
+          //actions[i] = actions[i].toObject();
+          actions[i].name = actions[i].nameIt; 
+          actions[i].nameIt = actions[i].undefined; 
+          actions[i].description = actions[i].descriptionIt; 
+          actions[i].descriptionIt = undefined; 
+        }
+
+        cb(err, actions); 
+      }
+    });
+
+  } else if (user.profile && user.profile.language === "Swedish") {
+
+    Action.find({
+      $and: [
+        {_id: {$nin: _.keys(userActions.done)}},
+        {_id: {$nin: _.keys(userActions.declined)}},
+        {_id: {$nin: _.keys(userActions.na)}},
+        {_id: {$nin: _.keys(userActions.pending)}},
+        {_id: {$nin: _.keys(userActions.inProgress)}},
+        {nameSe: { $exists: true}}
+      ]
+    })
+    .sort('date')
+    .limit(3)
+    .select('nameSe descriptionSe impact effort')
+    .exec(function(err, actions) {
+      if (err) {
+        cb(err);
+      } else {
+
+        for (var i = 0; i < actions.length; i++) {
+          //actions[i] = actions[i].toObject();
+          actions[i].name = actions[i].nameSe; 
+          actions[i].nameSe = actions[i].undefined; 
+          actions[i].description = actions[i].descriptionSe; 
+          actions[i].descriptionSe = undefined; 
+        }
+
+        cb(err, actions); 
+      }
+    });
+
+  } else { //English 
+    Action.find({
+      $and: [
+        {_id: {$nin: _.keys(userActions.done)}},
+        {_id: {$nin: _.keys(userActions.declined)}},
+        {_id: {$nin: _.keys(userActions.na)}},
+        {_id: {$nin: _.keys(userActions.pending)}},
+        {_id: {$nin: _.keys(userActions.inProgress)}}
+      ]
+    })
+    .sort('date')
+    .limit(3)
+    .select('name description impact effort')
+    .exec(cb);
+  }
 };
 
 //Search action by name and tag attached to name
