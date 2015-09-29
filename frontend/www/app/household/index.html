@@ -1,4 +1,4 @@
-<ion-view cache-view="false" view-title={{"Household_Actions"|translate}}>
+<ion-view view-title={{"Household_Actions"|translate}}>
 <ion-nav-buttons side="right">
 <button ng-show="currentUser.householdId===null || households[currentUser.householdId].ownerId===currentUser._id" class="button button-clear button-dark icon ion-ios-personadd" ng-click="addMember()">&#8200;</button>
 </ion-nav-buttons>
@@ -14,7 +14,7 @@
     </div>
     <div class="item item-icon-left item-icon-right item-text-wrap" ng-repeat="action in users[memberId].actions.inProgress" ng-click="showAction(action)">
       <i class="icon ion-leaf balanced"><span class="leaves-nr">{{getActionPoints(action)}}</span></i>
-      {{action.name}}
+      {{actions[action._id].name}}
       <p class="text-small" ng-show="_.has(currentUser.actions.inProgress, action._id)">
         <span translate>YOU_DOING_AS_WELL</span> <i class="ion-happy-outline "></i>
       </p>

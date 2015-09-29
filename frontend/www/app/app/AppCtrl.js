@@ -122,6 +122,7 @@ function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $i
 
 		User.getUserProfile({userId : userId}).$promise.then(function(data){
 			$scope.users[userId] = data; 
+			$scope.loadActionDetails($scope.users[userId].actions.inProgress); 
 			console.log("proflie:");
 			console.log(data);
 		});

@@ -9,7 +9,7 @@
 
 <div class="list card">
   <div class="item item-divider item-text-wrap">
-    {{$index + 1}}. {{action.name}}
+    {{$index + 1}}. {{actions[action._id].name}}
   </div>
   <div class="item item-body">
     <ng-include src="'app/actions/actionDescription.html'"></ng-include>

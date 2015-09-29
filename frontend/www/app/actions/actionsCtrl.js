@@ -383,5 +383,26 @@ function ActionsCtrl($scope, $state, $ionicPopup, $filter, Actions, User, $trans
 		}else return $scope.moreComments[actionId]; 
 	}
 
+
+	$scope.reloadActions = function() {
+
+	    for (var actionId in $scope.actions) {
+
+			Actions.getActionById({id:actionId}).$promise.then(function(data){
+				
+				$scope.actions[data._id] = data;
+
+				console.log("reload action details");
+				// console.log($scope.actions); 
+
+				// Stop the ion-refresher from spinning
+				// does not need to wait untill the last one gets loaded
+				// Reload (just for change language) can be done at the background 
+				$scope.$broadcast('scroll.refreshComplete'); 
+			});
+		}
+	      
+	 };
+
 }
 
