@@ -33,7 +33,6 @@ function HouseholdCtrl($scope, $filter, $translate, $state, $ionicPopup, $ionicS
 			index = $scope.findAction($scope.actionsByType('pending'), action);
 			$state.go('main.actions.details', {type: 'pending', index: index});
 		}else{
-			//load the action 
 			$state.go('main.actions.action', {id:action._id}); 
 		}
 	}

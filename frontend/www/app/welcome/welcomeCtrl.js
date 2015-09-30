@@ -3,7 +3,12 @@ angular.module('civis.youpower.welcome').controller('WelcomeCtrl', WelcomeCtrl);
 
 function WelcomeCtrl($translate, $scope, $rootScope, $state, $ionicViewSwitcher, AuthService) {
 
-	$scope.loginData = {emailAddress:'', password:'', err: ''}; 
+	$scope.loginData = { 
+      emailAddress:'', 
+      password:'', 
+      err: '', 
+      language: 'English'
+    }; 
 
   // $scope.loginData.emailAddress = "foo";
   // $scope.loginData.password = "bar"; 
@@ -67,7 +72,7 @@ function WelcomeCtrl($translate, $scope, $rootScope, $state, $ionicViewSwitcher,
 
     if (_.isEmpty(err) && $scope.isPasswordsSame){
 
-        AuthService.signup($scope.loginData.emailAddress.toLowerCase(), $scope.loginData.name, $scope.loginData.password)
+        AuthService.signup($scope.loginData.emailAddress.toLowerCase(), $scope.loginData.name, $scope.loginData.password, $scope.loginData.language)
         .then(function(data){
 
           $scope.signinClicked = false; 
@@ -89,6 +94,10 @@ function WelcomeCtrl($translate, $scope, $rootScope, $state, $ionicViewSwitcher,
       $ionicViewSwitcher.nextDirection('swap'); // forward, back, enter, exit, swap
       $state.go('signup'); 
   }
+
+  $scope.languageChanged = function () {
+    $translate.use($scope.loginData.language);
+  };
 
 };
 
