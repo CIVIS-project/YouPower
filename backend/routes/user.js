@@ -22,6 +22,7 @@ router.use('/community', require('./community'));
  * @apiParam {String} email User's e-mail address
  * @apiParam {String} name User's nickname
  * @apiParam {String} password User's password
+ * @apiParam {String} [language] User's preferred language; for now have support for English (default), Italian and Swedish 
  *
  * @apiExample {curl} Example usage:
  *  # NOTE: this is the only API call which does not require authentication!
@@ -30,7 +31,8 @@ router.use('/community', require('./community'));
  *  '{
  *    "email": "testuser@test.com",
  *    "name": "Test User",
- *    "password": "topsecret"
+ *    "password": "topsecret",
+ *    "language": "Swedish"
  *  }' \
  *  http://localhost:3000/api/user/register
  *
@@ -51,7 +53,8 @@ router.post('/register', function(req, res) {
     User.register({
       email: req.body.email,
       profile: {
-        name: req.body.name
+        name: req.body.name, 
+        language: req.body.language || 'English' 
       }
     }, req.body.password, function(err, user) {
       if (err) {
