@@ -2,7 +2,7 @@
 
 angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
 
-.controller('CooperativeCtrl', function($scope,$timeout,$state,$q,Cooperatives) {
+.controller('CooperativeCtrl', function($scope,$timeout,$state,$q,Cooperatives,currentUser) {
 
   $scope.comparisons = [
     {name: ""},
@@ -37,7 +37,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
 
   $scope.$on("$ionicView.enter",function(){
     // Get the cooperative, currently hardcoded
-    Cooperatives.get({id:'55f14ce337d4bef728a861ab'},function(data){
+    Cooperatives.get({id:currentUser.cooperativeId},function(data){
       $scope.cooperative = data;
       initChart();
     });
@@ -251,47 +251,47 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
 
 })
 
-.controller('CooperativeEditCtrl', function($scope,$state,Cooperatives){
+.controller('CooperativeEditCtrl', function($scope,$state,Cooperatives,currentUser){
   $scope.$on("$ionicView.enter",function(){
     // Get the cooperative, currently hardcoded
-    Cooperatives.get({id:'55f14ce337d4bef728a861ab'},function(data){
+    Cooperatives.get({id:currentUser.cooperativeId},function(data){
       $scope.cooperative = data;
     });
   })
 
   $scope.deleteAction = function(action){
-    Cooperatives.deleteAction({id:'55f14ce337d4bef728a861ab',actionId:action._id},function(){
+    Cooperatives.deleteAction({id:$scope.cooperative._id,actionId:action._id},function(){
       $scope.cooperative.actions.splice($scope.cooperative.actions.indexOf(action),1);
     });
   }
 
   $scope.save = function(){
-    Cooperatives.update({id:'55f14ce337d4bef728a861ab'},$scope.cooperative,function(){
+    Cooperatives.update({id:$scope.cooperative._id},$scope.cooperative,function(){
       $state.go("^");
     })
   }
 
 })
 
-.controller('CooperativeActionAddCtrl', function($scope,$state,Cooperatives){
+.controller('CooperativeActionAddCtrl', function($scope,$state,Cooperatives,currentUser){
   $scope.action = {};
 
   $scope.addAction = function(){
-    Cooperatives.addAction({id:'55f14ce337d4bef728a861ab'},$scope.action,function(){
+    Cooperatives.addAction({id:currentUser.cooperativeId},$scope.action,function(){
       $state.go("^");
     })
   };
 })
 
 .controller('CooperativeActionUpdateCtrl', function($scope,$state,$stateParams,Cooperatives){
-  Cooperatives.get({id:'55f14ce337d4bef728a861ab'},function(data){
+  Cooperatives.get({id:currentUser.cooperativeId},function(data){
     $scope.action = _.findWhere(data.actions,{_id:$stateParams.id});
     $scope.action.date = new Date($scope.action.date);
   });
 
 
   $scope.updateAction = function(){
-    Cooperatives.updateAction({id:'55f14ce337d4bef728a861ab',actionId:$scope.action._id},$scope.action,function(){
+    Cooperatives.updateAction({id:currentUser.cooperativeId,actionId:$scope.action._id},$scope.action,function(){
       $state.go("^");
     })
   };
