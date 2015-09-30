@@ -94,7 +94,8 @@ var UserSchema = new Schema({
   production: {
     type: Number,
     default: 0
-  }
+  },
+  cooperativeId: Schema.Types.ObjectId
 });
 UserSchema.plugin(passportLocalMongoose, {
   usernameField: 'email',
@@ -203,7 +204,8 @@ exports.getProfile = function(id, cb) {
         pendingHouseholdInvites: pendingHouseholdInvites,
         pendingCommunityInvites: pendingCommunityInvites,
         leaves: totalLeaves,
-        energyConsumption: {} // TODO
+        energyConsumption: {}, // TODO
+        cooperativeId: user.cooperativeId
       });
     });
   });
