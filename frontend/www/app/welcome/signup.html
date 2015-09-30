@@ -35,6 +35,14 @@
       <input type="password" name="password2" placeholder={{"Repeat_your_password"|translate}} ng-model="loginData.password2" ng-change="comparePasswords()" required>
       <span class="errors_icon pos_left" ng-show="!isPasswordsSame"><i class="icon ion-alert-circled"></i></span>
     </label>
+    <label class="item item-input item-select">
+      <span class="input-label" translate>Preferred_Language</span>
+      <select ng-model="loginData.language" ng-change="languageChanged()">
+        <option translate>English</option>
+        <option translate>Italian</option>
+        <option translate>Swedish</option>
+      </select>
+    </label>
 
     <a class="button button-dark button-full text-bold" ng-disabled="!_.isEmpty(input.$error) || !isPasswordsSame" ng-click="signup(input.$error)" translate>Sign_up</a>
     <p class="errors text-center" ng-show="signinClicked && isRejected">
