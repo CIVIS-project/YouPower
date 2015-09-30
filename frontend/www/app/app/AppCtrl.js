@@ -20,7 +20,7 @@ hierarchy as it will be loaded with abstract main state.
 Here we can do the general app stuff like getting the user's
 details (since this is after the user logs in).
 ----------------------------------------------*/
-function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $ionicLoading, User, Actions, Household, AuthService, $translate) { 
+function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $ionicLoading, User, Actions, Household, AuthService, $translate, currentUser) {
 
 	$scope.userPictures = {}; 
 
@@ -33,53 +33,10 @@ function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $i
 
 	$scope.users = {}; //save user details. not the current user, the other household members and invited members 
 
-	/*
-	load the data of the user ($scope.currentUser)
-	*/
-	User.get().$promise.then(function(data){
 
-		$scope.currentUser = data;
+  $scope.currentUser = currentUser;
 
-		if ($scope.currentUser.profile.dob && $scope.currentUser.profile.dob !== null){
-			$scope.currentUser.profile.dob = new Date($scope.currentUser.profile.dob);
-		}
 
-		$translate.use($scope.currentUser.profile.language); 
-
-		//$scope.users[$scope.currentUser._id] = $scope.currentUser;
-
-		$scope.loadHouseholdProfile($scope.currentUser.householdId);
-
-		// which households invited the current user to join? 
-		$scope.loadHouseholdsDetails($scope.currentUser.pendingHouseholdInvites);
-
-		//whether the user wants to rehearse the actions, inite the variable 
-		//this can be loaded from the backend TODO post the data to the backend
-		//$scope.currentUser.profile.toRehearse = { setByUser: false } ;
-		//$scope.currentUser.profile.language = 'English' ;
-
-		//get the user's picture
-		User.getPicture({userId: $scope.currentUser._id}).$promise.then(function(data){
-			
-			console.log("user picture TODO");
-			//console.log(data); 
-			var b64 = btoa(data); //this doesnot work 
-			//console.log(b64); 
-			$scope.userPictures[$scope.currentUser._id] = ({_id: $scope.currentUser._id, image: b64});
-			//console.log($scope.userPictures); 
-		});
-
-		$scope.loadActionDetails($scope.currentUser.actions.inProgress); 
-		$scope.loadActionDetails($scope.currentUser.actions.pending); 
-		$scope.loadActionDetails($scope.currentUser.actions.done); 
-
-		//comments are loaded later automatically at the action details view
-
-		console.log("user data");
-		console.log($scope.currentUser); 
-	}); 
-
-	
 	$scope.loadHouseholdsDetails = function(households) {
 
 		for (var i=0; i < households.length; i++) {
@@ -387,5 +344,45 @@ function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $i
 		$ionicLoading.hide();
 	};
 
+
+  // Load all additional user information
+
+  if ($scope.currentUser.profile.dob && $scope.currentUser.profile.dob !== null){
+    $scope.currentUser.profile.dob = new Date($scope.currentUser.profile.dob);
+  }
+
+  $translate.use($scope.currentUser.profile.language);
+
+  //$scope.users[$scope.currentUser._id] = $scope.currentUser;
+
+  $scope.loadHouseholdProfile($scope.currentUser.householdId);
+
+  // which households invited the current user to join?
+  $scope.loadHouseholdsDetails($scope.currentUser.pendingHouseholdInvites);
+
+  //whether the user wants to rehearse the actions, inite the variable
+  //this can be loaded from the backend TODO post the data to the backend
+  //$scope.currentUser.profile.toRehearse = { setByUser: false } ;
+  //$scope.currentUser.profile.language = 'English' ;
+
+  //get the user's picture
+  User.getPicture({userId: $scope.currentUser._id}).$promise.then(function(data){
+
+    console.log("user picture TODO");
+    //console.log(data);
+    var b64 = btoa(data); //this doesnot work
+    //console.log(b64);
+    $scope.userPictures[$scope.currentUser._id] = ({_id: $scope.currentUser._id, image: b64});
+    //console.log($scope.userPictures);
+  });
+
+  $scope.loadActionDetails($scope.currentUser.actions.inProgress);
+  $scope.loadActionDetails($scope.currentUser.actions.pending);
+  $scope.loadActionDetails($scope.currentUser.actions.done);
+
+  //comments are loaded later automatically at the action details view
+
+  console.log("user data");
+  console.log($scope.currentUser);
 
 };

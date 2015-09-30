@@ -41,6 +41,12 @@ angular.module('civis.youpower', [
     }
   });
 
+  $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
+    event.preventDefault();
+    console.error("State Change Error", error);
+    $state.go('welcome');
+  });
+
 
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -84,7 +90,13 @@ angular.module('civis.youpower', [
     url: "/app",
     abstract: true,
     templateUrl: "app/app/menu.html",
-    controller: 'AppCtrl'
+    controller: 'AppCtrl',
+    resolve: {
+      User: 'User',
+      currentUser: function(User){
+        return User.get().$promise;
+      }
+    }
   })
 
   .state('main.actions', {
