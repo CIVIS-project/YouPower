@@ -1,0 +1,31 @@
+<ion-view>
+  <ion-nav-title>{{cooperative.name}}</ion-nav-title>
+  <ion-nav-buttons side="secondary">
+    <a class="button button-clear button-positive" ng-click="addAction()" ng-if="!action._id">
+      Add
+    </a>
+    <a class="button button-clear button-positive" ng-click="updateAction()" ng-if="action._id">
+      Save
+    </a>
+  </ion-nav-buttons>
+  <ion-content>
+    <div class="list">
+    <label class="item item-input item-stacked-label">
+      <span class="input-label">Date completed*</span>
+      <input type="month" ng-model="action.date">
+    </label>
+    <label class="item item-input item-stacked-label">
+      <span class="input-label">Title*</span>
+      <input type="text" ng-model="action.name">
+    </label>
+    <label class="item item-input item-stacked-label">
+      <span class="input-label">Cost (SEK)</span>
+      <input type="text" placeholder="">
+    </label>
+    </div>
+    <label class="item item-input item-stacked-label">
+      <span class="input-label">Description</span>
+      <textarea rows="15" ng-model="action.description"></textarea>
+    </label>
+  </ion-content>
+</ion-view>

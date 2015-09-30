@@ -1,0 +1,26 @@
+<ion-view >
+  <ion-nav-title>{{cooperative.name}}</ion-nav-title>
+  <ion-content>
+    <div class="list">
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">Year of construction</span>
+        <input type="text" placeholder="1954" ng-model="cooperative.yearOfConst">
+      </label>
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">Area (m<sup>2</sup>)</span>
+        <input type="text" placeholder="1345" ng-model="cooperative.area">
+      </label>
+      <button class="button button-block button-positive" ng-click="save()">
+        Save
+      </button>
+    </div>
+    <div ng-include src="'app/cooperative/actions.html'" onload="canEditActions = true"></div>
+  </ion-content>
+  <div class="float-button">
+  <span class="height-fix">
+    <a ui-sref=".actionAdd" class="content">
+      <i class="ion-plus-round"> </i>
+    </a>
+  </span>
+</div>
+</ion-view>

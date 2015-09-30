@@ -208,6 +208,36 @@ angular.module('civis.youpower', [
   }
 })
 
+.state('main.cooperative.edit', {
+  url: '/edit',
+  views: {
+    'menuContent@main': {
+      templateUrl: 'app/cooperative/edit.html',
+      controller: 'CooperativeEditCtrl'
+    }
+  }
+})
+
+.state('main.cooperative.edit.actionAdd', {
+  url: '/cooperative/edit/action',
+  views: {
+    'menuContent@main': {
+      templateUrl: 'app/cooperative/editAction.html',
+      controller: 'CooperativeActionAddCtrl'
+    }
+  }
+})
+
+.state('main.cooperative.edit.actionUpdate', {
+  url: '/cooperative/edit/action/:id',
+  views: {
+    'menuContent@main': {
+      templateUrl: 'app/cooperative/editAction.html',
+      controller: 'CooperativeActionUpdateCtrl'
+    }
+  }
+})
+
 .state('main.communities', {
   url: '/communities',
   views: {

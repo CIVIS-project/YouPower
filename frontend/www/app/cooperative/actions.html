@@ -1,0 +1,22 @@
+<ion-list>
+  <ion-item ng-repeat="action in cooperative.actions" ng-click="action.showExtra = !action.showExtra">
+    <span class="badge badge-energized">{{cooperative.actions.length - $index}}</span>
+    <h2>
+      {{action.name}}
+    </h2>
+    <p>
+      {{action.date | date:"yyyy-MM-dd"}}
+    </p>
+    <p ng-show="action.showExtra">
+      {{action.description}}
+    </p>
+    <ion-option-button ng-if="canEditActions" class="button-positive"
+                       ng-click="deleteAction(action)">
+      Delete
+    </ion-option-button>
+    <ion-option-button ng-if="canEditActions" class="button-info"
+                       ui-sref=".actionUpdate({id:action._id, action:action})">
+      Edit
+    </ion-option-button>
+  </ion-item>
+</ion-list>
