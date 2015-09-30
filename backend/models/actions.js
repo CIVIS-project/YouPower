@@ -15,22 +15,55 @@ var ActionSchema = new Schema({
     required: true,
     unique: true
   },
-  tag: {
+  nameSe: {
     type: String,
-    enum: 'daily onetime high-effort repeating'.split(' '),
-    default: 'daily'
   },
-  activation: {
-    configurable: {
-      type: Boolean,
-      default: false
-    },
-    repeat: Number,
-    delay: Number
+  nameIt: {
+    type: String,
   },
+  type: {
+    type: String,
+    enum: 'onetime routine common regular irregular'.split(' '),
+    default: 'onetime'
+  },
+  category:{
+    type: String
+  },
+  season: {
+    type: String,
+    enum: 'spring autumn winter summer'.split(' ')
+  },
+  // tag: { //old one, shall be deleted later. not deleted now - need to check first where it is used
+  //   type: String,
+  //   enum: 'daily onetime high-effort repeating'.split(' '),
+  //   default: 'daily'
+  // },
+  // tags: {
+  //   type: [String]
+  // },
+  // locationIn: {
+  //   type: [String]
+  // },
+  // locationNotIn: {
+  //   type: [String]
+  // },
+  // activation: {
+  //   configurable: {
+  //     type: Boolean,
+  //     default: false
+  //   },
+  //   repeat: Number,
+  //   delay: Number
+  // },
   description: {
     type: String,
     required: true
+  },
+  descriptionSe: {
+    type: String,
+  },
+  descriptionIt: {
+    type: String,
   },
   impact: {
     type: Number,
@@ -48,7 +81,7 @@ var ActionSchema = new Schema({
     type: Schema.Types.Mixed,
     default: {}
   },
-  date: {
+  date: {  //date created
     type: Date,
     required: true
   },
@@ -92,9 +125,19 @@ var includeMeanEffort = function(action) {
 exports.create = function(action, cb) {
   Action.create({
     name: action.name,
-    tag: action.tag,
-    activation: action.activation,
+    nameIt: action.nameIt,
+    nameSe: action.nameSe,
     description: action.description,
+    descriptionIt: action.descriptionIt,
+    descriptionSe: action.descriptionSe,
+    category: action.category, 
+    type: action.type, 
+    season: action.season, 
+    //tag: action.tag,
+    //tags: action.tags,
+    //locationIn: action.locationIn,
+    //locationNotIn: action.locationNotIn,
+    //activation: action.activation, 
     ratings: action.ratings || {},
     impact: action.impact,
     effort: action.effort,
@@ -113,8 +156,24 @@ exports.get = function(id, user, cb) {
       cb('Action not found');
     } else {
       action = action.toObject();
+
+      //console.log("user: "+JSON.stringify(user, null, 4));
+
+      if (user.profile && user.profile.language === "Italian") {
+        action.name = action.nameIt || action.name;
+        action.description = action.descriptionIt || action.description;
+      }else if (user.profile && user.profile.language === "Swedish") { 
+        action.name = action.nameSe || action.name;
+        action.description = action.descriptionSe  || action.description;
+      }
+      action.nameIt = undefined; 
+      action.nameSe = undefined; 
+      action.descriptionSe = undefined; 
+      action.descriptionIt = undefined; 
+
       includeRatingStats(action);
       includeMeanEffort(action);
+
 
       // include user's rating
       if (user && action.ratings && action.ratings[user._id]) {
@@ -256,19 +315,89 @@ exports.rate = function(id, user, rating, effort, cb) {
   });
 };
 
-exports.getSuggested = function(userActions, cb) {
-  Action.find({
-    $and: [
-      {_id: {$nin: _.keys(userActions.done)}},
-      {_id: {$nin: _.keys(userActions.declined)}},
-      {_id: {$nin: _.keys(userActions.na)}},
-      {_id: {$nin: _.keys(userActions.inProgress)}}
-    ]
-  })
-  .sort('date')
-  .limit(3)
-  .select('name description impact effort')
-  .exec(cb);
+exports.getSuggested = function(user, cb) {
+
+  var userActions = user.actions; 
+
+  if (user.profile && user.profile.language === "Italian") {
+
+    Action.find({
+      $and: [
+        {_id: {$nin: _.keys(userActions.done)}},
+        {_id: {$nin: _.keys(userActions.declined)}},
+        {_id: {$nin: _.keys(userActions.na)}},
+        {_id: {$nin: _.keys(userActions.pending)}},
+        {_id: {$nin: _.keys(userActions.inProgress)}},
+        {nameIt: { $exists: true}}
+      ]
+    })
+    .sort('date')
+    .limit(3)
+    .select('nameIt descriptionIt impact effort')
+    .exec(function(err, actions) {
+      if (err) {
+        cb(err);
+      } else {
+
+        for (var i = 0; i < actions.length; i++) {
+          //actions[i] = actions[i].toObject();
+          actions[i].name = actions[i].nameIt; 
+          actions[i].nameIt = actions[i].undefined; 
+          actions[i].description = actions[i].descriptionIt; 
+          actions[i].descriptionIt = undefined; 
+        }
+
+        cb(err, actions); 
+      }
+    });
+
+  } else if (user.profile && user.profile.language === "Swedish") {
+
+    Action.find({
+      $and: [
+        {_id: {$nin: _.keys(userActions.done)}},
+        {_id: {$nin: _.keys(userActions.declined)}},
+        {_id: {$nin: _.keys(userActions.na)}},
+        {_id: {$nin: _.keys(userActions.pending)}},
+        {_id: {$nin: _.keys(userActions.inProgress)}},
+        {nameSe: { $exists: true}}
+      ]
+    })
+    .sort('date')
+    .limit(3)
+    .select('nameSe descriptionSe impact effort')
+    .exec(function(err, actions) {
+      if (err) {
+        cb(err);
+      } else {
+
+        for (var i = 0; i < actions.length; i++) {
+          //actions[i] = actions[i].toObject();
+          actions[i].name = actions[i].nameSe; 
+          actions[i].nameSe = actions[i].undefined; 
+          actions[i].description = actions[i].descriptionSe; 
+          actions[i].descriptionSe = undefined; 
+        }
+
+        cb(err, actions); 
+      }
+    });
+
+  } else { //English 
+    Action.find({
+      $and: [
+        {_id: {$nin: _.keys(userActions.done)}},
+        {_id: {$nin: _.keys(userActions.declined)}},
+        {_id: {$nin: _.keys(userActions.na)}},
+        {_id: {$nin: _.keys(userActions.pending)}},
+        {_id: {$nin: _.keys(userActions.inProgress)}}
+      ]
+    })
+    .sort('date')
+    .limit(3)
+    .select('name description impact effort')
+    .exec(cb);
+  }
 };
 
 //Search action by name and tag attached to name

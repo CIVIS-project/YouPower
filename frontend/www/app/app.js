@@ -9,7 +9,7 @@ angular.module('civis.youpower', [
   'ionic',
   'ionic.rating',
   'ngResource',
-  'firebase',
+  'ngSanitize',
   'pascalprecht.translate',
   'civis.youpower.main',
   'civis.youpower.actions',
@@ -17,11 +17,10 @@ angular.module('civis.youpower', [
   'civis.youpower.cooperatives',
   'civis.youpower.settings',
   'civis.youpower.welcome',
-  'civis.youpower.services',
   'civis.youpower.translations',
   ])
 
-.run(function($ionicPlatform, $rootScope, $window, AuthService, $state) {
+.run(function($ionicPlatform, $rootScope, $window, $state, AuthService) {
 
   $rootScope.scale = 5;
 
@@ -32,10 +31,11 @@ angular.module('civis.youpower', [
     return new Array(num);
   }
 
-  $rootScope.$on('$stateChangeStart', function (event,next, nextParams, fromState) {
+  $rootScope.$on('$stateChangeStart', function (event, next, nextParams, fromState) {
     if (!AuthService.isAuthenticated()) {
-      if (next.name !== 'welcome') {
+      if (next.name !== 'welcome' && next.name !== 'signup' ) {
         event.preventDefault();
+        console.log(fromState.name + " " + next.name);
         $state.go('welcome');
       }
     }
@@ -70,6 +70,12 @@ angular.module('civis.youpower', [
   .state('welcome', {
     url: "/welcome",
     templateUrl: "app/welcome/welcome.html",
+    controller: 'WelcomeCtrl'
+  })
+
+  .state('signup', {
+    url: "/signup",
+    templateUrl: "app/welcome/signup.html",
     controller: 'WelcomeCtrl'
   })
 
@@ -114,14 +120,6 @@ angular.module('civis.youpower', [
     }
   })
 
-
-
-    // .state('main.actions.action', {
-    //   url: '/:id',
-    //   templateUrl: 'app/actions/action.html',
-    //   controller: 'ActionCtrl'
-    // })
-
 .state('main.actions.details', {
   url: '/:type/:index',
   views: {
@@ -154,13 +152,23 @@ angular.module('civis.youpower', [
   }
 })
 
-///////
 
 .state('main.actions.household', {
   url: '/household',
   views: {
     'tab-household': {
       templateUrl: 'app/household/index.html',
+      controller: 'HouseholdCtrl'
+    }
+  }
+})
+
+.state('main.actions.addmember', {
+  url: '/household/members/add',
+  views: {
+    'tab-household': {
+      templateUrl: 'app/household/addmember.html',
+      controller: 'MemberCtrl'
     }
   }
 })
@@ -182,9 +190,6 @@ angular.module('civis.youpower', [
     }
   }
 })
-
-
-
 
 .state('main.prosumption', {
   url: '/prosumption',
@@ -264,6 +269,7 @@ angular.module('civis.youpower', [
   views: {
     'tab-index': {
       templateUrl: 'app/settings/index.html',
+      controller: 'PersonalSettingsCtrl'
     }
   }
 })
@@ -273,6 +279,7 @@ angular.module('civis.youpower', [
   views: {
     'tab-personal': {
       templateUrl: 'app/settings/personal.html',
+      controller: 'PersonalSettingsCtrl'
     }
   }
 })
@@ -281,16 +288,8 @@ angular.module('civis.youpower', [
   url: '/household',
   views: {
     'tab-household': {
-      templateUrl: 'app/settings/household.html'
-    }
-  }
-})
-
-.state('main.settings.preferences', {
-  url: '/preferences',
-  views: {
-    'tab-preferences': {
-      templateUrl: 'app/settings/preferences.html',
+      templateUrl: 'app/settings/household.html',
+      controller: 'HouseholdSettingsCtrl'
     }
   }
 })

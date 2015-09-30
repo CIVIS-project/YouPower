@@ -88,13 +88,13 @@ router.get('/', auth.authenticate(), function(req, res) {
  * @apiVersion 1.0.0
  */
 router.get('/suggested', auth.authenticate(), function(req, res) {
-  Action.getSuggested(req.user.actions, res.successRes);
+  Action.getSuggested(req.user, res.successRes);
 
   Log.create({
     userId: req.user._id,
     category: 'User Action',
     type: 'getSuggested',
-    data: {}
+    data: res.successRes
   });
 });
 

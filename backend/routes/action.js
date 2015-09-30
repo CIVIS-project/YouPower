@@ -170,17 +170,17 @@ router.get('/comment/:commentId/picture', auth.authenticate(), function(req, res
  * ]
  */
 router.get('/:actionId/comments', auth.authenticate(), function(req, res) {
-  ActionComment.get(req.params.actionId, req.body.limit || 10, req.body.skip || 0, req.user,
+  ActionComment.get(req.params.actionId, req.query.limit || 10, req.query.skip || 0, req.user,
       res.successRes);
-
+      
   Log.create({
     userId: req.user._id,
     category: 'Action Comments',
     type: 'get',
     data: {
       actionId: req.params.actionId,
-      limit: req.body.limit,
-      skip: req.body.skip
+      limit: req.query.limit,
+      skip: req.query.skip
     }
   });
 });

@@ -4,7 +4,7 @@ angular.module('civis.youpower')
 
 .service('AuthService', function($q, $http, $window, $timeout, Base64, Config) {
   var LOCAL_TOKEN_KEY = 'CIVIS_TOKEN';
-  var isAuthenticated = false;
+  var isAuthenticated = false; 
 
   function loadUserCredentials() {
     var token = $window.localStorage.getItem(LOCAL_TOKEN_KEY);
@@ -31,6 +31,24 @@ angular.module('civis.youpower')
     $window.localStorage.removeItem(LOCAL_TOKEN_KEY);
   }
 
+  var signup = function(email, name, password) {
+    return $q(function(resolve, reject) {
+
+      $http.post(Config.host + '/api/user/register', {email:email, name:name, password:password})
+       .success(function (data) {
+          storeUserCredentials(data.token);
+          resolve('Sign success.');
+       })
+       .error(function(data){
+          reject(data);
+       });
+
+    });
+    
+  }; 
+
+
+
   var login = function(username, password) {
     return $q(function(resolve, reject) {
       var headers = {
@@ -39,11 +57,11 @@ angular.module('civis.youpower')
 
       $http.get(Config.host + '/api/user/token', {headers:headers})
        .success(function (data) {
-        storeUserCredentials(data.token);
-        resolve('Login success.');
+          storeUserCredentials(data.token);
+          resolve('Login success.');
        })
        .error(function(data){
-        reject('Login failed');
+          reject(data); 
        });
 
     });
@@ -59,6 +77,7 @@ angular.module('civis.youpower')
   return {
     login: login,
     logout: logout,
+    signup: signup,
     isAuthenticated: function() {return isAuthenticated;},
     getToken: function() {return $window.localStorage.getItem(LOCAL_TOKEN_KEY);}
   };

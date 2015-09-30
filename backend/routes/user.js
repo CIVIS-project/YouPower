@@ -55,8 +55,8 @@ router.post('/register', function(req, res) {
       }
     }, req.body.password, function(err, user) {
       if (err) {
-        return res.status(500).end('error while registering: ' + err);
-      }
+        return res.status(500).send('Error while registering. ' + err);
+      } 
 
       auth.newUserToken(user, function(err, token) {
         if (achievements.isBeta) {
@@ -191,8 +191,7 @@ router.get('/actions', auth.authenticate(), function(req, res) {
  * }
  */
 router.post('/profile', auth.authenticate(), function(req, res) {
-  req.checkBody('name').optional().notEmpty();
-  req.checkBody('photo').optional().notEmpty();
+  req.checkBody('dob').optional().isDate();
 
   var err;
   if ((err = req.validationErrors())) {
@@ -205,6 +204,71 @@ router.post('/profile', auth.authenticate(), function(req, res) {
     userId: req.user._id,
     category: 'Own User Profile',
     type: 'update',
+    data: req.body
+  });
+});
+
+/**
+ * @api {post} /user/sendMail/:type Send an Email invitation
+ * @apiGroup User
+ *
+ * @apiParam {String} type Type of the invitation. Can be one of:
+ *
+ *   - **householdMember**: The mail receiver is invited to sign up YouPower and to join the sender's household
+ *   - **TODO**: The mail receiver is invited to sign up YouPower
+ * 
+ * @apiParam {String} email Email address of the receiver
+ * @apiParam {String} [name] Name of the receiver
+ * @apiParam {String} [message] The sender's private message to the receiver
+ * 
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/profile
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
+ *  '{
+ *    "name": "Receiver Name",
+ *    "email": "receiver@example.com",
+ *    "message": "A private message"
+ *  }' \
+ *  http://localhost:3000/api/user/user/sendMail/householdMember
+ *
+ */
+router.post('/sendMail/:type', auth.authenticate(), function(req, res) {
+  req.checkBody('email').notEmpty(); 
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else if (req.params.type === 'householdMember'){
+    User.mailHouseholdMember(req.user, req.body, res.successRes);
+  } else {
+    res.successRes
+  }
+
+  Log.create({
+    userId: req.user._id,
+    category: 'User Mail Invite',
+    type: req.params.type,
+    data: req.body
+  });
+});
+
+
+router.post('/sendMail/householdMember', auth.authenticate(), function(req, res) {
+  req.checkBody('email').notEmpty(); 
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    User.mailHouseholdMember(req.user, req.body, res.successRes);
+  }
+
+  Log.create({
+    userId: req.user._id,
+    category: 'User Mail Invite',
+    type: 'householdMember',
     data: req.body
   });
 });
@@ -318,8 +382,9 @@ router.get('/profile/:userId', auth.authenticate(), function(req, res) {
  * @api {get} /user/search Search for users
  * @apiGroup User
  *
- * @apiParam {String} [email] Search by email TODO: do we allow this?
- * @apiParam {String} [name] Search by name
+ * @apiParam {String} [email] Search by email
+ * @apiParam {String} [name] Search by user's profile name 
+ * @apiParam {String} [userId] Search by user's MongoId
  *
  * @apiExample {curl} Example usage:
  *  # Get API token via /api/user/token
@@ -327,7 +392,7 @@ router.get('/profile/:userId', auth.authenticate(), function(req, res) {
  *
  *  curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
  *  '{
- *    "email": "test"
+ *    "name": "Test User"
  *  }' \
  *  http://localhost:3000/api/user/search
  *
@@ -347,13 +412,18 @@ router.get('/profile/:userId', auth.authenticate(), function(req, res) {
  * @apiVersion 1.0.0
  */
 router.get('/search', auth.authenticate(), function(req, res) {
-  User.find(req.body, true, 50, null, res.successRes);
+
+  // console.log("req.params:" + JSON.stringify(req.params, null, 4)); 
+  // console.log("req.body:" + JSON.stringify(req.body, null, 4)); 
+  // console.log("req.query:" + JSON.stringify(req.query, null, 4)); 
+
+  User.find(req.query, true, 50, null, res.successRes); 
 
   Log.create({
     userId: req.user._id,
     category: 'User Profile',
     type: 'find',
-    data: req.body
+    data: req.query
   });
 });
 
@@ -384,6 +454,12 @@ router.post('/token', auth.basicauth(), function(req, res) {
     res.successRes(err, {
       token: token
     });
+  });
+
+  Log.create({
+    userId: req.user._id,
+    category: 'User Token',
+    type: 'post'
   });
 });
 
@@ -458,5 +534,8 @@ router.get('/:userId/achievements', auth.authenticate(), function(req, res) {
     data: req.params.userId
   });
 });
+
+
+
 
 module.exports = router;

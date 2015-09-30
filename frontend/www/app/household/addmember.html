@@ -1,0 +1,73 @@
+<ion-view view-title={{"Invite_Household_Member"|translate}}>
+<ion-content class="padding">
+
+<!-- <div class="item-input-inset">
+  <div class="item-input-wrapper">
+    <i class="icon ion-search placeholder-icon"></i>
+    <input type="search" placeholder="Search user by name" ng-model="input.search" ng-change="input.typing=true" ng-enter="searchUser()"/>
+  </div>
+  <a class="button-icon icon ion-backspace-outline text-small" ng-click="clearSearch()"></a>
+</div> 
+<p class="search-message" ng-show="!input.typing && noResult">No result found for '{{input.search}}'.</p>-->
+
+<div class="list card">
+  <div class="item item-input">
+    <i class="icon ion-search placeholder-icon item-text-wrap"></i>
+    <input type="search" placeholder={{"Search_user_by_name"|translate}} ng-model="search.input.text" ng-change="search.input.typing=true" ng-enter="searchUser()"/>
+    <a class="button-icon icon ion-backspace-outline text-small" ng-click="clearSearch()"></a>
+  </div>
+  <div class="item item-avatar" ng-click="confirmToInvite(user)" ng-repeat="user in search.users">
+      <img ng-if="user.profile.photo" src="user.profile.photo">
+      <img ng-if="!user.profile.photo" src="/img/eco.jpg">
+      <h2>{{user.profile.name}}<span ng-if="user._id===currentUser._id" class="item-note" translate>You</span><span ng-if="isInvitedToHousehold(user._id)" class="item-note" translate>Invitation_sent</span><span ng-if="user._id!==currentUser._id&&isInYourHousehold(user._id)" class="item-note" translate>In_Your_Household</span></h2> 
+      <p>{{_.size(user.actions.inProgress)}} <span translate>{{_.size(user.actions.inProgress)>1? 'current_actions':'current_action'}}</span></p>
+  </div>
+</div>
+
+<p class="message" ng-show="!search.input.typing && search.noResult" translate translate-values="{name: '{{search.input.text}}'}">CAN_NOT_FIND_USER</p>
+
+
+<button class="button button-full button-dark icon-left" ng-click="gotoHouseholdActions();">
+  <i class="icon ion-ios-arrow-back"></i>
+  <b translate>Back_to_Household_Actions</b>
+</button>
+
+
+<div class="card" ng-show="search.noResult">
+  <div class="item item-text-wrap item-divider">
+    <h2 translate>CAN_NOT_FIND_USER_Q</h2> 
+  </div>
+
+  <a ng-show="!email.showForm" ng-click="email.showForm=true;email.sent=false;email.err=null" class="item item-icon-left">
+    <i class="icon ion-ios-email-outline"></i>
+    <span translate>SEND_INVITATION_EMAIL</span>
+  </a>
+
+  <form name="emailHousehold" ng-show="email.showForm" >
+  <label class="item item-input item-floating-label">
+    <span class="input-label" translate>Email_address</span>
+    <input type="email" name="email" ng-change="check(emailHousehold.email.$error)" ng-model="emailHouseholdInput.email" placeholder={{"RECEIVER_EMAIL"|translate}} required>
+    <span class="errors_icon errors_icon_float_label" ng-show="emailHousehold.email.$error.required || emailHousehold.email.$error.email"><i class="icon ion-alert-circled"></i></span>
+  </label>
+   <label class="item item-input item-floating-label">
+    <span class="input-label" translate>Name</span>
+    <input type="text" ng-model="emailHouseholdInput.name" placeholder={{"RECEIVER_NAME"|translate}}>
+  </label>
+  <!-- <label class="item item-input item-floating-label">
+    <span class="input-label">You Message</span>
+    <textarea ng-model="emailHouseholdInput.message" placeholder="Your Message"></textarea>
+  </label> -->
+  </form>
+</div>
+
+<button ng-show="email.showForm" ng-disabled="!_.isEmpty(emailHousehold.$error)" class="button button-full button-dark" ng-click="sendMail()" translate>
+  Send_Invitation
+</button>
+
+<p class="message" ng-show="email.sending" translate translate-values="{email: '{{emailHouseholdInput.email}}'}">SENDING_INVITATION</p>
+<p class="message" ng-show="email.sent" translate>INVITATION_SENT</p>
+<p class="message" ng-show="email.err" translate translate-values="{email: '{{emailHouseholdInput.email}}'}">INVITATION_NOT_SENT</p>
+
+
+  </ion-content>
+</ion-view>

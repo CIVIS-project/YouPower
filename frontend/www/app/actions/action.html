@@ -1,37 +1,45 @@
-<ion-view view-title="Suggested Action">
-<ion-content>
+<ion-view view-title={{"Suggested_Action"|translate}}>
+<ion-content class="padding">
 
-	<div class="list card">
-		<div class="item item-divider item-icon-left item-text-wrap">
-			<i class="icon ion-android-arrow-forward energized"></i>
-			{{action.name}}
-		</div>
-		<div class="item item-body">
+<div class="list card">
+	<div class="item item-divider item-icon-left item-text-wrap">
+		<i class="icon ion-android-arrow-forward energized"></i>
+		{{actions[action._id].name}}
+	</div>
+	<div class="item item-body item-text-wrap">
 
-			<ng-include src="'app/actions/actionDescription.html'"></ng-include>
+		<ng-include src="'app/actions/actionDescription.html'"></ng-include>
 
-			<p><a href="#" class="balanced" ng-if="actions[action._id].numUsers>0">{{num=actions[action._id].numUsers}} Participant{{num > 1 ? 's':''}}</a></p>
-
-			<a class="item item-icon-left" ng-click="changeActionState('alreadyDoing')">
+		<div class="text-small space-top"><span class="balanced" ng-if="actions[action._id].numUsers>0">{{num=actions[action._id].numUsers}} <span translate>{{num > 1 ? 'Participants':'Participant'}}</span></span> <span class="balanced" ng-if="actions[action._id].numLikes>0">{{num2=actions[action._id].numLikes}} <span translate>{{num2 > 1 ? 'Likes':'Like'}}</span></span> <span translate>TAKE_TO_SEE_MORE</span></div>
+		<div>
+			<a class="item item-icon-left" ng-click="chooseSuggestedAction('alreadyDoing')" ng-if="actions[action._id].type != 'regular' && actions[action._id].type != 'irregular'">
 				<i class="icon ion-android-done positive"></i>
-				I already do this.
+				<span translate>ALREADY_DO</span>
 			</a>
-			<a class="item item-icon-left" ng-click="changeActionState('inProgress')">
+			<a class="item item-icon-left" ng-click="inputDays()" ng-if="actions[action._id].type == 'regular' || actions[action._id].type == 'irregular'">
+				<i class="icon ion-more balanced"></i>
+				<span translate>REMIND</span> 
+			</a> 
+			<a class="item item-icon-left" ng-click="chooseSuggestedAction('inProgress')">
 				<i class="icon ion-leaf balanced"></i>
-				I want to do this.
+				<span translate>WANT_TO_DO</span>
 			</a>
-			<a class="item item-icon-left" ng-click="changeActionState('declined')">
+			<a class="item item-icon-left" ng-click="chooseSuggestedAction('declined')">
 				<i class="icon ion-android-close assertive"></i>
-				I don't want to do this.
+				<span translate>NOT_WANT_TO_DO</span>
 			</a>
-			<a class="item item-icon-left" ng-click="changeActionState('na')">
+			<a class="item item-icon-left" ng-click="chooseSuggestedAction('na')" ng-if="actions[action._id].type != 'common'">
 				<i class="icon ion-android-remove energized"></i>
-				This doesn't apply to me.
+				<span translate>NA_TO_ME</span>
 			</a>
-
 		</div>
 	</div>
+</div>
 
+<button class="button button-full button-dark icon-left" ng-click="gotoYourActions();">
+	<i class="icon ion-ios-arrow-back"></i>
+	<b translate>Back_to_Your_Actions</b>
+</button>
 
 </ion-content>
 </ion-view>

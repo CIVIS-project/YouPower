@@ -1,36 +1,72 @@
 
 angular.module('civis.youpower.actions').controller('ActionCtrl', ActionCtrl);
 
-function ActionCtrl($scope, $stateParams, $state, User) {
+function ActionCtrl($scope, $stateParams, $ionicPopup, $state, $translate) { 
+  
+  $scope.action = $scope.actions[$stateParams.id]; 
 
-  if ($scope.$parent.idx > -1){
-     $scope.action = $scope.$parent.suggestedActions[$scope.$parent.idx];
-     console.log($scope.action._id);
+  // if ($scope.action === undefined && $scope.$parent.idx > -1) {
+  //     $scope.action = $scope.$parent.suggestedActions[$scope.$parent.idx];
+  //     console.log($scope.$parent.idx + " " + $scope.action._id);
+  // }
+
+  $scope.$on('Action loaded', function(events, args){
+    if (args.actionId === $stateParams.id) {
+      $scope.action = $scope.actions[$stateParams.id];
+    }
+  });
+
+  $scope.changed = function(){
+    console.log($scope.input.days);
   }
 
+  $scope.input = {}; 
 
-  $scope.changeActionState = function(actionState){
+  $scope.inputDays = function(){ 
 
-    var listName = actionState; 
+    var alertPopup = $ionicPopup.show({
+      title: "<span class='text-medium-large'>"+ $translate.instant('SET_PENDING') + "</span>",
+      scope: $scope, 
+      template: "<form name='popup' class='text-medium text-center'>" + "<span translate>REMIND_ME_IN</span>" + "<div><input name='inputDays' type='number' min='1' max='1000' class='text-center' ng-model='input.days' placeholder={{'a_number_of'|translate}}> <span translate>days</span>! </div>" + "<div class='errors' ng-show='!popup.inputDays.$valid' translate>NUMBER_1000</div>" + "</form>", 
+      buttons: [
+        { text: $translate.instant('Cancel') },
+        { text: $translate.instant('Save'),
+          type: 'button-dark',
+          onTap: function(e) {
+            if (!$scope.input.days) {
+              //don't allow the user to close unless he enters a number
+              e.preventDefault();
+            } else {  return $scope.input.days; }
+          }
+        }
+      ]
+    });
+    alertPopup.then(function(res) {
+      if(res) {
+        $scope.setPendingAction(res); 
+      }
+    });
+  }
 
-    //see https://github.com/CIVIS-project/YouPower/issues/59
-    if (actionState == 'alreadyDoing'){
-      listName = 'done';
-      $scope.action.alreadyDoing = true;
+  $scope.setPendingAction = function(pendingDays) {
+
+      $scope.chooseSuggestedAction('pending', $scope.addDays(pendingDays)); 
+  }
+
+  $scope.chooseSuggestedAction = function(actionState, date) {
+
+    if (actionState === "declined" || actionState === "na") {
+      $scope.removeActionById($scope.action._id);
+    }else{
+      //the points for alreadyDoing will only be added once for this action 
+      if (actionState === "alreadyDoing" && !$scope.action.alreadyDoingDate){
+        $scope.addActionPoints($scope.action);
+      }
     }
 
+    $scope.setSuggestedActionStateWithPreload($scope.action._id, actionState, date); 
 
-
-    User.actionState( //POST state
-        {actionId: $scope.action._id},{state:actionState}).$promise.then(function(){
-          //update local object 
-          $scope.currentUser.actions[listName][$scope.action._id] = $scope.action;
-    });
-
-    $scope.$parent.lastActionUsed = true; 
-
-    //todo: need to be conditional 
-    $state.go('main.actions.yours');
+    $scope.gotoYourActions();
 
   };
 
