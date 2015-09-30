@@ -85,6 +85,24 @@ router.get('/:id', function(req, res) {
   }
 });
 
+router.put('/:id', function(req, res) {
+  req.checkParams('id', 'Invalid cooperative id').isMongoId();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    Cooperative.update(req.params.id, req.body, res.successRes);
+
+    Log.create({
+      // userId: req.user._id,
+      category: 'Cooperative',
+      type: 'update',
+      data: req.body
+    });
+  }
+});
+
 router.post('/:id/action', function(req, res) {
   req.checkParams('id', 'Invalid cooperative id').isMongoId();
 
@@ -93,7 +111,6 @@ router.post('/:id/action', function(req, res) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
     Cooperative.addAction(req.params.id, req.body, null, res.successRes);
-    console.log("Here's body",req.body)
 
     Log.create({
       // userId: req.user._id,
@@ -102,6 +119,51 @@ router.post('/:id/action', function(req, res) {
       data: {
         cooperativeId: req.params.id,
         action: req.body
+      }
+    });
+  }
+});
+
+router.put('/:id/action/:actionId', function(req, res) {
+  req.checkParams('id', 'Invalid cooperative id').isMongoId();
+  req.checkParams('actionId', 'Invalid cooperative action id').isMongoId();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    Cooperative.updateAction(req.params.id, req.params.actionId, req.body, null, res.successRes);
+
+    Log.create({
+      // userId: req.user._id,
+      category: 'Cooperative',
+      type: 'updateAction',
+      data: {
+        cooperativeId: req.params.id,
+        actionId: req.params.actionId,
+        action: req.body
+      }
+    });
+  }
+});
+
+router.delete('/:id/action/:actionId', function(req, res) {
+  req.checkParams('id', 'Invalid cooperative id').isMongoId();
+  req.checkParams('actionId', 'Invalid cooperative action id').isMongoId();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    Cooperative.deleteAction(req.params.id, req.params.actionId, null, res.successRes);
+
+    Log.create({
+      // userId: req.user._id,
+      category: 'Cooperative',
+      type: 'deleteAction',
+      data: {
+        cooperativeId: req.params.id,
+        actionId: req.params.actionId
       }
     });
   }
