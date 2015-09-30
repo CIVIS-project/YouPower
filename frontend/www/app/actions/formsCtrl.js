@@ -33,7 +33,7 @@ function FormsCtrl($scope, $timeout, $stateParams, $ionicPopup, User, Actions, $
 		var text = "";
 		var alertPopup = {} ; 
 
-		var pointsText = "<span ng-if='hasFeedback'>Many thanks for your feedback!</span> <span ng-if='points>0'><span translate>You_got</span> {{points}} <span translate>{{points>1?'points':'point'}}</span>.</span>" 
+		var pointsText = "<span ng-if='hasFeedback'>Many thanks for your feedback!</span> <span ng-if='points>0'><span translate>You_got</span> {{points}} <span translate>{{points>1?'points':'point'}}</span>.</span>"; 
 
 		console.log ("Size:" + _.size($scope.currentUser.actions.inProgress)); 
 
@@ -57,6 +57,7 @@ function FormsCtrl($scope, $timeout, $stateParams, $ionicPopup, User, Actions, $
 			alertPopup.then(function(res) {
 				$scope.disableBack();
 				console.log (res); 
+				$scope.points = 0; 
 				if(res) {
 					$scope.addActions();
 				}else {
@@ -74,6 +75,7 @@ function FormsCtrl($scope, $timeout, $stateParams, $ionicPopup, User, Actions, $
 				okType: "button-dark"
 			});
 			alertPopup.then(function(res) {
+				$scope.points = 0; 
 				console.log (res); 
 				$scope.gotoYourActions();
 			}); 
@@ -176,6 +178,7 @@ function FormsCtrl($scope, $timeout, $stateParams, $ionicPopup, User, Actions, $
 			okType: "button-dark"
 		});
 		alertPopup.then(function(res) { 
+			$scope.points = 0; 
 			if(res) {
 				$scope.inputDaysAndSchedule($scope.currentAction); 
 			}else{
@@ -214,14 +217,16 @@ function FormsCtrl($scope, $timeout, $stateParams, $ionicPopup, User, Actions, $
 
 	$scope.completed = function(){
 
-		//user rated the effort level of the actiion
+		//user rated the effort level of the action
 		if ($scope.data.rating != 0){
 
 			Actions.rateEffort(
 		        {id: $scope.currentAction._id}, {effort: $scope.data.rating}).$promise.then(function(data){
 
-		          console.log("rating: ");
-		          console.log(data); 
+		          //console.log("rating: ");
+		          //console.log(data); 
+		          
+		          $scope.data.rating = 0; 
 		      });
 		}
 
@@ -235,10 +240,12 @@ function FormsCtrl($scope, $timeout, $stateParams, $ionicPopup, User, Actions, $
 
 		          //add action comment to local list 
 		          $scope.comments.unshift(data);
-		          console.log($scope.feedback.text); 
+		          //console.log($scope.feedback.text); 
 
 		          $scope.addCommentPoints(); 
 		          $scope.points += $scope.commentPoints; 
+		          
+		          $scope.feedback = {text: ""}; 
 		    });
 		}
 
@@ -268,9 +275,13 @@ function FormsCtrl($scope, $timeout, $stateParams, $ionicPopup, User, Actions, $
 			$scope.feedback._id = $scope.currentAction._id;
 
 			User.feedback({},{kind:'actionCanceled', content: $scope.feedback}).$promise.then(function(data){
+				
 				console.log(data);
 				$scope.addFeedbackPoints();
 				$scope.points += $scope.feedbackPoints; 
+
+				$scope.feedback = {text: ""}; 
+
 			});
 
 			$scope.changeActionState('canceled');
