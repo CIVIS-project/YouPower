@@ -42,7 +42,7 @@ angular.module('civis.youpower.translations',[])
     Your_name: "Your name",
     Your_password: "Your password",
     Select_your_password: "Select your password", 
-    your_password: "Repeat your password", 
+    Repeat_your_password: "Repeat your password", 
     Sign_up: "Sign up",
     JOIN_NOW: "Not a member? Join now",
     LOGIN_HERE: "Already a member? Login here",
