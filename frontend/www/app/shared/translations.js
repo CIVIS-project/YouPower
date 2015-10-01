@@ -258,4 +258,5 @@ angular.module('civis.youpower.translations',[])
 
   $translateProvider.preferredLanguage('English')
     .fallbackLanguage('English');
+  $translateProvider.useSanitizeValueStrategy('sanitize');
 }]);
