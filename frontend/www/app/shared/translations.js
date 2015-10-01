@@ -37,7 +37,7 @@ angular.module('civis.youpower.translations',[])
     RECEIVER_NAME: "Receiver's name", 
     Send_Invitation: "Send Invitation",
     SENDING_INVITATION: "Sending your invitation to {{email}}...",
-    INVITATION_SENT: "Your invitation is sent.",
+    INVITATION_SENT: "Your invitation is sent to",
     INVITATION_NOT_SENT: "We can not send your invitation to {{email}}. An error occurred.",
     Your_name: "Your name",
     Your_password: "Your password",

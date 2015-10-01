@@ -65,9 +65,8 @@
 </button>
 
 <p class="message" ng-show="email.sending" translate translate-values="{email: '{{emailHouseholdInput.email}}'}">SENDING_INVITATION</p>
-<p class="message" ng-show="email.sent" translate>INVITATION_SENT</p>
+<p class="message" ng-show="email.sent"><span translate>INVITATION_SENT</span> {{email.to}}.</p>
 <p class="message" ng-show="email.err" translate translate-values="{email: '{{emailHouseholdInput.email}}'}">INVITATION_NOT_SENT</p>
-
 
   </ion-content>
 </ion-view>
