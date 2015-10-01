@@ -85,6 +85,22 @@ router.get('/:id', function(req, res) {
   }
 });
 
+router.get('/', function(req, res) {
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    Cooperative.all(res.successRes);
+
+    Log.create({
+      // userId: req.user._id,
+      category: 'Cooperative',
+      type: 'get'
+    });
+  }
+});
+
 router.put('/:id', function(req, res) {
   req.checkParams('id', 'Invalid cooperative id').isMongoId();
 

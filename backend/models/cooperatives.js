@@ -11,6 +11,8 @@ var CooperativeSchema = new Schema({
     required: true,
     unique: true
   },
+  lat: Number,
+  lng: Number,
   yearOfConst: {
     type: Number,
     required: true
@@ -39,6 +41,16 @@ exports.create = function(cooperative, cb) {
     area: cooperative.area
   }, cb);
 };
+
+exports.all = function(cb) {
+  Cooperative.find({},function(err,cooperatives){
+    if (err) {
+      cb(err);
+    } else {
+      cb(null,cooperatives);
+    }
+  });
+}
 
 exports.get = function(id, user, cb) {
   Cooperative.findOne({
