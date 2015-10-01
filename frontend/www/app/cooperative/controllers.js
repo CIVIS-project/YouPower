@@ -2,7 +2,7 @@
 
 angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
 
-.controller('CooperativeCtrl', function($scope,$timeout,$state,$q,Cooperatives,currentUser) {
+.controller('CooperativeCtrl', function($scope,$timeout,$state,$q,$stateParams,Cooperatives,currentUser) {
 
   $scope.comparisons = [
     {name: ""},
@@ -36,8 +36,9 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
   }
 
   $scope.$on("$ionicView.enter",function(){
+    var id = $stateParams.id || currentUser.cooperativeId;
     // Get the cooperative, currently hardcoded
-    Cooperatives.get({id:currentUser.cooperativeId},function(data){
+    Cooperatives.get({id:id},function(data){
       $scope.cooperative = data;
       initChart();
     });
@@ -244,8 +245,8 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
           }
         }
         chart.redraw();
-        $scope.chartConfig.loading = false;
       }
+      $scope.chartConfig.loading = false;
     });
   }
 
@@ -283,7 +284,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
   };
 })
 
-.controller('CooperativeActionUpdateCtrl', function($scope,$state,$stateParams,Cooperatives){
+.controller('CooperativeActionUpdateCtrl', function($scope,$state,$stateParams,Cooperatives,currentUser){
   Cooperatives.get({id:currentUser.cooperativeId},function(data){
     $scope.action = _.findWhere(data.actions,{_id:$stateParams.id});
     $scope.action.date = new Date($scope.action.date);

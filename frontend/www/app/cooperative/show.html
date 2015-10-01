@@ -1,6 +1,6 @@
-<ion-view view-title="{{cooperative.name}}" ca>
+<ion-view view-title="{{cooperative.name}}">
   <ion-nav-buttons side="secondary">
-    <a ui-sref=".edit" class="button button-clear button-positive">
+    <a ui-sref=".edit" class="button button-clear button-positive" ng-if="currentUser.cooperativeId == cooperative._id">
       Edit
     </a>
   </ion-nav-buttons>
