@@ -7861,3 +7861,9 @@ ul.rating li {
       left: 0; }
     .chart-container .chart-navigation:before, .chart-container .chart-navigation:after {
       vertical-align: middle; }
+
+.full-height .scroll {
+  height: 100%; }
+.full-height #map {
+  width: 100%;
+  height: 80%; }
