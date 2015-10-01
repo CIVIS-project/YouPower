@@ -33,12 +33,12 @@ function FormsCtrl($scope, $timeout, $stateParams, $ionicPopup, User, Actions, $
 		var text = "";
 		var alertPopup = {} ; 
 
-		var pointsText = "<span ng-if='hasFeedback'>Many thanks for your feedback!</span> <span ng-if='points>0'><span translate>You_got</span> {{points}} <span translate>{{points>1?'points':'point'}}</span>.</span>"; 
+		var pointsText = "<span ng-if='hasFeedback' translate>THANKS_FEEDBACK</span> <span ng-if='points>0'><span translate>You_got</span> {{points}} <span translate>{{points>1?'points':'point'}}</span>.</span>"; 
 
 		console.log ("Size:" + _.size($scope.currentUser.actions.inProgress)); 
 
 		if (completed && $scope.actions[$scope.currentAction._id].type != 'onetime'){
-				//make a reschdule of the same action
+				//make a reschedule of the same action
 
 			$scope.askScheduleNext(pointsText); 
 
@@ -82,17 +82,19 @@ function FormsCtrl($scope, $timeout, $stateParams, $ionicPopup, User, Actions, $
 		}
 	}
 
-	$scope.input = {}; 
+	
 
 	$scope.inputDaysAndSchedule = function(action){
 
+	$scope.input = {}; 
+
 	var alertPopup = $ionicPopup.show({
-	  title: "<span class='text-medium-large'>Schedule Action</span>",
+	  title: "<span class='text-medium-large'>"+ $translate.instant('Schedule_Action') + "</span>",
 	  scope: $scope, 
-	  template: "<form name='popup' class='text-medium text-center'>I want to retake the action: <b>{{currentAction.name}}</b> Remind me in <div><input name='inputDays' type='number' min='1' max='1000' class='text-center' ng-model='input.days' placeholder='a number of'> days! </div> <div class='errors' ng-show='!popup.inputDays.$valid'>Please give a number between 1 and 1000!</div></form>", 
+	  template: "<form name='popup' class='text-medium text-center'>" + "<span translate>RETAKE_ACTION</span> <b>{{currentAction.name}}</b> <span translate>Remind_me_in</span> <div><input name='inputDays' type='number' min='1' max='1000' class='text-center' ng-model='input.days' placeholder={{'a_number_of'|translate}}> <span translate>days</span>! </div> <div class='errors' ng-show='!popup.inputDays.$valid' translate>NUMBER_1000</div></form>", 
 	  buttons: [
-	    { text: 'Cancel' },
-	    { text: 'Save',
+	    { text: $translate.instant('Cancel') },
+	    { text: $translate.instant('Save'),
 	      type: 'button-dark',
 	      onTap: function(e) {
 	        if (!$scope.input.days) { 
@@ -106,7 +108,7 @@ function FormsCtrl($scope, $timeout, $stateParams, $ionicPopup, User, Actions, $
 	alertPopup.then(function(res) {
 	  if(res) {
 	    $scope.schduleAction(action, res); 
-	    $scope.askAddAction("Congratulations and thanks. The action is scheduled in " + res + " days. "); 
+	    $scope.askAddAction("<span translate translate-values=\"{number:" + res + "}\">ACTION_SCHEDULED</span>"); 
 	  }else{
 	  	$scope.askAddAction(); 
 	  }
@@ -126,17 +128,19 @@ function FormsCtrl($scope, $timeout, $stateParams, $ionicPopup, User, Actions, $
 			text = "";
 		}
 
-		var title = text ? 'Action Scheduled' : 'More Action?'; 
+		var title = text ? $translate.instant('Action_Scheduled') : $translate.instant('MORE_ACTION'); 
 		var alertPopup = {} ; 
 
 		if (_.size($scope.currentUser.actions.inProgress) < $scope.preferredNumberOfActions) {
 
+			$scope.nr = _.size($scope.currentUser.actions.inProgress);
+
 			alertPopup = $ionicPopup.confirm({
 				title: "<span class='text-medium-large'>" + title + "</span>",
 				scope: $scope, 
-				template: "<span class='text-medium'>" + text + "You currently have {{_.size(currentUser.actions.inProgress)==0?'no':_.size(currentUser.actions.inProgress)}} action{{_.size(currentUser.actions.inProgress)>1?'s':''}} in progress. Would you like to add {{_.size(currentUser.actions.inProgress)==0?'':'another '}}one?</span>", 
-				okText: "Yes",
-				cancelText: "Not now",
+				template: "<span class='text-medium'>" + text + " <span ng-if='nr===0' translate>YOU_NO_ACTION</span>" + " <span ng-if='nr===1' translate>YOU_1_ACTION</span>" + " <span ng-if='nr>1' translate translate-values=\"{number: '{{nr}}'}\">YOU_N_ACTION</span>" + " <span translate>{{nr===0 ? 'ADD_ONE':'ADD_ANOTHER_ONE'}}</span>" + "</span>", 
+				okText: $translate.instant("Yes"),
+				cancelText: $translate.instant("Not_now"),
 				okType: "button-dark"
 			});
 			alertPopup.then(function(res) {
