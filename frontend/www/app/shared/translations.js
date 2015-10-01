@@ -219,7 +219,20 @@ angular.module('civis.youpower.translations',[])
     CREDIBILITY_T: "Credibility of the energy advice",
     CREDIBILITY_P: "We carefully selected the initial set of actions from trusted sources such as different national energy departments and international energy agencies and associations." ,
     EMAIL_T: "Other questions or comments?",
-    EMAIL_P: "YouPower is an ongoing project. We are happy to learn about what you think, what works for you and how we can do better. Contact us at <a href='mailto:youpower.app@gmail.com?Subject=YouPower%20Questions%20and%20Feedback' class='balanced'>YouPower.app@gmail.com</a>." 
+    EMAIL_P: "YouPower is an ongoing project. We are happy to learn about what you think, what works for you and how we can do better. Contact us at <a href='mailto:youpower.app@gmail.com?Subject=YouPower%20Questions%20and%20Feedback' class='balanced'>YouPower.app@gmail.com</a>.",
+    Schedule_Action: "Schedule Action", 
+    RETAKE_ACTION: "I want to retake the action:",
+    Remind_me_in: "Remind me in",
+    Save: "Save", 
+    ACTION_SCHEDULED: "Congratulations and thanks. The action is scheduled in {{number}} days.",
+    Action_Scheduled: "Action Scheduled",
+    MORE_ACTION: "More Action?",
+    ADD_ONE: 'Would you like to add one?',
+    ADD_ANOTHER_ONE: 'Would you like to add another one?',
+    YOU_NO_ACTION: "You currently have no action in progress.",
+    YOU_1_ACTION: "You currently have 1 action in progress.",
+    YOU_N_ACTION: "You currently have {{number}} actions in progress.",
+
   });
 
   $translateProvider.translations('Italian', {
