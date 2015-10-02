@@ -211,6 +211,47 @@ exports.getProfile = function(id, cb) {
   });
 };
 
+
+exports.getInvites = function(id, cb) {
+  User.findOne({_id: id}, false, function(err, user) {
+    if (err) {
+      return cb(err);
+    }
+    if (!user) {
+      return cb('User not found');
+    }
+
+    var householdId = null;
+    var pendingHouseholdInvites = [];
+    var pendingCommunityInvites = ['TODO'];
+
+    async.parallel([
+      function(cb) {
+        // find households user has been invited to
+        households.findInvites(user._id, function(err, households) {
+          if (err) {
+            return cb(err);
+          }
+
+          pendingHouseholdInvites = households;
+
+          cb();
+        });
+      }
+    ], function(err) {
+      if (err) {
+        return cb(err);
+      }
+
+      cb(null, { 
+        _id: id,
+        pendingHouseholdInvites: pendingHouseholdInvites,
+        pendingCommunityInvites: pendingCommunityInvites
+      });
+    });
+  });
+};
+
 // //Display user's communities (member of which community?)
 // exports.getUserCommunities = function(id, cb) {
 //   User.findOne({_id: id}, function(err, user) {

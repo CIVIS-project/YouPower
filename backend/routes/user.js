@@ -137,6 +137,40 @@ router.get('/profile', auth.authenticate(), function(req, res) {
   });
 });
 
+
+/**
+ * @api {get} /user/invites Get your pending invites
+ * @apiGroup User
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/user/invites
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "pendingHouseholdInvites": [
+ *      '5562c1d46b1083a13e5b7843'
+ *     ],
+ *     "pendingCommunityInvites" [
+ *      '5562c1d46b1083a13e5b7844'
+ *     ]
+ *   }
+ *
+ */
+router.get('/invites', auth.authenticate(), function(req, res) {
+  User.getInvites(req.user._id, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Own Pending Invites',
+    type: 'get',
+    data: res.successRes
+  });
+});
+
 /**
  * @api {get} /user/actions List user's actions based on type of actions
  * @apiGroup User
