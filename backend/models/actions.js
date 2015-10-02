@@ -315,6 +315,16 @@ exports.rate = function(id, user, rating, effort, cb) {
   });
 };
 
+function shuffleArray(array) {
+    for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+    return array;
+}
+
 exports.getSuggested = function(user, cb) {
 
   var userActions = user.actions; 
@@ -331,19 +341,21 @@ exports.getSuggested = function(user, cb) {
         {nameIt: { $exists: true}}
       ]
     })
-    .sort('date')
-    .limit(3)
     .select('nameIt descriptionIt impact effort')
     .exec(function(err, actions) {
       if (err) {
         cb(err);
       } else {
 
+        if (actions.length > 5) {
+          actions = shuffleArray(actions).slice(0, 5);
+        }
+
         for (var i = 0; i < actions.length; i++) {
           //actions[i] = actions[i].toObject();
           actions[i].name = actions[i].nameIt; 
-          actions[i].nameIt = actions[i].undefined; 
           actions[i].description = actions[i].descriptionIt; 
+          actions[i].nameIt = undefined; 
           actions[i].descriptionIt = undefined; 
         }
 
@@ -363,19 +375,21 @@ exports.getSuggested = function(user, cb) {
         {nameSe: { $exists: true}}
       ]
     })
-    .sort('date')
-    .limit(3)
     .select('nameSe descriptionSe impact effort')
     .exec(function(err, actions) {
       if (err) {
         cb(err);
       } else {
 
+        if (actions.length > 5) {
+          actions = shuffleArray(actions).slice(0, 5);
+        }
+
         for (var i = 0; i < actions.length; i++) {
           //actions[i] = actions[i].toObject();
           actions[i].name = actions[i].nameSe; 
-          actions[i].nameSe = actions[i].undefined; 
-          actions[i].description = actions[i].descriptionSe; 
+          actions[i].description = actions[i].descriptionSe;
+          actions[i].nameSe = undefined; 
           actions[i].descriptionSe = undefined; 
         }
 
@@ -393,10 +407,19 @@ exports.getSuggested = function(user, cb) {
         {_id: {$nin: _.keys(userActions.inProgress)}}
       ]
     })
-    .sort('date')
-    .limit(3)
     .select('name description impact effort')
-    .exec(cb);
+    .exec(function(err, actions) {
+      if (err) {
+        cb(err);
+      } else {
+
+        if (actions.length > 5) {
+          actions = shuffleArray(actions).slice(0, 5);
+        }
+
+        cb(err, actions); 
+      }
+    });
   }
 };
 
