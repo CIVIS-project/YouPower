@@ -92,29 +92,21 @@ function SettingsCtrl($scope, $filter, $translate, $state, User, Household) {
 			data.appliancesList = $scope.households[$scope.currentUser.householdId].appliancesList;
 		}
 
-		// 	for(var key in profile) {
-		//         if(profile.hasOwnProperty(key) && profile[key] === null) {
-		//             delete profile[key]; 
-		//         }
-		//     }
+		Household.update({id: $scope.currentUser.householdId}, data).$promise.then(function(data) {
 
-			Household.update({id: $scope.currentUser.householdId}, data).$promise.then(function(data) {
+			$scope.households[$scope.currentUser.householdId] = data; 
 
-				$scope.households[$scope.currentUser.householdId] = data; 
+			console.log(data);
 
-				console.log(data);
-
-				// if (data.dob && data.dob !== null){
-				// 	$scope.currentUser.profile.dob = new Date(data.dob);
-				// }
-				$scope.clearHouseholdProfileChanged(); 
-				if (typeof cb === 'function') cb();
-			}, function(err){
-				console.log(err);
-				if (typeof cb === 'function') cb(); 
-			});
+			// if (data.dob && data.dob !== null){
+			// 	$scope.currentUser.profile.dob = new Date(data.dob);
+			// }
+			$scope.clearHouseholdProfileChanged(); 
+			if (typeof cb === 'function') cb();
+		}, function(err){
+			console.log(err);
+			if (typeof cb === 'function') cb(); 
+		});
 	}
-	
-
 };
 

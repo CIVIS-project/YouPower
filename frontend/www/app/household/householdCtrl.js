@@ -3,7 +3,38 @@ angular.module('civis.youpower.actions').controller('HouseholdCtrl', HouseholdCt
 // Inject my dependencies
 //SettingsCtrl.$inject = ['$scope', '$filter', '$translate'];
 
-function HouseholdCtrl($scope, $filter, $translate, $state, $ionicPopup, $ionicScrollDelegate, Household) {
+function HouseholdCtrl($scope, $filter, $translate, $state, $ionicPopup, $ionicScrollDelegate, User,Household) { 
+
+	$scope.reloadCurrentHousehold = function() {
+
+		User.getPendingInvites().$promise.then(function(data){
+			$scope.currentUser.pendingHouseholdInvites = data.pendingHouseholdInvites;
+			$scope.loadHouseholdsDetails($scope.currentUser.pendingHouseholdInvites);  
+			$scope.currentUser.pendingCommunityInvites = data.pendingCommunityInvites;
+
+		});
+
+		if ($scope.currentUser.householdId === null) {
+			$scope.$broadcast('scroll.refreshComplete'); 
+			return; 
+		}
+
+		Household.get({id: $scope.currentUser.householdId}).$promise
+		.then(function(data){
+
+			$scope.households[$scope.currentUser.householdId] = data; 
+
+			$scope.loadUsersDetails(data.members);
+			$scope.loadUsersDetails(data.pendingInvites);
+		})
+		.finally(function() {
+	       // Stop the ion-refresher from spinning
+	       $scope.$broadcast('scroll.refreshComplete');
+		}); 
+	};
+
+	$scope.reloadCurrentHousehold(); 
+
 
 	$scope.addMember = function(){
 		console.log("add member");
@@ -87,7 +118,7 @@ function HouseholdCtrl($scope, $filter, $translate, $state, $ionicPopup, $ionicS
 		var alertPopup = $ionicPopup.alert({
 			title: "<span class='text-medium-large'>" + title + "</span>",  
 			scope: $scope, 
-			template: "<span class='text-medium' translate translate-values='{name: name}>NOT_JOIN_HOUSEHOLD</span>",
+			template: "<span class='text-medium' translate translate-values='{name: name}'>NOT_JOIN_HOUSEHOLD</span>",
 			okText: $translate.instant("OK_I_C"), 
 			okType: "button-dark"
 		});				
@@ -108,7 +139,7 @@ function HouseholdCtrl($scope, $filter, $translate, $state, $ionicPopup, $ionicS
 		var alertPopup = $ionicPopup.confirm({
 			title: "<span class='text-medium-large'>" + title + "</span>", 
 			scope: $scope, 
-			template: "<span class='text-medium' translate translate-values='{name: name}''>IGNORE_INVITATION</span>",
+			template: "<span class='text-medium' translate translate-values='{name: name}'>IGNORE_INVITATION</span>",
 			okText: $translate.instant("Yes"),
 			cancelText: $translate.instant("Cancel"),
 			okType: "button-dark"

@@ -402,7 +402,16 @@ function ActionsCtrl($scope, $state, $ionicPopup, $filter, Actions, User, $trans
 			});
 		}
 	      
-	 };
+	};
+
+	$scope.loadActionDetails($scope.currentUser.actions.inProgress);
+	$scope.loadActionDetails($scope.currentUser.actions.pending);
+	$scope.loadActionDetails($scope.currentUser.actions.done);
+
+	$scope.loadHouseholdProfile($scope.currentUser.householdId);
+
+  // which households invited the current user to join?
+  $scope.loadHouseholdsDetails($scope.currentUser.pendingHouseholdInvites);
 
 }
 

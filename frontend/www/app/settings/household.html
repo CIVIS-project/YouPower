@@ -1,9 +1,9 @@
-<ion-view view-title={{"Household_Profile"|translate}}>
+<ion-view cache-view="false" view-title={{"Household_Profile"|translate}}>
 <ion-content class="padding">
-<!-- <ion-refresher
-pulling-text="Pull to refresh..."
-on-refresh="doRefresh()">
-</ion-refresher>  -->
+<ion-refresher
+  pulling-text="Pull to refresh..."
+  on-refresh="reloadCurrentHousehold()">
+</ion-refresher> 
 <div ng-if="currentUser.householdId===null" class="item card item-text-wrap">
   <p translate>HOUSEHOLD_SETTING_DISABLED</p>
 </div>

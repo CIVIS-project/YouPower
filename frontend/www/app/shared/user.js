@@ -18,6 +18,10 @@ angular.module('civis.youpower')
       method: 'POST',
       url: Config.host + '/api/user/profile'
     },
+    getPendingInvites : {
+      method: 'GET',
+      url: Config.host + '/api/user/invites'
+    },
     getUserProfile : {
       method: 'GET',
       url: Config.host + '/api/user/profile/:userId'

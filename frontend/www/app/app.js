@@ -44,7 +44,7 @@ angular.module('civis.youpower', [
   $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
     event.preventDefault();
     console.error("State Change Error", error);
-    $state.go('welcome');
+    $state.go('main.actions.yours');
   });
 
 
