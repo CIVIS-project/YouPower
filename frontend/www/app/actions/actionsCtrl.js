@@ -4,7 +4,12 @@ angular.module('civis.youpower.actions').controller('ActionsCtrl', ActionsCtrl);
 
 /* The controller that's shared over all the action states.
 -----------------------------------------------------------*/
-function ActionsCtrl($scope, $state, $ionicPopup, $filter, Actions, User, $translate) {
+function ActionsCtrl($scope, $state, $ionicPopup, $filter, Actions, User, $translate, pendingInvites) {
+
+	$scope.currentUser.pendingHouseholdInvites = pendingInvites.pendingHouseholdInvites;
+	$scope.loadHouseholdsDetails($scope.currentUser.pendingHouseholdInvites); 
+	$scope.currentUser.pendingCommunityInvites = pendingInvites.pendingCommunityInvites;
+
 
 	//for recommending actions (look at the length of inProgess actions)
 	$scope.preferredNumberOfActions = 3; //inProgress

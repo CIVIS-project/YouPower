@@ -66,7 +66,7 @@
       <input type="number" ng-model="households[currentUser.householdId].composition.numChildren" ng-change="setHouseholdCompositionChanged()" placeholder={{"Number_of_Children"|translate}}>
     </label>
     <div class="item item-divider" translate>Major_Appliances</div>
-    <div class="item" ng-repeat="description in households[currentUser.householdId].appliancesList">
+    <div class="item" ng-repeat="description in households[currentUser.householdId].appliancesList track by $index">
       {{description}} 
       <button class="button button-clear button-energized ion-close button-float-right" ng-click="removeAppliance($index)"></button>
     </div>

@@ -32,14 +32,16 @@ angular.module('civis.youpower', [
   }
 
   $rootScope.$on('$stateChangeStart', function (event, next, nextParams, fromState) {
-    if (!AuthService.isAuthenticated()) {
-      if (next.name !== 'welcome' && next.name !== 'signup' ) {
+
+    console.log(fromState.name + " " + next.name);
+
+    if (next.name === 'welcome' || next.name === 'signup' ) {
+      // do nothing 
+    }else if (!AuthService.isAuthenticated()) {
         event.preventDefault();
-        console.log(fromState.name + " " + next.name);
-        $state.go('welcome');
-      }
+        $state.go('welcome'); 
     }
-  });
+  }); 
 
   $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
     event.preventDefault();
@@ -74,7 +76,7 @@ angular.module('civis.youpower', [
   $stateProvider
 
   .state('welcome', {
-    url: "/welcome",
+    url: "/welcome/:token",
     templateUrl: "app/welcome/welcome.html",
     controller: 'WelcomeCtrl'
   })
@@ -105,7 +107,12 @@ angular.module('civis.youpower', [
     views: {
       'menuContent': {
         templateUrl: 'app/actions/tabs.html',
-        controller: 'ActionsCtrl'
+        controller: 'ActionsCtrl',
+        resolve: {
+          pendingInvites: function(User){
+            return User.getPendingInvites().$promise;
+          }
+    }
       }
     }
   })
@@ -301,7 +308,15 @@ angular.module('civis.youpower', [
   views: {
     'tab-household': {
       templateUrl: 'app/settings/household.html',
-      controller: 'HouseholdSettingsCtrl'
+      controller: 'HouseholdSettingsCtrl',
+      resolve: {
+        currentHousehold: function(Household, currentUser){
+          if (currentUser.householdId) {
+            return Household.get({id: currentUser.householdId}).$promise;
+          }else{return null;}
+          
+        }
+      }
     }
   }
 })

@@ -289,8 +289,7 @@ router.put('/:id', auth.authenticate(), function(req, res) {
  *  -H "Authorization: Bearer 615ea82f7fec0ffaee5..." \
  *  -H "Content-Type: application/json" -d \
  *  '{
- *    "appliance": "Oven",
-*     "quantity":1
+ *    "appliance": "1 Oven 800W"
  *  }' \
  *  http://localhost:3000/api/household/add/555ef84b2fd41ffef6e078a34
  */
@@ -301,13 +300,13 @@ router.put('/add/:id', auth.authenticate(), function(req, res) {
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    Household.addAppliance(req.body, res.successRes);
+    Household.addAppliance(req.params.id, req.body.appliance, res.successRes);
 
     Log.create({
       userId: req.user._id,
       category: 'Household',
-      type: 'addAppliance',
-      data: req.body
+      type: 'addAppliance' + req.params.id,
+      data: req.body.appliance
     });
   }
 });
@@ -324,8 +323,7 @@ router.put('/add/:id', auth.authenticate(), function(req, res) {
  *  -H "Authorization: Bearer 615ea82f7fec0ffaee5..." \
  *  -H "Content-Type: application/json" -d \
  *  '{
- *    "appliance": "Oven",
-*     "quantity":1
+ *    "appliance": "1 Oven 800W"
  *  }' \
  *  http://localhost:3000/api/household/remove/555ef84b2fd41ffef6e078a34
  */
@@ -336,13 +334,13 @@ router.put('/remove/:id', auth.authenticate(), function(req, res) {
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    Household.removeAppliance(req.body, res.successRes);
+    Household.removeAppliance(req.params.id, req.body.appliance, res.successRes);
 
     Log.create({
       userId: req.user._id,
       category: 'Household',
-      type: 'removeAppliance',
-      data: req.body
+      type: 'removeAppliance' + req.params.id,
+      data: req.body.appliance
     });
   }
 });
