@@ -69,7 +69,9 @@ exports.initialize = function() {
           return done(err);
         } else if (user) {
           user.accessToken = accessToken; 
+          user.facebookId = profile.id,
           user.markModified('accessToken');
+          user.markModified('facebookId');
           user.save();
           return done(err, user);
         } else {
