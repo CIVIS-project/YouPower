@@ -19,14 +19,16 @@ router.get('/facebook', passport.authenticate('facebook',
  * @apiSuccess {Sting} [token] After the Facebook call back, the location is redirected to <code>/#/welcome/</code> followed by a user token if the  login is successful. The String value can be "fbUnauthorized", "err", or a user token. 
  */
 router.get('/facebook/callback', passport.authenticate('facebook',
-{ failureRedirect: process.env.YOUPOWER_REDIRECT_URL + "/#/welcome/fbUnauthorized",
+{ failureRedirect: process.env.YOUPOWER_REDIRECT_URL + "#/welcome/fbUnauthorized",
   session : false}), function(req, res) { 
+
+  console.log(process.env.YOUPOWER_REDIRECT_URL); 
 
   auth.newUserToken(req.user, function(err, token) {
     if (err){
-      res.redirect(process.env.YOUPOWER_REDIRECT_URL + '/#/welcome/err'); 
+      res.redirect(process.env.YOUPOWER_REDIRECT_URL + '#/welcome/err'); 
     }else{
-      res.redirect(process.env.YOUPOWER_REDIRECT_URL + '/#/welcome/' + token); 
+      res.redirect(process.env.YOUPOWER_REDIRECT_URL + '#/welcome/' + token); 
     }
   }); 
 });
