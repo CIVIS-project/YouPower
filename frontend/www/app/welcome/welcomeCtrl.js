@@ -1,14 +1,31 @@
 angular.module('civis.youpower.welcome').controller('WelcomeCtrl', WelcomeCtrl);
 
 
-function WelcomeCtrl($translate, $scope, $rootScope, $state, $ionicViewSwitcher, AuthService) {
+function WelcomeCtrl($translate, $scope, $rootScope, $state, $ionicViewSwitcher, $window, $stateParams, AuthService, Config) {
 
 	$scope.loginData = { 
       emailAddress:'', 
       password:'', 
       err: '', 
+      fbErr: '', 
       language: 'English'
-    }; 
+  }; 
+
+  if ($stateParams && $stateParams.token !== '') {
+
+    console.log("welcome params: " + JSON.stringify($stateParams, null, 4));
+
+    if ($stateParams.token === 'fbUnauthorized'){
+      fbErr = 'Unauthorized_Facebook_Login'; 
+    }else if ($stateParams.token === 'err'){
+      //err in generating a token 
+      fbErr = 'NO_TOKEN'; 
+    }else{
+      //save the token 
+      AuthService.fbLoginSuccess($stateParams.token); 
+      $state.go('main.actions.yours'); 
+    }
+  }
 
   // $scope.loginData.emailAddress = "foo";
   // $scope.loginData.password = "bar"; 
@@ -18,6 +35,7 @@ function WelcomeCtrl($translate, $scope, $rootScope, $state, $ionicViewSwitcher,
   // $scope.loginData.name = "Yilin";
   // $scope.loginData.password2 = "barbar"; 
 
+  
 
   $scope.comparePasswords = function(){ 
     if ($scope.loginData.password && $scope.loginData.password2 && 
@@ -84,6 +102,11 @@ function WelcomeCtrl($translate, $scope, $rootScope, $state, $ionicViewSwitcher,
         })
       }
   }
+
+  $scope.fbLogin = function(){
+      $window.location.href = Config.host + "/api/auth/facebook" ; 
+  }
+
 
   $scope.gotoSignin = function(){
       $ionicViewSwitcher.nextDirection('swap'); // forward, back, enter, exit, swap

@@ -1,36 +1,45 @@
 <ion-view view-title="CIVIS">
 <ion-content class="padding">
 
-  <div class="list card">
-    <div class="item item-divider">
-      <h1 class="text-center"> 
-        YouPower
-      </h1>
-    </div>
-    <h1 class="text-center">
-      <i class="icon ion-earth"></i> <span translate>BE_MORE_GREEN</span><br/>
-      <i class="icon ion-happy-outline"> </i><span translate>BE_MORE_SOCIAL</span><br/>
-      <i class="icon ion-checkmark-circled"> <span translate>TAKE_ACTIONS</span></i> 
+<div class="list card">
+  <div class="item item-divider">
+    <h1 class="text-center"> 
+      YouPower
     </h1>
   </div>
-  <div class="list">
-    <label class="item item-input">
-      <span class="input-label" translate>Email</span>
-      <input type="text" placeholder={{"Your_email_address"|translate}} ng-model="loginData.emailAddress" ng-change="clearSigninClicked()">
-    </label>
-    <label class="item item-input">
-      <span class="input-label" translate>Password</span>
-      <input type="password" placeholder={{"Your_password"|translate}} ng-model="loginData.password" ng-change="clearSigninClicked()" ng-enter="signin()">
-    </label>
-    <a class="button button-dark button-full text-bold" ng-click="signin()"  translate>Login</a>
-    <div class="text-center" ng-show="signinClicked && isRejected">
-      <p class="errors text-center" >{{loginData.err}}. <span translate>TRY_AGAIN</span>
-      </p>
-      <!-- <a href="#" class="errors">request a new password</a>. -->
-    </div>
+  <h1 class="text-center">
+    <i class="icon ion-earth"></i> <span translate>BE_MORE_GREEN</span><br/>
+    <i class="icon ion-happy-outline"> </i><span translate>BE_MORE_SOCIAL</span><br/>
+    <i class="icon ion-checkmark-circled"> <span translate>TAKE_ACTIONS</span></i> 
+  </h1>
+</div>
+<div class="list">
+  <a  class="button button-positive button-full text-bold" ng-click="fbLogin()" translate>Login_with_Facebook</a>
+  <div class="text-center" ng-show="loginData.fbErr">
+    <p class="errors text-center" translate>{{loginData.fbErr}}</p>
+    <!-- <a href="#" class="errors">request a new password</a>. -->
+  </div>
+  <label class="item item-input">
+    <span class="input-label" translate>Email</span>
+    <input type="text" placeholder={{"Your_email_address"|translate}} ng-model="loginData.emailAddress" ng-change="clearSigninClicked()">
+  </label>
+  <label class="item item-input">
+    <span class="input-label" translate>Password</span>
+    <input type="password" placeholder={{"Your_password"|translate}} ng-model="loginData.password" ng-change="clearSigninClicked()" ng-enter="signin()">
+  </label>
+  <a class="button button-dark button-full text-bold" ng-click="signin()"  translate>Login</a>
+  <div class="text-center" ng-show="signinClicked && isRejected">
+    <p class="errors text-center" >{{loginData.err}}. <span translate>TRY_AGAIN</span></p>
+    <!-- <a href="#" class="errors">request a new password</a>. -->
   </div>
 
-    <a ng-click="gotoSignup()" class="button button-energized button-full text-bold" translate>JOIN_NOW</a>
+</div>
+
+<a ng-click="gotoSignup()" class="button button-energized button-full text-bold" translate>JOIN_NOW</a>
+
+<div class="list"></div>
+
+
 
 </ion-content>
 </ion-view>

@@ -232,6 +232,9 @@ angular.module('civis.youpower.translations',[])
     YOU_NO_ACTION: "You currently have no action in progress.",
     YOU_1_ACTION: "You currently have 1 action in progress.",
     YOU_N_ACTION: "You currently have {{number}} actions in progress.",
+    Login_with_Facebook: "Login with Facebook",
+    Unauthorized_Facebook_Login: "Unauthorized Facebook Login.", 
+    NO_TOKEN: "Unauthorized: Can not get a user token."
 
   });
 
