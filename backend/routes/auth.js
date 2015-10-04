@@ -4,6 +4,7 @@ var express = require('express');
 var auth = require('../middleware/auth');
 var router = express.Router();
 var passport = require('passport');
+var YOUPOWER_REDIRECT_URL = "https://app.civisproject.eu/frontend.html";
 
 /**
  * @api {get} /auth/facebook Redirect to Facebook login
@@ -19,16 +20,19 @@ router.get('/facebook', passport.authenticate('facebook',
  * @apiSuccess {Sting} [token] After the Facebook call back, the location is redirected to <code>/#/welcome/</code> followed by a user token if the  login is successful. The String value can be "fbUnauthorized", "err", or a user token. 
  */
 router.get('/facebook/callback', passport.authenticate('facebook',
-{ failureRedirect: process.env.YOUPOWER_REDIRECT_URL + "#/welcome/fbUnauthorized",
+{ failureRedirect: YOUPOWER_REDIRECT_URL + "#/welcome/fbUnauthorized",
   session : false}), function(req, res) { 
 
-  console.log(process.env.YOUPOWER_REDIRECT_URL); 
+  console.log(YOUPOWER_REDIRECT_URL); 
 
   auth.newUserToken(req.user, function(err, token) {
+
+    console.log(YOUPOWER_REDIRECT_URL); 
+
     if (err){
-      res.redirect(process.env.YOUPOWER_REDIRECT_URL + '#/welcome/err'); 
+      res.redirect(YOUPOWER_REDIRECT_URL + '#/welcome/err'); 
     }else{
-      res.redirect(process.env.YOUPOWER_REDIRECT_URL + '#/welcome/' + token); 
+      res.redirect(YOUPOWER_REDIRECT_URL + '#/welcome/' + token); 
     }
   }); 
 });
