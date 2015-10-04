@@ -48,7 +48,8 @@ exports.initialize = function() {
     l.warn('Facebook login not set up! Please set environment variables:');
     l.warn('FACEBOOK_APP_ID');
     l.warn('FACEBOOK_APP_SECRET');
-    l.warn('FACEBOOK_CALLBACK_URL');
+    l.warn('FACEBOOK_CALLBACK_URL'); 
+    l.warn('YOUPOWER_REDIRECT_URL'); 
     l.warn('Disabling Facebook login.');
   } else {
     passport.use(new FacebookStrategy({
@@ -67,7 +68,7 @@ exports.initialize = function() {
         if (err) {
           return done(err);
         } else if (user) {
-          user.accessToken = accessToken;
+          user.accessToken = accessToken; 
           user.markModified('accessToken');
           user.save();
           return done(err, user);
@@ -84,10 +85,10 @@ exports.initialize = function() {
                   facebookId: profile.id,
                   accessToken:accessToken,
                   profile: {
-                  name: profile.displayName,
-                  gender: profile.gender,
-                  dob: profile._json.birthday
-                }
+                    name: profile.displayName,
+                    gender: profile.gender,
+                    dob: profile._json.birthday
+                  }
                 }, password, function(err, user) {
                   if (err) {
                     return done(err);

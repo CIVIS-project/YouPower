@@ -15,19 +15,22 @@ router.get('/facebook', passport.authenticate('facebook',
 /**
  * @api {get} /auth/facebook/callback Callback URL for Facebook login
  * @apiGroup Facebook Login
+ * 
+ * @apiSuccess {Sting} [token] After the Facebook call back, the location is redirected to <code>/#/welcome/</code> followed by a user token if the  login is successful. The String value can be "fbUnauthorized", "err", or a user token. 
  */
 router.get('/facebook/callback', passport.authenticate('facebook',
-{session : false}), function(req, res) {
+{ failureRedirect: process.env.YOUPOWER_REDIRECT_URL + "/#/welcome/fbUnauthorized",
+  session : false}), function(req, res) { 
+
   auth.newUserToken(req.user, function(err, token) {
-    res.successRes(err, {
-      token: token
-    });
-  });
+    if (err){
+      res.redirect(process.env.YOUPOWER_REDIRECT_URL + '/#/welcome/err'); 
+    }else{
+      res.redirect(process.env.YOUPOWER_REDIRECT_URL + '/#/welcome/' + token); 
+    }
+  }); 
 });
-// Facebook will redirect the user to this URL after approval.  Finish the
-// authentication process by attempting to obtain an access token.  If
-// access was granted, the user will be logged in.  Otherwise,
-// authentication has failed.
+
 
 /**
  * @api {get} /auth/facebookc Connecting existing accounts with fb
