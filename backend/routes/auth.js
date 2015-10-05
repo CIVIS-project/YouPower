@@ -5,6 +5,7 @@ var auth = require('../middleware/auth');
 var router = express.Router();
 var passport = require('passport');
 var YOUPOWER_REDIRECT_URL = "https://app.civisproject.eu/frontend.html";
+// var YOUPOWER_REDIRECT_URL = "http://localhost:8100/";
 
 /**
  * @api {get} /auth/facebook Redirect to Facebook login
@@ -23,11 +24,7 @@ router.get('/facebook/callback', passport.authenticate('facebook',
 { failureRedirect: YOUPOWER_REDIRECT_URL + "#/welcome/fbUnauthorized",
   session : false}), function(req, res) { 
 
-  console.log(YOUPOWER_REDIRECT_URL); 
-
-  auth.newUserToken(req.user, function(err, token) {
-
-    console.log(YOUPOWER_REDIRECT_URL); 
+  auth.newUserToken(req.user, function(err, token) { 
 
     if (err){
       res.redirect(YOUPOWER_REDIRECT_URL + '#/welcome/err'); 
