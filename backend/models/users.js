@@ -13,6 +13,7 @@ var communityComments = require('./communityComments');
 var households = require('./households');
 var async = require('async');
 var _ = require('underscore');
+var FB = require('fb');
 
 var UserSchema = new Schema({
   token: String,
@@ -353,7 +354,7 @@ exports.find = function(q, multi, limit, skip, cb) {
     new RegExp('^' + escapeStringRegexp(String(aQ[key])) + '|' + escapeStringRegexp(String(aQ[key])) + '$', 'i'); 
 
   var query = User.find(filteredQ);
-  query.select('email profile actions achievements recentAchievements');
+  query.select('email profile actions achievements recentAchievements accessToken');
   query.limit(limit);
   query.skip(skip);
   query.exec(function(err, res) {
@@ -586,6 +587,50 @@ exports.getAchievements = function(user, cb) {
     stats: stats,
     recentAchievements: user.recentAchievements
   });
+};
+
+exports.fbfriends = function(user, cb) {
+  console.log('USER:',acct);
+  var acct = user.accessToken;
+  FB.setAccessToken(acct);
+  console.log('user Token:',acct);
+  FB.api('me/friends', function(res) {
+    if (!res || res.error) {
+      console.log('user foundYYY');
+      cb('No data Received');
+    } else {
+      var tempArr = [];
+      console.log('user foundXXX');
+      async.each(res.data, function(obj, callback) {
+          User.findOne({facebookId: obj.id}, '_id profile', function(err, user) {
+            if (err) {
+              callback();
+            } else if (!user) {
+              callback();
+            } else {
+              tempArr.push(user);
+              callback();
+            }
+          });
+        }, function(err) {
+          if (err) {
+            cb(err);
+          }
+          cb(null, tempArr);
+        });
+    }
+  });
+};
+
+exports.postFB = function(user, message, cb) {
+  FB.setAccessToken(user.accessToken);
+  FB.api('me/feed', 'post', {message: message}, function(res) {
+  if (!res || res.error) {
+    cb(res.error);
+  } else {
+    cb(null, res);
+  }
+});
 };
 
 exports.model = User;
