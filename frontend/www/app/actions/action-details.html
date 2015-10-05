@@ -69,10 +69,17 @@
       <i class="icon ion-chatbox"></i>
       {{size=actions[action._id].numComments}} <span translate>{{size > 1 ? 'Comments' : 'Comment'}}</span>
     </a>
-    <!-- <a class="tab-item" href="#">
+    <!-- <a class="tab-item" ng-click="fbShare()">
       <i class="icon ion-share"></i>
       {{action.share}} <span translate>Share</span>
     </a> -->
+   <!--  <a class="tab-item">
+      <span class="fb-share-button" 
+      data-href="https://app.civisproject.eu/frontend.html#/welcome/" 
+      data-layout="icon_link">
+    </span>
+    </a> -->
+    
   </div>
   <div class="item item-text-wrap" ng-show="comment.show">
     <label class="item-input">
@@ -80,7 +87,7 @@
     </label><button class="button button-small button-dark button-right " ng-disabled="comment.text === ''" ng-click="postComment(action)" translate>Post</button>
     <p> &nbsp; <!-- dont remove this --> </p>
   </div>
-  <div class="item item-avatar item-text-wrap" ng-repeat="comment in comments | filter: {actionId: action._id}" > <!-- ng-if="comment.actionId == action._id" -->
+  <div class="item item-avatar item-text-wrap" ng-repeat="comment in comments | filter: {actionId: action._id, language: currentUser.profile.language}" > <!-- ng-if="comment.actionId == action._id" -->
     <img ng-if="comment.photo" ng-src="comment.picture">
     <img ng-if="!comment.photo" src="/img/eco.jpg">
     <h3>{{comment.name}} <span class="item-note" ng-if="comment.userId == currentUser._id" translate>You</span><span class="text-small">{{comment.date| date: "yyyy-MM-dd"}}</span></h3>

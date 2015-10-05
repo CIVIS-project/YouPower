@@ -13,7 +13,7 @@ function WelcomeCtrl($translate, $scope, $rootScope, $state, $ionicViewSwitcher,
 
   if ($stateParams && $stateParams.token !== '') {
 
-    console.log("welcome params: " + JSON.stringify($stateParams, null, 4));
+    // console.log("welcome params: " + JSON.stringify($stateParams, null, 4));
 
     if ($stateParams.token === 'fbUnauthorized'){
       fbErr = 'Unauthorized_Facebook_Login'; 
