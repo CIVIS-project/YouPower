@@ -22,6 +22,10 @@ var ActionCommentSchema = new Schema({
     type: String,
     required: true
   },
+  language: {
+    type: String, 
+    default: 'English'
+  },
   comment: {
     type: String,
     required: true
@@ -67,6 +71,7 @@ exports.create = function(aComment, cb) {
     userId: aComment.userId,
     name: aComment.name,
     email: aComment.email,
+    language: aComment.language,
     comment: aComment.comment,
     ratings: aComment.ratings || {},
     date: new Date()
@@ -108,7 +113,9 @@ exports.setHasPicture = function(commentId, value, cb) {
 };
 
 exports.get = function(actionId, limit, skip, user, cb) {
+
   ActionComment.find({actionId: actionId})
+  .where('language').equals(user.profile.language)
   .sort({'date': -1})
   .skip(skip)
   .limit(limit)

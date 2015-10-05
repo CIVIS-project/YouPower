@@ -181,9 +181,9 @@ exports.get = function(id, user, cb) {
       }
 
       // fetch number of comments to this action
-      actionComments.get(id, null, null, null, function(err, aComments) {
+      actionComments.get(id, null, null, user, function(err, aComments) {
         if (err) {
-          return cb(err);
+          return cb(err); 
         }
 
         action.numComments = aComments.length;

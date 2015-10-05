@@ -26,6 +26,22 @@ function ActionsListCtrl($scope, $state, $stateParams, $filter, $ionicPopup, $tr
     $ionicSlideBoxDelegate.update();
   }); 
 
+  $scope.fbShare = function(){
+
+    console.log("fb share");
+
+    FB.ui({
+      method: 'share',
+      link: 'https://app.civisproject.eu/frontend.html#/welcome/'
+    }, function(response){
+        if (response && !response.error_message) {
+          console.log('Posting completed.');
+        } else {
+          console.log('Error while posting.');
+        }
+    });
+
+  }
   
   //post action comment (under action details)
   $scope.postComment = function(action){

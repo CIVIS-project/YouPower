@@ -29,9 +29,8 @@ function ActionsCtrl($scope, $state, $ionicPopup, $filter, Actions, User, $trans
 	//how long a routine action can be deemed completed
 	$scope.routineActionDuration = 3; //+weeks
 
-	
-	$scope.comments = []; // save comments of actions 
 	$scope.nrToLoad = 20; // number of comments to load each time  
+	$scope.comments = []; // save comments of actions 
 	$scope.moreComments = {}; //a set of boolen indicates whether an action has more comments to load
 
 
@@ -391,7 +390,11 @@ function ActionsCtrl($scope, $state, $ionicPopup, $filter, Actions, User, $trans
 
 	$scope.reloadActions = function() {
 
-	    for (var actionId in $scope.actions) {
+		//clear the comments (in old language)
+		$scope.comments = []; // save comments of actions 
+		$scope.moreComments = {}; //a set of boolen indicates whether an action has more comments to load
+
+		for (var actionId in $scope.actions) {
 
 			Actions.getActionById({id:actionId}).$promise.then(function(data){
 				
@@ -406,7 +409,7 @@ function ActionsCtrl($scope, $state, $ionicPopup, $filter, Actions, User, $trans
 				$scope.$broadcast('scroll.refreshComplete'); 
 			});
 		}
-	      
+		
 	};
 
 	$scope.loadActionDetails($scope.currentUser.actions.inProgress);
