@@ -83,6 +83,11 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
                 enabled: false
               }
             }],
+            tooltip: {
+              shared: true,
+              valueSuffix: " MWh",
+              valueDecimals: 2,
+            },
         },
 
         //The below properties are watched separately for changes.
@@ -92,12 +97,18 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
           groupPadding: 0.01,
           onSeries: 'dataseries',
           tooltip: {
+            shared: true,
             valueSuffix: " MWh",
             valueDecimals: 2
           }
         },{
           type: 'spline',
           onSeries: 'dataseries',
+          tooltip: {
+            shared: true,
+            valueSuffix: " MWh",
+            valueDecimals: 2,
+          }
         },{
           type: 'flags',
           shape: 'circlepin',
