@@ -10,8 +10,8 @@ var YOUPOWER_REDIRECT_URL = "https://app.civisproject.eu/frontend.html";
 var FACEBOOK_CALLBACK_URL = "https://app.civisproject.eu"; 
 
 //configureation localhost 
-var YOUPOWER_REDIRECT_URL = "http://localhost:8100/";
-var FACEBOOK_CALLBACK_URL = process.env.FACEBOOK_CALLBACK_URL;
+// var YOUPOWER_REDIRECT_URL = "http://localhost:8100/";
+// var FACEBOOK_CALLBACK_URL = process.env.FACEBOOK_CALLBACK_URL;
 
 var User = require('../models').users; 
 
