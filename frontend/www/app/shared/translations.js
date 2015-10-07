@@ -29,6 +29,7 @@ angular.module('civis.youpower.translations',[])
     APPLIANCES_EG: "A description, e.g., 2x1000W heater",
     ALREADY_EXISTS: "Hmmm, this one already exits.",
     TERMS_CONDITION: "YouPower is a free social app for energy developed for the CIVIS EU research project. By signing up, you agree that the data you share with the app will be analysed for further research. Your data will be anonymous.",
+    TERMS_CONDITION_2: "YouPower is a free social app for energy developed for the CIVIS EU research project. By using the app, you agree that the data you share with the app will be analysed for further research. Your data will be anonymous.",
     BE_MORE_GREEN: "Be more <span class='balanced'>green.</span>",
     BE_MORE_SOCIAL: "Be more <span class='energized'>social.</span>",
     TAKE_ACTIONS: "Take <span class='positive'>actions!</span>",

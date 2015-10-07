@@ -20,7 +20,7 @@ var User = require('../models').users;
  * @apiGroup Facebook Login
  */
 router.get('/facebook', passport.authenticate('facebook',
-	{scope :['user_friends', 'user_birthday', 'email', 'user_posts', 'publish_actions'], session: false}));
+	{scope :['user_friends', 'user_birthday', 'email', 'user_posts'], session: false}));
 
 /**
  * @api {get} /auth/facebook/callback Callback URL for Facebook login
@@ -51,7 +51,7 @@ router.get('/facebookc/:id', function(req, res, next) {
   console.log("req.params.id" + req.params.id);
 
   passport.authenticate('facebook-authz', 
-	{ scope :['user_friends', 'user_birthday', 'email', 'user_posts', 'publish_actions'],  callbackURL: FACEBOOK_CALLBACK_URL + '/api/auth/facebook/callbackfb/' + req.params.id, 
+	{ scope :['user_friends', 'user_birthday', 'email', 'user_posts'],  callbackURL: FACEBOOK_CALLBACK_URL + '/api/auth/facebook/callbackfb/' + req.params.id, 
     session: false
   })(req, res, next); 
 });
