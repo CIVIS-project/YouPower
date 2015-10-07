@@ -62,6 +62,7 @@ exports.initialize = function() {
   function(accessToken, refreshToken, profile, done) {
     //console.log("profile",profile);
     //console.log("accessToken",accessToken);
+
     process.nextTick(function() {
       User.find({email: profile._json.email}, false, null, null, function(err, user) {
         //console.log('user',user);
@@ -110,29 +111,42 @@ exports.initialize = function() {
     passport.use('facebook-authz', new FacebookStrategy({
       clientID: process.env.FACEBOOK_APP_ID,
       clientSecret: process.env.FACEBOOK_APP_SECRET,
-      callbackURL: process.env.FACEBOOK_CALLBACK_URL + '/api/auth/facebook/callbackfb',
+      callbackURL: process.env.FACEBOOK_CALLBACK_URL + '/api/auth/facebook/callbackfb/', 
       profileFields: ['id', 'displayName', 'gender', 'email', 'birthday']
     },
     function(accessToken, refreshToken, profile, done) {
-      var tk = 'token come here';
-      User.find({token: tk}, false, null, null, function(err, user) {
-        if (err) {
-          return done(err);
-        } else if (!user) {
-          return done(err, 'The given user does not exist');
-        } else {
-          user.facebookId  = profile.id;
-          user.accessToken  = accessToken;
-          user.profile.gender   = profile.gender;
 
-          user.markModified('profile.gender');
-          user.markModified('facebookId');
-          user.markModified('accessToken');
-          user.save();
-          //console.log("USERUPDATED",user);
-          return done(null, 'Facebook account successfully connected');
-        }
-      });
+      console.log("profile:" + JSON.stringify(profile, null, 4))
+
+      var user = {
+        facebookId: profile.id,
+        accessToken: accessToken,
+        gender: profile.gender,
+        name: profile.displayName,
+        dob: profile._json.birthday
+      };
+
+      return done(null, user);
+      // user.facebookId  = profile.id;
+      // user.accessToken  = accessToken;
+      // user.profile.gender   = profile.gender;
+
+      // User.find({token: tk}, false, null, null, function(err, user) {
+      //   if (err) {
+      //     return done(err);
+      //   } else if (!user) {
+      //     return done(err, 'The given user does not exist');
+      //   } else {
+      //     
+
+      //     user.markModified('profile.gender');
+      //     user.markModified('facebookId');
+      //     user.markModified('accessToken');
+      //     user.save();
+      //     //console.log("USERUPDATED",user);
+      //     return done(null, 'Facebook account successfully connected');
+      //   }
+      // });
     }));
   }
   passport.serializeUser(User.serializeUser());

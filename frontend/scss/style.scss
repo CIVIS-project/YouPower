@@ -9,6 +9,11 @@ $color_gray_nurse_approx: #e8e8e8;
   height: 50px;
   @include border-radius(30px);
 }
+%frame20 {
+  width: 20px;
+  height: 20px;
+  @include border-radius(10px);
+}
 
 
 // .card {
@@ -120,6 +125,13 @@ hr {
   background-color: $color_gray_nurse_approx;
   height: 1px;
   border: 0;
+}
+.icon-frame {
+  // border: 0px solid $white;
+  @extend %frame20;
+  img {
+    @extend %frame20;
+  }
 }
 .avatar-frame {
   border: 2px solid $white;

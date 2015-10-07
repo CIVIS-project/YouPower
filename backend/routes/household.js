@@ -134,8 +134,8 @@ router.put('/invite/:id', auth.authenticate(), function(req, res) {
   req.checkParams('id', 'Invalid household id').isMongoId();
   req.checkQuery('accepted', 'Accepted must be true or false').isBoolean();
 
-  console.log("req.params: "+JSON.stringify(req.params, null, 4));
-  console.log("req.query: "+JSON.stringify(req.query, null, 4));
+  //console.log("req.params: "+JSON.stringify(req.params, null, 4));
+  //console.log("req.query: "+JSON.stringify(req.query, null, 4));
 
   Household.handleInvite(req.params.id, req.user._id, req.query.accepted, res.successRes);
 

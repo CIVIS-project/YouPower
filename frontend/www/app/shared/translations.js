@@ -234,7 +234,16 @@ angular.module('civis.youpower.translations',[])
     YOU_N_ACTION: "You currently have {{number}} actions in progress.",
     Login_with_Facebook: "Login with Facebook",
     Unauthorized_Facebook_Login: "Unauthorized Facebook Login.", 
-    NO_TOKEN: "Unauthorized: Can not get a user token."
+    NO_TOKEN: "Unauthorized: Can not get a user token.",
+    SHARE_MESSAGE: "Say something about this action ... to share on Facebook",
+    SLOGAN: "Be more green. Be more social. Take actions!",
+    DESCRIPTION: "An energy social app developed for the EU CIVIS project. User YouPower to discover saving tips and share experiences about different energy practices.",
+    MY_CURRENT_ACTION: "I am taking the action:",
+    NO_FB_ID: "You can not yet Share, since your Facebook account is not linked with YouPower. You can do this in <samp>Settings</samp>.",
+    Link_Facebook_Account: "Link Facebook Account",
+    FACEBOOK_ID_INFO: "You need to link your Facebook account to be able to use Share in the app.",
+    Facebook_Account: "Facebook Account",
+    Facebook_ID: "Facebook ID"
 
   });
 

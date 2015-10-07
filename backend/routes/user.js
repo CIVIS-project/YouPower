@@ -626,10 +626,13 @@ router.get('/:userId/fbfriends', auth.authenticate(), function(req, res) {
 });
 
 /**
- * @api {post} /user/postFB Post on FB (always ask user before posting)
+ * @api {post} /user/postFB/:type/:id Post on Facebook
  * @apiGroup User
  *
- * @apiParam {String} [message] Message to be posted
+ * @apiParam {String} type Indicates the content of the post (or share), e.g. "action" means that the post is about an action 
+ * @apiParam {String} id The id of the content, e.g. if type is "action", then the id is an actoin id
+ * @apiParam (Body) {Object} object The content to be posted. Details see: 
+ <a href="https://developers.facebook.com/docs/graph-api/reference/v2.4/post">https://developers.facebook.com/docs/graph-api/reference/v2.4/post</a>
  *
  * @apiExample {curl} Example usage:
  *  # Get API token via /api/user/profile
@@ -639,7 +642,7 @@ router.get('/:userId/fbfriends', auth.authenticate(), function(req, res) {
  *  '{
  *    "message": "Hey I completed xyz challenge. (You can also add a link to a photograph)"
  *  }' \
- *  http://localhost:3000/api/user/postFB
+ *  http://localhost:3000/api/user/postFB/action/555f0163688305b57c7cef6c
  *
  * @apiSuccessExample {json} Success-Response:
  * {//id is post_id from facebook
@@ -657,14 +660,15 @@ router.get('/:userId/fbfriends', auth.authenticate(), function(req, res) {
  *  "error_user_msg": "This status update is identical to the last one.."
  * }
  */
-router.post('/postFB', auth.authenticate(), function(req, res) {
-  req.checkBody('message').optional().notEmpty();
+router.post('/postFB/:type/:id', auth.authenticate(), function(req, res) {
+
+  console.log("req.params: "+JSON.stringify(req.params, null, 4));
 
   var err;
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    User.postFB(req.user, req.body.message, res.successRes);
+    User.postFB(req.user, req.params, req.body, res.successRes);
   }
 
   Log.create({

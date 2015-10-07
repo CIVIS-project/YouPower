@@ -622,15 +622,23 @@ exports.fbfriends = function(user, cb) {
   });
 };
 
-exports.postFB = function(user, message, cb) {
+exports.postFB = function(user, postInfo, post, cb) { 
+
   FB.setAccessToken(user.accessToken);
-  FB.api('me/feed', 'post', {message: message}, function(res) {
-  if (!res || res.error) {
-    cb(res.error);
-  } else {
-    cb(null, res);
-  }
-});
+  FB.api('me/feed', 'post', post, function(res) {
+    if (!res || res.error) {
+      cb(res.error);
+    } else {
+
+      if (postInfo.type === "action") {
+        Action.shared(postInfo.id, function(err, shares){
+          res.shares = shares; 
+          cb(null, res);
+        });
+      }
+
+    }
+  });
 };
 
 exports.model = User;

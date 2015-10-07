@@ -203,12 +203,11 @@ exports.handleInvite = function(householdId, userId, accepted, cb) {
       household.pendingInvites.splice(index, 1);
 
       if (accepted.toLowerCase()==="true") {
-        console.log('accepted?'+accepted);
+        //console.log('accepted?'+accepted);
         household.members.push(userId);
       }
 
-      console.log("household.members: "+JSON.stringify(household.members, null, 4));
-    
+      //console.log("household.members: "+JSON.stringify(household.members, null, 4));    
       household.save(cb);
     }
   });

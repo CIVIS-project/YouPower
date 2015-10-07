@@ -10,6 +10,10 @@ angular.module('civis.youpower')
       method: 'POST',
       url: Config.host + '/api/feedback'
     },
+    fbShare : {
+      method: 'POST',
+      url: Config.host + '/api/user/postFB/:type/:id'
+    }, 
     getPicture : {
       method: 'GET',
       url: Config.host + '/api/user/profilePicture/:userId'

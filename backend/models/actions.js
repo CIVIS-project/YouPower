@@ -77,6 +77,9 @@ var ActionSchema = new Schema({
     max: 5,
     default: 3
   },
+  shares: {
+    type: Number
+  },
   ratings: {
     type: Schema.Types.Mixed,
     default: {}
@@ -254,6 +257,33 @@ exports.all = function(limit, skip, includeRatings, user, cb) {
     }
   });
 };
+
+exports.shared = function(id, cb) {
+
+  Action.findOne({
+    _id: id
+  }, function(err, action) {
+    if (err) {
+      cb(err);
+    } else if (!action) {
+      cb('Action not found');
+    } else {
+
+      if (action.shares) {
+        action.shares ++; 
+      }else{
+        action.shares = 1; 
+      }
+     
+      action.markModified('shares');
+      action.save(function(err) {
+        cb(err, action.shares);
+      });
+    }
+  });
+
+}; 
+
 
 exports.rate = function(id, user, rating, effort, cb) {
   if (!user || !user._id || !user.profile || !user.profile.name) {

@@ -4,8 +4,16 @@ var express = require('express');
 var auth = require('../middleware/auth');
 var router = express.Router();
 var passport = require('passport');
+
+// configuration TUD server 
 var YOUPOWER_REDIRECT_URL = "https://app.civisproject.eu/frontend.html";
-// var YOUPOWER_REDIRECT_URL = "http://localhost:8100/";
+var FACEBOOK_CALLBACK_URL = "https://app.civisproject.eu"; 
+
+//configureation localhost 
+var YOUPOWER_REDIRECT_URL = "http://localhost:8100/";
+var FACEBOOK_CALLBACK_URL = process.env.FACEBOOK_CALLBACK_URL;
+
+var User = require('../models').users; 
 
 /**
  * @api {get} /auth/facebook Redirect to Facebook login
@@ -36,22 +44,57 @@ router.get('/facebook/callback', passport.authenticate('facebook',
 
 
 /**
- * @api {get} /auth/facebookc Connecting existing accounts with fb
+ * @api {get} /auth/facebookc Connecting existing accounts with Facebook
  * @apiGroup Facebook Login
  */
-router.get('/facebookc', passport.authorize('facebook-authz',
-	{scope :['user_friends', 'user_birthday', 'email', 'publish_actions'], session: false}));
+router.get('/facebookc/:id', function(req, res, next) {
+  console.log("req.params.id" + req.params.id);
 
+  passport.authenticate('facebook-authz', 
+	{ callbackURL: FACEBOOK_CALLBACK_URL + '/api/auth/facebook/callbackfb/' + req.params.id, 
+    scope :['user_friends', 'user_birthday', 'email', 'publish_actions'], session: false
+  })(req, res, next); 
+});
+ 
 /**
  * @api {get} /auth/facebook/callbackfb Callback URL for Facebook login for connection
  * @apiGroup Facebook Login
+ * @apiSuccess {Sting} [res] After the Facebook call back, the location is redirected to <code>/#/app/settings/</code> followed by "fb" if the login is successful, "fbUnauthorized" otherwise. 
  */
-router.get('/facebook/callbackfb', passport.authorize('facebook-authz',
-	{session: false}), function(req, res) {
+router.get('/facebook/callbackfb/:id', function(req, res, next) {
 
-  res.successRes(null, {
-    Status: req.account
-  });
+  console.log("req.params.id" + req.params.id)
+
+  passport.authenticate('facebook-authz',
+	{callbackURL: FACEBOOK_CALLBACK_URL + '/api/auth/facebook/callbackfb/' + req.params.id, 
+    failureRedirect: YOUPOWER_REDIRECT_URL + "#/app/settings/main/fbUnauthorized",
+    session: false}, function(err, aUser) {
+
+      console.log("user:" + JSON.stringify(aUser, null, 4));
+
+      User.find({_id: req.params.id}, false, null, null, function(err, user) {
+        if (err || !user) {
+          res.redirect(YOUPOWER_REDIRECT_URL + '#/app/settings/main/fbUnauthorized'); 
+        } else {
+          user.facebookId  = aUser.facebookId;
+          user.accessToken  = aUser.accessToken;
+          user.profile.gender   = aUser.gender;
+          user.profile.name   = aUser.name;
+          user.profile.dob   = aUser.dob;
+
+          user.markModified('profile.gender');
+          user.markModified('profile.name');
+          user.markModified('profile.dob');
+          user.markModified('facebookId');
+          user.markModified('accessToken');
+          user.save();
+
+          res.redirect(YOUPOWER_REDIRECT_URL + '#/app/settings/main/')
+        }
+      });
+    }
+  )(req, res, next); 
+
 });
 
 module.exports = router;
