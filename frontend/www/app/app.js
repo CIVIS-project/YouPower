@@ -42,10 +42,10 @@ angular.module('civis.youpower', [
     }
   }); 
 
-  // $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
-  //     event.preventDefault(); 
-  //     $state.go('welcome');
-  // });
+  $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
+      event.preventDefault(); 
+      $state.go('welcome');
+  });
 
 
   $ionicPlatform.ready(function() {
