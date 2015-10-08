@@ -238,7 +238,7 @@ angular.module('civis.youpower.translations',[])
     NO_TOKEN: "Unauthorized: Can not get a user token.",
     SHARE_MESSAGE: "Say something about this action ... to share on Facebook",
     SLOGAN: "Be more green. Be more social. Take actions!",
-    DESCRIPTION: "An energy social app developed for the EU CIVIS project. User YouPower to discover saving tips and share experiences about different energy practices.",
+    DESCRIPTION: "An energy social app developed for the EU CIVIS project. Use YouPower to discover saving tips and share experiences about different energy practices.",
     MY_CURRENT_ACTION: "I am taking the action:",
     NO_FB_ID: "You can not yet Share, since your Facebook account is not linked with YouPower. You can do this in <samp>Settings</samp>.",
     Link_Facebook_Account: "Link Facebook Account",

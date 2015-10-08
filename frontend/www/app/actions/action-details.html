@@ -82,8 +82,8 @@
     <div class="item item-thumbnail-left">
       <img src="/img/eco.jpg">
       <h2 translate>{{share.name}}</h2>
-      <p translate>{{share.description}}</p>
-      <div><p><span translate>MY_CURRENT_ACTION</span> {{actions[action._id].name}}</p></div>
+      <p><span translate>{{share.description}}</span>
+      <span translate>MY_CURRENT_ACTION</span> {{actions[action._id].name}}</p>
     </div>
     <button class="button button-small button-dark button-right " ng-disabled="!share.enabled" ng-click="fbShare(action)" translate>Share</button>
     <p> &nbsp; <!-- dont remove this --> </p>
