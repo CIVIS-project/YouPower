@@ -4,16 +4,17 @@
       <a class="button" ng-class="{active:view=='map'}" ng-click="view = 'map'">Map</a>
       <a class="button" ng-class="{active:view=='list'}" ng-click="view = 'list'">List</a>
     </div>
-    <ion-toggle ng-model="airplaneMode" toggle-class="toggle-calm">Show only similar</ion-toggle>
+    <!-- <ion-toggle ng-model="airplaneMode" toggle-class="toggle-calm">Show only similar</ion-toggle> -->
     <div id="map" data-tap-disabled="true" ng-if="view=='map'" ng-controller="CooperativesMapCtrl"></div>
     <div ng-if="view=='list'">
-        <div class="item" ng-repeat="cooperative in cooperatives">
-          <!-- <span class="badge badge-energized">1</span> -->
-          <a ui-sref="^.show({id:cooperative._id})">
+        <div class="item" ng-repeat="cooperative in cooperatives" ui-sref="^.show({id:cooperative._id})">
+          <span class="badge badge-energized" ng-show="cooperative.actions.length">{{cooperative.actions.length}}</span>
+
           <h2>
+            <i class="icon flaticon-building80 bigger-1 energy-class-{{cooperative.energyClass}}"></i>
             {{cooperative.name}}
           </h2>
-          </a>
+
       </div>
     </div>
   </ion-content>

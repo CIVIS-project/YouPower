@@ -7862,6 +7862,42 @@ ul.rating li {
     .chart-container .chart-navigation:before, .chart-container .chart-navigation:after {
       vertical-align: middle; }
 
+.energy-class-A {
+  color: #009036; }
+
+.energy-class-B {
+  color: #55AB26; }
+
+.energy-class-C {
+  color: #C8D200; }
+
+.energy-class-D {
+  color: #FFED00; }
+
+.energy-class-E {
+  color: #FBBA00; }
+
+.energy-class-F {
+  color: #EB6909; }
+
+.energy-class-G {
+  color: #E2001A; }
+
+.bigger-1 {
+  font-size: 1.5em; }
+
+.bigger-2 {
+  font-size: 2em; }
+
+.bigger-3 {
+  font-size: 2.5em; }
+
+.electricity {
+  color: #7cb5ec; }
+
+.subaction {
+  margin-left: 25px; }
+
 .full-height .scroll {
   height: 100%; }
 .full-height #map {

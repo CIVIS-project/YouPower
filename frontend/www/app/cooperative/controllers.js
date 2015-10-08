@@ -384,11 +384,21 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
           content: compiled[0]
       });
 
+      var energyClasses = {A: "009036", B:"55AB26", C:"C8D200", D:"FFED00", E:"FBBA00", F:"EB6909", G:"E2001A"};
+
+      var energyClassPins = _.mapObject(energyClasses,function(value,key){
+        return new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + value,
+        new google.maps.Size(21, 34),
+        new google.maps.Point(0,0),
+        new google.maps.Point(10, 34));
+      });
+
       angular.forEach($scope.cooperatives, function(coop) {
           var marker = new google.maps.Marker({
               position: new google.maps.LatLng(coop.lat, coop.lng),
               map: map,
-              title: coop.name
+              title: coop.name,
+              icon: energyClassPins[coop.energyClass]
           });
       })
 

@@ -1,5 +1,7 @@
 $chartHeight: 300px;
 
+$energyClasses: (A: #009036, B:#55AB26, C:#C8D200, D:#FFED00, E:#FBBA00, F:#EB6909, G:#E2001A);
+
 .chart-container {
   padding-left: 38px;
   padding-right: 38px;
@@ -29,6 +31,27 @@ $chartHeight: 300px;
       vertical-align: middle;
     }
   }
+}
+
+@each $key, $value in $energyClasses {
+  .energy-class-#{$key} {
+    color: $value;
+  }
+}
+
+@for $i from 1 through 3 {
+  .bigger-#{$i} {
+    font-size: 1em + 0.5*$i;
+  }
+}
+
+
+.electricity {
+  color: rgb(124, 181, 236);
+}
+
+.subaction {
+  margin-left: 25px;
 }
 
 .full-height {

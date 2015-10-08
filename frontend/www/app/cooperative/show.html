@@ -9,7 +9,7 @@
       <div class="item item-body">
         <div class="row">
           <div class="col">
-            <i class="icon ion-home"></i>
+            <i class="icon flaticon-building80 bigger-2 energy-class-{{cooperative.energyClass}}"></i>
             91 kWh/m2
           </div>
           <div class="col">
@@ -43,7 +43,7 @@
               <td class="padding-horizontal padding-top text-right">
                 max:
               </td class="padding-horizontal">
-              <td>
+              <td class="electricity">
                 <b>{{getMainMax().y | number:2}}</b> ({{getMainMax().x | date:"MMM yyyy"}})
               </td>
               <td class="padding-horizontal" ng-if="settings.compareTo">
@@ -54,7 +54,7 @@
               <td class="padding-horizontal text-right">
                 min:
               </td class="padding-horizontal">
-              <td>
+              <td class="electricity">
                 <b>{{getMainMin().y | number:2}}</b> ({{getMainMin().x | date:"MMM yyyy"}})
               </td>
               <td class="padding-horizontal" ng-if="settings.compareTo">
@@ -65,7 +65,7 @@
               <td class="padding-horizontal padding-bottom text-right">
                 average:
               </td class="padding-horizontal">
-              <td>
+              <td class="electricity">
                 <b>{{getMainAvg() | number:2}}</b>
               </td>
               <td class="padding-horizontal" ng-if="settings.compareTo">
