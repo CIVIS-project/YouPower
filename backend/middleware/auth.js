@@ -44,6 +44,10 @@ exports.initialize = function() {
     });
   }));
 
+
+  console.log("app ID:" + process.env.FACEBOOK_APP_ID); 
+  console.log("app SECRET:" + process.env.FACEBOOK_APP_SECRET); 
+
   if (!process.env.FACEBOOK_APP_ID || !process.env.FACEBOOK_APP_SECRET) {
     l.warn('Facebook login not set up! Please set environment variables:');
     l.warn('FACEBOOK_APP_ID');
