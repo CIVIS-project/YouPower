@@ -423,19 +423,68 @@ exports.updateProfile = function(user, profile, cb) {
 
 exports.mailHouseholdMember = function(user, mail, cb) { 
 
-  var title = 'Hello world from ' + user.profile.name + ' to ' + mail.name + '</br>';
+  if (user.profile.language === 'Swedish') {
 
-  var source = '<!DOCTYPE html><html><head> <meta charset="UTF-8" content="width=device-width" http-equiv="Content-Type" name="viewport"> <title>Sign Up for YouPower</title></head><body style="-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;margin: 0;padding: 0;background-color: #DEE0E2;height: 100% !important;width: 100% !important;"> <table align="center" border="0" cellpadding="0" cellspacing="0" id="bodyTable" width="100%" style="-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;mso-table-lspace: 0pt;mso-table-rspace: 0pt;margin: 0;padding: 0;background-color: #DEE0E2;border-collapse: collapse !important;height: 100% !important;width: 100% !important;"> <tr> <td align="center" id="bodyCell" valign="top" style="-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;mso-table-lspace: 0pt;mso-table-rspace: 0pt;margin: 0;padding: 20px;border-top: 4px solid #BBBBBB;height: 100% !important;width: 100% !important;"> <table border="0" cellpadding="0" cellspacing="0" id="templateContainer" style="-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 600px;border: 1px solid #BBBBBB;border-collapse: collapse !important;"> <tr> <td align="center" valign="top" style="-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;mso-table-lspace: 0pt;mso-table-rspace: 0pt;"> <!-- BEGIN PREHEADER // --> <table border="0" cellpadding="0" cellspacing="0" id="templatePreheader" width="100%" style="-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;mso-table-lspace: 0pt;mso-table-rspace: 0pt;background-color: #F4F4F4;border-bottom: 1px solid #CCCCCC;border-collapse: collapse !important;"> <tr> <td class="preheaderContent" style="padding-top: 10px;padding-right: 20px;padding-bottom: 10px;padding-left: 20px;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;mso-table-lspace: 0pt;mso-table-rspace: 0pt;color: #808080;font-family: Helvetica;font-size: 10px;line-height: 125%;text-align: left;" valign="top">Discover <b>YouPower</b>, a new social app for energy.</td></tr> </table><!-- // END PREHEADER --> </td> </tr> <tr> <td align="center" valign="top" style="-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;mso-table-lspace: 0pt;mso-table-rspace: 0pt;"> <!-- BEGIN HEADER // --> <table border="0" cellpadding="0" cellspacing="0" id="templateHeader" width="100%" style="-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;mso-table-lspace: 0pt;mso-table-rspace: 0pt;background-color: #F4F4F4;border-top: 1px solid #FFFFFF;border-bottom: 1px solid #CCCCCC;border-collapse: collapse !important;"> <tr> <td class="headerContent" valign="top" style="-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;mso-table-lspace: 0pt;mso-table-rspace: 0pt;color: #505050;font-family: Helvetica;font-size: 20px;font-weight: bold;line-height: 100%;padding-top: 0;padding-right: 0;padding-bottom: 0;padding-left: 0;text-align: left;vertical-align: middle;"> <img id="headerImage" src="http://www.public-domain-image.com/free-images/nature-landscapes/rain/raindrops-on-nasturtium-leaf.jpg" style="max-width: 600px;-ms-interpolation-mode: bicubic;border: 0;height: auto;line-height: 100%;outline: none;text-decoration: none;"></td> </tr> </table><!-- // END HEADER --> </td> </tr> <tr> <td align="center" valign="top" style="-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;mso-table-lspace: 0pt;mso-table-rspace: 0pt;"> <!-- BEGIN BODY // --> <table border="0" cellpadding="0" cellspacing="0" id="templateBody" width="100%" style="-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;mso-table-lspace: 0pt;mso-table-rspace: 0pt;background-color: #F4F4F4;border-top: 1px solid #FFFFFF;border-bottom: 1px solid #CCCCCC;border-collapse: collapse !important;"> <tr> <td class="bodyContent" valign="top" style="-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;mso-table-lspace: 0pt;mso-table-rspace: 0pt;color: #505050;font-family: Helvetica;font-size: 14px;line-height: 150%;padding-top: 20px;padding-right: 20px;padding-bottom: 20px;padding-left: 20px;text-align: left;"> <h1 style="display: block;font-family: Helvetica;font-size: 26px;font-style: normal;font-weight: bold;line-height: 100%;letter-spacing: normal;margin-top: 0;margin-right: 0;margin-bottom: 10px;margin-left: 0;text-align: left;color: #202020 !important;">Invitation from ' + user.profile.name + ' to join YouPower</h1> <p style="-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;">Hi there,</p> <p style="-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;">Your friend ' + user.profile.name + ' thinks that you would like to use YouPower. YouPower is a free <b>social app for energy</b> and it is simple and fun to use.</p><br> <h1 style="text-align: center;display: block;font-family: Helvetica;font-size: 26px;font-style: normal;font-weight: bold;line-height: 100%;letter-spacing: normal;margin-top: 0;margin-right: 0;margin-bottom: 10px;margin-left: 0;color: #202020 !important;"> <a class="button" href="https://app.civisproject.eu/frontend.html" style="-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;color: #EB4102;font-weight: normal;text-decoration: underline;">Join YouPower</a></h1><br> <p style="-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;">With YouPower you can find answers to your questions about different energy practices and save energy together with your family, friends or neighbors. Sign up to disover more.</p> </td> </tr> <tr> <td style="-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;mso-table-lspace: 0pt;mso-table-rspace: 0pt;"> <table border="0" cellpadding="0" cellspacing="0" id="templateFooter" width="100%" style="-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;mso-table-lspace: 0pt;mso-table-rspace: 0pt;background-color: #F4F4F4;border-top: 1px solid #FFFFFF;border-collapse: collapse !important;"> <tr> <td class="footerContent" valign="top" style="-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;mso-table-lspace: 0pt;mso-table-rspace: 0pt;color: #808080;font-family: Helvetica;font-size: 10px;line-height: 150%;padding-top: 20px;padding-right: 20px;padding-bottom: 20px;padding-left: 20px;text-align: left;"> <a href="https://www.facebook.com/CIVISproject" style="-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;color: #606060;font-weight: normal;text-decoration: underline;"> Find out more on our Facebook page</a>&nbsp; </td> </tr> <tr> <td class="footerContent" style="padding-top: 20px;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;mso-table-lspace: 0pt;mso-table-rspace: 0pt;color: #808080;font-family: Helvetica;font-size: 10px;line-height: 150%;padding-right: 20px;padding-bottom: 20px;padding-left: 20px;text-align: left;" valign="top"><em>Copyright &copy; 2015 YouPower is developed by the EU research project CIVIS. <a href="http://www.civisproject.eu" style="-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;color: #606060;font-weight: normal;text-decoration: underline;"> More info.</a></em></td> </tr> </table> </td> </tr> </table><!-- // END BODY --> </td> </tr> </table> </td> </tr> </table><br> <br></body></html>';
+  }else if (user.profile.language === 'Italian') {
+
+  }
+
+  mailInvitation_personal_english(user, mail, cb);
+};
+
+
+var mailInvitation_personal_english = function(user, mail, cb) {
+
+  mail.title = mail.title || ('Invitation from ' + user.profile.name + ' to join YouPower');
+  mail.text1 = mail.text1 || user.profile.name + ' joined YouPower and is inviting you to join as well. YouPower is a free energy social app that is simple and fun to use.';
+  
+  mailInvitation_general_english(user, mail, cb)
+
+}
+
+var mailInvitation_general_english = function(user, mail, cb) {
+
+  mail.from = mail.from || (user.profile.name + ' via YouPower <youpower.app@gmail.com>');
+  mail.to = mail.to || (mail.name + '<' + mail.email + '>'); 
+  mail.subject = mail.subject || 'Invitation to join YouPower'; 
+  mail.title = mail.title || 'Invitation to join YouPower';
+  mail.imageLink =  mail.imageLink || 'http://www.public-domain-image.com/free-images/nature-landscapes/rain/raindrops-on-nasturtium-leaf.jpg'; 
+  mail.greetings =  mail.greetings || 'Hi there,'
+  mail.text1 = mail.text1 || 'We invite you to discover YouPower, a free energy social app that is simple and fun to use.';
+  mail.buttonText = mail.buttonText ||'Join Now'; 
+  mail.text2 = mail.text2 || 'With YouPower you can find answers to your questions about different energy practices and save energy together with your family, friends or neighbors. Sign up to disover more.';
+  mail.text3 = mail.text3 || 'Thanks, have a lovely day!';
+  mail.signiture = mail.signiture || 'YouPower Team'; 
+  
+  mailInvitation(mail, cb);
+}
+
+
+var mailInvitation = function(mail, cb) {  
+
+  mail.html = '<body bgcolor="#f6f6f6" style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; -webkit-font-smoothing: antialiased; height: 100%; -webkit-text-size-adjust: none; width: 100% !important; margin: 0; padding: 0;"><table class="body-wrap" bgcolor="#f6f6f6" style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; width: 100%; margin: 0; padding: 20px;"><tr style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; margin: 0; padding: 0;"><td style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; margin: 0; padding: 0;"></td> <td class="container" bgcolor="#FFFFFF" style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; clear: both !important; display: block !important; max-width: 600px !important; margin: 0 auto; padding: 20px; border: 1px solid #f0f0f0;"> <div class="content" style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; display: block; max-width: 600px; margin: 0 auto; padding: 0;"> <table style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; width: 100%; margin: 0; padding: 0;"><tr style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; margin: 0; padding: 0;"><td style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; margin: 0; padding: 0;"><h2 style="font-family: Helvetica, Arial, sans-serif; font-size: 28px; line-height: 1.2em; color: #111111; font-weight: 200; margin: 40px 0 10px; padding: 0;">' 
+     + mail.title + 
+    '</h2><img src='
+    + mail.imageLink + 
+    ' style="max-width: 600px; width: 100%; margin: 0; padding: 0;"></td> </tr><tr style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; margin: 0; padding: 0;"><td style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; margin: 0; padding: 0;"> <p style="font-family: Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.6em; font-weight: normal; margin: 0 0 10px; padding: 0;">'
+    + mail.greetings + 
+    '</p> <p style="font-family: Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.6em; font-weight: normal; margin: 0 0 10px; padding: 0;">'
+    + mail.text1 + 
+    '</p> <table class="btn-primary" cellpadding="0" cellspacing="0" border="0" style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; width: auto !important; margin: 0 0 10px; padding: 0;"><tr style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; margin: 0; padding: 0;"><td style="font-family: Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.6em; border-radius: 25px; text-align: center; vertical-align: top; background-color: #008000; margin: 0; padding: 0;" align="center" bgcolor="#008000" valign="top"> <a href="https://app.civisproject.eu/frontend.html" style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 2; color: #ffffff; border-radius: 25px; display: inline-block; cursor: pointer; font-weight: bold; text-decoration: none; background-color: #008000; margin: 0; padding: 0; border-color: #008000; border-style: solid; border-width: 10px 20px;">'
+    + mail.buttonText + 
+    '</a> </td> </tr></table><p style="font-family: Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.6em; font-weight: normal; margin: 0 0 10px; padding: 0;">'
+    + mail.text2 + 
+    '</p> <p style="font-family: Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.6em; font-weight: normal; margin: 0 0 10px; padding: 0;">'
+    + mail.text3 + 
+    '</p> <p style="font-family: Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.6em; font-weight: normal; margin: 0 0 10px; padding: 0;"><a href="https://app.civisproject.eu" style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; color: #008000; margin: 0; padding: 0;">' 
+    + mail.signiture + 
+    '</a></p> </td> </tr></table></div> </td> </tr></table></body>';
 
   var mailOptions = {
-      from: user.profile.name + ' via YouPower <youpower.app@gmail.com>', // sender address
-      to: mail.name + '<' + mail.email + '>', // list of receivers
-      subject: 'Invitation to Join', // Subject line
-      // text: mail.message, // plaintext body or HTML body instead
-      html: source
-      // '<b>' + title 
-      //       + 'This is a message from YouPower. </br>'
-      //       + 'Private message: ' + mail.message + '</b>'
+      from: mail.from, 
+      to: mail.to, 
+      subject: mail.subject, 
+      html: mail.html 
   };  
 
   sendMail(mailOptions, cb);
