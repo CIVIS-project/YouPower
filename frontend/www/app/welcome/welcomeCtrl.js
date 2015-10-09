@@ -3,9 +3,7 @@ angular.module('civis.youpower.welcome').controller('WelcomeCtrl', WelcomeCtrl);
 
 function WelcomeCtrl($translate, $scope, $rootScope, $state, $ionicViewSwitcher, $window, $stateParams, AuthService, Config) {
   
-  if (AuthService.isAuthenticated()) {
-      $state.go('main.actions.yours'); 
-  }else if ($stateParams 
+  if ($stateParams 
     && $stateParams.token !== undefined 
     && $stateParams.token !== "") {
 
@@ -21,6 +19,8 @@ function WelcomeCtrl($translate, $scope, $rootScope, $state, $ionicViewSwitcher,
       AuthService.fbLoginSuccess($stateParams.token); 
       $state.go('main.actions.yours'); 
     }
+  }else if (AuthService.isAuthenticated()) {
+      $state.go('main.actions.yours'); 
   }
 
   $scope.loginData = { 

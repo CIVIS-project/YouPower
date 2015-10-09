@@ -435,6 +435,7 @@ exports.mailHouseholdMember = function(user, mail, cb) {
 
 var mailInvitation_personal_english = function(user, mail, cb) {
 
+  mail.from = mail.from || (user.profile.name + ' via YouPower <youpower.app@gmail.com>');
   mail.title = mail.title || ('Invitation from ' + user.profile.name + ' to join YouPower');
   mail.text1 = mail.text1 || user.profile.name + ' joined YouPower and is inviting you to join as well. YouPower is a free energy social app that is simple and fun to use.';
   
@@ -444,7 +445,7 @@ var mailInvitation_personal_english = function(user, mail, cb) {
 
 var mailInvitation_general_english = function(user, mail, cb) {
 
-  mail.from = mail.from || (user.profile.name + ' via YouPower <youpower.app@gmail.com>');
+  mail.from = mail.from || 'YouPower <youpower.app@gmail.com>';
   mail.to = mail.to || (mail.name + '<' + mail.email + '>'); 
   mail.subject = mail.subject || 'Invitation to join YouPower'; 
   mail.title = mail.title || 'Invitation to join YouPower';
@@ -462,7 +463,7 @@ var mailInvitation_general_english = function(user, mail, cb) {
 
 var mailInvitation = function(mail, cb) {  
 
-  mail.html = '<body bgcolor="#f6f6f6" style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; -webkit-font-smoothing: antialiased; height: 100%; -webkit-text-size-adjust: none; width: 100% !important; margin: 0; padding: 0;"><table class="body-wrap" bgcolor="#f6f6f6" style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; width: 100%; margin: 0; padding: 20px;"><tr style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; margin: 0; padding: 0;"><td style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; margin: 0; padding: 0;"></td> <td class="container" bgcolor="#FFFFFF" style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; clear: both !important; display: block !important; max-width: 600px !important; margin: 0 auto; padding: 20px; border: 1px solid #f0f0f0;"> <div class="content" style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; display: block; max-width: 600px; margin: 0 auto; padding: 0;"> <table style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; width: 100%; margin: 0; padding: 0;"><tr style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; margin: 0; padding: 0;"><td style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; margin: 0; padding: 0;"><h2 style="font-family: Helvetica, Arial, sans-serif; font-size: 28px; line-height: 1.2em; color: #111111; font-weight: 200; margin: 40px 0 10px; padding: 0;">' 
+  mail.html = '<body bgcolor="#f6f6f6" style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; -webkit-font-smoothing: antialiased; height: 100%; -webkit-text-size-adjust: none; width: 100% !important; margin: 0; padding: 0;"><table class="body-wrap" bgcolor="#f6f6f6" style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; width: 100%; margin: 0; padding: 20px;"><tr style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; margin: 0; padding: 0;"> <td class="container" bgcolor="#FFFFFF" style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; clear: both !important; display: block !important; max-width: 600px !important; margin: 0 auto; padding: 20px; border: 1px solid #f0f0f0;"> <div class="content" style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; display: block; max-width: 600px; margin: 0 auto; padding: 0;"> <table style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; width: 100%; margin: 0; padding: 0;"><tr style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; margin: 0; padding: 0;"><td style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; margin: 0; padding: 0;"><h2 style="font-family: Helvetica, Arial, sans-serif; font-size: 28px; line-height: 1.2em; color: #111111; font-weight: 200; margin: 40px 0 10px; padding: 0;">'
      + mail.title + 
     '</h2><img src='
     + mail.imageLink + 
