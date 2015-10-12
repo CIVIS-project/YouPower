@@ -313,6 +313,8 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
 })
 
 .controller('CooperativeEditCtrl', function($scope,$state,Cooperatives,currentUser){
+  $scope.ventilationTypes = Cooperatives.VentilationTypes;
+
   $scope.actionTypes = Cooperatives.getActionTypes();
 
   $scope.$on("$ionicView.enter",function(){

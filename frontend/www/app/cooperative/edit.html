@@ -10,6 +10,12 @@
         <span class="input-label">Area (m<sup>2</sup>)</span>
         <input type="text" placeholder="1345" ng-model="cooperative.area">
       </label>
+      <label class="item item-input item-select">
+        <span class="input-label">Ventilation type</span>
+        <select ng-model="cooperative.ventilationType">
+          <option ng-repeat="option in ventilationTypes" value="{{option}}">{{option}}</option>
+        </select>
+      </label>
       <button class="button button-block button-positive" ng-click="save()">
         Save
       </button>

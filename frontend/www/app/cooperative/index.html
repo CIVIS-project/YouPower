@@ -7,13 +7,14 @@
     <!-- <ion-toggle ng-model="airplaneMode" toggle-class="toggle-calm">Show only similar</ion-toggle> -->
     <div id="map" data-tap-disabled="true" ng-if="view=='map'" ng-controller="CooperativesMapCtrl"></div>
     <div ng-if="view=='list'">
-        <div class="item" ng-repeat="cooperative in cooperatives" ui-sref="^.show({id:cooperative._id})">
+        <div class="item item-avatar" ng-repeat="cooperative in cooperatives" ui-sref="^.show({id:cooperative._id})">
           <span class="badge badge-energized" ng-show="cooperative.actions.length">{{cooperative.actions.length}}</span>
 
+          <i class="icon flaticon-building80 bigger-1 energy-class-{{cooperative.energyClass}} item-image"></i>
           <h2>
-            <i class="icon flaticon-building80 bigger-1 energy-class-{{cooperative.energyClass}}"></i>
             {{cooperative.name}}
           </h2>
+          <h4>{{cooperative.ventilationType}}</h4>
 
       </div>
     </div>

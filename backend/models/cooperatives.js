@@ -31,7 +31,8 @@ var CooperativeSchema = new Schema({
     date: Date,
     cost: Number,
     types: [Number]
-  }]
+  }],
+  ventilationType: String
 });
 
 var Cooperative = mongoose.model('Cooperative', CooperativeSchema);
@@ -40,7 +41,8 @@ exports.create = function(cooperative, cb) {
   Cooperative.create({
     name: cooperative.name,
     yearOfConst: cooperative.yearOfConst,
-    area: cooperative.area
+    area: cooperative.area,
+    ventilationType: cooperative.ventilationType
   }, cb);
 };
 
@@ -75,7 +77,8 @@ exports.update = function(id, cooperative, cb) {
     $set : {
       name: cooperative.name,
       yearOfConst: cooperative.yearOfConst,
-      area: cooperative.area
+      area: cooperative.area,
+      ventilationType: cooperative.ventilationType
     }
   }, cb);
 };

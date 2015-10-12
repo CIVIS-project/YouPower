@@ -33,6 +33,8 @@ angular.module('civis.youpower')
       })
   };
 
+  result.VentilationTypes = ["FTX (mekanisk från- och tilluft med återvinning)","FVP (frånluftsvärmepump)","F(mekanisk frånluftsventilation)","FT (mekanisk från- och tilluftsventilation)","S (självdragsventilation)","Vet ej","Övrig"]
+
   result.getActionTypes = function(){
     var actions = [{
       id: 100,
