@@ -4,6 +4,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
 
 .controller('CooperativeCtrl', function($scope,$timeout,$state,$q,$stateParams,Cooperatives,currentUser) {
 
+
   var startYear = 2010;
 
   $scope.comparisons = [
@@ -40,6 +41,8 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
     $scope.settings.granularity = granularity;
     updateEnergyData();
   }
+
+  $scope.actionTypes = Cooperatives.getActionTypes();
 
   $scope.$on("$ionicView.enter",function(){
     var id = $stateParams.id || currentUser.cooperativeId;
@@ -310,6 +313,8 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
 })
 
 .controller('CooperativeEditCtrl', function($scope,$state,Cooperatives,currentUser){
+  $scope.actionTypes = Cooperatives.getActionTypes();
+
   $scope.$on("$ionicView.enter",function(){
     // Get the cooperative, currently hardcoded
     Cooperatives.get({id:currentUser.cooperativeId},function(data){
@@ -331,8 +336,45 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
 
 })
 
-.controller('CooperativeActionAddCtrl', function($scope,$state,Cooperatives,currentUser){
+.factory('CooperativeActionTypePopup', function($ionicPopup){
+  return function($scope){
+    _.each($scope.actionTypes,function(type){
+      type.selected = false;
+    })
+    _.each($scope.action.types,function(id){
+      $scope.actionTypes.getById(id).selected = true;
+    });
+    $ionicPopup.show({
+      templateUrl: "app/cooperative/actionTypes.html",
+      scope: $scope,
+      buttons: [{
+        text: "Cancel"
+      },{
+        text: "OK",
+        type: 'button-positive',
+        onTap: function(e){
+          // Disable subactions if parent not selected
+          _.each($scope.actionTypes,function(type){
+            if(type.parent && !$scope.actionTypes.getById(type.parent).selected) {
+              type.selected = false;
+            }
+          })
+          // Assign selected types to action
+          $scope.action.types = _.map(_.where($scope.actionTypes,{selected:true}),function(type){return type.id});
+        }
+      }]
+    });
+  }
+})
+
+.controller('CooperativeActionAddCtrl', function($scope,$state,CooperativeActionTypePopup,Cooperatives,currentUser){
   $scope.action = {};
+
+  $scope.actionTypes = Cooperatives.getActionTypes();
+
+  $scope.selectActionType = function(){
+    CooperativeActionTypePopup($scope);
+  }
 
   $scope.addAction = function(){
     Cooperatives.addAction({id:currentUser.cooperativeId},$scope.action,function(){
@@ -341,7 +383,14 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
   };
 })
 
-.controller('CooperativeActionUpdateCtrl', function($scope,$state,$stateParams,Cooperatives,currentUser){
+.controller('CooperativeActionUpdateCtrl', function($scope,$state,$stateParams,CooperativeActionTypePopup,Cooperatives,currentUser){
+
+  $scope.actionTypes = Cooperatives.getActionTypes();
+
+  $scope.selectActionType = function(){
+    CooperativeActionTypePopup($scope);
+  }
+
   Cooperatives.get({id:currentUser.cooperativeId},function(data){
     $scope.action = _.findWhere(data.actions,{_id:$stateParams.id});
     $scope.action.date = new Date($scope.action.date);

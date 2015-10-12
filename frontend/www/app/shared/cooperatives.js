@@ -33,5 +33,67 @@ angular.module('civis.youpower')
       })
   };
 
+  result.getActionTypes = function(){
+    var actions = [{
+      id: 100,
+      name: "Heating and hot water"
+    },{
+      id: 101,
+      name: "Control and optimisation",
+      parent: 100
+    },{
+      id: 102,
+      name: "Hot water",
+      parent: 100
+    },{
+      id: 103,
+      name: "Radiator system",
+      parent: 100
+    },{
+      id: 104,
+      name: "Ventilation",
+      parent: 100
+    },{
+      id: 105,
+      name: "Sub metering",
+      parent: 100
+    },{
+      id: 106,
+      name: "Household actions",
+      parent: 100
+    },{
+      id: 200,
+      name: "Electricity"
+    },{
+      id: 201,
+      name: "Outdoor/roof heating",
+      parent: 200
+    },{
+      id: 202,
+      name: "Lighting",
+      parent: 200
+    },{
+      id: 203,
+      name: "Laundry room",
+      parent: 200
+    },{
+      id: 204,
+      name: "PV panels",
+      parent: 200
+    },{
+      id: 205,
+      name: "Sub metering",
+      parent: 200
+    },{
+      id: 206,
+      name: "Household actions",
+      parent: 200
+    }];
+    actions.getById = function(id) {
+      return _.findWhere(this,{id:id});
+    }
+    return actions;
+  };
+
   return result;
 });

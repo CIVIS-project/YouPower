@@ -1,13 +1,17 @@
 <ion-list>
-  <ion-item ng-repeat="action in cooperative.actions | orderBy:'date':true" ng-click="action.showExtra = !action.showExtra">
+  <ion-item class="item-text-wrap" ng-repeat="action in cooperative.actions | orderBy:'date':true" ng-click="action.showExtra = !action.showExtra">
     <span class="badge badge-energized">{{action.flag}}</span>
     <h2>
       {{action.name}}
     </h2>
+    <h4>
+      <span ng-repeat="id in action.types">{{actionTypes.getById(id).name}}{{$last?'':', '}}</span>
+    </h4>
     <p>
       {{action.date | date:"MMM yyyy"}}
     </p>
     <p ng-show="action.showExtra">
+      <b ng-show="action.cost">Cost: {{action.cost}} SEK<br></b>
       {{action.description}}
     </p>
     <ion-option-button ng-if="canEditActions" class="button-positive"
