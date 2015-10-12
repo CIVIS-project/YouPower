@@ -29,6 +29,8 @@ var CooperativeSchema = new Schema({
     name: String,
     description: String,
     date: Date,
+    cost: Number,
+    types: [Number]
   }]
 });
 
@@ -117,6 +119,8 @@ exports.updateAction = function(id, actionId, newAction, user, cb) {
         action.name = newAction.name;
         action.date = newAction.date;
         action.description = newAction.description;
+        action.cost = newAction.cost;
+        action.types = newAction.types;
         cooperative.markModified('actions');
         cooperative.save(function(err){
           cb(err,cooperative);
