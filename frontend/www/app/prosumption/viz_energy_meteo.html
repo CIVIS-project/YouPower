@@ -1,6 +1,25 @@
-<ion-view view-title="Prediction for the next 12 hours">
+<ion-view view-title="Prediction for the next 30 hours">
 <ion-content>
-<div><highchart id="chart2" config="chartConfigEnergyMeteo"></highchart></div>
+<!-- <div><highchart id="chart2" config="chartConfigEnergyMeteo"></highchart></div>
+ -->
+<!-- fully revised -->
+<div class="list card">
+<div class="item item-divider"> <h1> Time &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Energy Meteo </h1> </div>
+  <div class="item item-divider"> &nbsp; {{futurePrices[0][0]}} -  {{futurePrices[0][1]}} &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;  <i class="icon-large {{futurePrices[0][2]}} {{futurePrices[0][3]}}"></i></div>
+      <div class="item item-divider"> &nbsp; {{futurePrices[1][0]}} -  {{futurePrices[1][1]}} &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;  <i class="icon-large {{futurePrices[1][2]}} {{futurePrices[1][3]}}"></i></div>
+
+  <div class="item item-divider"> &nbsp; {{futurePrices[2][0]}} -  {{futurePrices[2][1]}} &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;  <i class="icon-large {{futurePrices[2][2]}} {{futurePrices[2][3]}}"></i></div>
+
+  <div class="item item-divider"> &nbsp; {{futurePrices[3][0]}} -  {{futurePrices[3][1]}} &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;  <i class="icon-large {{futurePrices[3][2]}} {{futurePrices[3][3]}}"></i></div>
+
+  <div class="item item-divider"> &nbsp; {{futurePrices[4][0]}} -  {{futurePrices[4][1]}} &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;  <i class="icon-large {{futurePrices[4][2]}} {{futurePrices[4][3]}}"></i></div>
+
+  <div class="item item-divider"> &nbsp; {{futurePrices[5][0]}} -  {{futurePrices[5][1]}} &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;  <i class="icon-large {{futurePrices[5][2]}} {{futurePrices[5][3]}}"></i></div>
+  <div class="item item-divider"> &nbsp; {{futurePrices[6][0]}} -  {{futurePrices[6][1]}} &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;  <i class="icon-large {{futurePrices[6][2]}} {{futurePrices[6][3]}}"></i></div>
+  <div class="item item-divider"> &nbsp; {{futurePrices[7][0]}} -  {{futurePrices[7][1]}} &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;  <i class="icon-large {{futurePrices[7][2]}} {{futurePrices[7][3]}}"></i></div>
+  <div class="item item-divider"> &nbsp; {{futurePrices[8][0]}} -  {{futurePrices[8][1]}} &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;  <i class="icon-large {{futurePrices[8][2]}} {{futurePrices[8][3]}}"></i></div>
+
+  <div class="item item-divider"> &nbsp; {{futurePrices[9][0]}} -  {{futurePrices[9][1]}} &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;  <i class="icon-large {{futurePrices[9][2]}} {{futurePrices[9][3]}}"></i></div>
 </ion-content>
 </ion-view>
 <!-- <ion-nav-bar> <ion-nav-back-button class="button-icon ion-arrow-left-c">

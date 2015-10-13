@@ -16,13 +16,15 @@ function positiveNegativeColor(n) {
     return (n<=0? 'energized': 'balanced');
 }
 function isPriceGood(price) {
-    var threshold = 2; //totally random threshold, to be replaced at some point
+    var threshold = 0.168; //totally random threshold, to be replaced at some point
     return (price<=threshold? true : false);
 }
 function getTimeRemaining() {
     return '1h';
 }
-
+function n(n){
+    return n > 9 ? "" + n: "0" + n;
+}
 function dataVizCtrl($scope, $state, User, $http) {
 	//just loads the content of the window once the tabs have been generated
 	//$state.go('main.prosumption.yours');
@@ -31,7 +33,7 @@ console.log('state= '+String($scope));
 //DM: generates random stuff, need to be replaced with calls to the backend endpoints once available
 
 ///fetch data for the yours/ tab
-$scope.currentPrice= getRandomData();
+$scope.currentPrice= 0.12+(0.08*getRandomData());
 var isPriceOk = isPriceGood($scope.currentPrice);
 if (isPriceOk) {
     $scope.priceIcon='ion-happy-outline';
@@ -43,6 +45,30 @@ else {
 }
 
 $scope.timeRemaining = getTimeRemaining();
+
+$scope.futurePrices = [];
+var numberElementsFuture = 12;
+var timeNow=3;
+var fromTime=timeNow;
+var toTime = fromTime+3;
+var tmp;
+var priceIconTmp;
+var priceIconColorTmp;
+for (var i=0; i<numberElementsFuture; i++) {
+    tmp= (0.08*getRandomData());
+    if (isPriceGood(tmp)) {
+    priceIconTmp='ion-happy-outline';
+    priceIconColorTmp="balanced";
+}
+else {
+    priceIconTmp='ion-sad-outline';
+    priceIconColorTmp="energized";
+}
+    $scope.futurePrices[i]=[n(fromTime),n(toTime),priceIconTmp,priceIconColorTmp];
+// console.log("futurePrices "+ $scope.futurePrices[i][0]);
+    fromTime=(fromTime+3)%24;
+    toTime=(toTime+3)%24;
+}
 
 $scope.lastConsumption= getRandomData();
 $scope.lastProduction = getRandomData();
