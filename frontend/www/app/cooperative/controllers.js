@@ -250,18 +250,16 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
     } else {
       startDate.setFullYear(startDate.getFullYear() - 1);
     }
-    var counter = 0;
-    _.each($scope.cooperative.actions, function(action){
+    var length = $scope.cooperative.actions.length;
+    _.each($scope.cooperative.actions, function(action,index){
       var date = new Date(action.date);
+      console.log("Index",index)
       if(date < $scope.settings.endDate && date >= startDate) {
-        action.flag = ++counter;
         data.push({
           x: Date.UTC(date.getFullYear(),date.getMonth()),
-          title: counter,
+          title: (length - index) + "",
           text: action.name
         });
-      } else {
-        action.flag = null;
       }
     });
     var chart = $scope.chartConfig.getHighcharts();

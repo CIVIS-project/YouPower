@@ -1,6 +1,6 @@
 <ion-list>
   <ion-item class="item-text-wrap item-complex-left" ng-repeat="action in cooperative.actions | orderBy:'date':true" ng-click="action.showExtra = !action.showExtra">
-    <span class="badge badge-energized">{{action.flag}}</span>
+    <span class="badge badge-energized">{{cooperative.actions.length - $index}}</span>
     <h2>
       {{action.name}}
     </h2>
