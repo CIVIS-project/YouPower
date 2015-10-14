@@ -32,7 +32,8 @@ var CooperativeSchema = new Schema({
     cost: Number,
     types: [Number]
   }],
-  ventilationType: String
+  ventilationType: String,
+  performance: Number
 });
 
 var Cooperative = mongoose.model('Cooperative', CooperativeSchema);
