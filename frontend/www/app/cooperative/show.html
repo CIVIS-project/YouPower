@@ -8,13 +8,17 @@
     <div class="list">
       <div class="item item-body">
         <div class="row">
-          <div class="col">
+          <div class="col col-20 text-right">
             <i class="icon flaticon-building80 bigger-2 energy-class-{{cooperative.energyClass}}"></i>
           </div>
           <div class="col">
-            <span class="badge badge-energized">{{cooperative.actions.length}}</span>
             {{cooperative.performance}} kWh/m2
+          </div>
+          <div class="col text-right">
             Energy actions
+          </div>
+          <div class="col col-20">
+            <span class="bigger-2">{{cooperative.actions.length}}</span>
           </div>
         </div>
       </div>

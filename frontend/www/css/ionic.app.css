@@ -7842,6 +7842,13 @@ ul.rating li {
   /* Note, this must be half the font size */
   color: #fff; }
 
+.item-complex-left .item-content {
+  padding-left: 49px;
+  padding-right: 16px; }
+  .item-complex-left .item-content .badge {
+    right: unset;
+    left: 16px; }
+
 .chart-container {
   padding-left: 38px;
   padding-right: 38px;

@@ -9,7 +9,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
 
   $scope.comparisons = [
     {name: ""},
-    {name: "similar cooperatives (average)"},
+    {name: "neighborhood average"},
     {name: "previous year"},
     {name: "previous year (normalized)"}
   ]
@@ -406,10 +406,14 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
   };
 })
 
-.controller('CooperativesCtrl', function($scope, cooperatives) {
+.controller('CooperativesCtrl', function($scope, $state, cooperatives) {
   $scope.cooperatives = cooperatives;
 
   $scope.view = 'map';
+
+  $scope.cooperativeClick = function(id){
+    $state.go("^.show",{id:id});
+  };
 
 })
 
@@ -427,13 +431,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
       var map = new google.maps.Map(document.getElementById("map"),
           mapOptions);
 
-      //Marker + infowindow + angularjs compiled ng-click
-      var contentString = "<div><a ng-click='clickTest()'>Click me!</a></div>";
-      var compiled = $compile(contentString)($scope);
 
-      var infowindow = new google.maps.InfoWindow({
-          content: compiled[0]
-      });
 
       var energyClasses = {A: "009036", B:"55AB26", C:"C8D200", D:"FFED00", E:"FBBA00", F:"EB6909", G:"E2001A"};
 
@@ -445,17 +443,29 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
       });
 
       angular.forEach($scope.cooperatives, function(coop) {
+          //Marker + infowindow + angularjs compiled ng-click
+          var contentString = "<div ng-click='cooperativeClick(\""
+          + coop._id + "\")'><i class='icon flaticon-building80 bigger-1 energy-class-"
+          + coop.energyClass + " item-image'></i><a>"
+          + coop.name + "</a><br><br><p>Number of actions: " +
+          + coop.actions.length + "</p></div>";
+          var compiled = $compile(contentString)($scope);
+
+          var infowindow = new google.maps.InfoWindow({
+              content: compiled[0]
+          });
+
           var marker = new google.maps.Marker({
               position: new google.maps.LatLng(coop.lat, coop.lng),
               map: map,
               title: coop.name,
               icon: energyClassPins[coop.energyClass]
           });
-      })
 
-      // google.maps.event.addListener(marker, 'click', function() {
-      //   infowindow.open(map,marker);
-      // });
+          google.maps.event.addListener(marker, 'click', function() {
+            infowindow.open(map,marker);
+          });
+      })
 
       $scope.map = map;
   }
