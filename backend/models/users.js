@@ -424,13 +424,42 @@ exports.updateProfile = function(user, profile, cb) {
 exports.mailHouseholdMember = function(user, mail, cb) { 
 
   if (user.profile.language === 'Swedish') {
+    mailInvitation_personal_english(user, mail, cb);
 
   }else if (user.profile.language === 'Italian') {
+    mailInvitation_personal_italian(user, mail, cb);
 
+  }else{
+    mailInvitation_personal_english(user, mail, cb);
   }
-
-  mailInvitation_personal_english(user, mail, cb);
 };
+
+var mailInvitation_personal_italian = function(user, mail, cb) {
+
+  mail.from = mail.from || (user.profile.name + ' via YouPower <youpower.app@gmail.com>');
+  mail.title = mail.title || (user.profile.name + ' ti ha invitato a unirti a YouPower');
+  mail.text1 = mail.text1 || user.profile.name + ' usa YouPower e vuole invitarti a provarla. YouPower è una social app gratuita incentrata su tematiche energetiche. Provala, è semplice e piacevole da usare!';
+  
+  mailInvitation_general_italian(user, mail, cb); 
+
+}
+
+var mailInvitation_general_italian = function(user, mail, cb) {
+
+  mail.from = mail.from || 'YouPower <youpower.app@gmail.com>';
+  mail.to = mail.to || (mail.name + '<' + mail.email + '>'); 
+  mail.subject = mail.subject || 'Unisciti a YouPower'; 
+  mail.title = mail.title || 'Unisciti a YouPower';
+  mail.imageLink =  mail.imageLink || 'http://www.public-domain-image.com/free-images/nature-landscapes/rain/raindrops-on-nasturtium-leaf.jpg'; 
+  mail.greetings =  mail.greetings || 'Ciao,'
+  mail.text1 = mail.text1 || 'ti invitiamo a scoprire YouPower, una social app gratuita incentrata su tematiche energetiche. Provala, è semplice e piacevole da usare!';
+  mail.buttonText = mail.buttonText ||'Unisciti ora'; 
+  mail.text2 = mail.text2 || 'Grazie a YouPower potrai trovare risposta alle tue domande riguardo al risparmio energetico. Potrai mettere in pratica i nostri consigli assieme ai tuoi familiari e confrontare i risultati con quelli di amici e vicini. Registrati per saperne di più!';
+  mail.text3 = mail.text3 || 'Ti auguriamo una splendida giornata';
+  mail.signiture = mail.signiture || 'Il team YouPower'; 
+  
+  mailInvitation(mail, cb);
+}
 
 
 var mailInvitation_personal_english = function(user, mail, cb) {
@@ -464,7 +493,7 @@ var mailInvitation_general_english = function(user, mail, cb) {
 var mailInvitation = function(mail, cb) {  
 
   mail.html = '<body bgcolor="#f6f6f6" style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; -webkit-font-smoothing: antialiased; height: 100%; -webkit-text-size-adjust: none; width: 100% !important; margin: 0; padding: 0;"><table class="body-wrap" bgcolor="#f6f6f6" style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; width: 100%; margin: 0; padding: 20px;"><tr style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; margin: 0; padding: 0;"> <td class="container" bgcolor="#FFFFFF" style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; clear: both !important; display: block !important; max-width: 600px !important; margin: 0 auto; padding: 20px; border: 1px solid #f0f0f0;"> <div class="content" style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; display: block; max-width: 600px; margin: 0 auto; padding: 0;"> <table style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; width: 100%; margin: 0; padding: 0;"><tr style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; margin: 0; padding: 0;"><td style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; margin: 0; padding: 0;"><h2 style="font-family: Helvetica, Arial, sans-serif; font-size: 28px; line-height: 1.2em; color: #111111; font-weight: 200; margin: 40px 0 10px; padding: 0;">'
-     + mail.title + 
+    + mail.title + 
     '</h2><img src='
     + mail.imageLink + 
     ' style="max-width: 600px; width: 100%; margin: 0; padding: 0;"></td> </tr><tr style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; margin: 0; padding: 0;"><td style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; margin: 0; padding: 0;"> <p style="font-family: Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.6em; font-weight: normal; margin: 0 0 10px; padding: 0;">'
