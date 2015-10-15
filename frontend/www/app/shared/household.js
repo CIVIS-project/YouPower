@@ -22,6 +22,14 @@ angular.module('civis.youpower')
       method: 'PUT', 
       url: Config.host + '/api/household/removemember/:householdId/:userId'
     }, 
+    addAppliance: {
+      method: 'PUT',
+      url: Config.host + '/api/household/add/:id'
+    }, 
+    removeAppliance: { 
+      method: 'PUT',
+      url: Config.host + '/api/household/remove/:id'
+    }, 
     update : {
       method: 'PUT', 
       url: Config.host + '/api/household/:id'

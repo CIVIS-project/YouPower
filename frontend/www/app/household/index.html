@@ -1,9 +1,12 @@
-<ion-view view-title={{"Household_Actions"|translate}}>
+<ion-view cache-view="false" view-title={{"Household_Actions"|translate}}>
 <ion-nav-buttons side="right">
 <button ng-show="currentUser.householdId===null || households[currentUser.householdId].ownerId===currentUser._id" class="button button-clear button-dark icon ion-ios-personadd" ng-click="addMember()">&#8200;</button>
 </ion-nav-buttons>
-
 <ion-content class="padding">
+<ion-refresher
+  pulling-text="Pull to refresh..."
+  on-refresh="reloadCurrentHousehold()">
+</ion-refresher>
 <div class="list card" ng-if="households[currentUser.householdId].members.length > 1">
   <div ng-repeat="memberId in households[currentUser.householdId].members" ng-if="currentUser._id !== memberId">
     <div class="item item-avatar item-text-wrap header">

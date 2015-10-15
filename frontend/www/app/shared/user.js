@@ -10,6 +10,10 @@ angular.module('civis.youpower')
       method: 'POST',
       url: Config.host + '/api/feedback'
     },
+    fbShare : {
+      method: 'POST',
+      url: Config.host + '/api/user/postFB/:type/:id'
+    }, 
     getPicture : {
       method: 'GET',
       url: Config.host + '/api/user/profilePicture/:userId'
@@ -17,6 +21,10 @@ angular.module('civis.youpower')
     profile : {
       method: 'POST',
       url: Config.host + '/api/user/profile'
+    },
+    getPendingInvites : {
+      method: 'GET',
+      url: Config.host + '/api/user/invites'
     },
     getUserProfile : {
       method: 'GET',

@@ -29,6 +29,7 @@ angular.module('civis.youpower.translations',[])
     APPLIANCES_EG: "A description, e.g., 2x1000W heater",
     ALREADY_EXISTS: "Hmmm, this one already exits.",
     TERMS_CONDITION: "YouPower is a free social app for energy developed for the CIVIS EU research project. By signing up, you agree that the data you share with the app will be analysed for further research. Your data will be anonymous.",
+    TERMS_CONDITION_2: "YouPower is a free social app for energy developed for the CIVIS EU research project. By using the app, you agree that the data you share with the app will be analysed for further research. Your data will be anonymous.",
     BE_MORE_GREEN: "Be more <span class='balanced'>green.</span>",
     BE_MORE_SOCIAL: "Be more <span class='energized'>social.</span>",
     TAKE_ACTIONS: "Take <span class='positive'>actions!</span>",
@@ -37,12 +38,12 @@ angular.module('civis.youpower.translations',[])
     RECEIVER_NAME: "Receiver's name", 
     Send_Invitation: "Send Invitation",
     SENDING_INVITATION: "Sending your invitation to {{email}}...",
-    INVITATION_SENT: "Your invitation is sent.",
+    INVITATION_SENT: "Your invitation is sent to",
     INVITATION_NOT_SENT: "We can not send your invitation to {{email}}. An error occurred.",
     Your_name: "Your name",
     Your_password: "Your password",
     Select_your_password: "Select your password", 
-    your_password: "Repeat your password", 
+    Repeat_your_password: "Repeat your password", 
     Sign_up: "Sign up",
     JOIN_NOW: "Not a member? Join now",
     LOGIN_HERE: "Already a member? Login here",
@@ -219,7 +220,32 @@ angular.module('civis.youpower.translations',[])
     CREDIBILITY_T: "Credibility of the energy advice",
     CREDIBILITY_P: "We carefully selected the initial set of actions from trusted sources such as different national energy departments and international energy agencies and associations." ,
     EMAIL_T: "Other questions or comments?",
-    EMAIL_P: "YouPower is an ongoing project. We are happy to learn about what you think, what works for you and how we can do better. Contact us at <a href='mailto:youpower.app@gmail.com?Subject=YouPower%20Questions%20and%20Feedback' class='balanced'>YouPower.app@gmail.com</a>." 
+    EMAIL_P: "YouPower is an ongoing project. We are happy to learn about what you think, what works for you and how we can do better. Contact us at <a href='mailto:youpower.app@gmail.com?Subject=YouPower%20Questions%20and%20Feedback' class='balanced'>YouPower.app@gmail.com</a>.",
+    Schedule_Action: "Schedule Action", 
+    RETAKE_ACTION: "I want to retake the action:",
+    Remind_me_in: "Remind me in",
+    Save: "Save", 
+    ACTION_SCHEDULED: "Congratulations and thanks. The action is scheduled in {{number}} days.",
+    Action_Scheduled: "Action Scheduled",
+    MORE_ACTION: "More Action?",
+    ADD_ONE: 'Would you like to add one?',
+    ADD_ANOTHER_ONE: 'Would you like to add another one?',
+    YOU_NO_ACTION: "You currently have no action in progress.",
+    YOU_1_ACTION: "You currently have 1 action in progress.",
+    YOU_N_ACTION: "You currently have {{number}} actions in progress.",
+    Login_with_Facebook: "Login with Facebook",
+    Unauthorized_Facebook_Login: "Unauthorized Facebook Login.", 
+    NO_TOKEN: "Unauthorized: Can not get a user token.",
+    SHARE_MESSAGE: "Say something about this action ... to share on Facebook",
+    SLOGAN: "Be more green. Be more social. Take actions!",
+    DESCRIPTION: "An energy social app developed for the EU CIVIS project. Use YouPower to discover saving tips and share experiences about different energy practices.",
+    MY_CURRENT_ACTION: "I am taking the action:",
+    NO_FB_ID: "You can not yet Share, since your Facebook account is not linked with YouPower. You can do this in <samp>Settings</samp>.",
+    Link_Facebook_Account: "Link Facebook Account",
+    FACEBOOK_ID_INFO: "You need to link your Facebook account to be able to use Share in the app.",
+    Facebook_Account: "Facebook Account",
+    Facebook_ID: "Facebook ID"
+
   });
 
   $translateProvider.translations('Italian', {
@@ -245,4 +271,5 @@ angular.module('civis.youpower.translations',[])
 
   $translateProvider.preferredLanguage('English')
     .fallbackLanguage('English');
+  $translateProvider.useSanitizeValueStrategy('sanitize');
 }]);

@@ -3,11 +3,23 @@ angular.module('civis.youpower.actions').controller('ActionsListCtrl', ActionsLi
 
 /* The controller used for sliding slider over various action lists.
  ----------------------------------------------*/
-function ActionsListCtrl($scope, $state, $stateParams, $filter, $ionicPopup, $translate, Actions, $ionicSlideBoxDelegate) {
+function ActionsListCtrl($scope, $state, $stateParams, $filter, $ionicPopup, $translate, $ionicSlideBoxDelegate, $ionicScrollDelegate, Actions, User) {
 
   $scope.slideIdx = $stateParams.index ? $stateParams.index : 0;
 
   $scope.comment = {text: '', show: false}
+
+  $scope.share = {
+    text: '', 
+    show: false,
+    enabled: true, 
+    err: '', 
+    name: "YouPower", 
+    caption: "SLOGAN",
+    description: "DESCRIPTION",
+    link: "https://app.civisproject.eu/frontend.html", 
+    picture: "https://app.civisproject.eu/img/eco.jpg"
+  }
 
   $scope.actionsType = $stateParams.type; 
 
@@ -26,6 +38,48 @@ function ActionsListCtrl($scope, $state, $stateParams, $filter, $ionicPopup, $tr
     $ionicSlideBoxDelegate.update();
   }); 
 
+  $scope.shareClicked = function() {
+
+    if ($scope.currentUser.facebookId) {
+      $scope.share.show = !$scope.share.show; 
+    } else{
+      $scope.share.err = "NO_FB_ID"; 
+    }
+    
+  }
+
+
+
+  $scope.fbShare = function(action){
+
+    var post = {
+      message: $scope.share.text, 
+      name: $scope.share.name,
+      caption: $translate.instant($scope.share.caption),
+      description: $translate.instant($scope.share.description) + " " + 
+                    $translate.instant("MY_CURRENT_ACTION") + " " + $scope.actions[action._id].name,
+      link: $scope.share.link, 
+      picture: $scope.share.picture
+    }
+
+    $scope.share.enabled = false; 
+
+    User.fbShare( 
+        {type: "action", id: action._id}, post).$promise.then(function(data){
+
+        //clear input box
+        $scope.share.text = '';
+        $scope.share.show = false; 
+        $scope.share.enabled = true; 
+        
+        console.log(data); 
+        $scope.actions[action._id].shares = data.shares; 
+        $ionicScrollDelegate.scrollTop(); 
+    }, function(err){
+        $scope.share.enabled = true; 
+    });
+
+  }
   
   //post action comment (under action details)
   $scope.postComment = function(action){

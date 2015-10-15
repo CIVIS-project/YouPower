@@ -32,19 +32,25 @@ angular.module('civis.youpower', [
   }
 
   $rootScope.$on('$stateChangeStart', function (event, next, nextParams, fromState) {
-    if (!AuthService.isAuthenticated()) {
-      if (next.name !== 'welcome' && next.name !== 'signup' ) {
-        event.preventDefault();
-        console.log(fromState.name + " " + next.name);
-        $state.go('welcome');
+
+    // console.log("stateChangeStart: 1." + fromState.name + " 2." + next.name + " isAuthenticated: "+AuthService.isAuthenticated()); 
+
+   if (!AuthService.isAuthenticated()) {
+
+      if (next.name !== 'welcome' && next.name !== 'signup'){
+          event.preventDefault();
+          $state.go('welcome'); 
       }
     }
-  });
+  }); 
 
-  $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
-    event.preventDefault();
-    console.error("State Change Error", error);
-    $state.go('welcome');
+  $rootScope.$on('$stateChangeError', function(event, next, nextParams, fromState, fromParams, error) {
+
+      // console.log("stateChangeError: 1." + fromState.name + " 2." + next.name); 
+      if (next.name !== 'welcome' && next.name !== 'signup'){
+          event.preventDefault();
+          $state.go('welcome'); 
+      }
   });
 
 
@@ -74,7 +80,7 @@ angular.module('civis.youpower', [
   $stateProvider
 
   .state('welcome', {
-    url: "/welcome",
+    url: "/welcome/:token",
     templateUrl: "app/welcome/welcome.html",
     controller: 'WelcomeCtrl'
   })
@@ -105,7 +111,12 @@ angular.module('civis.youpower', [
     views: {
       'menuContent': {
         templateUrl: 'app/actions/tabs.html',
-        controller: 'ActionsCtrl'
+        controller: 'ActionsCtrl',
+        resolve: {
+          pendingInvites: function(User){
+            return User.getPendingInvites().$promise;
+          }
+        }
       }
     }
   })
@@ -313,7 +324,7 @@ angular.module('civis.youpower', [
 })
 
 .state('main.settings.index', {
-  url: '',
+  url: '/main/:res',
   views: {
     'tab-index': {
       templateUrl: 'app/settings/index.html',
@@ -337,7 +348,15 @@ angular.module('civis.youpower', [
   views: {
     'tab-household': {
       templateUrl: 'app/settings/household.html',
-      controller: 'HouseholdSettingsCtrl'
+      controller: 'HouseholdSettingsCtrl',
+      resolve: {
+        currentHousehold: function(Household, currentUser){
+          if (currentUser.householdId) {
+            return Household.get({id: currentUser.householdId}).$promise;
+          }else{return null;}
+          
+        }
+      }
     }
   }
 })
@@ -372,9 +391,8 @@ angular.module('civis.youpower', [
   // })
 
 ;
-
-  // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/actions/yours');
+  //$urlRouterProvider.otherwise('/app/actions/yours');
+  $urlRouterProvider.otherwise('/welcome/');
 
 });
 

@@ -69,18 +69,33 @@
       <i class="icon ion-chatbox"></i>
       {{size=actions[action._id].numComments}} <span translate>{{size > 1 ? 'Comments' : 'Comment'}}</span>
     </a>
-    <!-- <a class="tab-item" href="#">
+    <a class="tab-item" ng-click="shareClicked()">
       <i class="icon ion-share"></i>
-      {{action.share}} <span translate>Share</span>
-    </a> -->
+      {{num3=actions[action._id].shares}} <span translate>{{num3 > 1 ? 'Shares':'Share'}}</span>
+    </a>
+  </div>
+  <p class="message" ng-show="share.err" translate>{{share.err}}</p>
+  <div class="item item-text-wrap" ng-show="share.show">
+    <label class="item-input">
+      <textarea type="text" ng-model="share.text" placeholder={{"SHARE_MESSAGE"|translate}}></textarea>
+    </label>
+    <div class="item item-thumbnail-left">
+      <img src="/img/eco.jpg">
+      <h2 translate>{{share.name}}</h2>
+      <p><span translate>{{share.description}}</span>
+      <span translate>MY_CURRENT_ACTION</span> {{actions[action._id].name}}</p>
+    </div>
+    <button class="button button-small button-dark button-right " ng-disabled="!share.enabled" ng-click="fbShare(action)" translate>Share</button>
+    <p> &nbsp; <!-- dont remove this --> </p>
   </div>
   <div class="item item-text-wrap" ng-show="comment.show">
     <label class="item-input">
       <textarea type="text" ng-model="comment.text" placeholder={{"Give_your_comment"|translate}}></textarea>
-    </label><button class="button button-small button-dark button-right " ng-disabled="comment.text === ''" ng-click="postComment(action)" translate>Post</button>
+    </label>
+    <button class="button button-small button-dark button-right " ng-disabled="comment.text === ''" ng-click="postComment(action)" translate>Post</button>
     <p> &nbsp; <!-- dont remove this --> </p>
   </div>
-  <div class="item item-avatar item-text-wrap" ng-repeat="comment in comments | filter: {actionId: action._id}" > <!-- ng-if="comment.actionId == action._id" -->
+  <div class="item item-avatar item-text-wrap" ng-repeat="comment in comments | filter: {actionId: action._id, language: currentUser.profile.language}" > <!-- ng-if="comment.actionId == action._id" -->
     <img ng-if="comment.photo" ng-src="comment.picture">
     <img ng-if="!comment.photo" src="/img/eco.jpg">
     <h3>{{comment.name}} <span class="item-note" ng-if="comment.userId == currentUser._id" translate>You</span><span class="text-small">{{comment.date| date: "yyyy-MM-dd"}}</span></h3>

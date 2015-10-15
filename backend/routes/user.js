@@ -137,6 +137,40 @@ router.get('/profile', auth.authenticate(), function(req, res) {
   });
 });
 
+
+/**
+ * @api {get} /user/invites Get your pending invites
+ * @apiGroup User
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/user/invites
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "pendingHouseholdInvites": [
+ *      '5562c1d46b1083a13e5b7843'
+ *     ],
+ *     "pendingCommunityInvites" [
+ *      '5562c1d46b1083a13e5b7844'
+ *     ]
+ *   }
+ *
+ */
+router.get('/invites', auth.authenticate(), function(req, res) {
+  User.getInvites(req.user._id, res.successRes);
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Own Pending Invites',
+    type: 'get',
+    data: res.successRes
+  });
+});
+
 /**
  * @api {get} /user/actions List user's actions based on type of actions
  * @apiGroup User
@@ -538,7 +572,111 @@ router.get('/:userId/achievements', auth.authenticate(), function(req, res) {
   });
 });
 
+/**
+ * @api {get} /user/:userId/fbfriends Get user's friends from facebook
+ * @apiGroup User
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/user/555f0163688305b57c7cef6c/fbfriends
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   [
+ *      {
+ *          "_id": "55db07f688c54b2331c1536d",
+ *          "profile": {
+ *              "name": "John Amicifhiijch Rosenthalberg",
+ *              "gender": "male",
+ *              "dob": "1980-08-07T22:00:00.000Z"
+ *          }
+ *      },
+ *      {
+ *          "_id": "55dd7f4b313bc4551d8cecbe",
+ *          "profile": {
+ *              "name": "Betty Amifjibhgdbg Fergieson",
+ *              "gender": "female",
+ *              "dob": "1980-08-07T22:00:00.000Z"
+ *          }
+ *      },..
+ *    ]
+ *
+ * @apiVersion 1.0.0
+ */
+router.get('/:userId/fbfriends', auth.authenticate(), function(req, res) {
+  User.find({_id: req.params.userId}, false, null, null, function(err, user) {
+    if (err) {
+      return res.successRes(err);
+    }
+    if (!user) {
+      return res.successRes('user not found');
+    }
+    console.log('USERRRXXX',user);
+    User.fbfriends(user, res.successRes);
+  });
 
+  Log.create({
+    userId: req.user._id,
+    category: 'User Find fb friends',
+    type: 'get',
+    data: req.params.userId
+  });
+});
 
+/**
+ * @api {post} /user/postFB/:type/:id Post on Facebook
+ * @apiGroup User
+ *
+ * @apiParam {String} type Indicates the content of the post (or share), e.g. "action" means that the post is about an action 
+ * @apiParam {String} id The id of the content, e.g. if type is "action", then the id is an actoin id
+ * @apiParam (Body) {Object} object The content to be posted. Details see: 
+ <a href="https://developers.facebook.com/docs/graph-api/reference/v2.4/post">https://developers.facebook.com/docs/graph-api/reference/v2.4/post</a>
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/profile
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
+ *  '{
+ *    "message": "Hey I completed xyz challenge. (You can also add a link to a photograph)"
+ *  }' \
+ *  http://localhost:3000/api/user/postFB/action/555f0163688305b57c7cef6c
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * {//id is post_id from facebook
+ *   "id":"10155784135330422_10156011152545422"
+ * }
+ *
+ * @apiErrorExample {json} Error-Response:
+ * {//if error occurs
+ *  "message": "Duplicate status message",
+ *  "type": "FacebookApiException",
+ *  "code": 506,
+ *  "error_subcode": 1455006,
+ *  "is_transient": false,
+ *  "error_user_title": "Duplicate Status Update",
+ *  "error_user_msg": "This status update is identical to the last one.."
+ * }
+ */
+router.post('/postFB/:type/:id', auth.authenticate(), function(req, res) {
+
+  console.log("req.params: "+JSON.stringify(req.params, null, 4));
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    User.postFB(req.user, req.params, req.body, res.successRes);
+  }
+
+  Log.create({
+    userId: req.user._id,
+    category: 'POST on FB',
+    type: 'post',
+    data: req.body
+  });
+});
 
 module.exports = router;

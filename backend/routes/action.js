@@ -47,6 +47,7 @@ router.post('/:actionId/comment', auth.authenticate(), function(req, res) {
   actionComment.userId = req.user._id;
   actionComment.name = req.user.profile.name;
   actionComment.email = req.user.email;
+  actionComment.language = req.user.profile.language; 
   ActionComment.create(actionComment, res.successRes);
 
   Log.create({
