@@ -1,14 +1,35 @@
 angular.module('civis.youpower.welcome').controller('WelcomeCtrl', WelcomeCtrl);
 
 
-function WelcomeCtrl($translate, $scope, $rootScope, $state, $ionicViewSwitcher, AuthService) {
+function WelcomeCtrl($translate, $scope, $rootScope, $state, $ionicViewSwitcher, $window, $stateParams, AuthService, Config) {
+  
+  if ($stateParams 
+    && $stateParams.token !== undefined 
+    && $stateParams.token !== "") {
 
-	$scope.loginData = { 
+    console.log("welcome params: " + JSON.stringify($stateParams, null, 4));
+
+    if ($stateParams.token === 'fbUnauthorized'){
+      fbErr = 'Unauthorized_Facebook_Login'; 
+    }else if ($stateParams.token === 'err'){
+      //err in generating a token 
+      fbErr = 'NO_TOKEN'; 
+    }else{
+      //save the token 
+      AuthService.fbLoginSuccess($stateParams.token); 
+      $state.go('main.actions.yours'); 
+    }
+  }else if (AuthService.isAuthenticated()) {
+      $state.go('main.actions.yours'); 
+  }
+
+  $scope.loginData = { 
       emailAddress:'', 
       password:'', 
       err: '', 
+      fbErr: '', 
       language: 'English'
-    }; 
+  }; 
 
   // $scope.loginData.emailAddress = "foo";
   // $scope.loginData.password = "bar"; 
@@ -18,6 +39,7 @@ function WelcomeCtrl($translate, $scope, $rootScope, $state, $ionicViewSwitcher,
   // $scope.loginData.name = "Yilin";
   // $scope.loginData.password2 = "barbar"; 
 
+  
 
   $scope.comparePasswords = function(){ 
     if ($scope.loginData.password && $scope.loginData.password2 && 
@@ -85,13 +107,18 @@ function WelcomeCtrl($translate, $scope, $rootScope, $state, $ionicViewSwitcher,
       }
   }
 
+  $scope.fbLogin = function(){
+      $window.location.href = Config.host + "/api/auth/facebook" ; 
+  }
+
+
   $scope.gotoSignin = function(){
-      $ionicViewSwitcher.nextDirection('swap'); // forward, back, enter, exit, swap
+      //$ionicViewSwitcher.nextDirection('swap'); // forward, back, enter, exit, swap
       $state.go('welcome'); 
   }
 
   $scope.gotoSignup = function(){
-      $ionicViewSwitcher.nextDirection('swap'); // forward, back, enter, exit, swap
+      //$ionicViewSwitcher.nextDirection('swap'); // forward, back, enter, exit, swap
       $state.go('signup'); 
   }
 

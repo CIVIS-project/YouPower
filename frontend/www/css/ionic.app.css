@@ -7681,6 +7681,12 @@ a.button {
   -webkit-border-radius: 30px;
   border-radius: 30px; }
 
+.icon-frame, .icon-frame img {
+  width: 20px;
+  height: 20px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px; }
+
 h1 {
   font-size: 1.5em; }
 
@@ -7841,6 +7847,13 @@ ul.rating li {
   margin-top: -20px;
   /* Note, this must be half the font size */
   color: #fff; }
+
+.item-complex-left .item-content {
+  padding-left: 49px;
+  padding-right: 16px; }
+  .item-complex-left .item-content .badge {
+    right: unset;
+    left: 16px; }
 
 .chart-container {
   padding-left: 38px;

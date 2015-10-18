@@ -164,9 +164,8 @@ function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $i
 
 	$scope.isInvitedToHousehold = function(userId){ 
 
-		if ($scope.currentUser.householdId !== null && 
-			($scope.households[$scope.currentUser.householdId].pendingInvites.length > 0) && 
-			(_.indexOf($scope.households[$scope.currentUser.householdId].pendingInvites, userId) > -1)) { 
+		if ($scope.currentUser.householdId && 
+			_.indexOf($scope.households[$scope.currentUser.householdId].pendingInvites, userId) > -1) { 
 			return true; 
 		} else return false; 
 	}
@@ -174,8 +173,7 @@ function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $i
 	$scope.isInYourHousehold = function(userId){ 
 
 		if ($scope.currentUser.householdId && 
-			($scope.households[$scope.currentUser.householdId].ownerId === userId ||
-			_.indexOf($scope.households[$scope.currentUser.householdId].members, userId) > -1)) { 
+			_.indexOf($scope.households[$scope.currentUser.householdId].members, userId) > -1) { 
 			return true; 
 		} else return false; 
 	}
@@ -353,13 +351,6 @@ function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $i
 
   $translate.use($scope.currentUser.profile.language);
 
-  //$scope.users[$scope.currentUser._id] = $scope.currentUser;
-
-  $scope.loadHouseholdProfile($scope.currentUser.householdId);
-
-  // which households invited the current user to join?
-  $scope.loadHouseholdsDetails($scope.currentUser.pendingHouseholdInvites);
-
   //whether the user wants to rehearse the actions, inite the variable
   //this can be loaded from the backend TODO post the data to the backend
   //$scope.currentUser.profile.toRehearse = { setByUser: false } ;
@@ -376,9 +367,7 @@ function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $i
     //console.log($scope.userPictures);
   });
 
-  $scope.loadActionDetails($scope.currentUser.actions.inProgress);
-  $scope.loadActionDetails($scope.currentUser.actions.pending);
-  $scope.loadActionDetails($scope.currentUser.actions.done);
+  
 
   //comments are loaded later automatically at the action details view
 

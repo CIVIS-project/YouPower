@@ -29,11 +29,15 @@ var CooperativeSchema = new Schema({
     name: String,
     description: String,
     date: Date,
+    cost: Number,
+    types: [Number]
   }],
+  ventilationType: String,
+  performance: Number,
   editors: [{
-    editorId: Schema.Types.ObjectId,
-    name: String,
-  }]
+      editorId: Schema.Types.ObjectId,
+      name: String,
+  }],
 });
 
 var Cooperative = mongoose.model('Cooperative', CooperativeSchema);
@@ -42,7 +46,8 @@ exports.create = function(cooperative, cb) {
   Cooperative.create({
     name: cooperative.name,
     yearOfConst: cooperative.yearOfConst,
-    area: cooperative.area
+    area: cooperative.area,
+    ventilationType: cooperative.ventilationType
   }, cb);
 };
 
@@ -77,7 +82,8 @@ exports.update = function(id, cooperative, cb) {
     $set : {
       name: cooperative.name,
       yearOfConst: cooperative.yearOfConst,
-      area: cooperative.area
+      area: cooperative.area,
+      ventilationType: cooperative.ventilationType
     }
   }, cb);
 };
@@ -121,6 +127,8 @@ exports.updateAction = function(id, actionId, newAction, user, cb) {
         action.name = newAction.name;
         action.date = newAction.date;
         action.description = newAction.description;
+        action.cost = newAction.cost;
+        action.types = newAction.types;
         cooperative.markModified('actions');
         cooperative.save(function(err){
           cb(err,cooperative);

@@ -30,9 +30,6 @@ function MemberCtrl($scope, $filter, $translate, $state, $ionicPopup, User, Hous
 
 	$scope.inviteToHousehold = function(user) {
 
-		//the user is the current user, do nothing
-		if ($scope.currentUser._id === user._id) return; 
-
 		if ($scope.currentUser.householdId === null) {
 			$scope.createHousehold(user, $scope.invite);
 		}else{
@@ -41,11 +38,10 @@ function MemberCtrl($scope, $filter, $translate, $state, $ionicPopup, User, Hous
 	}
 
 	$scope.invite = function(user){ 
-
-		$scope.loadUserProfile(user._id); 
 		
 		Household.invite({userId: user._id},{}).$promise.then(function(data){
 			$scope.households[data._id] = data;
+			$scope.loadUserProfile(user._id); 
 		});
 	}
 

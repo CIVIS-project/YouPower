@@ -15,5 +15,18 @@
   </ion-toggle> 
 </div>
 
+<div ng-if="!currentUser.facebookId">
+  <button class="button icon-left button-full button-dark" ng-click="linkFB()">
+    <i class="icon ion-link"></i>
+    <b translate>Link_Facebook_Account</b>
+  </button>
+  <p class="message" translate>{{msg.fb}}</p>
+</div>
+<div class="item item-icon-left item-text-wrap" ng-if="currentUser.facebookId">
+  <i class="icon ion-social-facebook-outline"></i>
+  <p><span translate>Facebook</span> <span class="item-note">{{currentUser.facebookId}}</span></p> 
+  
+</div>
+
 </ion-content>
 </ion-view>

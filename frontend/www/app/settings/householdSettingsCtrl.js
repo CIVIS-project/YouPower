@@ -4,9 +4,11 @@ angular.module('civis.youpower.settings').controller('HouseholdSettingsCtrl', Ho
 // Inject my dependencies
 //SettingsCtrl.$inject = ['$scope', '$filter', '$translate'];
 
-function HouseholdSettingsCtrl($scope, $filter, $translate, $state, $timeout, $ionicScrollDelegate) {
+function HouseholdSettingsCtrl($scope, $filter, $translate, $state, $timeout, $ionicScrollDelegate, Household, User, currentHousehold) {
 
 	$scope.input = {err: ''};
+
+	$scope.households[$scope.currentUser.householdId] = currentHousehold; 
 
 	$scope.addAppliance= function() {
 
@@ -14,74 +16,49 @@ function HouseholdSettingsCtrl($scope, $filter, $translate, $state, $timeout, $i
 
 		if ($scope.input.description === '') return; 
 
-		if ($scope.households[$scope.currentUser.householdId].appliancesList.indexOf($scope.input.description) < 0 ) {
-
-			$scope.households[$scope.currentUser.householdId].appliancesList.push($scope.input.description); 
-			$scope.input.description = '';
-
-			$scope.setAppliancesListChanged();
-
-		}else{
+		if ($scope.households[$scope.currentUser.householdId].appliancesList.indexOf($scope.input.description) > -1) {
 			$scope.input.err = 'ALREADY_EXISTS'; 
+			$ionicScrollDelegate.scrollBottom(); 
+		}else{
+			Household.addAppliance({id: $scope.currentUser.householdId},{appliance: $scope.input.description}).$promise.then(function(data){
+				$scope.households[$scope.currentUser.householdId].appliancesList = data.appliancesList; 
+				$scope.input.description = ''; 
+				$ionicScrollDelegate.scrollBottom(); 
+			});
 		}
-
-		$ionicScrollDelegate.scrollBottom(); 
 	}
 
 	$scope.removeAppliance= function(index) {
 
 		$scope.input.description = $scope.households[$scope.currentUser.householdId].appliancesList[index]; 
-		$scope.households[$scope.currentUser.householdId].appliancesList.splice(index, 1);
+		// $scope.households[$scope.currentUser.householdId].appliancesList.splice(index, 1);
 
-		$scope.setAppliancesListChanged();
+		Household.removeAppliance({id: $scope.currentUser.householdId},{appliance: $scope.input.description}).$promise.then(function(data){
 
+			$scope.households[$scope.currentUser.householdId].appliancesList = data.appliancesList; 
+			$ionicScrollDelegate.scrollBottom(); 
+		}, function(err){
+			$scope.input.description = ''; 
+		});
 	}
 
-	// $scope.doRefresh = function() {
-	//     $http.get('/new-items')
-	//      .success(function(newItems) {
-	//        $scope.items = newItems;
-	//      })
-	//      .finally(function() {
-	//        // Stop the ion-refresher from spinning
-	//        $scope.$broadcast('scroll.refreshComplete');
-	//      });
-	//   };
+	$scope.reloadCurrentHousehold = function() {
 
-	//  $scope.doRefresh = function() {
-	//     //$scope.todos.unshift({name: 'Incoming todo ' + Date.now()})
-	//     $scope.$broadcast('scroll.refreshComplete');
-	//     $scope.$apply(); 
-	//   };
+		if ($scope.currentUser.householdId === null) {
+			$scope.$broadcast('scroll.refreshComplete'); 
+			return; 
+		}
 
-	// $scope.doRefresh = function() {
+		Household.get({id: $scope.currentUser.householdId}).$promise
+		.then(function(data){
 
-	//     console.log('Refreshing!');
-	//     $timeout( function() {
-	//       //simulate async response
-	//       //$scope.items.push('New Item ' + Math.floor(Math.random() * 1000) + 4);
-
-	//       //Stop the ion-refresher from spinning
-	//       $scope.$broadcast('scroll.refreshComplete');
-
-	//     }, 1000);
-
- //  };
-
-	// $scope.checkTab = function(){
-
-	//     var active = $ionicTabsDelegate.selectedIndex();
-
-	//     console.log('active:'+active);
-
-	//     if (active === 0){
-	//       $scope.doRefresh();
-	//     }
-	//     else{
-	//       $ionicTabsDelegate.select(0);
-	//     }
- //  }
-	
+			$scope.households[$scope.currentUser.householdId] = data; 
+		})
+		.finally(function() {
+	       // Stop the ion-refresher from spinning
+	       $scope.$broadcast('scroll.refreshComplete');
+		}); 
+	};
 
 };
 

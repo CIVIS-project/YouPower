@@ -1,0 +1,8 @@
+<ul class="list">
+  <li class="item item-checkbox item-text-wrap" ng-class="{subaction:action.parent}" ng-show="!action.parent || actionTypes.getById(action.parent).selected" ng-repeat="action in actionTypes">
+     <label class="checkbox">
+       <input type="checkbox" ng-model="action.selected">
+     </label>
+     {{action.name}}
+  </li>
+</ul>

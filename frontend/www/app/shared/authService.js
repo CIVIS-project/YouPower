@@ -48,7 +48,6 @@ angular.module('civis.youpower')
   }; 
 
 
-
   var login = function(username, password) {
     return $q(function(resolve, reject) {
       var headers = {
@@ -68,6 +67,10 @@ angular.module('civis.youpower')
 
   };
 
+  var fbLoginSuccess = function(token) {
+      storeUserCredentials(token);
+  };
+
   var logout = function() {
     destroyUserCredentials();
   };
@@ -78,6 +81,7 @@ angular.module('civis.youpower')
     login: login,
     logout: logout,
     signup: signup,
+    fbLoginSuccess: fbLoginSuccess,
     isAuthenticated: function() {return isAuthenticated;},
     getToken: function() {return $window.localStorage.getItem(LOCAL_TOKEN_KEY);}
   };

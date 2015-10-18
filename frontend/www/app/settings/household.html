@@ -1,9 +1,9 @@
-<ion-view view-title={{"Household_Profile"|translate}}>
+<ion-view cache-view="false" view-title={{"Household_Profile"|translate}}>
 <ion-content class="padding">
-<!-- <ion-refresher
-pulling-text="Pull to refresh..."
-on-refresh="doRefresh()">
-</ion-refresher>  -->
+<ion-refresher
+  pulling-text="Pull to refresh..."
+  on-refresh="reloadCurrentHousehold()">
+</ion-refresher> 
 <div ng-if="currentUser.householdId===null" class="item card item-text-wrap">
   <p translate>HOUSEHOLD_SETTING_DISABLED</p>
 </div>
@@ -66,7 +66,7 @@ on-refresh="doRefresh()">
       <input type="number" ng-model="households[currentUser.householdId].composition.numChildren" ng-change="setHouseholdCompositionChanged()" placeholder={{"Number_of_Children"|translate}}>
     </label>
     <div class="item item-divider" translate>Major_Appliances</div>
-    <div class="item" ng-repeat="description in households[currentUser.householdId].appliancesList">
+    <div class="item" ng-repeat="description in households[currentUser.householdId].appliancesList track by $index">
       {{description}} 
       <button class="button button-clear button-energized ion-close button-float-right" ng-click="removeAppliance($index)"></button>
     </div>

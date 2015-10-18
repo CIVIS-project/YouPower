@@ -203,12 +203,11 @@ exports.handleInvite = function(householdId, userId, accepted, cb) {
       household.pendingInvites.splice(index, 1);
 
       if (accepted.toLowerCase()==="true") {
-        console.log('accepted?'+accepted);
+        //console.log('accepted?'+accepted);
         household.members.push(userId);
       }
 
-      console.log("household.members: "+JSON.stringify(household.members, null, 4));
-    
+      //console.log("household.members: "+JSON.stringify(household.members, null, 4));    
       household.save(cb);
     }
   });
@@ -308,7 +307,7 @@ exports.addAppliance = function(id, appliance, cb) {
 };
 
 //remove appliance from household
-exports.removeAppliance = function(id, applianceId, cb) {
+exports.removeAppliance = function(id, appliance, cb) {
   Household.findById({
     _id: id
   }, function(err, household) {
@@ -317,7 +316,7 @@ exports.removeAppliance = function(id, applianceId, cb) {
     } else if (!household) {
       cb('Household not found');
     } else {
-      household.appliancesList.pull({_id: applianceId});
+      household.appliancesList.pull({_id: appliance});
       household.save(cb);
     }
   });

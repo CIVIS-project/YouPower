@@ -4,11 +4,12 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
 
 .controller('CooperativeCtrl', function($scope,$timeout,$state,$q,$stateParams,Cooperatives,currentUser) {
 
+
   var startYear = 2010;
 
   $scope.comparisons = [
     {name: ""},
-    {name: "similar cooperatives (average)"},
+    {name: "neighborhood average"},
     {name: "previous year"},
     {name: "previous year (normalized)"}
   ]
@@ -40,6 +41,8 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
     $scope.settings.granularity = granularity;
     updateEnergyData();
   }
+
+  $scope.actionTypes = Cooperatives.getActionTypes();
 
   $scope.$on("$ionicView.enter",function(){
     var id = $stateParams.id || currentUser.cooperativeId;
@@ -247,18 +250,16 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
     } else {
       startDate.setFullYear(startDate.getFullYear() - 1);
     }
-    var counter = 0;
-    _.each($scope.cooperative.actions, function(action){
+    var length = $scope.cooperative.actions.length;
+    _.each($scope.cooperative.actions, function(action,index){
       var date = new Date(action.date);
+      console.log("Index",index)
       if(date < $scope.settings.endDate && date >= startDate) {
-        action.flag = ++counter;
         data.push({
           x: Date.UTC(date.getFullYear(),date.getMonth()),
-          title: counter,
+          title: (length - index) + "",
           text: action.name
         });
-      } else {
-        action.flag = null;
       }
     });
     var chart = $scope.chartConfig.getHighcharts();
@@ -310,6 +311,10 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
 })
 
 .controller('CooperativeEditCtrl', function($scope,$state,Cooperatives,currentUser){
+  $scope.ventilationTypes = Cooperatives.VentilationTypes;
+
+  $scope.actionTypes = Cooperatives.getActionTypes();
+
   $scope.$on("$ionicView.enter",function(){
     // Get the cooperative, currently hardcoded
     Cooperatives.get({id:currentUser.cooperativeId},function(data){
@@ -331,8 +336,45 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
 
 })
 
-.controller('CooperativeActionAddCtrl', function($scope,$state,Cooperatives,currentUser){
+.factory('CooperativeActionTypePopup', function($ionicPopup){
+  return function($scope){
+    _.each($scope.actionTypes,function(type){
+      type.selected = false;
+    })
+    _.each($scope.action.types,function(id){
+      $scope.actionTypes.getById(id).selected = true;
+    });
+    $ionicPopup.show({
+      templateUrl: "app/cooperative/actionTypes.html",
+      scope: $scope,
+      buttons: [{
+        text: "Cancel"
+      },{
+        text: "OK",
+        type: 'button-positive',
+        onTap: function(e){
+          // Disable subactions if parent not selected
+          _.each($scope.actionTypes,function(type){
+            if(type.parent && !$scope.actionTypes.getById(type.parent).selected) {
+              type.selected = false;
+            }
+          })
+          // Assign selected types to action
+          $scope.action.types = _.map(_.where($scope.actionTypes,{selected:true}),function(type){return type.id});
+        }
+      }]
+    });
+  }
+})
+
+.controller('CooperativeActionAddCtrl', function($scope,$state,CooperativeActionTypePopup,Cooperatives,currentUser){
   $scope.action = {};
+
+  $scope.actionTypes = Cooperatives.getActionTypes();
+
+  $scope.selectActionType = function(){
+    CooperativeActionTypePopup($scope);
+  }
 
   $scope.addAction = function(){
     Cooperatives.addAction({id:currentUser.cooperativeId},$scope.action,function(){
@@ -341,7 +383,14 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
   };
 })
 
-.controller('CooperativeActionUpdateCtrl', function($scope,$state,$stateParams,Cooperatives,currentUser){
+.controller('CooperativeActionUpdateCtrl', function($scope,$state,$stateParams,CooperativeActionTypePopup,Cooperatives,currentUser){
+
+  $scope.actionTypes = Cooperatives.getActionTypes();
+
+  $scope.selectActionType = function(){
+    CooperativeActionTypePopup($scope);
+  }
+
   Cooperatives.get({id:currentUser.cooperativeId},function(data){
     $scope.action = _.findWhere(data.actions,{_id:$stateParams.id});
     $scope.action.date = new Date($scope.action.date);
@@ -355,10 +404,14 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
   };
 })
 
-.controller('CooperativesCtrl', function($scope, cooperatives) {
+.controller('CooperativesCtrl', function($scope, $state, cooperatives) {
   $scope.cooperatives = cooperatives;
 
   $scope.view = 'map';
+
+  $scope.cooperativeClick = function(id){
+    $state.go("^.show",{id:id});
+  };
 
 })
 
@@ -376,13 +429,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
       var map = new google.maps.Map(document.getElementById("map"),
           mapOptions);
 
-      //Marker + infowindow + angularjs compiled ng-click
-      var contentString = "<div><a ng-click='clickTest()'>Click me!</a></div>";
-      var compiled = $compile(contentString)($scope);
 
-      var infowindow = new google.maps.InfoWindow({
-          content: compiled[0]
-      });
 
       var energyClasses = {A: "009036", B:"55AB26", C:"C8D200", D:"FFED00", E:"FBBA00", F:"EB6909", G:"E2001A"};
 
@@ -394,17 +441,29 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
       });
 
       angular.forEach($scope.cooperatives, function(coop) {
+          //Marker + infowindow + angularjs compiled ng-click
+          var contentString = "<div ng-click='cooperativeClick(\""
+          + coop._id + "\")'><i class='icon flaticon-building80 bigger-1 energy-class-"
+          + coop.energyClass + " item-image'></i><a>"
+          + coop.name + "</a><br><br><p>Number of actions: " +
+          + coop.actions.length + "</p></div>";
+          var compiled = $compile(contentString)($scope);
+
+          var infowindow = new google.maps.InfoWindow({
+              content: compiled[0]
+          });
+
           var marker = new google.maps.Marker({
               position: new google.maps.LatLng(coop.lat, coop.lng),
               map: map,
               title: coop.name,
               icon: energyClassPins[coop.energyClass]
           });
-      })
 
-      // google.maps.event.addListener(marker, 'click', function() {
-      //   infowindow.open(map,marker);
-      // });
+          google.maps.event.addListener(marker, 'click', function() {
+            infowindow.open(map,marker);
+          });
+      })
 
       $scope.map = map;
   }
