@@ -29,6 +29,10 @@ var CooperativeSchema = new Schema({
     name: String,
     description: String,
     date: Date,
+  }],
+  editors: [{
+    editorId: Schema.Types.ObjectId,
+    name: String,
   }]
 });
 
@@ -141,6 +145,64 @@ exports.deleteAction = function(id, actionId, user, cb) {
       } else {
         action.remove();
         cooperative.markModified('actions');
+        cooperative.save(function(err){
+          cb(err,cooperative);
+        })
+      }
+    }
+  })
+}
+
+exports.addEditor = function(id, editor, user, cb) {
+    // find the editor name and save it as well, to avoid an extra query when listing editors
+    require('../models').users.model.findOne({
+        _id:editor.editorId
+    }, function(err,user){
+        if (err) {
+            cb(err);
+        } else if (!user) {
+            cb('User not found');
+        } else {
+            editor.name=user.profile.name; 
+            Cooperative.findOne({
+                _id: id
+            }, function(err, cooperative){
+                if (err) {
+                    cb(err);
+                } else if (!cooperative) {
+                    cb('Cooperative not found');
+                } else {
+                    if (!cooperative.editors){
+                        cooperative.editors = []
+                    }
+                    
+                    cooperative.editors.push(editor);
+                    cooperative.markModified('editors');
+                    cooperative.save(function(err){
+                        cb(err,cooperative);
+                    })
+                }
+            })
+        }
+    })    
+}
+
+
+exports.deleteEditor = function(id, coopEditorId, user, cb) {
+  Cooperative.findOne({
+    _id: id
+  }, function(err, cooperative){
+    if (err) {
+      cb(err);
+    } else if (!cooperative) {
+      cb('Cooperative not found');
+    } else {
+      var editor = cooperative.editors.id(coopEditorId);
+      if(!editor) {
+        cb('Cooperative editor not found');
+      } else {
+        editor.remove();
+        cooperative.markModified('editors');
         cooperative.save(function(err){
           cb(err,cooperative);
         })

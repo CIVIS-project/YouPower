@@ -86,7 +86,6 @@ router.get('/:id', function(req, res) {
 });
 
 router.get('/', function(req, res) {
-
   var err;
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
@@ -120,7 +119,8 @@ router.put('/:id', function(req, res) {
 });
 
 router.post('/:id/action', function(req, res) {
-  req.checkParams('id', 'Invalid cooperative id').isMongoId();
+ 
+    req.checkParams('id', 'Invalid cooperative id').isMongoId();
 
   var err;
   if ((err = req.validationErrors())) {
@@ -184,5 +184,50 @@ router.delete('/:id/action/:actionId', function(req, res) {
     });
   }
 });
+
+
+router.post('/:id/editor', function(req, res) {
+  req.checkParams('id', 'Invalid cooperative id').isMongoId();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    Cooperative.addEditor(req.params.id, req.body, null, res.successRes);
+
+    Log.create({
+      // userId: req.user._id,
+      category: 'Cooperative',
+      type: 'addEditor',
+      data: {
+        cooperativeId: req.params.id,
+        editor: req.body
+      }
+    });
+  }
+});
+
+router.delete('/:id/editor/:coopEditorId', function(req, res) {
+  req.checkParams('id', 'Invalid cooperative id').isMongoId();
+  req.checkParams('coopEditorId', 'Invalid cooperative editor id').isMongoId();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    Cooperative.deleteEditor(req.params.id, req.params.coopEditorId, null, res.successRes);
+
+    Log.create({
+      // userId: req.user._id,
+      category: 'Cooperative',
+      type: 'deleteEditor',
+      data: {
+        cooperativeId: req.params.id,
+        coopEditorId: req.params.coopEditorId
+      }
+    });
+  }
+});
+
 
 module.exports = router;
