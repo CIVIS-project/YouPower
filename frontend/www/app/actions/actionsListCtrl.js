@@ -45,10 +45,20 @@ function ActionsListCtrl($scope, $state, $stateParams, $filter, $ionicPopup, $tr
     } else{
       $scope.share.err = "NO_FB_ID"; 
     }
-    
+
+    if ($scope.share.show) {
+      $scope.comment.show = false; 
+    }
   }
 
+  $scope.commentClicked = function() {
 
+    $scope.comment.show = !$scope.comment.show;
+
+    if ($scope.comment.show) {
+      $scope.share.show = false; 
+    }
+  }
 
   $scope.fbShare = function(action){
 
