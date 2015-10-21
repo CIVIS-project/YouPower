@@ -438,7 +438,7 @@ var mailInvitation_personal_italian = function(user, mail, cb) {
 
   mail.from = mail.from || (user.profile.name + ' via YouPower <youpower.app@gmail.com>');
   mail.title = mail.title || (user.profile.name + ' ti ha invitato a unirti a YouPower');
-  mail.text1 = mail.text1 || user.profile.name + ' usa YouPower e vuole invitarti a provarla. YouPower è una social app gratuita incentrata su tematiche energetiche. Provala, è semplice e piacevole da usare!';
+  mail.text1 = mail.text1 || user.profile.name + ' usa YouPower e crede che anche a te possa interessare. YouPower è una social app gratuita incentrata su tematiche energetiche. Provala, è semplice e piacevole da usare!';
   
   mailInvitation_general_italian(user, mail, cb); 
 
