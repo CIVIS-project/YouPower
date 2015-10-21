@@ -227,16 +227,52 @@ angular.module('civis.youpower', [
 /* Cooperative states */
 
 .state('main.cooperative', {
-  url: '/cooperative',
+  url: '/cooperatives',
+  abstract: true,
   views: {
     'menuContent': {
-      templateUrl: 'app/cooperative/index.html',
+      templateUrl: 'app/cooperative/tabs.html'
+    }
+  }
+})
+
+.state('main.cooperative.my',{
+  url: '/my',
+  views: {
+    'tab-my': {
+      templateUrl: 'app/cooperative/show.html',
       controller: 'CooperativeCtrl'
     }
   }
 })
 
-.state('main.cooperative.edit', {
+.state('main.cooperative.list',{
+  url: '/list',
+  views: {
+    'tab-list': {
+      templateUrl: 'app/cooperative/index.html',
+      controller: 'CooperativesCtrl'
+    }
+  },
+  resolve: {
+    Cooperatives: 'Cooperatives',
+    cooperatives: function(Cooperatives){
+      return Cooperatives.query().$promise;
+    }
+  }
+})
+
+.state('main.cooperative.show',{
+  url: '/:id',
+  views: {
+    'tab-my': {
+      templateUrl: 'app/cooperative/show.html',
+      controller: 'CooperativeCtrl'
+    }
+  }
+})
+
+.state('main.cooperative.my.edit', {
   url: '/edit',
   views: {
     'menuContent@main': {
@@ -246,8 +282,8 @@ angular.module('civis.youpower', [
   }
 })
 
-.state('main.cooperative.edit.actionAdd', {
-  url: '/cooperative/edit/action',
+.state('main.cooperative.my.edit.actionAdd', {
+  url: '/action',
   views: {
     'menuContent@main': {
       templateUrl: 'app/cooperative/editAction.html',
@@ -256,8 +292,8 @@ angular.module('civis.youpower', [
   }
 })
 
-.state('main.cooperative.edit.actionUpdate', {
-  url: '/cooperative/edit/action/:id',
+.state('main.cooperative.my.edit.actionUpdate', {
+  url: '/action/:id',
   views: {
     'menuContent@main': {
       templateUrl: 'app/cooperative/editAction.html',

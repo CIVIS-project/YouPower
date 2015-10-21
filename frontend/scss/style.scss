@@ -106,8 +106,8 @@ td {
 }
 .button-float-right{
   //float: right;
-  position: absolute; 
-  top: 0px; 
+  position: absolute;
+  top: 0px;
   right: 0px;
   font-size: 20px;
 }
@@ -115,7 +115,7 @@ td {
     position: relative;
     left: -10px;
 }
-.button-40{ 
+.button-40{
   width: 40%;
   margin-top: 5px;
 }
@@ -157,7 +157,7 @@ hr {
     // -1px -1px 0 white,
     // 1px -1px 0 white,
     // -1px 1px 0 white,
-    // 1px 1px 0 white ;  
+    // 1px 1px 0 white ;
     white 0px 0px 4px,   white 0px 0px 4px,   white 0px 0px 4px,
     white 0px 0px 4px,   white 0px 0px 4px,   white 0px 0px 4px,
     white 0px 0px 4px,   white 0px 0px 4px,   white 0px 0px 4px;
@@ -227,4 +227,13 @@ ul.rating li {
   text-align: center;
   margin-top: -20px; /* Note, this must be half the font size */
   color: $light;
+}
+
+.item-complex-left .item-content {
+  padding-left: 49px;
+  padding-right: 16px;
+  .badge {
+    right: unset;
+    left: 16px;
+  }
 }
