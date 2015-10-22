@@ -467,7 +467,7 @@ var mailInvitation_personal_swedish = function(user, mail, cb) {
 
   mail.from = mail.from || (user.profile.name + ' via YouPower <youpower.app@gmail.com>');
   mail.title = mail.title || ('Inbjudan från ' + user.profile.name + ' att testa YouPower');
-  mail.text1 = mail.text1 || user.profile.name + ' har testat YouPower och har bjudit in dig att prova också. YouPower är en social energiapp där du enkelt, och gratis, kan få och dela tips kring energianvändning med familj, vänner och grannar.';
+  mail.text1 = mail.text1 || user.profile.name + ' använder YouPower och har bjudit in dig att testa. YouPower är en social energiapp där du enkelt, och gratis, kan få och dela tips kring energianvändning med familj, vänner och grannar.';
   
   mailInvitation_general_swedish(user, mail, cb); 
 
