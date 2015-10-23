@@ -14,7 +14,8 @@
 		<div>
 			<a class="item item-icon-left" ng-click="chooseSuggestedAction('alreadyDoing')" ng-if="actions[action._id].type != 'regular' && actions[action._id].type != 'irregular'">
 				<i class="icon ion-android-done positive"></i>
-				<span translate>ALREADY_DO</span>
+				<span ng-show="actions[action._id].type==='onetime'" translate>ALREADY_DO</span>
+				<span ng-show="actions[action._id].type!=='onetime'" translate>ALREADY_DO_CONSISTENTLY</span>
 			</a>
 			<a class="item item-icon-left" ng-click="inputDays()" ng-if="actions[action._id].type == 'regular' || actions[action._id].type == 'irregular'">
 				<i class="icon ion-more balanced"></i>
@@ -22,7 +23,8 @@
 			</a> 
 			<a class="item item-icon-left" ng-click="chooseSuggestedAction('inProgress')">
 				<i class="icon ion-leaf balanced"></i>
-				<span translate>WANT_TO_DO</span>
+				<span ng-show="actions[action._id].type!=='common'" translate>WANT_TO_DO</span>
+				<span ng-show="actions[action._id].type==='common'" translate>WANT_TO_DO_CONSISTENTLY</span>
 			</a>
 			<a class="item item-icon-left" ng-click="chooseSuggestedAction('declined')">
 				<i class="icon ion-android-close assertive"></i>
