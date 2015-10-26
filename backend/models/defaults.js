@@ -77,3 +77,18 @@ exports.households = [
     ]
   }
 ];
+
+exports.testbeds = [
+  {
+    name: 'Stockholm - Fårdala'
+  },
+  {
+    name: 'Stockholm - Hammarby Sjöstad'
+  },
+  {
+    name: 'Trentino - Storo'
+  },
+  {
+    name: 'Trentino - San Lorenzo in Banale'
+  }
+]

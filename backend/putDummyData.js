@@ -53,7 +53,7 @@ db.once('open', function() {
           cb(err);
         });
       }, function(cb) {
-        // actions
+        // communities
         async.eachSeries(defaults.communities, function(community, eachCb) {
           community.authorId = defaultUserId;
           createIfNotExist('communities', 'name', community, function(err) {
@@ -63,10 +63,19 @@ db.once('open', function() {
           cb(err);
         });
       }, function(cb) {
-        // actions
+        // households
         async.eachSeries(defaults.households, function(household, eachCb) {
           household.authorId = defaultUserId;
           createIfNotExist('households', 'name', household, function(err) {
+            eachCb(err);
+          });
+        }, function(err) {
+          cb(err);
+        });
+      }, function(cb) {
+        // households
+        async.eachSeries(defaults.testbeds, function(testbed, eachCb) {
+          createIfNotExist('testbeds', 'name', testbed, function(err) {
             eachCb(err);
           });
         }, function(err) {
