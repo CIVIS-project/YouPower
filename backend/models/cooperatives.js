@@ -30,7 +30,22 @@ var CooperativeSchema = new Schema({
     description: String,
     date: Date,
     cost: Number,
-    types: [Number]
+    types: [Number],
+    comments: [{
+      user: {
+        type: Schema.Types.ObjectId,
+        // required: true, // TODO: causes strange error
+        ref: 'User'
+      },
+      comment: {
+        type: String,
+        required: true
+      },
+      date: {
+        type: Date,
+        default: Date.now
+      }
+    }]
   }],
   ventilationType: String,
   performance: Number,
@@ -64,14 +79,24 @@ exports.all = function(cb) {
 exports.get = function(id, user, cb) {
   Cooperative.findOne({
     _id: id
-  }, function(err, cooperative) {
+  })
+  .populate('actions.comments.user','profile _id')
+  .exec(function(err, cooperative) {
     if (err) {
       cb(err);
     } else if (!cooperative) {
       cb('Cooperative not found');
     } else {
       cooperative = cooperative.toObject();
-
+      _.each(cooperative.actions,function(action){
+        action.commentsCount = action.comments.length;
+        action.comments = _.chain(action.comments)
+        .sortBy(function(comment){
+          return comment.date;
+        })
+        .reverse()
+        .first(2);
+      });
       cb(null, cooperative);
     }
   });
@@ -155,6 +180,98 @@ exports.deleteAction = function(id, actionId, user, cb) {
         cooperative.markModified('actions');
         cooperative.save(function(err){
           cb(err,cooperative);
+        })
+      }
+    }
+  })
+}
+
+exports.commentAction = function(id, actionId, comment, user, cb) {
+  Cooperative.findOne({
+    _id: id
+  }, function(err, cooperative){
+    if (err) {
+      cb(err);
+    } else if (!cooperative) {
+      cb('Cooperative not found');
+    } else {
+      var action = cooperative.actions.id(actionId);
+      if(!action) {
+        cb('Cooperative action not found');
+      } else {
+        if(!action.comments){
+          action.comments = [];
+        }
+        comment.user = user._id;
+        action.comments.push(comment);
+        comment = _.last(action.comments).toObject();
+        cooperative.markModified('actions');
+        cooperative.save(function(err,cooperative){
+          comment.user = {
+            _id: user._id,
+            profile: user.profile
+          };
+          cb(err,comment);
+        })
+      }
+    }
+  })
+}
+
+exports.getMoreComments = function(id, actionId, lastCommentId, user, cb) {
+  Cooperative.findOne({
+    _id: id
+  })
+  .populate('actions.comments.user','profile')
+  .exec(function(err, cooperative) {
+    if (err) {
+      cb(err);
+    } else if (!cooperative) {
+      cb('Cooperative not found');
+    } else {
+      var action = cooperative.actions.id(actionId);
+      if(!action) {
+        cb('Cooperative action not found');
+      } else {
+        action = action.toObject();
+        action.comments = _.chain(action.comments)
+        .sortBy(function(comment){
+          return comment.date;
+        })
+        .reverse()
+        .value();
+        console.log(action.comments);
+        var currentLastIndex = _.findIndex(action.comments,function(comment){
+          return comment._id == lastCommentId;
+        });
+        console.log(currentLastIndex);
+        cb(null, _.last(action.comments,action.comments.length - currentLastIndex - 1));
+      }
+    }
+  });
+}
+
+exports.deleteActionComment = function(id, actionId, commentId, user, cb) {
+  Cooperative.findOne({
+    _id: id
+  }, function(err, cooperative){
+    if (err) {
+      cb(err);
+    } else if (!cooperative) {
+      cb('Cooperative not found');
+    } else {
+      var action = cooperative.actions.id(actionId);
+      if(!action) {
+        cb('Cooperative action not found');
+      } else {
+        var comment = action.comments.id(commentId);
+        if(!comment) {
+          cb('Comment not found');
+        }
+        comment.remove();
+        cooperative.markModified('actions');
+        cooperative.save(function(err){
+          cb(err);
         })
       }
     }

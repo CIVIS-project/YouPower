@@ -308,6 +308,28 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
     });
   }
 
+  $scope.commentAction = function(action) {
+    Cooperatives.commentAction({id:$scope.cooperative._id,actionId:action._id,comment:action.newComment},{comment:action.newComment},function(comment){
+      action.comments.push(comment);
+      action.commentsCount ++;
+      action.newComment = undefined;
+
+    });
+  }
+
+  $scope.loadMoreComments = function(action){
+    Cooperatives.getMoreComments({id:$scope.cooperative._id,actionId:action._id,lastCommentId:_.last(action.comments)._id},function(comments){
+      Array.prototype.push.apply(action.comments,comments);
+    });
+  }
+
+  $scope.deleteActionComment = function(action,comment) {
+    Cooperatives.deleteActionComment({id:$scope.cooperative._id,actionId:action._id,commentId:comment._id},function(){
+      action.comments.splice(action.comments.indexOf(comment),1);
+      action.commentsCount --;
+    });
+  }
+
 })
 
 .controller('CooperativeEditCtrl', function($scope,$state,Cooperatives,currentUser){

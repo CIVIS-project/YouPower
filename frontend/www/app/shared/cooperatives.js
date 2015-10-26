@@ -1,7 +1,7 @@
 angular.module('civis.youpower')
 
 .factory('Cooperatives', function($resource, $http, Config) {
-  var result = $resource(Config.host + '/api/cooperative/:id', {id:'@id'},{
+  var result = $resource(Config.host + '/api/cooperative/:id', {id:'@_id'},{
     update: {
       method: 'PUT'
     },
@@ -16,6 +16,19 @@ angular.module('civis.youpower')
     deleteAction: {
       method: 'DELETE',
       url: Config.host + '/api/cooperative/:id/action/:actionId'
+    },
+    commentAction: {
+      method: 'POST',
+      url: Config.host + '/api/cooperative/:id/action/:actionId/comment'
+    },
+    getMoreComments: {
+      method: 'GET',
+      isArray: true,
+      url: Config.host + '/api/cooperative/:id/action/:actionId/comment'
+    },
+    deleteActionComment: {
+      method: 'DELETE',
+      url: Config.host + '/api/cooperative/:id/action/:actionId/comment/:commentId'
     }
   });
 

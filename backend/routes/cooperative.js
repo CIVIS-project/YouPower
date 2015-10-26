@@ -185,6 +185,78 @@ router.delete('/:id/action/:actionId', function(req, res) {
   }
 });
 
+router.post('/:id/action/:actionId/comment', auth.authenticate(), function(req, res) {
+  req.checkParams('id', 'Invalid cooperative id').isMongoId();
+  req.checkParams('actionId', 'Invalid cooperative action id').isMongoId();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    Cooperative.commentAction(req.params.id, req.params.actionId, req.body, req.user, res.successRes);
+
+    Log.create({
+      // userId: req.user._id,
+      category: 'Cooperative',
+      type: 'commentAction',
+      data: {
+        cooperativeId: req.params.id,
+        actionId: req.params.actionId,
+        comment: req.body
+      }
+    });
+  }
+});
+
+router.get('/:id/action/:actionId/comment', function(req, res) {
+  req.checkParams('id', 'Invalid cooperative id').isMongoId();
+  req.checkParams('actionId', 'Invalid cooperative action id').isMongoId();
+  req.checkQuery('lastCommentId', 'Invalid comment id').isMongoId();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    Cooperative.getMoreComments(req.params.id, req.params.actionId, req.query.lastCommentId, null, res.successRes);
+
+    Log.create({
+      // userId: req.user._id,
+      category: 'Cooperative',
+      type: 'getMoreComments',
+      data: {
+        cooperativeId: req.params.id,
+        actionId: req.params.actionId,
+        lastCommentId: req.params.lastCommentId
+      }
+    });
+  }
+});
+
+
+router.delete('/:id/action/:actionId/comment/:commentId', function(req, res) {
+  req.checkParams('id', 'Invalid cooperative id').isMongoId();
+  req.checkParams('actionId', 'Invalid cooperative action id').isMongoId();
+  req.checkParams('commentId', 'Invalid comment id').isMongoId();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    Cooperative.deleteActionComment(req.params.id, req.params.actionId, req.params.commentId, null, res.successRes);
+
+    Log.create({
+      // userId: req.user._id,
+      category: 'Cooperative',
+      type: 'deleteActionComment',
+      data: {
+        cooperativeId: req.params.id,
+        actionId: req.params.actionId,
+        commentId: req.params.commentId
+      }
+    });
+  }
+});
+
 
 router.post('/:id/editor', function(req, res) {
   req.checkParams('id', 'Invalid cooperative id').isMongoId();
