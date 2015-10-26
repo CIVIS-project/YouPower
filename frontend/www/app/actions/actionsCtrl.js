@@ -221,8 +221,8 @@ function ActionsCtrl($scope, $state, $ionicPopup, $filter, Actions, User, $trans
 			title: "<span class='text-medium-large'>" + title + "</span>", 
 			scope: $scope, 
 			template: "<span class='text-medium' translate translate-values=\"{number: '{{numberOfCurrentActions}}'}\">ASK_ADD_MORE</span>",
-			okText: "Not now",
-			cancelText: "Add more",
+			okText: $translate.instant("Not_now"),
+			cancelText: $translate.instant("Add_more"),
 			okType: "button-dark"
 		});
 

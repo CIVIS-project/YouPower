@@ -17,7 +17,7 @@
       <span ng-if="action.latestState==='inProgress'"><span translate>{{action.startedDate.length>1? 'You_restarted_on' : 'You_started_on'}}</span> {{action.startedDate[action.startedDate.length-1] | date: "yyyy-MM-dd"}}</span>
       <!--  -->
       <span ng-if="action.latestState==='pending'"><span translate>Scheduled_for</span> {{_.last(action.postponedDate) | date: "yyyy-MM-dd"}}.</span>
-      <span ng-if="action.latestState==='done'"><span translate>You completed on</span> {{_.last(action.doneDate) | date: "yyyy-MM-dd"}}.</span>
+      <span ng-if="action.latestState==='done'"><span translate>You_completed_on</span> {{_.last(action.doneDate) | date: "yyyy-MM-dd"}}.</span>
       <span ng-if="action.latestState==='alreadyDoing'"><span translate>You_confirmed_doing_this_on</span> {{_.last(action.alreadyDoingDate) | date: "yyyy-MM-dd"}}.</span>
       <span href="#" class="balanced">{{num=actions[action._id].numUsers}} <span translate>{{num > 1 ? 'Participants':'Participant'}}</span></span> 
     </span>
@@ -56,7 +56,7 @@
 
 <button class="button button-full button-dark icon-left" ng-click="gotoYourActions();">
   <i class="icon ion-ios-arrow-back"></i>
-  <b translate>Back to Your Actions</b>
+  <b translate>Back_to_Your_Actions</b>
 </button>
 
 <div class="list card">
@@ -65,7 +65,7 @@
       <i class="icon ion-thumbsup"></i>
       {{num2=actions[action._id].numLikes}} <span translate>{{num2 > 1 ? 'Likes':'Like'}}</span>
     </a>
-    <a class="tab-item" ng-click="comment.show=!comment.show">
+    <a class="tab-item" ng-click="commentClicked()">
       <i class="icon ion-chatbox"></i>
       {{size=actions[action._id].numComments}} <span translate>{{size > 1 ? 'Comments' : 'Comment'}}</span>
     </a>
