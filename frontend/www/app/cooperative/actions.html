@@ -1,7 +1,7 @@
 <ion-list>
-  <ion-item class="item-text-wrap item-complex-left" ng-repeat="action in cooperative.actions | orderBy:'date':true" >
+  <ion-item class="item-text-wrap item-complex-left" ng-repeat="action in cooperative.actions | orderBy:'date':true" ng-class="{'item-button-right':canEditActions}">
     <div ng-click="action.showExtra = !action.showExtra">
-      <span class="badge badge-energized">{{cooperative.actions.length - $index}}</span>
+      <span class="badge badge-energized" ng-show="!canEditActions">{{cooperative.actions.length - $index}}</span>
       <h2>
         {{action.name}}
       </h2>
@@ -10,7 +10,7 @@
       </h4>
       <p>
         {{action.date | date:"MMM yyyy"}}
-        <span style="float:right" ng-show="action.comments.length > 0 && !action.showExtra">
+        <span style="float:right" ng-show="action.comments.length > 0 && !action.showExtra && !canEditActions">
           <i class="icon ion-chatbox"></i> <span>{{action.commentsCount}}</span>
         </span>
       </p>
@@ -19,16 +19,13 @@
       <b ng-show="action.cost">{{ 'COOPERATIVE_ACTION_COST' | translate }}: {{action.cost}} SEK<br></b>
       {{action.description}}
     </p>
-    <ion-option-button ng-if="canEditActions" class="button-positive"
-                       ng-click="deleteAction(action)">
-      {{ 'Delete' | translate }}
-    </ion-option-button>
-    <ion-option-button ng-if="canEditActions" class="button-info"
+    <button ng-if="canEditActions" class="button button-info clearfix"
                        ui-sref=".actionUpdate({id:action._id, action:action})">
-      {{ 'EDIT' | translate }}
-    </ion-option-button>
+      <i class="icon ion-edit"></i>
+    </button>
 
-    <div ng-show="action.showExtra">
+
+    <div ng-show="action.showExtra && !canEditActions">
       <span style="float:right" ng-show="action.showExtra">
         <i class="icon ion-chatbox"></i> <span ng-show="action.commentsCount > 0">{{action.commentsCount}}</span>
       </span>

@@ -7848,16 +7848,19 @@ ul.rating li {
   /* Note, this must be half the font size */
   color: #fff; }
 
+.item-no-border-bottom {
+  border-bottom: none; }
+
 .item-complex-left .item-content {
   padding-left: 49px;
   padding-right: 16px; }
   .item-complex-left .item-content .badge {
-    right: unset;
+    right: initial;
     left: 16px; }
 
 .chart-container {
-  padding-left: 38px;
-  padding-right: 38px;
+  padding-left: 28px;
+  padding-right: 28px;
   position: relative; }
   .chart-container #chart {
     height: 300px; }
@@ -7869,9 +7872,9 @@ ul.rating li {
     max-height: none;
     font-size: 30px; }
     .chart-container .chart-navigation.ion-chevron-right {
-      right: 0; }
+      right: -10px; }
     .chart-container .chart-navigation.ion-chevron-left {
-      left: 0; }
+      left: -10px; }
     .chart-container .chart-navigation:before, .chart-container .chart-navigation:after {
       vertical-align: middle; }
 

@@ -13,7 +13,7 @@
       <label class="item item-input item-stacked-label item-text-wrap" ng-click="selectActionType()">
         <span class="input-label">{{ 'COOPERATIVE_ACTION_TYPE' | translate }}*</span>
         <p >
-          <span ng-repeat="id in action.types">{{actionTypes.getById(id).name}}{{$last?'':', '}}</span>
+          <span ng-repeat="id in action.types">{{'COOPERATIVE_ACTION_TYPE_' + id | translate}}{{$last?'':', '}}</span>
         </p>
       </label>
       <label class="item item-input item-stacked-label">
@@ -33,5 +33,10 @@
       <span class="input-label">{{'COOPEARTIVE_ACTION_DESCRIPTION' | translate}}</span>
       <textarea rows="15" ng-model="action.description"></textarea>
     </label>
+    <button ng-if="action._id" class="button button-assertive button-block"
+                       ng-click="deleteAction(action)">
+      <i class="icon ion-trash-a"></i>
+      <b>{{'COOPERATIVE_DELETE_ACTION' | translate}}</b>
+    </button>
   </ion-content>
 </ion-view>

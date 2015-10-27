@@ -1,14 +1,16 @@
 <ion-view >
-  <ion-nav-title>{{cooperative.name}}</ion-nav-title>
+  <ion-nav-title>{{'COOPERATIVE_EDIT_HEADING' | translate}}</ion-nav-title>
   <ion-content>
     <div class="list">
+      <div class="item item-divider">
+      {{cooperative.name}}</div>
       <label class="item item-input item-stacked-label">
         <span class="input-label" translate>COOPERATIVE_YEAR_OF_CONSTRUCTION</span>
-        <input type="text" placeholder="1954" ng-model="cooperative.yearOfConst">
+        <input type="number" ng-model="cooperative.yearOfConst" min="1600" max="2016">
       </label>
       <label class="item item-input item-stacked-label">
         <span class="input-label" translate>COOPERATIVE_AREA</span>
-        <input type="text" placeholder="1345" ng-model="cooperative.area">
+        <input type="number" placeholder="1345" ng-model="cooperative.area">
       </label>
       <label class="item item-input item-select">
         <span class="input-label" translate>COOPERATIVE_VENTILATION_TYPE</span>
@@ -16,17 +18,14 @@
           <option ng-repeat="option in ventilationTypes" value="{{option}}">{{option}}</option>
         </select>
       </label>
-      <button class="button button-block button-positive" ng-click="save()" translate>
-        Save
+      <button class="button button-block button-dark" ng-click="save()" >
+        <b translate>Save</b>
       </button>
     </div>
+    <a class="button button-energized button-block" ui-sref=".actionAdd">
+      <i class="ion-plus-round"> </i>
+      <b>{{'COOPERATIVE_ADD_ACTION_LONG' | translate}}</b>
+    </a>
     <div ng-include src="'app/cooperative/actions.html'" onload="canEditActions = true"></div>
   </ion-content>
-  <div class="float-button">
-  <span class="height-fix">
-    <a ui-sref=".actionAdd" class="content">
-      <i class="ion-plus-round"> </i>
-    </a>
-  </span>
-</div>
 </ion-view>

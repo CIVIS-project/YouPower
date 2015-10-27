@@ -344,12 +344,6 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
     });
   })
 
-  $scope.deleteAction = function(action){
-    Cooperatives.deleteAction({id:$scope.cooperative._id,actionId:action._id},function(){
-      $scope.cooperative.actions.splice($scope.cooperative.actions.indexOf(action),1);
-    });
-  }
-
   $scope.save = function(){
     Cooperatives.update({id:$scope.cooperative._id},$scope.cooperative,function(){
       $state.go("^");
@@ -418,6 +412,11 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
     $scope.action.date = new Date($scope.action.date);
   });
 
+  $scope.deleteAction = function(action){
+    Cooperatives.deleteAction({id:currentUser.cooperativeId,actionId:action._id},function(){
+      $state.go("^");
+    });
+  }
 
   $scope.updateAction = function(){
     Cooperatives.updateAction({id:currentUser.cooperativeId,actionId:$scope.action._id},$scope.action,function(){
@@ -437,13 +436,15 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
 
 })
 
-.controller('CooperativesMapCtrl', function($scope, $compile, $ionicLoading) {
+.controller('CooperativesMapCtrl', function($scope, $compile, $ionicLoading, $translate) {
 
   function initialize() {
       var myCoop = _.findWhere($scope.cooperatives,{_id:$scope.currentUser.cooperativeId});
       var myLatlng = new google.maps.LatLng(myCoop.lat, myCoop.lng);
 
       var mapOptions = {
+          mapTypeControl: false,
+          streetViewControl: false,
           center: myLatlng,
           zoom: 16,
           mapTypeId: google.maps.MapTypeId.ROADMAP
@@ -465,10 +466,11 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
       angular.forEach($scope.cooperatives, function(coop) {
           //Marker + infowindow + angularjs compiled ng-click
           var contentString = "<div ng-click='cooperativeClick(\""
-          + coop._id + "\")'><i class='icon flaticon-building80 bigger-1 energy-class-"
-          + coop.energyClass + " item-image'></i><a>"
-          + coop.name + "</a><br><br><p>Number of actions: " +
-          + coop.actions.length + "</p></div>";
+          + coop._id + "\")'><h5>"
+          + coop.name + "</h5>"
+          + coop.performance + " kWh/m2 <br><p>"
+          + $translate.instant('COOPERATIVE_ENERGY_ACTIONS') + ": <b class='energized'>"
+          + coop.actions.length + "</b></p></div>";
           var compiled = $compile(contentString)($scope);
 
           var infowindow = new google.maps.InfoWindow({
