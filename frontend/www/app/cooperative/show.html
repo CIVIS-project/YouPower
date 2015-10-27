@@ -1,7 +1,7 @@
 <ion-view view-title="{{cooperative.name}}">
   <ion-nav-buttons side="secondary">
     <a ui-sref=".cooperative.my.edit" class="button button-clear button-positive" ng-if="currentUser.cooperativeId == cooperative._id">
-      Edit
+      {{'EDIT' | translate}}
     </a>
   </ion-nav-buttons>
   <ion-content>
@@ -15,7 +15,7 @@
             {{cooperative.performance}} kWh/m2
           </div>
           <div class="col text-right">
-            Energy actions
+            {{'COOPERATIVE_ENERGY_ACTIONS' | translate}}
           </div>
           <div class="col col-20">
             <span class="bigger-2">{{cooperative.actions.length}}</span>
@@ -37,7 +37,7 @@
             Compare to
           </div>
           <select ng-model="settings.compareTo" ng-change="changeComparison()">
-            <option ng-repeat="option in comparisons" value="{{option.name}}">{{option.name}}</option>
+            <option ng-repeat="option in comparisons" value="{{option.name}}" translate>{{option.name}}</option>
           </select>
         </label>
         <div class="padding-top">

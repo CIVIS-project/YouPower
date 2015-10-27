@@ -3,20 +3,20 @@
   <ion-content>
     <div class="list">
       <label class="item item-input item-stacked-label">
-        <span class="input-label">Year of construction</span>
+        <span class="input-label" translate>COOPERATIVE_YEAR_OF_CONSTRUCTION</span>
         <input type="text" placeholder="1954" ng-model="cooperative.yearOfConst">
       </label>
       <label class="item item-input item-stacked-label">
-        <span class="input-label">Area (m<sup>2</sup>)</span>
+        <span class="input-label" translate>COOPERATIVE_AREA</span>
         <input type="text" placeholder="1345" ng-model="cooperative.area">
       </label>
       <label class="item item-input item-select">
-        <span class="input-label">Ventilation type</span>
+        <span class="input-label" translate>COOPERATIVE_VENTILATION_TYPE</span>
         <select ng-model="cooperative.ventilationType">
           <option ng-repeat="option in ventilationTypes" value="{{option}}">{{option}}</option>
         </select>
       </label>
-      <button class="button button-block button-positive" ng-click="save()">
+      <button class="button button-block button-positive" ng-click="save()" translate>
         Save
       </button>
     </div>

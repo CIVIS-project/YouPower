@@ -6,7 +6,7 @@
         {{action.name}}
       </h2>
       <h4>
-        <span ng-repeat="id in action.types">{{actionTypes.getById(id).name}}{{$last?'':', '}}</span>
+        <span ng-repeat="id in action.types">{{'COOPERATIVE_ACTION_TYPE_' + id | translate}}{{$last?'':', '}}</span>
       </h4>
       <p>
         {{action.date | date:"MMM yyyy"}}
@@ -16,16 +16,16 @@
       </p>
     </div>
     <p ng-show="action.showExtra">
-      <b ng-show="action.cost">Cost: {{action.cost}} SEK<br></b>
+      <b ng-show="action.cost">{{ 'COOPERATIVE_ACTION_COST' | translate }}: {{action.cost}} SEK<br></b>
       {{action.description}}
     </p>
     <ion-option-button ng-if="canEditActions" class="button-positive"
                        ng-click="deleteAction(action)">
-      Delete
+      {{ 'Delete' | translate }}
     </ion-option-button>
     <ion-option-button ng-if="canEditActions" class="button-info"
                        ui-sref=".actionUpdate({id:action._id, action:action})">
-      Edit
+      {{ 'EDIT' | translate }}
     </ion-option-button>
 
     <div ng-show="action.showExtra">
@@ -43,10 +43,10 @@
       <div ng-repeat="comment in action.comments | orderBy:'date':true">
         <h3>{{comment.user.profile.name}} <span class="text-small">{{comment.date | date: "yyyy-MM-dd"}}</span></h3>
         <p>{{comment.comment}}</p>
-        <a class="button button-clear button-stable icon-left ion-close button-small" ng-if="comment.user._id == currentUser._id" ng-click="deleteActionComment(action,comment)">delete</a>
+        <a class="button button-clear button-stable icon-left ion-close button-small" ng-if="comment.user._id == currentUser._id" ng-click="deleteActionComment(action,comment)" translate>Delete</a>
         <hr ng-show="!$last">
       </div>
-      <button class="button button-block button-small button-stable" ng-if="action.commentsCount > action.comments.length" ng-click="loadMoreComments(action)">Load more</button>
+      <button class="button button-block button-small button-stable" ng-if="action.commentsCount > action.comments.length" ng-click="loadMoreComments(action)"translate>LOAD_MORE</button>
     </div>
   </ion-item>
 </ion-list>

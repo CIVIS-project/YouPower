@@ -9,9 +9,9 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
 
   $scope.comparisons = [
     {name: ""},
-    {name: "neighborhood average"},
-    {name: "previous year"},
-    {name: "previous year (normalized)"}
+    {name: "COOPERATIVE_COMPARE_AVG"},
+    {name: "COOPERATIVE_COMPARE_PREV_YEAR"},
+    {name: "COOPERATIVE_COMPARE_PREV_YEAR_NORM"}
   ]
 
   var currentDate = new Date();
@@ -210,7 +210,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
     }
     var results = [];
     results.push($scope.cooperative.getEnergyData($scope.settings.type,'month',period));
-    if($scope.settings.compareTo ==  "previous year" && $scope.settings.granularity == 'monthly'){
+    if($scope.settings.compareTo ==  "COOPERATIVE_COMPARE_PREV_YEAR" && $scope.settings.granularity == 'monthly'){
       period = (fromYear -1) + fromMonth + '-' + (toYear-1) + toMonth;
       results.push($scope.cooperative.getEnergyData($scope.settings.type,'month',period));
     }
@@ -278,7 +278,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
     var period = date.getFullYear() + '' + padMonth(date.getMonth()+1);
     var results = []
     results.push($scope.cooperative.getEnergyData($scope.settings.type,'month',period));
-    if($scope.settings.compareTo ==  "previous year"){
+    if($scope.settings.compareTo ==  "COOPERATIVE_COMPARE_PREV_YEAR"){
       period = (date.getFullYear() - 1) + '' + padMonth(date.getMonth()+1);
       results.push($scope.cooperative.getEnergyData($scope.settings.type,'month',period));
     }
