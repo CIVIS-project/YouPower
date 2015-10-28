@@ -51,8 +51,8 @@ exports.households = [
   {
     apartmentId: 1234,
     address: 'my address',
-    householdType: 'apartment',
-    householdSize: '20m2',
+    houseType: 'Apartment',
+    size: 20,
     familyComposition: {
       NumAdults: 2,
       NumKids: 0
@@ -65,8 +65,8 @@ exports.households = [
   {
     apartmentId: 1235,
     address: 'my address 2',
-    householdType: 'house',
-    householdSize: '40m2',
+    houseType: 'House',
+    size: 40,
     familyComposition: {
       NumAdults: 2,
       NumKids: 1

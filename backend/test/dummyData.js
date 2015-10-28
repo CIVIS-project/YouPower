@@ -132,8 +132,8 @@ exports.households = [
     _id: newId(),
     apartmentId: 1234,
     address: 'my address',
-    householdType: 'apartment',
-    householdSize: '20m2',
+    houseType: 'apartment',
+    size: 20,
     familyComposition: {
       NumAdults: 2,
       NumKids: 0
@@ -145,8 +145,8 @@ exports.households = [
     _id: newId(),
     apartmentId: 1235,
     address: 'my address 2',
-    householdType: 'house',
-    householdSize: '40m2',
+    houseType: 'house',
+    size: 40,
     familyComposition: {
       NumAdults: 2,
       NumKids: 1
