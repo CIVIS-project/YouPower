@@ -3,7 +3,7 @@
 <ion-refresher
   pulling-text="Pull to refresh..."
   on-refresh="reloadCurrentHousehold()">
-</ion-refresher> 
+</ion-refresher>
 <div ng-if="currentUser.householdId===null" class="item card item-text-wrap">
   <p translate>HOUSEHOLD_SETTING_DISABLED</p>
 </div>
@@ -65,14 +65,17 @@
       <span class="input-label" translate>Children</span>
       <input type="number" ng-model="households[currentUser.householdId].composition.numChildren" ng-change="setHouseholdCompositionChanged()" placeholder={{"Number_of_Children"|translate}}>
     </label>
-    <div class="item item-divider" translate>Major_Appliances</div>
-    <div class="item" ng-repeat="description in households[currentUser.householdId].appliancesList track by $index">
-      {{description}} 
-      <button class="button button-clear button-energized ion-close button-float-right" ng-click="removeAppliance($index)"></button>
-    </div>
-    <div class="item item-input">
-      <input type="text" placeholder={{"APPLIANCES_EG"|translate}} ng-model="input.description" ng-enter="addAppliance()">
-      <button class="button button-clear button-balanced icon ion-plus button_pos_left" ng-click="addAppliance()"></button>
+    <!-- HIDE APPLIANCES FOR STOCKHOLM TESTBEDS -->
+    <div ng-if="!currentUser.testbed.isStockholm()">
+      <div class="item item-divider" translate>Major_Appliances</div>
+      <div class="item" ng-repeat="description in households[currentUser.householdId].appliancesList track by $index">
+        {{description}}
+        <button class="button button-clear button-energized ion-close button-float-right" ng-click="removeAppliance($index)"></button>
+      </div>
+      <div class="item item-input">
+        <input type="text" placeholder={{"APPLIANCES_EG"|translate}} ng-model="input.description" ng-enter="addAppliance()">
+        <button class="button button-clear button-balanced icon ion-plus button_pos_left" ng-click="addAppliance()"></button>
+      </div>
     </div>
   </div>
   <p class="errors text-center" ng-if="input.err" translate>{{input.err}}</p>

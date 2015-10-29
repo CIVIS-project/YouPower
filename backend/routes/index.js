@@ -13,5 +13,6 @@ router.use('/auth', require('./auth'));
 router.use('/household', require('./household'));
 router.use('/community', require('./community'));
 router.use('/cooperative', require('./cooperative'));
+router.use('/testbed', require('./testbed'));
 
 module.exports = router;

@@ -3,6 +3,7 @@
 var auth = require('../middleware/auth');
 var express = require('express');
 var util = require('util');
+var _ = require('underscore');
 var common = require('./common');
 var fs = require('fs');
 var path = require('path');
@@ -10,6 +11,7 @@ var router = express.Router();
 var achievements = require('../common/achievements');
 var User = require('../models').users;
 var Log = require('../models').logs;
+var Household = require('../models').households;
 var defaultPath = path.dirname(require.main.filename) + '/res/missingProfile.png';
 
 router.use('/action', require('./userAction'));
@@ -22,7 +24,8 @@ router.use('/community', require('./community'));
  * @apiParam {String} email User's e-mail address
  * @apiParam {String} name User's nickname
  * @apiParam {String} password User's password
- * @apiParam {String} [language] User's preferred language; for now have support for English (default), Italian and Swedish 
+ * @apiParam {String} [language] User's preferred language; for now have support for English (default), Italian and Swedish
+ * @apiParam {String} [household] Optional household object containing info for automatically creating a household during user registration
  *
  * @apiExample {curl} Example usage:
  *  # NOTE: this is the only API call which does not require authentication!
@@ -50,16 +53,23 @@ router.post('/register', function(req, res) {
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    User.register({
+    var newUser = {
       email: req.body.email,
       profile: {
-        name: req.body.name, 
-        language: req.body.language || 'English' 
+        name: req.body.name,
+        language: req.body.language || 'English'
       }
-    }, req.body.password, function(err, user) {
+    }
+    // Adding testbed and cooperative info to user if present
+    // TODO: this info should be moved to household
+    if(!_.isEmpty(req.body.household)){
+      newUser.testbed = req.body.household.testbed;
+      newUser.cooperativeId = req.body.household.cooperativeId;
+    }
+    User.register(newUser, req.body.password, function(err, user) {
       if (err) {
         return res.status(500).send('Error while registering. ' + err);
-      } 
+      }
 
       auth.newUserToken(user, function(err, token) {
         if (achievements.isBeta) {
@@ -68,9 +78,21 @@ router.post('/register', function(req, res) {
           });
         }
 
-        res.successRes(err, {
-          token: token
-        });
+        // Creating a household if data is present
+        if(!_.isEmpty(req.body.household)){
+          var household = req.body.household;
+          household.ownerId = user._id;
+          Household.create(household,function(er2){
+            console.log(er2);
+            res.successRes(err, {
+              token: token
+            });
+          });
+        } else {
+          res.successRes(err, {
+            token: token
+          });
+        }
       });
     });
   }

@@ -23,7 +23,17 @@ exports.create = function(testbed, cb) {
 };
 
 exports.get = function(id, cb) {
-  Testbed.find({_id: id}, false, cb);
+  Testbed.findOne({_id: id}, false, cb);
 };
+
+exports.all = function(cb) {
+  Testbed.find({},function(err,testbeds){
+    if (err) {
+      cb(err);
+    } else {
+      cb(null,testbeds);
+    }
+  });
+}
 
 exports.model = Testbed;

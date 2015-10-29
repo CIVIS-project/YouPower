@@ -31,10 +31,10 @@ angular.module('civis.youpower')
     $window.localStorage.removeItem(LOCAL_TOKEN_KEY);
   }
 
-  var signup = function(email, name, password,language) {
+  var signup = function(email, name, password,language,household) {
     return $q(function(resolve, reject) {
 
-      $http.post(Config.host + '/api/user/register', {email:email, name:name, password:password, language:language})
+      $http.post(Config.host + '/api/user/register', {email:email, name:name, password:password, language:language, household:household})
        .success(function (data) {
           storeUserCredentials(data.token);
           resolve('Sign success.');

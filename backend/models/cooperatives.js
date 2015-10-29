@@ -240,11 +240,9 @@ exports.getMoreComments = function(id, actionId, lastCommentId, user, cb) {
         })
         .reverse()
         .value();
-        console.log(action.comments);
         var currentLastIndex = _.findIndex(action.comments,function(comment){
           return comment._id == lastCommentId;
         });
-        console.log(currentLastIndex);
         cb(null, _.last(action.comments,action.comments.length - currentLastIndex - 1));
       }
     }

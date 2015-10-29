@@ -10,6 +10,10 @@ angular.module('civis.youpower.translations',[])
       en: 'More comments',
       se: 'Fler kommentarer',
     },
+    COOPERATIVE : {
+      en: 'Cooperative',
+      se: 'Brf'
+    },
     COOPERATIVE_ENERGY_ACTIONS : {
       en: 'Energy actions',
       se: 'Energiåtgärder',
