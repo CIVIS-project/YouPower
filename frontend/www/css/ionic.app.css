@@ -7851,10 +7851,10 @@ ul.rating li {
 .item-no-border-bottom {
   border-bottom: none; }
 
-.item-complex-left .item-content {
+.item-complex-left .item-complex-header {
   padding-left: 49px;
   padding-right: 16px; }
-  .item-complex-left .item-content .badge {
+  .item-complex-left .item-complex-header .badge {
     right: initial;
     left: 16px; }
 
