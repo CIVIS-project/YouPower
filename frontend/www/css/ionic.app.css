@@ -7858,6 +7858,19 @@ ul.rating li {
     right: initial;
     left: 16px; }
 
+.button.button-multiline {
+  padding: 6px 16px;
+  white-space: normal;
+  line-height: normal; }
+
+.item-select.select-small {
+  padding: 0 0 0 16px; }
+  .item-select.select-small select {
+    padding: 5px 45px 5px 0;
+    font-size: 12px; }
+  .item-select.select-small .input-label {
+    font-size: 12px; }
+
 .chart-container {
   padding-left: 28px;
   padding-right: 28px;

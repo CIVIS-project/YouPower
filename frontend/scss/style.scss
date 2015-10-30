@@ -241,3 +241,23 @@ ul.rating li {
     left: 16px;
   }
 }
+
+
+.button.button-multiline {
+  padding: 6px 16px;
+  white-space: normal;
+  line-height: normal;
+}
+
+.item-select.select-small {
+  padding: 0 0 0 16px;
+  select {
+    padding: 5px 45px 5px 0;
+    font-size: 12px;
+  }
+
+  .input-label {
+    font-size: 12px;
+  }
+}
+

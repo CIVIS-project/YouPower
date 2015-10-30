@@ -6,33 +6,49 @@
   </ion-nav-buttons>
   <ion-content>
     <div class="list">
-      <div class="item item-body">
+      <div class="item item-body" style="padding: 10px 0px;">
         <div class="row">
-          <div class="col col-20 text-right">
-            <i class="icon flaticon-building80 bigger-2 energy-class-{{cooperative.energyClass}}"></i>
+          <div class="col col-100">
+            <div style="float: right; margin-left: 5px;">
+              <span class="bigger-2 energized"><b>{{cooperative.actions.length}}</b></span>
+            </div>
+            <div style="float:right;" class="text-right">
+              {{'COOPERATIVE_ENERGY_ACTIONS' | translate}}
+            </div>
+            <div style="float: left" class="text-right">
+              <i class="icon flaticon-building80 bigger-2 energy-class-{{cooperative.energyClass}}"></i>
+            </div>
+            <div>
+              <b>{{cooperative.performance | number:0}}</b>
+              <small>kWh/m<sup>2</sup></small>
+            </div>
           </div>
-          <div class="col">
-            {{cooperative.performance}} kWh/m2
+        </div>
+        <div class="row" style="padding: 0px 10px">
+          <div class="col col-100">
+            <div style="float:right;">
+              <small>{{'COOPERATIVE_YEAR_OF_CONSTRUCTION' | translate}}: <b>{{cooperative.yearOfConst}}</b></small>
+            </div>
+            <small><span translate>COOPERATIVE_AREA</span>: <b>{{cooperative.area}}</b></small>
           </div>
-          <div class="col text-right">
-            {{'COOPERATIVE_ENERGY_ACTIONS' | translate}}
-          </div>
-          <div class="col col-20">
-            <span class="bigger-2 energized"><b>{{cooperative.actions.length}}</b></span>
+        </div>
+        <div class="row">
+          <div class="col col-100 text-center">
+            <small>{{cooperative.ventilationType}}</small>
           </div>
         </div>
       </div>
       <div class="item item-no-border-bottom">
         <div class="button-bar">
-          <a class="button" ng-class="{active:settings.granularity=='monthly'}" ng-click="changeGranularity('monthly')">{{'COOPERATIVE_DATA_MONTHLY' | translate}}</a>
-          <a class="button" ng-class="{active:settings.granularity=='yearly'}" ng-click="changeGranularity('yearly')">{{'COOPERATIVE_DATA_YEARLY' | translate}}</a>
+          <a class="button button-small button-mulitline" ng-class="{active:settings.granularity=='monthly'}" ng-click="changeGranularity('monthly')">{{'COOPERATIVE_DATA_MONTHLY' | translate}}</a>
+          <a class="button button-small button-multiline" ng-class="{active:settings.granularity=='yearly'}" ng-click="changeGranularity('yearly')">{{'COOPERATIVE_DATA_YEARLY' | translate}}</a>
         </div>
         <div class="button-bar padding-top padding-bottom">
-          <a class="button" ng-class="{active:settings.type == 'heating'}" ng-click="changeType('heating')">{{'COOPERATIVE_DATA_HEATING' | translate}}</a>
-          <a class="button" ng-class="{active:settings.type == 'electricity'}" ng-click="changeType('electricity')">{{'COOPERATIVE_DATA_ELECTRICITY' | translate}}</a>
+          <a class="button button-small button-multiline" ng-class="{active:settings.type == 'heating'}" ng-click="changeType('heating')">{{'COOPERATIVE_DATA_HEATING' | translate}}</a>
+          <a class="button button-small button-multiline" ng-class="{active:settings.type == 'electricity'}" ng-click="changeType('electricity')">{{'COOPERATIVE_DATA_ELECTRICITY' | translate}}</a>
         </div>
         <div>
-         <label class="item item-input item-select">
+         <label class="item item-input item-select select-small">
           <div class="input-label">
             {{'COOPERATIVE_DATA_COMPARE' | translate}}
           </div>
