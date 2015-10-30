@@ -54,6 +54,11 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
     });
   })
 
+  $scope.actionFilter = function(action, index) {
+    var type = $scope.settings.type == 'electricity' ? 200 : 100;
+    return action.types.indexOf(type) >= 0;
+  }
+
   // Sets the initial chart configuration
   var initChart = function(data) {
     if($scope.chartConfig) {
@@ -250,20 +255,19 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
     } else {
       startDate.setFullYear(startDate.getFullYear() - 1);
     }
-    var length = $scope.cooperative.actions.length;
-    _.each($scope.cooperative.actions, function(action,index){
+    var actions = _.filter($scope.cooperative.actions, $scope.actionFilter);
+    var length = actions.length;
+    _.each(actions, function(action,index){
       var date = new Date(action.date);
-      console.log("Index",index)
       if(date < $scope.settings.endDate && date >= startDate) {
         data.push({
-          x: Date.UTC(date.getFullYear(),date.getMonth()),
+          x: Date.UTC(date.getFullYear(),$scope.settings.granularity == "yearly" ? 0 : date.getMonth()),
           title: (length - index) + "",
           text: action.name
         });
       }
     });
     var chart = $scope.chartConfig.getHighcharts();
-    console.log("End date", $scope.settings.endDate, "Data", data);
     chart.series[2].setData(data);
   }
 
@@ -468,7 +472,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
           var contentString = "<div ng-click='cooperativeClick(\""
           + coop._id + "\")'><h5>"
           + coop.name + "</h5>"
-          + coop.performance + " kWh/m2 <br><p>"
+          + "{{" + coop.performance + " | number:2}}" +" kWh/m2 <br><p>"
           + $translate.instant('COOPERATIVE_ENERGY_ACTIONS') + ": <b class='energized'>"
           + coop.actions.length + "</b></p></div>";
           var compiled = $compile(contentString)($scope);

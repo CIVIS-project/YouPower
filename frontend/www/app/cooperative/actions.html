@@ -1,7 +1,7 @@
 <ion-list>
-  <ion-item class="item-text-wrap item-complex-left" ng-repeat="action in cooperative.actions | orderBy:'date':true" ng-class="{'item-button-right':canEditActions}">
+  <ion-item class="item-text-wrap item-complex-left" ng-repeat="action in filteredActions = (cooperative.actions | filter:actionFilter) | orderBy:'date':true" ng-class="{'item-button-right':canEditActions}">
     <div ng-click="action.showExtra = !action.showExtra">
-      <span class="badge badge-energized" ng-show="!canEditActions">{{cooperative.actions.length - $index}}</span>
+      <span class="badge badge-energized" ng-show="!canEditActions">{{filteredActions.length - $index}}</span>
       <h2>
         {{action.name}}
       </h2>
