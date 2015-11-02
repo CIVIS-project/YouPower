@@ -7871,6 +7871,9 @@ ul.rating li {
   .item-select.select-small .input-label {
     font-size: 12px; }
 
+.button.active {
+  font-weight: bold; }
+
 .chart-container {
   padding-left: 28px;
   padding-right: 28px;

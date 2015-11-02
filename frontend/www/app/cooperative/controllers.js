@@ -2,7 +2,7 @@
 
 angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
 
-.controller('CooperativeCtrl', function($scope,$timeout,$state,$q,$stateParams,Cooperatives,currentUser) {
+.controller('CooperativeCtrl', function($scope,$timeout,$state,$q,$stateParams,$translate,Cooperatives,currentUser) {
 
 
   var startYear = 2010;
@@ -11,7 +11,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
     {name: ""},
     {name: "COOPERATIVE_COMPARE_AVG"},
     {name: "COOPERATIVE_COMPARE_PREV_YEAR"},
-    {name: "COOPERATIVE_COMPARE_PREV_YEAR_NORM"}
+    // {name: "COOPERATIVE_COMPARE_PREV_YEAR_NORM"}
   ]
 
   var currentDate = new Date();
@@ -29,17 +29,18 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
   }
 
   $scope.changeComparison = function(){
-    updateEnergyData();
+    updateEnergyData($scope.settings.type);
   };
 
   $scope.changeType = function(type){
-    $scope.settings.type = type;
-    updateEnergyData();
+    updateEnergyData(type).then(function(){
+      $scope.settings.type = type;
+    });
   }
 
   $scope.changeGranularity = function(granularity){
     $scope.settings.granularity = granularity;
-    updateEnergyData();
+    updateEnergyData($scope.settings.type);
   }
 
   $scope.actionTypes = Cooperatives.getActionTypes();
@@ -94,7 +95,8 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
             tooltip: {
               shared: true,
               valueSuffix: " MWh",
-              valueDecimals: 2,
+              valueDecimals: 0,
+              pointFormat: '<span style="color:{point.color}">\u25CF </span><b>{point.y}</b><br/>'
             },
         },
 
@@ -146,7 +148,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
         func: function(chart) {
           $timeout(function(){
             chart.series[1].setVisible(false);
-            updateEnergyData();
+            updateEnergyData($scope.settings.type);
 
 
             // View functions that only make sense when data is loaded
@@ -190,17 +192,17 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
   }
 
   // Updates the chart depending on the granularity, period, type of energy and comparison
-  var updateEnergyData = function() {
+  var updateEnergyData = function(type) {
     $scope.chartConfig.loading = true;
     var period;
     var chart = $scope.chartConfig.getHighcharts();
     var startDate = new Date($scope.settings.endDate);
     var toYear = startDate.getFullYear();
-    if($scope.settings.type == 'electricity') {
-      chart.series[0].name = 'Electricity';
+    if(type == 'electricity') {
+      chart.series[0].update({color:'#5cad5c', name: $translate.instant('COOPERATIVE_DATA_ELECTRICITY')},false);
       chart.series[1].name = 'Electricity';
     } else {
-      chart.series[0].name = 'Heating & Hot watter';
+      chart.series[0].update({color:'#33b1e2', name: $translate.instant('COOPERATIVE_DATA_HEATING')},false);
       chart.series[1].name = 'Heating & Hot watter';
     }
     if($scope.settings.granularity == 'yearly'){
@@ -214,12 +216,12 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
       period = fromYear + fromMonth + '-' + toYear + toMonth;
     }
     var results = [];
-    results.push($scope.cooperative.getEnergyData($scope.settings.type,'month',period));
+    results.push($scope.cooperative.getEnergyData(type,'month',period));
     if($scope.settings.compareTo ==  "COOPERATIVE_COMPARE_PREV_YEAR" && $scope.settings.granularity == 'monthly'){
       period = (fromYear -1) + fromMonth + '-' + (toYear-1) + toMonth;
-      results.push($scope.cooperative.getEnergyData($scope.settings.type,'month',period));
+      results.push($scope.cooperative.getEnergyData(type,'month',period));
     }
-    $q.all(results).then(function(response){
+    return $q.all(results).then(function(response){
       _.each(response,function(data,i){
         if($scope.settings.granularity == 'yearly'){
           chart.series[i].setData(_.reduce(data.data.data[0].periods[0].energy,function(memo,value,index){

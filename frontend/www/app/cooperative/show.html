@@ -25,27 +25,19 @@
           </div>
         </div>
         <div class="row" style="padding: 0px 10px">
-          <div class="col col-100">
-            <div style="float:right;">
-              <small>{{'COOPERATIVE_YEAR_OF_CONSTRUCTION' | translate}}: <b>{{cooperative.yearOfConst}}</b></small>
-            </div>
-            <small><span translate>COOPERATIVE_AREA</span>: <b>{{cooperative.area}}</b></small>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col col-100 text-center">
-            <small>{{cooperative.ventilationType}}</small>
-          </div>
+          <small class="col col-100" ng-bind-html="'COOPERATIVE_DESCRIPTION' | translate:cooperative">
+          </small>
         </div>
       </div>
       <div class="item item-no-border-bottom">
         <div class="button-bar">
-          <a class="button button-small button-mulitline" ng-class="{active:settings.granularity=='monthly'}" ng-click="changeGranularity('monthly')">{{'COOPERATIVE_DATA_MONTHLY' | translate}}</a>
+          <a class="button button-small button-mulitline" ng-class="{active:settings.granularity=='monthly'}" ng-click="changeGranularity('monthly')">
+          {{'COOPERATIVE_DATA_MONTHLY' | translate}}</a>
           <a class="button button-small button-multiline" ng-class="{active:settings.granularity=='yearly'}" ng-click="changeGranularity('yearly')">{{'COOPERATIVE_DATA_YEARLY' | translate}}</a>
         </div>
         <div class="button-bar padding-top padding-bottom">
-          <a class="button button-small button-multiline" ng-class="{active:settings.type == 'heating'}" ng-click="changeType('heating')">{{'COOPERATIVE_DATA_HEATING' | translate}}</a>
-          <a class="button button-small button-multiline" ng-class="{active:settings.type == 'electricity'}" ng-click="changeType('electricity')">{{'COOPERATIVE_DATA_ELECTRICITY' | translate}}</a>
+          <a class="button button-small button-multiline" ng-class="{active:settings.type == 'heating',positive:settings.type == 'heating'}" ng-click="changeType('heating')">{{'COOPERATIVE_DATA_HEATING' | translate}}</a>
+          <a class="button button-small button-multiline" ng-class="{active:settings.type == 'electricity', balanced:settings.type == 'electricity'}" ng-click="changeType('electricity')">{{'COOPERATIVE_DATA_ELECTRICITY' | translate}}</a>
         </div>
         <div>
          <label class="item item-input item-select select-small">
@@ -63,29 +55,29 @@
               <td class="padding-horizontal padding-top text-right">
                 max:
               </td class="padding-horizontal">
-              <td class="electricity">
-                <b>{{getMainMax().y | number:2}}</b> ({{getMainMax().x | date:"MMM yyyy"}})
+              <td ng-class="{balanced:settings.type == 'electricity', positive:settings.type == 'heating'}">
+                <b>{{getMainMax().y | number:2}}</b> ({{getMainMax().x | date:"MMM ''''yy"}})
               </td>
               <td class="padding-horizontal" ng-if="settings.compareTo">
-                <b>{{getComparedMax().y | number:2}}</b> ({{getComparedMax().x | date:"MMM yyyy"}})
+                <b>{{getComparedMax().y | number:2}}</b> ({{getComparedMax().x | date:"MMM ''''yy"}})
               </td>
             </tr>
             <tr>
               <td class="padding-horizontal text-right">
                 min:
               </td class="padding-horizontal">
-              <td class="electricity">
-                <b>{{getMainMin().y | number:2}}</b> ({{getMainMin().x | date:"MMM yyyy"}})
+              <td ng-class="{balanced:settings.type == 'electricity', positive:settings.type == 'heating'}">
+                <b>{{getMainMin().y | number:2}}</b> ({{getMainMin().x | date:"MMM ''''yy"}})
               </td>
               <td class="padding-horizontal" ng-if="settings.compareTo">
-                <b>{{getComparedMin().y | number:2}}</b> ({{getComparedMin().x | date:"MMM yyyy"}})
+                <b>{{getComparedMin().y | number:2}}</b> ({{getComparedMin().x | date:"MMM ''''yy"}})
               </td>
             </tr>
             <tr>
               <td class="padding-horizontal padding-bottom text-right">
                 {{'COOPERATIVE_DATA_AVERAGE' | translate}}:
               </td class="padding-horizontal">
-              <td class="electricity">
+              <td ng-class="{balanced:settings.type == 'electricity', positive:settings.type == 'heating'}">
                 <b>{{getMainAvg() | number:2}}</b>
               </td>
               <td class="padding-horizontal" ng-if="settings.compareTo">
