@@ -45,6 +45,42 @@ router.post('/', function(req, res) {
   });
 });
 
+
+/**
+ * @api {get} /cooperative/consumption Get average consumption for cooperatives
+ * @apiGroup Cooperative
+ *
+ * @apiParam {String} name Cooperative name
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
+ *  '{
+ *    "name": "BRF Hamarby",
+ *  }' \
+ *  http://localhost:3000/api/cooperative
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "__v": 0,
+ *     "_id": "55f14ce337d4bef728a861ab",
+ *     "name": "BRF Hamarby"
+ *   }
+ */
+router.get('/consumption/:type/:granularity', function(req, res) {
+  Cooperative.getAvgConsumption(req.params.type, req.params.granularity, req.query.from, req.query.to, res.successRes);
+  Log.create({
+    // userId: req.user._id,
+    category: 'Cooperative',
+    type: 'geAvgConsumption',
+    data: {
+      params: req.params
+    }
+  });
+});
+
 /**
  * @api {get} /cooperative/:id Fetch an cooperative by id
  * @apiGroup Cooperative
@@ -296,6 +332,27 @@ router.delete('/:id/editor/:coopEditorId', function(req, res) {
       data: {
         cooperativeId: req.params.id,
         coopEditorId: req.params.coopEditorId
+      }
+    });
+  }
+});
+
+router.get('/:id/consumption/:type/:granularity', function(req, res) {
+  req.checkParams('id', 'Invalid cooperative id').isMongoId();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    Cooperative.getConsumption(req.params.id, req.params.type, req.params.granularity, req.query.from, req.query.to, res.successRes);
+
+    Log.create({
+      // userId: req.user._id,
+      category: 'Cooperative',
+      type: 'geConsumption',
+      data: {
+        cooperativeId: req.params.id,
+        params: req.params
       }
     });
   }

@@ -33,16 +33,20 @@ angular.module('civis.youpower')
   });
 
   result.prototype.getEnergyData = function(type, granularity, period){
-    var meterId = this.meters[type];
-    return $http.get("https://app.energimolnet.se/api/2.0/consumptions/" +
-      meterId + "/" +
-      granularity + "/" +
-      period + "?metrics=energy",{
+    return $http.get(Config.host + '/api/cooperative/' + this._id + '/consumption/' +
+      type + "/" +
+      granularity + "?from=" +
+      period,{
         cached:true,
-        headers:{
-          'Authorization':'OAuth a4f4e751401477d5e3f1c68805298aef9807c0eae1b31db1009e2ee90c6e'
-        }
+      })
+  };
 
+  result.prototype.getAvgEnergyData = function(type, granularity, period) {
+    return $http.get(Config.host + '/api/cooperative/consumption/' +
+      type + "/" +
+      granularity + "?from=" +
+      period,{
+        cached:true,
       })
   };
 

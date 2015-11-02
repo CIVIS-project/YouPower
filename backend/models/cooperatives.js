@@ -7,6 +7,10 @@ var escapeStringRegexp = require('escape-string-regexp');
 var request = require('request');
 var async = require('async');
 
+var energimolnetHeaders = {
+    Authorization: 'OAuth a4f4e751401477d5e3f1c68805298aef9807c0eae1b31db1009e2ee90c6e'
+  }
+
 var CooperativeSchema = new Schema({
   name: {
     type: String,
@@ -63,6 +67,22 @@ var CooperativeSchema = new Schema({
 
 var Cooperative = mongoose.model('Cooperative', CooperativeSchema);
 
+
+var getConsumption = function(meterId, granularity, from, to, cb) {
+  var to = to ? '-' + to : '';
+  request({
+    url: 'https://app.energimolnet.se/api/2.0/consumptions/'+ meterId + '/' + granularity + '/' + from + to + '/',
+    headers: energimolnetHeaders
+  },function(error, response, body){
+    if(!error && response.statusCode == 200) {
+      var result = JSON.parse(body).data[0].periods[0].energy;
+      cb(null, result);
+    } else {
+      cb(error);
+    }
+  });
+}
+
 var calculatePerformance = function(cooperative,cb) {
   cooperative = cooperative.toObject();
   var year = new Date().getFullYear();
@@ -71,15 +91,9 @@ var calculatePerformance = function(cooperative,cb) {
     cooperative.performance = performance.value;
     return cb(null,cooperative);
   } else {
-    request({
-      url: 'https://app.energimolnet.se/api/2.0/consumptions/'+ cooperative.meters.heating + '/month/' + (year - 1) + '/',
-      headers: {
-        Authorization: 'OAuth a4f4e751401477d5e3f1c68805298aef9807c0eae1b31db1009e2ee90c6e'
-      }
-    },function(error, response, body){
-      if (!error && response.statusCode == 200) {
-        body = JSON.parse(body);
-        var value = _.reduce(body.data[0].periods[0].energy,function(memo,num){return memo + num;})/cooperative.area;
+    getConsumption(cooperative.meters.heating, 'month', year - 1, null, function(err, result){
+      if(!err) {
+        var value = _.reduce(result,function(memo,num){return memo + num;})/cooperative.area;
         cooperative.performances.push({
           year: year,
           area: cooperative.area,
@@ -92,8 +106,8 @@ var calculatePerformance = function(cooperative,cb) {
           }
         },function(){return 1});
       }
-      return cb(null,cooperative);
-    });
+      cb(null, cooperative);
+    })
   }
 }
 
@@ -377,6 +391,44 @@ exports.deleteEditor = function(id, coopEditorId, user, cb) {
         cooperative.save(function(err){
           cb(err,cooperative);
         })
+      }
+    }
+  })
+}
+
+exports.getAvgConsumption = function(type, granularity, from, to, cb) {
+  Cooperative.find({},function(err,cooperatives){
+    async.map(cooperatives,function(cooperative,cb2){
+      cooperative = cooperative.toObject();
+      getConsumption(cooperative.meters[type], granularity, from, to, cb2);
+    },function(err,coopsData){
+      var avg = _.chain(coopsData)
+      .map(function(coopData){ return coopData })
+      .unzip()
+      .map(function(data,index){
+        return _.reduce(data,function(memo, num){
+          return memo + num
+        },0)/data.length;
+      })
+      .value()
+      cb(null,avg);
+    })
+  });
+}
+
+exports.getConsumption = function(id, type, granularity, from, to, cb) {
+  Cooperative.findOne({
+    _id:id
+  },function(err,cooperative){
+    if (err) {
+      cb(err);
+    } else if (!cooperative) {
+      cb('Cooperative not found');
+    } else {
+      if(!cooperative.meters[type]){
+        cb('No meter ID defined for ' + type);
+      } else {
+        getConsumption(cooperative.meters[type],granularity,from,to,cb);
       }
     }
   })

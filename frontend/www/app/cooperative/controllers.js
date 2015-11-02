@@ -220,21 +220,25 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
     if($scope.settings.compareTo ==  "COOPERATIVE_COMPARE_PREV_YEAR" && $scope.settings.granularity == 'monthly'){
       period = (fromYear -1) + fromMonth + '-' + (toYear-1) + toMonth;
       results.push($scope.cooperative.getEnergyData(type,'month',period));
+    } else if($scope.settings.compareTo ==  "COOPERATIVE_COMPARE_AVG") {
+      results.push($scope.cooperative.getAvgEnergyData(type,'month',period));
+    } else {
+      chart.series[1].setVisible(false);
     }
-    return $q.all(results).then(function(response){
-      _.each(response,function(data,i){
+    return $q.all(results).then(function(responses){
+      _.each(responses,function(response,i){
         if($scope.settings.granularity == 'yearly'){
-          chart.series[i].setData(_.reduce(data.data.data[0].periods[0].energy,function(memo,value,index){
+          chart.series[i].setData(_.reduce(response.data,function(memo,value,index){
             if(index % 12 == 0){
               var date = new Date(startYear + Math.floor(index/12),1,1);
-              memo.push({x:date, y:value});
+              memo.push({x:date, y:value/1000});
             } else {
-              memo[memo.length - 1].y += value;
+              memo[memo.length - 1].y += value/1000;
             }
             return memo;
           },[]));
         } else {
-          chart.series[i].setData(_.map(data.data.data[0].periods[0].energy,function(value, index){
+          chart.series[i].setData(_.map(response.data,function(value, index){
             var date = new Date(startDate);
             date.setMonth(date.getMonth()+index)
             return { x: Date.UTC(date.getFullYear(),date.getMonth()), y:value/1000}
@@ -287,10 +291,12 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
     if($scope.settings.compareTo ==  "COOPERATIVE_COMPARE_PREV_YEAR"){
       period = (date.getFullYear() - 1) + '' + padMonth(date.getMonth()+1);
       results.push($scope.cooperative.getEnergyData($scope.settings.type,'month',period));
+    } else if($scope.settings.compareTo ==  "COOPERATIVE_COMPARE_AVG") {
+      results.push($scope.cooperative.getAvgEnergyData($scope.settings.type,'month',period));
     }
-    $q.all(results).then(function(data){
-      var value1 = data[0].data.data[0].periods[0].energy[0];
-      var value2 = data.length == 2 ? data[1].data.data[0].periods[0].energy[0] : null;
+    $q.all(results).then(function(responses){
+      var value1 = responses[0].data;
+      var value2 = responses.length == 2 ? responses[1].data : null;
       if (value1 != null) {
         if(direction > 0) {
           chart.series[0].removePoint(0,false);
