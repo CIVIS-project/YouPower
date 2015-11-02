@@ -472,7 +472,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
           var contentString = "<div ng-click='cooperativeClick(\""
           + coop._id + "\")'><h5>"
           + coop.name + "</h5>"
-          + "{{" + coop.performance + " | number:2}}" +" kWh/m2 <br><p>"
+          + "{{" + coop.performance + " | number:0}}" +" kWh/m2 <br><p>"
           + $translate.instant('COOPERATIVE_ENERGY_ACTIONS') + ": <b class='energized'>"
           + coop.actions.length + "</b></p></div>";
           var compiled = $compile(contentString)($scope);

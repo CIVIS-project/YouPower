@@ -4,6 +4,8 @@ var mongoose = require('mongoose');
 var _ = require('underscore');
 var Schema = mongoose.Schema;
 var escapeStringRegexp = require('escape-string-regexp');
+var request = require('request');
+var async = require('async');
 
 var CooperativeSchema = new Schema({
   name: {
@@ -48,7 +50,11 @@ var CooperativeSchema = new Schema({
     }]
   }],
   ventilationType: String,
-  performance: Number,
+  performances: [{
+    year: Number,
+    value: Number,
+    area: Number
+  }],
   editors: [{
       editorId: Schema.Types.ObjectId,
       name: String,
@@ -56,6 +62,40 @@ var CooperativeSchema = new Schema({
 });
 
 var Cooperative = mongoose.model('Cooperative', CooperativeSchema);
+
+var calculatePerformance = function(cooperative,cb) {
+  cooperative = cooperative.toObject();
+  var year = new Date().getFullYear();
+  var performance = _.findWhere(cooperative.performances,{year: year});
+  if(performance){
+    cooperative.performance = performance.value;
+    return cb(null,cooperative);
+  } else {
+    request({
+      url: 'https://app.energimolnet.se/api/2.0/consumptions/'+ cooperative.meters.heating + '/month/' + (year - 1) + '/',
+      headers: {
+        Authorization: 'OAuth a4f4e751401477d5e3f1c68805298aef9807c0eae1b31db1009e2ee90c6e'
+      }
+    },function(error, response, body){
+      if (!error && response.statusCode == 200) {
+        body = JSON.parse(body);
+        var value = _.reduce(body.data[0].periods[0].energy,function(memo,num){return memo + num;})/cooperative.area;
+        cooperative.performances.push({
+          year: year,
+          area: cooperative.area,
+          value: value
+        })
+        cooperative.performance = value;
+        Cooperative.findByIdAndUpdate(cooperative._id,{
+          $set : {
+            performances : cooperative.performances
+          }
+        },function(){return 1});
+      }
+      return cb(null,cooperative);
+    });
+  }
+}
 
 exports.create = function(cooperative, cb) {
   Cooperative.create({
@@ -71,7 +111,13 @@ exports.all = function(cb) {
     if (err) {
       cb(err);
     } else {
-      cb(null,cooperatives);
+      async.map(cooperatives,calculatePerformance,function(err,coops){
+        if(err){
+          cb(err);
+        } else {
+          cb(null,coops);
+        }
+      });
     }
   });
 }
@@ -87,17 +133,19 @@ exports.get = function(id, user, cb) {
     } else if (!cooperative) {
       cb('Cooperative not found');
     } else {
-      cooperative = cooperative.toObject();
-      _.each(cooperative.actions,function(action){
-        action.commentsCount = action.comments.length;
-        action.comments = _.chain(action.comments)
-        .sortBy(function(comment){
-          return comment.date;
-        })
-        .reverse()
-        .first(2);
+      // cooperative = cooperative.toObject();
+      calculatePerformance(cooperative,function(err,cooperative) {
+        _.each(cooperative.actions,function(action){
+          action.commentsCount = action.comments.length;
+          action.comments = _.chain(action.comments)
+          .sortBy(function(comment){
+            return comment.date;
+          })
+          .reverse()
+          .first(2);
+        });
+        cb(null, cooperative);
       });
-      cb(null, cooperative);
     }
   });
 };
@@ -286,7 +334,7 @@ exports.addEditor = function(id, editor, user, cb) {
         } else if (!user) {
             cb('User not found');
         } else {
-            editor.name=user.profile.name; 
+            editor.name=user.profile.name;
             Cooperative.findOne({
                 _id: id
             }, function(err, cooperative){
@@ -298,7 +346,7 @@ exports.addEditor = function(id, editor, user, cb) {
                     if (!cooperative.editors){
                         cooperative.editors = []
                     }
-                    
+
                     cooperative.editors.push(editor);
                     cooperative.markModified('editors');
                     cooperative.save(function(err){
@@ -307,7 +355,7 @@ exports.addEditor = function(id, editor, user, cb) {
                 }
             })
         }
-    })    
+    })
 }
 
 

@@ -8,11 +8,11 @@
     <div id="map" data-tap-disabled="true" ng-if="view=='map'" ng-controller="CooperativesMapCtrl"></div>
     <div ng-if="view=='list'">
         <div class="item item-avatar" ng-repeat="cooperative in cooperatives" ui-sref="^.show({id:cooperative._id})">
-          <i class="icon flaticon-building80 bigger-1 energy-class-{{cooperative.energyClass}} item-image"></i>
+          <i class="icon flaticon-building80 bigger-1 energy-class-{{cooperative.energyClass}} item-image" style="top:21px;"></i>
           <h2>
             {{cooperative.name}}
           </h2>
-          <p>{{cooperative.performance}} kWh/m2 | {{'COOPERATIVE_ENERGY_ACTIONS' | translate }}: <b class="energized">{{cooperative.actions.length}}</b></p>
+          <p>{{cooperative.performance | number:0}} kWh/m2 | {{'COOPERATIVE_ENERGY_ACTIONS' | translate }}: <b class="energized">{{cooperative.actions.length}}</b></p>
 
       </div>
     </div>
