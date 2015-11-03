@@ -1,7 +1,194 @@
 angular.module('civis.youpower.translations',[])
 .config(['$translateProvider', function ($translateProvider) {
 
-  $translateProvider.translations('English', {
+  cooperativesTranslations = {
+    EDIT : {
+      en: 'Edit',
+      se: 'Redigera',
+    },
+    LOAD_MORE : {
+      en: 'More comments',
+      se: 'Fler kommentarer',
+    },
+    COOPERATIVE : {
+      en: 'Cooperative',
+      se: 'Förening'
+    },
+    COOPERATIVE_DESCRIPTION: {
+      en: '{{name}} has a heated area of {{area}} m2, the building was constructed in {{yearOfConst}} and has ventilation type {{ventilationType.join(", ")}}.',
+      se: '<b>{{name}}</b> har en uppvärmd area på <b>{{area}} m2</b>, byggnadsår <b>{{yearOfConst}}</b> och ventilation av typen <b>{{ventilationType.join(", ")}}</b>.',
+    },
+    COOPERATIVE_ENERGY_ACTIONS : {
+      en: 'Energy actions',
+      se: 'Energiåtgärder',
+    },
+    COOPERATIVE_DATA_MONTHLY : {
+      en: 'Monthly',
+      se: 'Månad',
+    },
+    COOPERATIVE_DATA_YEARLY : {
+      en: 'Yearly',
+      se: 'År',
+    },
+    COOPERATIVE_DATA_HEATING : {
+      en: 'Heating & Hot water',
+      se: 'Värme & Varmvatten',
+    },
+    COOPERATIVE_DATA_ELECTRICITY : {
+      en: 'Facilities electricity',
+      se: 'Fastighetsel',
+    },
+    COOPERATIVE_DATA_COMPARE : {
+      en: 'Compare to',
+      se: 'Jämför med',
+    },
+    COOPERATIVE_COMPARE_AVG : {
+      en: 'neighborhood average',
+      se: 'medel i området',
+    },
+    COOPERATIVE_COMPARE_PREV_YEAR : {
+      en: 'previous year',
+      se: 'föregående år',
+    },
+    COOPERATIVE_COMPARE_PREV_YEAR_NORM : {
+      en: 'previous year (normalized)',
+      se: 'föregående år (normaliserad)',
+    },
+    COOPERATIVE_DATA_ENERGY_USE : {
+      en: 'Energy use',
+      se: 'Energianvändning',
+    },
+    COOPERATIVE_DATA_AVERAGE : {
+      en: 'average',
+      se: 'medel',
+    },
+    COOPERATIVE_MAP : {
+      en: 'Map',
+      se: 'Karta',
+    },
+    COOPERATIVE_LIST : {
+      en: 'List',
+      se: 'Lista',
+    },
+    COOPERATIVE_EDIT_HEADING : {
+      en: 'Edit information',
+      se: 'Redigera information'
+    },
+    COOPERATIVE_YEAR_OF_CONSTRUCTION : {
+      en: 'Year of construction',
+      se: 'Byggnadsår',
+    },
+    COOPERATIVE_AREA : {
+      en: 'Heated area/A<sub>temp</sub> (m<sup>2</sup>)',
+      se: 'Uppvärmd area/A<sub>temp</sub> (m<sup>2</sup>)',
+    },
+    COOPERATIVE_VENTILATION_TYPE : {
+      en: 'Ventilation type',
+      se: 'Ventilationstyp',
+    },
+    COOPERATIVE_ADD_ACTION : {
+      en: 'Add',
+      se: 'Lägg till',
+    },
+    COOPERATIVE_ADD_ACTION_LONG : {
+      en: 'Add action',
+      se: 'Lägg till åtgärd',
+    },
+    COOPERATIVE_DELETE_ACTION : {
+      en: 'Delete action',
+      se: 'Ta bort åtgärden',
+    },
+    COOPERATIVE_ACTION_TYPE : {
+      en: 'Action type',
+      se: 'Typ av åtgärd',
+    },
+    COOPERATIVE_ACTION_DATE_COMPLETED : {
+      en: 'Date completed',
+      se: 'Datum genomoförd',
+    },
+    COOPERATIVE_ACTION_TITLE : {
+      en: 'Title',
+      se: 'Titel',
+    },
+    COOPERATIVE_ACTION_COST : {
+      en: 'Cost',
+      se: 'Kostnad'
+    },
+    COOPEARTIVE_ACTION_DESCRIPTION : {
+      en: 'Description',
+      se: 'Beskrivning',
+    },
+    COOPERATIVE_ACTION_TYPE_100 : {
+      en: "Heating & hot water",
+      se: "Värme & varmvatten",
+    },
+    COOPERATIVE_ACTION_TYPE_101 : {
+      en: "Control & optimisation",
+      se: "Kontroll & optimering",
+    },
+    COOPERATIVE_ACTION_TYPE_102 : {
+      en: "Hot water",
+      se: "Varmvatten",
+    },
+    COOPERATIVE_ACTION_TYPE_103 : {
+      en: "Radiator system",
+      se: "Radiatorsystem",
+    },
+    COOPERATIVE_ACTION_TYPE_104 : {
+      en: "Ventilation",
+      se: "Ventilation",
+    },
+    COOPERATIVE_ACTION_TYPE_105 : {
+      en: "Sub metering",
+      se: "Individuell mätning",
+    },
+    COOPERATIVE_ACTION_TYPE_106 : {
+      en: "Household actions",
+      se: "Hushållsaktiviteter",
+    },
+    COOPERATIVE_ACTION_TYPE_200 : {
+      en: "Electricity",
+      se: "El",
+    },
+    COOPERATIVE_ACTION_TYPE_201 : {
+      en: "Outdoor/roof heating",
+      se: "Utomhus/takvärme",
+    },
+    COOPERATIVE_ACTION_TYPE_202 : {
+      en: "Lighting",
+      se: "Belysning",
+    },
+    COOPERATIVE_ACTION_TYPE_203 : {
+      en: "Laundry room",
+      se: "Tvättstuga",
+    },
+    COOPERATIVE_ACTION_TYPE_204 : {
+      en: "PV panels",
+      se: "Solceller",
+    },
+    COOPERATIVE_ACTION_TYPE_205 : {
+      en: "Sub metering",
+      se: "Individuell mätning",
+    },
+    COOPERATIVE_ACTION_TYPE_206 : {
+      en: "Household actions",
+      se: "Hushållsaktiviteter",
+    }
+  }
+
+  var extractLanguageAndCombine = function(lang, def){
+    var args = [];
+    for (var i = 2; i < arguments.length; ++i) args.push(arguments[i]);
+    var result = _.reduceRight(args,function(memo,argument){
+      console.log("Argument",argument);
+      return _.extend(_.pick(_.mapObject(argument,function(key){
+        return key[lang];
+      }),_.identity),memo);
+    },def);
+    return result;
+  }
+
+  $translateProvider.translations('English', extractLanguageAndCombine('en',{
     a_number_of:  "a number of",
 About:  "About",
 About_You:  "About You",
@@ -270,7 +457,8 @@ Your_password:  "Your password",
 Add_more:  "Add more",
 Pull_to_refresh:  "Pull to refresh",
 
-  });
+},cooperativesTranslations));
+
 
   $translateProvider.translations('Italian', {
     a_number_of:  "Un certo numero di",
@@ -543,8 +731,7 @@ Pull_to_refresh:  "Scorri verso il basso per aggiornare",
 
   });
 
-
-  $translateProvider.translations('Swedish', {
+ $translateProvider.translations('Swedish', extractLanguageAndCombine('se',{
     a_number_of: "antal",
 About: "Om",
 About_You: "Om Dig",
@@ -812,7 +999,7 @@ Your_name: "Ditt namn",
 Your_password: "Ditt lösenord",
 Add_more: "Lägg till fler",
 Pull_to_refresh: "Dra för att uppdatera",
-  });
+},cooperativesTranslations));
 
 
   $translateProvider.preferredLanguage('English')
