@@ -50,6 +50,28 @@ angular.module('civis.youpower')
       })
   };
 
+  var energyClassReqValue = 70;
+
+  result.prototype.getEnergyClass = function() {
+    if(this.performance <= energyClassReqValue * 0.5) {
+      return 'A';
+    } else if(this.performance > energyClassReqValue * 0.5 && this.performance <= energyClassReqValue * 0.75) {
+      return 'B';
+    } else if(this.performance > energyClassReqValue * 0.75 && this.performance <= energyClassReqValue * 1.0) {
+      return 'C';
+    } else if(this.performance > energyClassReqValue * 1.0 && this.performance <= energyClassReqValue * 1.35) {
+      return 'D';
+    } else if(this.performance > energyClassReqValue * 1.35 && this.performance <= energyClassReqValue * 1.8) {
+      return 'E';
+    } else if(this.performance > energyClassReqValue * 1.8 && this.performance <= energyClassReqValue * 2.35) {
+      return 'F';
+    } else if(this.performance > energyClassReqValue * 2.35) {
+      return 'G';
+    } else {
+      return 'unknown';
+    }
+  }
+
   result.VentilationTypes = ["FTX (mekanisk från- och tilluft med återvinning)","FVP (frånluftsvärmepump)","F (mekanisk frånluftsventilation)","FT (mekanisk från- och tilluftsventilation)","S (självdragsventilation)","Vet ej","Övrig"]
 
   result.getActionTypes = function(){

@@ -7,7 +7,6 @@ var async = require('async');
 var dbUrl = process.env.MONGO_URL || 'mongodb://localhost/youpower';
 mongoose.connect(dbUrl);
 var db = mongoose.connection;
-
 var createIfNotExist = function(model, key, doc, cb) {
   // contstruct the query
   var q = {};
@@ -73,9 +72,18 @@ db.once('open', function() {
           cb(err);
         });
       }, function(cb) {
-        // households
+        // testbeds
         async.eachSeries(defaults.testbeds, function(testbed, eachCb) {
           createIfNotExist('testbeds', 'name', testbed, function(err) {
+            eachCb(err);
+          });
+        }, function(err) {
+          cb(err);
+        });
+      }, function(cb) {
+        // cooperatives
+        async.eachSeries(defaults.cooperatives, function(cooperative, eachCb) {
+          createIfNotExist('cooperatives', 'name', cooperative, function(err) {
             eachCb(err);
           });
         }, function(err) {

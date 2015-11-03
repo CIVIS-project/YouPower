@@ -146,6 +146,9 @@ exports.create = function(cooperative, cb) {
     name: cooperative.name,
     yearOfConst: cooperative.yearOfConst,
     area: cooperative.area,
+    lng: cooperative.lng,
+    lat: cooperative.lat,
+    meters: cooperative.meters,
     ventilationType: cooperative.ventilationType
   }, cb);
 };
@@ -432,7 +435,7 @@ exports.getAvgConsumption = function(type, granularity, from, to, cb) {
       getConsumption(cooperative, type, granularity, from, to, cb2);
     },function(err,coopsData){
       var avg = _.chain(coopsData)
-      .reject(_.isEmpty())
+      .reject(_.isEmpty)
       .unzip()
       .map(function(data,index){
         return _.reduce(data,function(memo, num){

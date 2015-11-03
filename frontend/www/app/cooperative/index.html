@@ -8,7 +8,7 @@
     <div id="map" data-tap-disabled="true" ng-if="view=='map'" ng-controller="CooperativesMapCtrl"></div>
     <div ng-if="view=='list'">
         <div class="item item-avatar" ng-repeat="cooperative in cooperatives" ui-sref="^.show({id:cooperative._id})">
-          <i class="icon flaticon-building80 bigger-1 energy-class-{{cooperative.energyClass}} item-image" style="top:21px;"></i>
+          <i class="icon flaticon-building80 bigger-1 energy-class-{{cooperative.getEnergyClass()}} item-image" style="top:21px;"></i>
           <h2>
             {{cooperative.name}}
           </h2>

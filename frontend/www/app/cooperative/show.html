@@ -16,7 +16,7 @@
               {{'COOPERATIVE_ENERGY_ACTIONS' | translate}}
             </div>
             <div style="float: left" class="text-right">
-              <i class="icon flaticon-building80 bigger-2 energy-class-{{cooperative.energyClass}}"></i>
+              <i class="icon flaticon-building80 bigger-2 energy-class-{{cooperative.getEnergyClass()}}"></i>
             </div>
             <div>
               <b>{{cooperative.performance | number:0}}</b>

@@ -7915,6 +7915,9 @@ ul.rating li {
 .energy-class-G {
   color: #E2001A; }
 
+.energy-class-unknown {
+  color: #bbbbbb; }
+
 .bigger-1 {
   font-size: 1.5em; }
 

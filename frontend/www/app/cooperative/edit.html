@@ -14,7 +14,7 @@
       </label>
       <label class="item item-input item-select">
         <span class="input-label" translate>COOPERATIVE_VENTILATION_TYPE</span>
-        <select ng-model="cooperative.ventilationType">
+        <select ng-model="cooperative.ventilationType" multiple>
           <option ng-repeat="option in ventilationTypes" value="{{option}}">{{option}}</option>
         </select>
       </label>

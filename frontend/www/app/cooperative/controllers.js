@@ -475,7 +475,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
           mapTypeControl: false,
           streetViewControl: false,
           center: myLatlng,
-          zoom: 16,
+          zoom: 14,
           mapTypeId: google.maps.MapTypeId.ROADMAP
       };
       var map = new google.maps.Map(document.getElementById("map"),
@@ -483,7 +483,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
 
 
 
-      var energyClasses = {A: "009036", B:"55AB26", C:"C8D200", D:"FFED00", E:"FBBA00", F:"EB6909", G:"E2001A"};
+      var energyClasses = {A: "009036", B:"55AB26", C:"C8D200", D:"FFED00", E:"FBBA00", F:"EB6909", G:"E2001A", unknown:"bbbbbb"};
 
       var energyClassPins = _.mapObject(energyClasses,function(value,key){
         return new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + value,
@@ -510,7 +510,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
               position: new google.maps.LatLng(coop.lat, coop.lng),
               map: map,
               title: coop.name,
-              icon: energyClassPins[coop.energyClass]
+              icon: energyClassPins[coop.getEnergyClass()] || energyClassPins['unknown']
           });
 
           google.maps.event.addListener(marker, 'click', function() {

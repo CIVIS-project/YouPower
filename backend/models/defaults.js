@@ -91,4 +91,95 @@ exports.testbeds = [
   {
     name: 'Trentino - San Lorenzo in Banale'
   }
+];
+
+exports.cooperatives = [
+  {
+    name: 'Brf Grynnan',
+    yearOfConst: 2004,
+    area: 10974,
+    noOfApart: 121,
+    ventilationType: [ "FTX (mekanisk från- och tilluft med återvinning)", "F (mekanisk frånluftsventilation)"],
+    lat: 59.303065,
+    lng: 18.101027,
+    meters: [{
+      mType: 'heating',
+      meterId: '56091c23b684f25e008b4769',
+      useInCalc: true,
+    },{
+      mType: 'electricity',
+      meterId: '56091d17aee3a861008b477f',
+      useInCalc: true,
+    },{
+      mType: 'electricity',
+      meterId: '56091d17aee3a861008b4780',
+      useInCalc: false,
+    },]
+  },{
+    name: 'Brf Hammarby Kanal',
+    yearOfConst: 2001,
+    area: 4889,
+    noOfApart: 38,
+    ventilationType: [ "F (mekanisk frånluftsventilation)"],
+    lat: 59.303456,
+    lng: 18.108517,
+    meters: [
+    ]
+  },{
+    name: 'Brf Seglatsen',
+    yearOfConst: 2007,
+    area: 15692,
+    noOfApart: 137,
+    ventilationType: [ "F (mekanisk frånluftsventilation)"],
+    lat: 59.304689,
+    lng: 18.090044,
+    meters: [{
+      mType: 'heating',
+      meterId: '56091c5faee3a861008b4775',
+      useInCalc: true,
+    },{
+      mType: 'electricity',
+      meterId: '56091d47b684f25f008b47b1',
+      useInCalc: true,
+    },
+    ]
+  },{
+    name: 'Brf Sickla Kanal',
+    yearOfConst: 2002,
+    area: 7706,
+    noOfApart: 66,
+    ventilationType: [ "FTX (mekanisk från- och tilluft med återvinning)", "F (mekanisk frånluftsventilation)"],
+    lat: 59.303615,
+    lng: 18.104175,
+    meters: [{
+      mType: 'heating',
+      meterId: '56091c58aee3a861008b4774',
+      useInCalc: true,
+    },{
+      mType: 'electricity',
+      meterId: '56091d3aaee3a861008b4788',
+      useInCalc: true,
+    },{
+      mType: 'electricity',
+      meterId: '56091d3aaee3a861008b478a',
+      useInCalc: true,
+    },
+    ]
+  },{
+    name: 'Brf Älven',
+    yearOfConst: 2003,
+    area: 8231,
+    noOfApart: 69,
+    ventilationType: [ "FVP (frånluftsvärmepump)"],
+    lat: 59.303623,
+    lng: 18.109971,
+    meters: [{
+      mType: 'heating',
+      meterId: '56091c27aee3a860008b482b',
+      useInCalc: true,
+    },
+    ]
+  },
+
 ]
+
