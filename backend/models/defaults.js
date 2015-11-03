@@ -80,21 +80,26 @@ exports.households = [
 
 exports.testbeds = [
   {
-    name: 'Stockholm - Fårdala'
+    name: 'Stockholm - Fårdala',
+    _id: '562e2919b15c6e0ebb8ca53f'
   },
   {
-    name: 'Stockholm - Hammarby Sjöstad'
+    name: 'Stockholm - Hammarby Sjöstad',
+    _id: '562e2919b15c6e0ebb8ca540'
   },
   {
-    name: 'Trentino - Storo'
+    name: 'Trentino - Storo',
+    _id: '562e2919b15c6e0ebb8ca541'
   },
   {
-    name: 'Trentino - San Lorenzo in Banale'
+    name: 'Trentino - San Lorenzo in Banale',
+    _id: '562e2919b15c6e0ebb8ca542'
   }
 ];
 
 exports.cooperatives = [
   {
+    _id: '563899954a420074989dfb99',
     name: 'Brf Grynnan',
     yearOfConst: 2004,
     area: 10974,
@@ -116,6 +121,7 @@ exports.cooperatives = [
       useInCalc: false,
     },]
   },{
+    _id: '563899954a420074989dfb9d',
     name: 'Brf Hammarby Kanal',
     yearOfConst: 2001,
     area: 4889,
@@ -126,11 +132,12 @@ exports.cooperatives = [
     meters: [
     ]
   },{
+    _id: '563899954a420074989dfb9e',
     name: 'Brf Seglatsen',
     yearOfConst: 2007,
     area: 15692,
     noOfApart: 137,
-    ventilationType: [ "F (mekanisk frånluftsventilation)"],
+    ventilationType: [ "FTX (mekanisk från- och tilluft med återvinning)"],
     lat: 59.304689,
     lng: 18.090044,
     meters: [{
@@ -144,6 +151,7 @@ exports.cooperatives = [
     },
     ]
   },{
+    _id: '563899954a420074989dfba1',
     name: 'Brf Sickla Kanal',
     yearOfConst: 2002,
     area: 7706,
@@ -166,6 +174,7 @@ exports.cooperatives = [
     },
     ]
   },{
+    _id: '563899954a420074989dfba5',
     name: 'Brf Älven',
     yearOfConst: 2003,
     area: 8231,
