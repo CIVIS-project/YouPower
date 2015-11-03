@@ -272,6 +272,7 @@ angular.module('civis.youpower', [
 
 .state('main.cooperative.list',{
   url: '/list',
+  cached: false,
   views: {
     'tab-list': {
       templateUrl: 'app/cooperative/index.html',
@@ -378,7 +379,7 @@ angular.module('civis.youpower', [
           if (currentUser.householdId) {
             return Household.get({id: currentUser.householdId}).$promise;
           }else{return null;}
-          
+
         }
       }
     }

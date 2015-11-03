@@ -367,7 +367,10 @@ function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $i
     //console.log($scope.userPictures);
   });
 
-  
+  $scope.isStateOrParent = function(stateName) {
+    return $state.includes(stateName);
+  }
+
 
   //comments are loaded later automatically at the action details view
 

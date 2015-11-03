@@ -46,7 +46,7 @@
         <span class="input-label" translate>HOUSEHOLD_ID</span>
         <input type="text" name="identifier" placeholder={{"Enter_your_identifier"|translate}} ng-model="loginData.household.householdId" required>
         <span class="errors_icon pos_left" ng-show="input.identifier.$error.required"><i class="icon ion-alert-circled"></i></span>
-      </label> -->
+      </label>
       <label class="item item-input item-select">
         <span class="input-label" translate>House_type</span>
          <select ng-model="loginData.household.houseType" ng-change="setHouseInfoChanged()">
@@ -61,7 +61,7 @@
           <option translate>Rental</option>
           <option translate>Owner</option>
         </select>
-      </label>
+      </label> -->
       <label class="item item-input">
         <span class="input-label" translate>Size</span>
         <input type="number" ng-model="loginData.household.size" ng-change="setHouseInfoChanged()" placeholder={{"SIZE_M2"|translate}}>

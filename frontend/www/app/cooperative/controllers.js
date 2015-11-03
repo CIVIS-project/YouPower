@@ -259,6 +259,8 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
         }
         chart.series[i].setVisible(true);
       });
+      $scope.settings.type = type;
+      $scope.settings.granularity = granularity;
       updateActionFlags(granularity);
       chart.redraw();
       $scope.chartConfig.loading = false;
@@ -454,8 +456,14 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
   };
 })
 
-.controller('CooperativesCtrl', function($scope, $state, cooperatives) {
+.controller('CooperativesCtrl', function($scope, $state, Cooperatives, cooperatives) {
   $scope.cooperatives = cooperatives;
+
+  $scope.$on("$ionicView.enter",function(){
+    Cooperatives.query(function(data){
+      $scope.cooperatives = data;
+    });
+  });
 
   $scope.view = 'map';
 

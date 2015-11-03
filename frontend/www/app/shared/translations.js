@@ -12,7 +12,7 @@ angular.module('civis.youpower.translations',[])
     },
     COOPERATIVE : {
       en: 'Cooperative',
-      se: 'Brf'
+      se: 'Förening'
     },
     COOPERATIVE_DESCRIPTION: {
       en: '{{name}} has a heated area of {{area}} m2, the building was constructed in {{yearOfConst}} and has ventilation type {{ventilationType.join(", ")}}.',
@@ -860,8 +860,8 @@ angular.module('civis.youpower.translations',[])
     NOT_WANT_TO_DO: "Jag vill inte göra detta.",
     NOT_WANT_TO_DO_ANYMORE: "Jag vill inte göra detta längre.",
     NUMBER_1000: "Ange ett nummer mellan 1 och 1000.",
-    Number_of_Adults: "Antal vuxna",
-    Number_of_Children: "Antal barn",
+    Number_of_Adults: "Antal vuxna, 18 år och äldre",
+    Number_of_Children: "Antal barn, under 18 år",
     OK: "OK",
     OK_I_C: "OK, jag förstår.",
     ONE_MEMBER_HOUSEHOLD: "Det finns fortfarande medlemmar i ditt hushåll.",
@@ -914,7 +914,7 @@ angular.module('civis.youpower.translations',[])
     Show_me_less: "Visa mindre",
     Show_me_more: "Visa mer",
     Sign_up: "Registrera",
-    Size: "Storlek",
+    Size: "Storlek lägenhet",
     SIZE_M2: "i kvadratmeter",
     SORRY_ADD: "Tråkigt att den här aktiviteten inte passade. Vill du prova en annan?",
     SORRY_NOT_SUIT: "Tråkigt att den här aktiviteten inte passade. Prova gärna en annan?",
