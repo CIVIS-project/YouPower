@@ -4,7 +4,7 @@
 </ion-nav-buttons>
 <ion-content class="padding">
 <ion-refresher
-  pulling-text="Pull to refresh..."
+  pulling-text={{"Pull_to_refresh"|translate}}
   on-refresh="reloadCurrentHousehold()">
 </ion-refresher>
 <div class="list card" ng-if="households[currentUser.householdId].members.length > 1">
