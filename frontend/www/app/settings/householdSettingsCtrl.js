@@ -30,15 +30,17 @@ function HouseholdSettingsCtrl($scope, $filter, $translate, $state, $timeout, $i
 
 	$scope.removeAppliance= function(index) {
 
-		$scope.input.description = $scope.households[$scope.currentUser.householdId].appliancesList[index]; 
+		var description = $scope.households[$scope.currentUser.householdId].appliancesList[index]; 
+
+		//$scope.input.description = description; 
 		// $scope.households[$scope.currentUser.householdId].appliancesList.splice(index, 1);
 
-		Household.removeAppliance({id: $scope.currentUser.householdId},{appliance: $scope.input.description}).$promise.then(function(data){
+		Household.removeAppliance({id: $scope.currentUser.householdId},{appliance: description}).$promise.then(function(data){
 
 			$scope.households[$scope.currentUser.householdId].appliancesList = data.appliancesList; 
 			$ionicScrollDelegate.scrollBottom(); 
 		}, function(err){
-			$scope.input.description = ''; 
+			//$scope.input.description = ''; 
 		});
 	}
 
