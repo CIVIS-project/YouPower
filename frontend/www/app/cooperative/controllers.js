@@ -29,7 +29,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
   }
 
   $scope.changeComparison = function(){
-    updateEnergyData($scope.settings.type);
+    updateEnergyData();
   };
 
   $scope.changeType = function(type){
@@ -39,8 +39,19 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
   }
 
   $scope.changeGranularity = function(granularity){
-    $scope.settings.granularity = granularity;
-    updateEnergyData($scope.settings.type);
+    updateEnergyData($scope.settings.type,granularity).then(function(){
+      $scope.settings.granularity = granularity;
+    });
+  }
+
+  $scope.getCorrectDate = function(date) {
+    if(date) {
+      var result = new Date(date);
+      if($scope.settings.compareTo == 'COOPERATIVE_COMPARE_PREV_YEAR') {
+        result.setFullYear(result.getFullYear() - 1);
+      }
+      return result;
+    }
   }
 
   $scope.actionTypes = Cooperatives.getActionTypes();
@@ -94,7 +105,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
             }],
             tooltip: {
               shared: true,
-              valueSuffix: " MWh",
+              valueSuffix: " kWh/m<sup>2</sup>",
               valueDecimals: 0,
               pointFormat: '<span style="color:{point.color}">\u25CF </span><b>{point.y}</b><br/>'
             },
@@ -108,7 +119,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
           onSeries: 'dataseries',
           tooltip: {
             shared: true,
-            valueSuffix: " MWh",
+            valueSuffix: " kWh/m<sup>2</sup>",
             valueDecimals: 2
           }
         },{
@@ -116,7 +127,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
           onSeries: 'dataseries',
           tooltip: {
             shared: true,
-            valueSuffix: " MWh",
+            valueSuffix: " kWh/m<sup>2</sup>",
             valueDecimals: 2,
           }
         },{
@@ -148,38 +159,37 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
         func: function(chart) {
           $timeout(function(){
             chart.series[1].setVisible(false);
-            updateEnergyData($scope.settings.type);
-
+            updateEnergyData();
 
             // View functions that only make sense when data is loaded
             $scope.getMainMax = function(){
               // var chart = $scope.chartConfig.getHighcharts();
-              return _.max(chart.series[0].data,function(value){return value.y});
+              return _.chain(chart.series[0].data).reject(function(value){return !value || !value.y}).max(function(value){return value.y}).value();
             }
 
             $scope.getMainMin = function(){
               // var chart = $scope.chartConfig.getHighcharts();
-              return _.min(chart.series[0].data,function(value){return value.y});
+              return _.chain(chart.series[0].data).reject(function(value){return !value || !value.y}).min(function(value){return value.y}).value();
             }
 
             $scope.getMainAvg = function(){
               // var chart = $scope.chartConfig.getHighcharts();
-              return _.reduce(chart.series[0].data,function(memo, value){return memo + (value ? value.y : 0)},0)/chart.series[0].data.length;
+              return _.chain(chart.series[0].data).reject(function(value){return !value || !value.y}).reduce(function(memo, value){return memo + (value ? value.y : 0)},0)/chart.series[0].data.length;
             }
 
             $scope.getComparedMax = function(){
               // var chart = $scope.chartConfig.getHighcharts();
-              return _.max(chart.series[1].data,function(value){return value.y});
+              return _.chain(chart.series[1].data).reject(function(value){return !value || !value.y}).max(function(value){return value.y}).value();
             }
 
             $scope.getComparedMin = function(){
               // var chart = $scope.chartConfig.getHighcharts();
-              return _.min(chart.series[1].data,function(value){return value.y});
+              return _.chain(chart.series[1].data).reject(function(value){return !value || !value.y}).min(function(value){return value.y}).value();
             }
 
             $scope.getComparedAvg = function(){
               // var chart = $scope.chartConfig.getHighcharts();
-              return _.reduce(chart.series[1].data,function(memo, value){return memo + (value ? value.y : 0)},0)/chart.series[1].data.length;
+              return _.chain(chart.series[1].data).reject(function(value){return !value || !value.y}).reduce(function(memo, value){return memo + (value ? value.y : 0)},0)/chart.series[1].data.length;
             }
           });
         }
@@ -192,7 +202,9 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
   }
 
   // Updates the chart depending on the granularity, period, type of energy and comparison
-  var updateEnergyData = function(type) {
+  var updateEnergyData = function(type, granularity) {
+    type = type || $scope.settings.type;
+    granularity = granularity || $scope.settings.granularity;
     $scope.chartConfig.loading = true;
     var period;
     var chart = $scope.chartConfig.getHighcharts();
@@ -205,9 +217,11 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
       chart.series[0].update({color:'#33b1e2', name: $translate.instant('COOPERATIVE_DATA_HEATING')},false);
       chart.series[1].name = 'Heating & Hot watter';
     }
-    if($scope.settings.granularity == 'yearly'){
+    if(granularity == 'yearly'){
       var fromYear = startYear;
-      period = fromYear + '-' + toYear;
+      var current = new Date();
+      // Show new year only if there are already 2 months in it
+      period = fromYear + '-' + (current.getMonth() > 1 ? current.getFullYear() : current.getFullYear - 1);
     } else {
       var toMonth = padMonth(startDate.getMonth())
       startDate.setFullYear(startDate.getFullYear()-1);
@@ -217,7 +231,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
     }
     var results = [];
     results.push($scope.cooperative.getEnergyData(type,'month',period));
-    if($scope.settings.compareTo ==  "COOPERATIVE_COMPARE_PREV_YEAR" && $scope.settings.granularity == 'monthly'){
+    if($scope.settings.compareTo ==  "COOPERATIVE_COMPARE_PREV_YEAR" && granularity == 'monthly'){
       period = (fromYear -1) + fromMonth + '-' + (toYear-1) + toMonth;
       results.push($scope.cooperative.getEnergyData(type,'month',period));
     } else if($scope.settings.compareTo ==  "COOPERATIVE_COMPARE_AVG") {
@@ -227,13 +241,12 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
     }
     return $q.all(results).then(function(responses){
       _.each(responses,function(response,i){
-        if($scope.settings.granularity == 'yearly'){
+        if(granularity == 'yearly'){
           chart.series[i].setData(_.reduce(response.data,function(memo,value,index){
             if(index % 12 == 0){
-              var date = new Date(startYear + Math.floor(index/12),1,1);
-              memo.push({x:date, y:value/1000});
+              memo.push({x:Date.UTC(startYear + Math.floor(index/12),0), y:value/1});
             } else {
-              memo[memo.length - 1].y += value/1000;
+              memo[memo.length - 1].y += value;
             }
             return memo;
           },[]));
@@ -241,22 +254,23 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
           chart.series[i].setData(_.map(response.data,function(value, index){
             var date = new Date(startDate);
             date.setMonth(date.getMonth()+index)
-            return { x: Date.UTC(date.getFullYear(),date.getMonth()), y:value/1000}
+            return { x: Date.UTC(date.getFullYear(),date.getMonth()), y:value/1}
           }));
         }
         chart.series[i].setVisible(true);
       });
-      updateActionFlags();
+      updateActionFlags(granularity);
       chart.redraw();
       $scope.chartConfig.loading = false;
     });
   }
 
   // Update action flags
-  var updateActionFlags = function(){
+  var updateActionFlags = function(granularity){
+    granularity = granularity || $scope.settings.granularity;
     var data = [];
     var startDate = new Date($scope.settings.endDate);
-    if($scope.settings.granularity == "yearly"){
+    if(granularity == "yearly"){
       startDate.setFullYear(startYear);
     } else {
       startDate.setFullYear(startDate.getFullYear() - 1);
@@ -267,7 +281,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
       var date = new Date(action.date);
       if(date < $scope.settings.endDate && date >= startDate) {
         data.push({
-          x: Date.UTC(date.getFullYear(),$scope.settings.granularity == "yearly" ? 0 : date.getMonth()),
+          x: Date.UTC(date.getFullYear(),granularity == "yearly" ? 0 : date.getMonth()),
           title: (length - index) + "",
           text: action.name
         });
@@ -279,45 +293,48 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
 
   // Moves the chart one month forward/back
   $scope.move = function(direction) {
-    $scope.chartConfig.loading = true;
     var fn = direction > 0 ? _.last : _.first;
     var chart = $scope.chartConfig.getHighcharts();
     var date = new Date(fn(chart.series[0].data).x)
     date.setMonth(date.getMonth() + direction);
-    $scope.settings.endDate.setMonth($scope.settings.endDate.getMonth() + direction);
-    var period = date.getFullYear() + '' + padMonth(date.getMonth()+1);
-    var results = []
-    results.push($scope.cooperative.getEnergyData($scope.settings.type,'month',period));
-    if($scope.settings.compareTo ==  "COOPERATIVE_COMPARE_PREV_YEAR"){
-      period = (date.getFullYear() - 1) + '' + padMonth(date.getMonth()+1);
+    var currentStartOfMonth = new Date(new Date().setDate(1)).setHours(0,0,0,0);
+    if(date < currentStartOfMonth) {
+      $scope.chartConfig.loading = true;
+      $scope.settings.endDate.setMonth($scope.settings.endDate.getMonth() + direction);
+      var period = date.getFullYear() + '' + padMonth(date.getMonth()+1);
+      var results = []
       results.push($scope.cooperative.getEnergyData($scope.settings.type,'month',period));
-    } else if($scope.settings.compareTo ==  "COOPERATIVE_COMPARE_AVG") {
-      results.push($scope.cooperative.getAvgEnergyData($scope.settings.type,'month',period));
-    }
-    $q.all(results).then(function(responses){
-      var value1 = responses[0].data;
-      var value2 = responses.length == 2 ? responses[1].data : null;
-      if (value1 != null) {
-        if(direction > 0) {
-          chart.series[0].removePoint(0,false);
-          chart.series[0].addPoint({x:Date.UTC(date.getFullYear(),date.getMonth()),y:value1/1000},false,false);
-          chart.series[1].removePoint(0,false);
-          if (value2 != null) {
-            chart.series[1].addPoint({x:Date.UTC(date.getFullYear(),date.getMonth()),y:value2/1000},false,false);
-          }
-        } else {
-          chart.series[0].removePoint(11,false);
-          chart.series[0].addPoint({x:Date.UTC(date.getFullYear(),date.getMonth()),y:value1/1000},false,false);
-          chart.series[1].removePoint(11,false);
-          if (value2 != null) {
-            chart.series[1].addPoint({x:Date.UTC(date.getFullYear(),date.getMonth()),y:value2/1000},false,false);
-          }
-        }
-        updateActionFlags();
-        chart.redraw();
+      if($scope.settings.compareTo ==  "COOPERATIVE_COMPARE_PREV_YEAR"){
+        period = (date.getFullYear() - 1) + '' + padMonth(date.getMonth()+1);
+        results.push($scope.cooperative.getEnergyData($scope.settings.type,'month',period));
+      } else if($scope.settings.compareTo ==  "COOPERATIVE_COMPARE_AVG") {
+        results.push($scope.cooperative.getAvgEnergyData($scope.settings.type,'month',period));
       }
-      $scope.chartConfig.loading = false;
-    });
+      $q.all(results).then(function(responses){
+        var value1 = responses[0].data;
+        var value2 = responses.length == 2 ? responses[1].data : null;
+        if (value1 != null) {
+          if(direction > 0) {
+            chart.series[0].removePoint(0,false);
+            chart.series[0].addPoint({x:Date.UTC(date.getFullYear(),date.getMonth()),y:value1/1},false,false);
+            chart.series[1].removePoint(0,false);
+            if (value2 != null) {
+              chart.series[1].addPoint({x:Date.UTC(date.getFullYear(),date.getMonth()),y:value2/1},false,false);
+            }
+          } else {
+            chart.series[0].removePoint(11,false);
+            chart.series[0].addPoint({x:Date.UTC(date.getFullYear(),date.getMonth()),y:value1/1},false,false);
+            chart.series[1].removePoint(11,false);
+            if (value2 != null) {
+              chart.series[1].addPoint({x:Date.UTC(date.getFullYear(),date.getMonth()),y:value2/1},false,false);
+            }
+          }
+          updateActionFlags();
+          chart.redraw();
+        }
+        $scope.chartConfig.loading = false;
+      });
+    }
   }
 
   $scope.commentAction = function(action) {

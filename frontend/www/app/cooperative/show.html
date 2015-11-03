@@ -26,7 +26,7 @@
         </div>
         <div class="row" style="padding: 0px 10px">
           <small class="col col-100" ng-bind-html="'COOPERATIVE_DESCRIPTION' | translate:cooperative">
-          </small>
+          </small >
         </div>
       </div>
       <div class="item item-no-border-bottom">
@@ -49,17 +49,21 @@
           </select>
         </label>
         <div class="padding-top">
-          <h2>{{'COOPERATIVE_DATA_ENERGY_USE' | translate}} (MWh)</h2>
+          <h2>{{'COOPERATIVE_DATA_ENERGY_USE' | translate}} (kWh/m<sup>2</sup>)</h2>
           <table>
             <tr>
               <td class="padding-horizontal padding-top text-right">
                 max:
               </td class="padding-horizontal">
               <td ng-class="{balanced:settings.type == 'electricity', positive:settings.type == 'heating'}">
-                <b>{{getMainMax().y | number:2}}</b> ({{getMainMax().x | date:"MMM ''''yy"}})
+                <b>{{getMainMax().y | number:2}}</b>
+                <span ng-show="settings.granularity=='monthly'">({{getMainMax().x | date:"MMM ''''yy"}})</span>
+                <span ng-show="settings.granularity=='yearly'">({{getMainMax().x | date:"yyyy"}})</span>
               </td>
               <td class="padding-horizontal" ng-if="settings.compareTo">
-                <b>{{getComparedMax().y | number:2}}</b> ({{getComparedMax().x | date:"MMM ''''yy"}})
+                <b>{{getComparedMax().y | number:2}}</b>
+                <span ng-show="settings.granularity=='monthly'">({{getCorrectDate(getComparedMax().x) | date:"MMM ''''yy"}})</span>
+                <span ng-show="settings.granularity=='yearly'">({{getCorrectDate(getComparedMax().x) | date:"yyyy"}})</span>
               </td>
             </tr>
             <tr>
@@ -67,10 +71,14 @@
                 min:
               </td class="padding-horizontal">
               <td ng-class="{balanced:settings.type == 'electricity', positive:settings.type == 'heating'}">
-                <b>{{getMainMin().y | number:2}}</b> ({{getMainMin().x | date:"MMM ''''yy"}})
+                <b>{{getMainMin().y | number:2}}</b>
+                <span ng-show="settings.granularity=='monthly'">({{getMainMin().x| date:"MMM ''''yy"}})</span>
+                <span ng-show="settings.granularity=='yearly'">({{getMainMin().x | date:"yyyy"}})</span>
               </td>
               <td class="padding-horizontal" ng-if="settings.compareTo">
-                <b>{{getComparedMin().y | number:2}}</b> ({{getComparedMin().x | date:"MMM ''''yy"}})
+                <b>{{getComparedMin().y | number:2}}</b>
+                <span ng-show="settings.granularity=='monthly'">({{getCorrectDate(getComparedMin().x) | date:"MMM ''''yy"}})</span>
+                <span ng-show="settings.granularity=='yearly'">({{getCorrectDate(getComparedMin().x) | date:"yyyy"}})</span>
               </td>
             </tr>
             <tr>

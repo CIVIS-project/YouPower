@@ -86,7 +86,10 @@ var getConsumptionFromAPI = function(meterId, granularity, from, to, cb) {
 }
 
 var getConsumption = function(cooperative, type, granularity, from, to, cb) {
-  var cooperative = cooperative.toObject();
+  var cooperative = cooperative;
+  if(cooperative.constructor.name == 'model') {
+    cooperative = cooperative.toObject();
+  }
   var meterIds = _.filter(cooperative.meters, function(meter){ return meter.mType == type && meter.useInCalc});
   async.map(meterIds, function(meter,cb2){
     getConsumptionFromAPI(meter.meterId, granularity, from, to, cb2);
@@ -100,6 +103,9 @@ var getConsumption = function(cooperative, type, granularity, from, to, cb) {
         return _.reduce(data,function(memo, num){
           return memo + num
         },0);
+      })
+      .map(function(value){
+        return value / (cooperative.area ? cooperative.area : 1);
       })
       .value()
       cb(null,result);
@@ -117,7 +123,7 @@ var calculatePerformance = function(cooperative,cb) {
   } else {
     getConsumption(cooperative, 'heating', 'month', year - 1, null, function(err, result){
       if(!err) {
-        var value = _.reduce(result,function(memo,num){return memo + num;})/cooperative.area;
+        var value = _.reduce(result,function(memo,num){return memo + num;});
         cooperative.performances.push({
           year: year,
           area: cooperative.area,
@@ -423,10 +429,10 @@ exports.deleteEditor = function(id, coopEditorId, user, cb) {
 exports.getAvgConsumption = function(type, granularity, from, to, cb) {
   Cooperative.find({},function(err,cooperatives){
     async.map(cooperatives,function(cooperative,cb2){
-      cooperative = cooperative.toObject();
       getConsumption(cooperative, type, granularity, from, to, cb2);
     },function(err,coopsData){
       var avg = _.chain(coopsData)
+      .reject(_.isEmpty())
       .unzip()
       .map(function(data,index){
         return _.reduce(data,function(memo, num){

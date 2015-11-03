@@ -15,8 +15,8 @@ angular.module('civis.youpower.translations',[])
       se: 'Brf'
     },
     COOPERATIVE_DESCRIPTION: {
-      en: '{{name}} has a heated area of {{area}} m2, the building was constructed in {{yearOfConst}} and has ventilation type {{ventilationType}}.',
-      se: '<b>{{name}}</b> har en uppvärmd area på <b>{{area}} m2</b>, byggnadsår <b>{{yearOfConst}}</b> och ventilation av typen <b>{{ventilationType}}</b>.',
+      en: '{{name}} has a heated area of {{area}} m2, the building was constructed in {{yearOfConst}} and has ventilation type {{ventilationType.join(", ")}}.',
+      se: '<b>{{name}}</b> har en uppvärmd area på <b>{{area}} m2</b>, byggnadsår <b>{{yearOfConst}}</b> och ventilation av typen <b>{{ventilationType.join(", ")}}</b>.',
     },
     COOPERATIVE_ENERGY_ACTIONS : {
       en: 'Energy actions',
