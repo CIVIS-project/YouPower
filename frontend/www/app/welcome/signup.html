@@ -7,11 +7,13 @@
         YouPower
       </h1>
     </div>
-    <h1 class="text-center">
+    <!-- HIDDEN FOR SWEDISH TESTBED -->
+    <h1 class="text-center" ng-hide="testbed.isStockholm()">
       <i class="icon ion-earth"></i> <span translate>BE_MORE_GREEN</span><br/>
       <i class="icon ion-happy-outline"></i> <span translate>BE_MORE_SOCIAL</span><br/>
       <i class="icon ion-checkmark-circled"> <span translate>TAKE_ACTIONS</span></i>
     </h1>
+    <!-- END HIDDEN -->
     <p class="message text-center" translate>TERMS_CONDITION</p>
   </div>
   <form class="list" name="input">
