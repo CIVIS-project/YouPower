@@ -1,26 +1,49 @@
 <ion-list>
-  <ion-item class="item-text-wrap item-complex-left" ng-repeat="action in cooperative.actions | orderBy:'date':true" ng-click="action.showExtra = !action.showExtra">
-    <span class="badge badge-energized">{{cooperative.actions.length - $index}}</span>
-    <h2>
-      {{action.name}}
-    </h2>
-    <h4>
-      <span ng-repeat="id in action.types">{{actionTypes.getById(id).name}}{{$last?'':', '}}</span>
-    </h4>
-    <p>
-      {{action.date | date:"MMM yyyy"}}
-    </p>
+  <ion-item class="item-text-wrap" ng-repeat="action in filteredActions = (cooperative.actions | filter:actionFilter) | orderBy:'date':true" ng-class="{'item-button-right':canEditActions, 'item-complex-left':!canEditActions}">
+    <div class="item-complex-header" ng-click="action.showExtra = !action.showExtra">
+      <span class="badge badge-energized" ng-show="!canEditActions">{{filteredActions.length - $index}}</span>
+      <h2>
+        {{action.name}}
+      </h2>
+      <h4>
+        <span ng-repeat="id in action.types">{{'COOPERATIVE_ACTION_TYPE_' + id | translate}}{{$last?'':', '}}</span>
+      </h4>
+      <p>
+        {{action.date | date:"MMM yyyy"}}
+        <span style="float:right" ng-show="action.comments.length > 0 && !action.showExtra && !canEditActions">
+          <i class="icon ion-chatbox"></i> <span>{{action.commentsCount}}</span>
+        </span>
+      </p>
+    </div>
     <p ng-show="action.showExtra">
-      <b ng-show="action.cost">Cost: {{action.cost}} SEK<br></b>
+      <b ng-show="action.cost">{{ 'COOPERATIVE_ACTION_COST' | translate }}: {{action.cost}} SEK<br></b>
       {{action.description}}
     </p>
-    <ion-option-button ng-if="canEditActions" class="button-positive"
-                       ng-click="deleteAction(action)">
-      Delete
-    </ion-option-button>
-    <ion-option-button ng-if="canEditActions" class="button-info"
+    <button ng-if="canEditActions" class="button button-info clearfix"
                        ui-sref=".actionUpdate({id:action._id, action:action})">
-      Edit
-    </ion-option-button>
+      <i class="icon ion-edit"></i>
+    </button>
+
+
+    <div ng-show="action.showExtra && !canEditActions">
+      <span style="float:right" ng-show="action.showExtra">
+        <i class="icon ion-chatbox"></i> <span ng-show="action.commentsCount > 0">{{action.commentsCount}}</span>
+      </span>
+      <div class="clearfix"></div>
+      <hr>
+      <label class="item-input">
+        <textarea type="text" ng-model="action.newComment" placeholder={{"Give_your_comment"|translate}}></textarea>
+      </label>
+      <button class="button button-small button-dark button-right " ng-disabled="_.isEmpty(action.newComment)" ng-click="commentAction(action)" translate>Post</button>
+      <div class="clearfix"></div>
+      <hr>
+      <div ng-repeat="comment in action.comments | orderBy:'date':true">
+        <h3>{{comment.user.profile.name}} <span class="text-small">{{comment.date | date: "yyyy-MM-dd"}}</span></h3>
+        <p>{{comment.comment}}</p>
+        <a class="button button-clear button-stable icon-left ion-close button-small" ng-if="comment.user._id == currentUser._id" ng-click="deleteActionComment(action,comment)" translate>Delete</a>
+        <hr ng-show="!$last">
+      </div>
+      <button class="button button-block button-small button-stable" ng-if="action.commentsCount > action.comments.length" ng-click="loadMoreComments(action)"translate>LOAD_MORE</button>
+    </div>
   </ion-item>
 </ion-list>

@@ -3,6 +3,15 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" sizes="192x192" href="img/icon192.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="apple-touch-icon-144x144.png">
+  <link rel="apple-touch-startup-image" href="/img/splash.png">
 
 	<title></title>
 
@@ -46,12 +55,14 @@
 	<script src="app/shared/cooperatives.js"></script>
 	<script src="app/shared/household.js"></script>
 	<script src="app/shared/rating.js"></script>
+	<script src="app/shared/testbed.js"></script>
 	<script src="app/shared/translations.js"></script>
 	<script src="app/shared/user.js"></script>
+	<script src="app/welcome/signupCtrl.js"></script>
 	<script src="app/welcome/welcomeCtrl.js"></script>
 	<!-- endinject -->
 
-  <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyAI7j4LZI132q62VGRFRfOsZlIOIavRrk8&sensor=true"></script>
+  <script src="//maps.googleapis.com/maps/api/js?key=AIzaSyAI7j4LZI132q62VGRFRfOsZlIOIavRrk8&sensor=true"></script>
 </head>
 <body ng-app="civis.youpower">
 	<ion-nav-view>

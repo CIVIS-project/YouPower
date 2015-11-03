@@ -51,8 +51,8 @@ exports.households = [
   {
     apartmentId: 1234,
     address: 'my address',
-    householdType: 'apartment',
-    householdSize: '20m2',
+    houseType: 'Apartment',
+    size: 20,
     familyComposition: {
       NumAdults: 2,
       NumKids: 0
@@ -65,8 +65,8 @@ exports.households = [
   {
     apartmentId: 1235,
     address: 'my address 2',
-    householdType: 'house',
-    householdSize: '40m2',
+    houseType: 'House',
+    size: 40,
     familyComposition: {
       NumAdults: 2,
       NumKids: 1
@@ -77,3 +77,118 @@ exports.households = [
     ]
   }
 ];
+
+exports.testbeds = [
+  {
+    name: 'Stockholm - Fårdala',
+    _id: '562e2919b15c6e0ebb8ca53f'
+  },
+  {
+    name: 'Stockholm - Hammarby Sjöstad',
+    _id: '562e2919b15c6e0ebb8ca540'
+  },
+  {
+    name: 'Trentino - Storo',
+    _id: '562e2919b15c6e0ebb8ca541'
+  },
+  {
+    name: 'Trentino - San Lorenzo in Banale',
+    _id: '562e2919b15c6e0ebb8ca542'
+  }
+];
+
+exports.cooperatives = [
+  {
+    _id: '563899954a420074989dfb99',
+    name: 'Brf Grynnan',
+    yearOfConst: 2004,
+    area: 10974,
+    noOfApart: 121,
+    ventilationType: [ "FTX (mekanisk från- och tilluft med återvinning)", "F (mekanisk frånluftsventilation)"],
+    lat: 59.303065,
+    lng: 18.101027,
+    meters: [{
+      mType: 'heating',
+      meterId: '56091c23b684f25e008b4769',
+      useInCalc: true,
+    },{
+      mType: 'electricity',
+      meterId: '56091d17aee3a861008b477f',
+      useInCalc: true,
+    },{
+      mType: 'electricity',
+      meterId: '56091d17aee3a861008b4780',
+      useInCalc: false,
+    },]
+  },{
+    _id: '563899954a420074989dfb9d',
+    name: 'Brf Hammarby Kanal',
+    yearOfConst: 2001,
+    area: 4889,
+    noOfApart: 38,
+    ventilationType: [ "F (mekanisk frånluftsventilation)"],
+    lat: 59.303456,
+    lng: 18.108517,
+    meters: [
+    ]
+  },{
+    _id: '563899954a420074989dfb9e',
+    name: 'Brf Seglatsen',
+    yearOfConst: 2007,
+    area: 15692,
+    noOfApart: 137,
+    ventilationType: [ "FTX (mekanisk från- och tilluft med återvinning)"],
+    lat: 59.304689,
+    lng: 18.090044,
+    meters: [{
+      mType: 'heating',
+      meterId: '56091c5faee3a861008b4775',
+      useInCalc: true,
+    },{
+      mType: 'electricity',
+      meterId: '56091d47b684f25f008b47b1',
+      useInCalc: true,
+    },
+    ]
+  },{
+    _id: '563899954a420074989dfba1',
+    name: 'Brf Sickla Kanal',
+    yearOfConst: 2002,
+    area: 7706,
+    noOfApart: 66,
+    ventilationType: [ "FTX (mekanisk från- och tilluft med återvinning)", "F (mekanisk frånluftsventilation)"],
+    lat: 59.303615,
+    lng: 18.104175,
+    meters: [{
+      mType: 'heating',
+      meterId: '56091c58aee3a861008b4774',
+      useInCalc: true,
+    },{
+      mType: 'electricity',
+      meterId: '56091d3aaee3a861008b4788',
+      useInCalc: true,
+    },{
+      mType: 'electricity',
+      meterId: '56091d3aaee3a861008b478a',
+      useInCalc: true,
+    },
+    ]
+  },{
+    _id: '563899954a420074989dfba5',
+    name: 'Brf Älven',
+    yearOfConst: 2003,
+    area: 8231,
+    noOfApart: 69,
+    ventilationType: [ "FVP (frånluftsvärmepump)"],
+    lat: 59.303623,
+    lng: 18.109971,
+    meters: [{
+      mType: 'heating',
+      meterId: '56091c27aee3a860008b482b',
+      useInCalc: true,
+    },
+    ]
+  },
+
+]
+

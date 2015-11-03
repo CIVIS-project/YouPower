@@ -1509,21 +1509,21 @@ describe('models', function() {
     });
     it('should update address', function(done) {
       models.households.updateAddress(dbHouseholds[0]._id, dbHouseholds[1].address,
-       dbHouseholds[1].householdSize, dbHouseholds[1].householdType , function(err) {
+       dbHouseholds[1].size, dbHouseholds[1].houseType , function(err) {
         if (err) {
           return done(err);
         }
         models.households.get(dbHouseholds[0]._id, function(err, household) {
           household.address.should.equal(dbHouseholds[1].address);
-          household.householdType.should.equal(dbHouseholds[1].householdType);
-          household.householdSize.should.equal(dbHouseholds[1].householdSize);
+          household.houseType.should.equal(dbHouseholds[1].houseType);
+          household.size.should.equal(dbHouseholds[1].size);
           done(err);
         });
       });
     });
     it('should update misc household details', function(done) {
       models.households.updateHousehold(dbHouseholds[0]._id, dbHouseholds[1].familyComposition,
-       dbHouseholds[1].householdSize, dbHouseholds[1].householdType , function(err) {
+       dbHouseholds[1].size, dbHouseholds[1].houseType , function(err) {
         if (err) {
           return done(err);
         }
@@ -1532,8 +1532,8 @@ describe('models', function() {
           .should.equal(dbHouseholds[1].familyComposition.NumAdults);
           household.familyComposition.NumKids
           .should.equal(dbHouseholds[1].familyComposition.NumKids);
-          household.householdType.should.equal(dbHouseholds[1].householdType);
-          household.householdSize.should.equal(dbHouseholds[1].householdSize);
+          household.houseType.should.equal(dbHouseholds[1].houseType);
+          household.size.should.equal(dbHouseholds[1].size);
           done(err);
         });
       });

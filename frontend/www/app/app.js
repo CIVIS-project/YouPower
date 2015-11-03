@@ -33,23 +33,24 @@ angular.module('civis.youpower', [
 
   $rootScope.$on('$stateChangeStart', function (event, next, nextParams, fromState) {
 
-    // console.log("stateChangeStart: 1." + fromState.name + " 2." + next.name + " isAuthenticated: "+AuthService.isAuthenticated()); 
+    // console.log("stateChangeStart: 1." + fromState.name + " 2." + next.name + " isAuthenticated: "+AuthService.isAuthenticated());
 
    if (!AuthService.isAuthenticated()) {
 
       if (next.name !== 'welcome' && next.name !== 'signup'){
           event.preventDefault();
-          $state.go('welcome'); 
+          $state.go('welcome');
       }
     }
-  }); 
+  });
 
   $rootScope.$on('$stateChangeError', function(event, next, nextParams, fromState, fromParams, error) {
-
-      // console.log("stateChangeError: 1." + fromState.name + " 2." + next.name); 
+      console.error("State Change error occurred!");
+      console.error(arguments);
+      // console.log("stateChangeError: 1." + fromState.name + " 2." + next.name);
       if (next.name !== 'welcome' && next.name !== 'signup'){
           event.preventDefault();
-          $state.go('welcome'); 
+          $state.go('welcome');
       }
   });
 
@@ -86,9 +87,31 @@ angular.module('civis.youpower', [
   })
 
   .state('signup', {
-    url: "/signup",
+    url: "/signup?tid&cid",
     templateUrl: "app/welcome/signup.html",
-    controller: 'WelcomeCtrl'
+    controller: 'SignupCtrl',
+    resolve: {
+      Testbed: 'Testbed',
+      Cooperative: 'Cooperatives',
+      testbed: function(Testbed,$stateParams){
+        if($stateParams.tid){
+          return Testbed.get({id:$stateParams.tid},function(data){
+            return data;
+          },function(){return null}).$promise;
+        }else {
+          return null;
+        }
+      },
+      cooperative: function(Cooperative,$stateParams){
+        if($stateParams.cid){
+          return Cooperative.get({id:$stateParams.cid},function(data){
+            return data;
+          },function(){return null}).$promise;
+        }else {
+          return null;
+        }
+      }
+    }
   })
 
   // setup an abstract state that will contain the main navigation (i.e. menu)
@@ -238,6 +261,7 @@ angular.module('civis.youpower', [
 
 .state('main.cooperative.my',{
   url: '/my',
+  cached: false,
   views: {
     'tab-my': {
       templateUrl: 'app/cooperative/show.html',
@@ -248,6 +272,7 @@ angular.module('civis.youpower', [
 
 .state('main.cooperative.list',{
   url: '/list',
+  cached: false,
   views: {
     'tab-list': {
       templateUrl: 'app/cooperative/index.html',
@@ -275,7 +300,7 @@ angular.module('civis.youpower', [
 .state('main.cooperative.my.edit', {
   url: '/edit',
   views: {
-    'menuContent@main': {
+    'tab-my@main.cooperative': {
       templateUrl: 'app/cooperative/edit.html',
       controller: 'CooperativeEditCtrl'
     }
@@ -285,7 +310,7 @@ angular.module('civis.youpower', [
 .state('main.cooperative.my.edit.actionAdd', {
   url: '/action',
   views: {
-    'menuContent@main': {
+    'tab-my@main.cooperative': {
       templateUrl: 'app/cooperative/editAction.html',
       controller: 'CooperativeActionAddCtrl'
     }
@@ -295,7 +320,7 @@ angular.module('civis.youpower', [
 .state('main.cooperative.my.edit.actionUpdate', {
   url: '/action/:id',
   views: {
-    'menuContent@main': {
+    'tab-my@main.cooperative': {
       templateUrl: 'app/cooperative/editAction.html',
       controller: 'CooperativeActionUpdateCtrl'
     }
@@ -354,7 +379,7 @@ angular.module('civis.youpower', [
           if (currentUser.householdId) {
             return Household.get({id: currentUser.householdId}).$promise;
           }else{return null;}
-          
+
         }
       }
     }

@@ -35,43 +35,6 @@ db.once('open', function() {
 
   async.series([
       function(cb) {
-        // default user who created all the other default models
-        createIfNotExist('users', 'email', defaults.user, function(err, result) {
-          // store the userId
-          defaultUserId = result._id;
-          cb(err);
-        });
-      }, function(cb) {
-        // actions
-        async.eachSeries(defaults.actions, function(action, eachCb) {
-          action.authorId = defaultUserId;
-          createIfNotExist('actions', 'name', action, function(err) {
-            eachCb(err);
-          });
-        }, function(err) {
-          cb(err);
-        });
-      }, function(cb) {
-        // communities
-        async.eachSeries(defaults.communities, function(community, eachCb) {
-          community.authorId = defaultUserId;
-          createIfNotExist('communities', 'name', community, function(err) {
-            eachCb(err);
-          });
-        }, function(err) {
-          cb(err);
-        });
-      }, function(cb) {
-        // households
-        async.eachSeries(defaults.households, function(household, eachCb) {
-          household.authorId = defaultUserId;
-          createIfNotExist('households', 'name', household, function(err) {
-            eachCb(err);
-          });
-        }, function(err) {
-          cb(err);
-        });
-      }, function(cb) {
         // testbeds
         async.eachSeries(defaults.testbeds, function(testbed, eachCb) {
           createIfNotExist('testbeds', 'name', testbed, function(err) {

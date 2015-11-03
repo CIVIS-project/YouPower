@@ -7,11 +7,13 @@
         YouPower
       </h1>
     </div>
-    <h1 class="text-center">
+    <!-- HIDDEN FOR SWEDISH TESTBED -->
+    <h1 class="text-center" ng-hide="testbed.isStockholm()">
       <i class="icon ion-earth"></i> <span translate>BE_MORE_GREEN</span><br/>
       <i class="icon ion-happy-outline"></i> <span translate>BE_MORE_SOCIAL</span><br/>
-      <i class="icon ion-checkmark-circled"> <span translate>TAKE_ACTIONS</span></i> 
+      <i class="icon ion-checkmark-circled"> <span translate>TAKE_ACTIONS</span></i>
     </h1>
+    <!-- END HIDDEN -->
     <p class="message text-center" translate>TERMS_CONDITION</p>
   </div>
   <form class="list" name="input">
@@ -35,7 +37,50 @@
       <input type="password" name="password2" placeholder={{"Repeat_your_password"|translate}} ng-model="loginData.password2" ng-change="comparePasswords()" required>
       <span class="errors_icon pos_left" ng-show="!isPasswordsSame"><i class="icon ion-alert-circled"></i></span>
     </label>
-    <label class="item item-input item-select">
+    <!-- SWEDISH TESTBEDS ONLY -->
+    <div ng-if="testbed.isStockholm()">
+      <div class="item item-divider" translate>Household_Profile</div>
+      <label class="item item-input" >
+        <span class="input-label" translate>COOPERATIVE</span>
+        <span class="input-label" translate>{{cooperative.name}}</span>
+      </label>
+      <!-- <label class="item item-input" >
+        <span class="input-label" translate>HOUSEHOLD_ID</span>
+        <input type="text" name="identifier" placeholder={{"Enter_your_identifier"|translate}} ng-model="loginData.household.householdId" required>
+        <span class="errors_icon pos_left" ng-show="input.identifier.$error.required"><i class="icon ion-alert-circled"></i></span>
+      </label>
+      <label class="item item-input item-select">
+        <span class="input-label" translate>House_type</span>
+         <select ng-model="loginData.household.houseType" ng-change="setHouseInfoChanged()">
+          <option translate>Apartment</option>
+          <option translate>Town_house</option>
+          <option translate>Detached_house</option>
+        </select>
+      </label>
+      <label class="item item-input item-select">
+        <span class="input-label" translate>Ownership</span>
+         <select ng-model="loginData.household.ownership" ng-change="setHouseInfoChanged()">
+          <option translate>Rental</option>
+          <option translate>Owner</option>
+        </select>
+      </label> -->
+      <label class="item item-input">
+        <span class="input-label" translate>Size</span>
+        <input type="number" ng-model="loginData.household.size" ng-change="setHouseInfoChanged()" placeholder={{"SIZE_M2"|translate}}>
+      </label>
+      <div class="item item-divider" translate>Household_Composition</div>
+      <label class="item item-input">
+        <span class="input-label" translate>Adults</span>
+        <input type="number" ng-model="loginData.household.composition.numAdults" ng-change="setHouseholdCompositionChanged()" placeholder={{"Number_of_Adults"|translate}}>
+      </label>
+      <label class="item item-input">
+        <span class="input-label" translate>Children</span>
+        <input type="number" ng-model="loginData.household.composition.numChildren" ng-change="setHouseholdCompositionChanged()" placeholder={{"Number_of_Children"|translate}}>
+      </label>
+    </div>
+    <!-- END OF SWEDISH TESTBEDS ONLY -->
+    <!-- HIDDEN FOR SWEDISH TESTBED -->
+    <label class="item item-input item-select" ng-hide="testbed.isStockholm()">
       <span class="input-label" translate>Preferred_Language</span>
       <select ng-model="loginData.language" ng-change="languageChanged()">
         <option translate>English</option>
@@ -43,14 +88,14 @@
         <option translate>Swedish</option>
       </select>
     </label>
-
+    <!-- END HIDDEN -->
     <a class="button button-dark button-full text-bold" ng-disabled="!_.isEmpty(input.$error) || !isPasswordsSame" ng-click="signup(input.$error)" translate>Sign_up</a>
     <p class="errors text-center" ng-show="signinClicked && isRejected">
       {{loginData.err}}. <span translate>TRY_AGAIN</span>
     </p>
-  </form> 
+  </form>
 
-  <a ng-click="gotoSignin()" class="button button-balanced button-full text-bold"translate>LOGIN_HERE</a>
+  <a ui-sref="welcome" class="button button-balanced button-full text-bold"translate>LOGIN_HERE</a>
 
 
 </ion-content>

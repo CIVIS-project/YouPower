@@ -1,10 +1,10 @@
 $chartHeight: 300px;
 
-$energyClasses: (A: #009036, B:#55AB26, C:#C8D200, D:#FFED00, E:#FBBA00, F:#EB6909, G:#E2001A);
+$energyClasses: (A: #009036, B:#55AB26, C:#C8D200, D:#FFED00, E:#FBBA00, F:#EB6909, G:#E2001A, unknown: #bbbbbb);
 
 .chart-container {
-  padding-left: 38px;
-  padding-right: 38px;
+  padding-left: 28px;
+  padding-right: 28px;
   position: relative;
 
   #chart {
@@ -20,11 +20,11 @@ $energyClasses: (A: #009036, B:#55AB26, C:#C8D200, D:#FFED00, E:#FBBA00, F:#EB69
 
 
     &.ion-chevron-right {
-      right: 0;
+      right: -10px;
     }
 
     &.ion-chevron-left {
-      left: 0;
+      left: -10px;
     }
 
     &:before, &:after {

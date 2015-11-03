@@ -229,11 +229,39 @@ ul.rating li {
   color: $light;
 }
 
-.item-complex-left .item-content {
+.item-no-border-bottom {
+  border-bottom: none;
+}
+
+.item-complex-left .item-complex-header {
   padding-left: 49px;
   padding-right: 16px;
   .badge {
-    right: unset;
+    right: initial;
     left: 16px;
   }
 }
+
+
+.button.button-multiline {
+  padding: 6px 16px;
+  white-space: normal;
+  line-height: normal;
+}
+
+.item-select.select-small {
+  padding: 0 0 0 16px;
+  select {
+    padding: 5px 45px 5px 0;
+    font-size: 12px;
+  }
+
+  .input-label {
+    font-size: 12px;
+  }
+}
+
+.button.active {
+  font-weight: bold;
+}
+

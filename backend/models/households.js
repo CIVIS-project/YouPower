@@ -94,8 +94,9 @@ exports.create = function(household, cb) {
   Household.create({
     // apartmentId: household.apartmentId,
     address: household.address,
-    householdType: household.householdType,
-    householdSize: household.householdSize,
+    houseType: household.houseType,
+    ownership: household.ownership,
+    size: household.size,
     composition: household.composition,
     appliancesList: household.appliancesList,
     energyVal: household.energyVal,
@@ -235,8 +236,8 @@ exports.updateAddress = function(id, newAddress, size, type, cb) {
   Household.findByIdAndUpdate(id, {
     $set : {
       address: newAddress,
-      householdType: type,
-      householdSize: size
+      houseType: type,
+      size: size
     }
   }, cb);
 };
@@ -246,8 +247,8 @@ exports.update = function(id, profile, cb) {
   // Household.findByIdAndUpdate(id, {
   //   $set : {
   //     composition: composition,
-  //     householdSize: size,
-  //     householdType: type
+  //     size: size,
+  //     houseType: type
   //   }
   // }, cb);
 

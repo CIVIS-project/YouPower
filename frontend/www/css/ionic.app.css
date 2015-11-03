@@ -7848,16 +7848,35 @@ ul.rating li {
   /* Note, this must be half the font size */
   color: #fff; }
 
-.item-complex-left .item-content {
+.item-no-border-bottom {
+  border-bottom: none; }
+
+.item-complex-left .item-complex-header {
   padding-left: 49px;
   padding-right: 16px; }
-  .item-complex-left .item-content .badge {
-    right: unset;
+  .item-complex-left .item-complex-header .badge {
+    right: initial;
     left: 16px; }
 
+.button.button-multiline {
+  padding: 6px 16px;
+  white-space: normal;
+  line-height: normal; }
+
+.item-select.select-small {
+  padding: 0 0 0 16px; }
+  .item-select.select-small select {
+    padding: 5px 45px 5px 0;
+    font-size: 12px; }
+  .item-select.select-small .input-label {
+    font-size: 12px; }
+
+.button.active {
+  font-weight: bold; }
+
 .chart-container {
-  padding-left: 38px;
-  padding-right: 38px;
+  padding-left: 28px;
+  padding-right: 28px;
   position: relative; }
   .chart-container #chart {
     height: 300px; }
@@ -7869,9 +7888,9 @@ ul.rating li {
     max-height: none;
     font-size: 30px; }
     .chart-container .chart-navigation.ion-chevron-right {
-      right: 0; }
+      right: -10px; }
     .chart-container .chart-navigation.ion-chevron-left {
-      left: 0; }
+      left: -10px; }
     .chart-container .chart-navigation:before, .chart-container .chart-navigation:after {
       vertical-align: middle; }
 
@@ -7895,6 +7914,9 @@ ul.rating li {
 
 .energy-class-G {
   color: #E2001A; }
+
+.energy-class-unknown {
+  color: #bbbbbb; }
 
 .bigger-1 {
   font-size: 1.5em; }

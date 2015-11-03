@@ -1,75 +1,91 @@
 <ion-view view-title="{{cooperative.name}}">
   <ion-nav-buttons side="secondary">
     <a ui-sref=".cooperative.my.edit" class="button button-clear button-positive" ng-if="currentUser.cooperativeId == cooperative._id">
-      Edit
+      {{'EDIT' | translate}}
     </a>
   </ion-nav-buttons>
   <ion-content>
     <div class="list">
-      <div class="item item-body">
+      <div class="item item-body" style="padding: 10px 0px;">
         <div class="row">
-          <div class="col col-20 text-right">
-            <i class="icon flaticon-building80 bigger-2 energy-class-{{cooperative.energyClass}}"></i>
+          <div class="col col-100">
+            <div style="float: right; margin-left: 5px;">
+              <span class="bigger-2 energized"><b>{{cooperative.actions.length}}</b></span>
+            </div>
+            <div style="float:right;" class="text-right">
+              {{'COOPERATIVE_ENERGY_ACTIONS' | translate}}
+            </div>
+            <div style="float: left" class="text-right">
+              <i class="icon flaticon-building80 bigger-2 energy-class-{{cooperative.getEnergyClass()}}"></i>
+            </div>
+            <div>
+              <b>{{cooperative.performance | number:0}}</b>
+              <small>kWh/m<sup>2</sup></small>
+            </div>
           </div>
-          <div class="col">
-            {{cooperative.performance}} kWh/m2
-          </div>
-          <div class="col text-right">
-            Energy actions
-          </div>
-          <div class="col col-20">
-            <span class="bigger-2">{{cooperative.actions.length}}</span>
-          </div>
+        </div>
+        <div class="row" style="padding: 0px 10px">
+          <small class="col col-100" ng-bind-html="'COOPERATIVE_DESCRIPTION' | translate:cooperative">
+          </small >
         </div>
       </div>
-      <div class="item">
+      <div class="item item-no-border-bottom">
         <div class="button-bar">
-          <a class="button" ng-class="{active:settings.granularity=='monthly'}" ng-click="changeGranularity('monthly')">Monthly</a>
-          <a class="button" ng-class="{active:settings.granularity=='yearly'}" ng-click="changeGranularity('yearly')">Yearly</a>
+          <a class="button button-small button-mulitline" ng-class="{active:settings.granularity=='monthly'}" ng-click="changeGranularity('monthly')">
+          {{'COOPERATIVE_DATA_MONTHLY' | translate}}</a>
+          <a class="button button-small button-multiline" ng-class="{active:settings.granularity=='yearly'}" ng-click="changeGranularity('yearly')">{{'COOPERATIVE_DATA_YEARLY' | translate}}</a>
         </div>
         <div class="button-bar padding-top padding-bottom">
-          <a class="button" ng-class="{active:settings.type == 'heating'}" ng-click="changeType('heating')">Heating & Hot water</a>
-          <a class="button" ng-class="{active:settings.type == 'electricity'}" ng-click="changeType('electricity')">Electricity</a>
+          <a class="button button-small button-multiline" ng-class="{active:settings.type == 'heating',positive:settings.type == 'heating'}" ng-click="changeType('heating')">{{'COOPERATIVE_DATA_HEATING' | translate}}</a>
+          <a class="button button-small button-multiline" ng-class="{active:settings.type == 'electricity', balanced:settings.type == 'electricity'}" ng-click="changeType('electricity')">{{'COOPERATIVE_DATA_ELECTRICITY' | translate}}</a>
         </div>
         <div>
-         <label class="item item-input item-select">
+         <label class="item item-input item-select select-small">
           <div class="input-label">
-            Compare to
+            {{'COOPERATIVE_DATA_COMPARE' | translate}}
           </div>
           <select ng-model="settings.compareTo" ng-change="changeComparison()">
-            <option ng-repeat="option in comparisons" value="{{option.name}}">{{option.name}}</option>
+            <option ng-repeat="option in comparisons" value="{{option.name}}" translate>{{option.name}}</option>
           </select>
         </label>
         <div class="padding-top">
-          <h2>Energy use (MWh)</h2>
+          <h2>{{'COOPERATIVE_DATA_ENERGY_USE' | translate}} (kWh/m<sup>2</sup>)</h2>
           <table>
             <tr>
               <td class="padding-horizontal padding-top text-right">
                 max:
               </td class="padding-horizontal">
-              <td class="electricity">
-                <b>{{getMainMax().y | number:2}}</b> ({{getMainMax().x | date:"MMM yyyy"}})
+              <td ng-class="{balanced:settings.type == 'electricity', positive:settings.type == 'heating'}">
+                <b>{{getMainMax().y | number:2}}</b>
+                <span ng-show="settings.granularity=='monthly'">({{getMainMax().x | date:"MMM ''''yy"}})</span>
+                <span ng-show="settings.granularity=='yearly'">({{getMainMax().x | date:"yyyy"}})</span>
               </td>
               <td class="padding-horizontal" ng-if="settings.compareTo">
-                <b>{{getComparedMax().y | number:2}}</b> ({{getComparedMax().x | date:"MMM yyyy"}})
+                <b>{{getComparedMax().y | number:2}}</b>
+                <span ng-show="settings.granularity=='monthly'">({{getCorrectDate(getComparedMax().x) | date:"MMM ''''yy"}})</span>
+                <span ng-show="settings.granularity=='yearly'">({{getCorrectDate(getComparedMax().x) | date:"yyyy"}})</span>
               </td>
             </tr>
             <tr>
               <td class="padding-horizontal text-right">
                 min:
               </td class="padding-horizontal">
-              <td class="electricity">
-                <b>{{getMainMin().y | number:2}}</b> ({{getMainMin().x | date:"MMM yyyy"}})
+              <td ng-class="{balanced:settings.type == 'electricity', positive:settings.type == 'heating'}">
+                <b>{{getMainMin().y | number:2}}</b>
+                <span ng-show="settings.granularity=='monthly'">({{getMainMin().x| date:"MMM ''''yy"}})</span>
+                <span ng-show="settings.granularity=='yearly'">({{getMainMin().x | date:"yyyy"}})</span>
               </td>
               <td class="padding-horizontal" ng-if="settings.compareTo">
-                <b>{{getComparedMin().y | number:2}}</b> ({{getComparedMin().x | date:"MMM yyyy"}})
+                <b>{{getComparedMin().y | number:2}}</b>
+                <span ng-show="settings.granularity=='monthly'">({{getCorrectDate(getComparedMin().x) | date:"MMM ''''yy"}})</span>
+                <span ng-show="settings.granularity=='yearly'">({{getCorrectDate(getComparedMin().x) | date:"yyyy"}})</span>
               </td>
             </tr>
             <tr>
               <td class="padding-horizontal padding-bottom text-right">
-                average:
+                {{'COOPERATIVE_DATA_AVERAGE' | translate}}:
               </td class="padding-horizontal">
-              <td class="electricity">
+              <td ng-class="{balanced:settings.type == 'electricity', positive:settings.type == 'heating'}">
                 <b>{{getMainAvg() | number:2}}</b>
               </td>
               <td class="padding-horizontal" ng-if="settings.compareTo">
@@ -78,13 +94,13 @@
             </tr>
           </table>
         </div>
-        <div class="chart-container">
-          <a class="button button-clear button-stable chart-navigation ion-chevron-left" ng-click="move(-1)" ng-disabled="chartConfig.loading" ng-hide="settings.granularity=='yearly'"></a>
-          <highchart id="chart" config="chartConfig"></highchart>
-          <a class="button button-clear button-stable chart-navigation ion-chevron-right" ng-click="move(1)" ng-disabled="chartConfig.loading" ng-hide="settings.granularity=='yearly'"></a>
-        </div>
+      </div>
+    </div>
+      <div class="chart-container">
+        <a class="button button-clear button-stable chart-navigation ion-chevron-left" ng-click="move(-1)" ng-disabled="chartConfig.loading" ng-hide="settings.granularity=='yearly'"></a>
+        <highchart id="chart" config="chartConfig"></highchart>
+        <a class="button button-clear button-stable chart-navigation ion-chevron-right" ng-click="move(1)" ng-disabled="chartConfig.loading" ng-hide="settings.granularity=='yearly'"></a>
       </div>
       <div ng-include src="'app/cooperative/actions.html'"></div>
-    </div>
   </ion-content>
 </ion-view>

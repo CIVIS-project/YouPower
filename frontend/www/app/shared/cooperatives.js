@@ -1,7 +1,7 @@
 angular.module('civis.youpower')
 
 .factory('Cooperatives', function($resource, $http, Config) {
-  var result = $resource(Config.host + '/api/cooperative/:id', {id:'@id'},{
+  var result = $resource(Config.host + '/api/cooperative/:id', {id:'@_id'},{
     update: {
       method: 'PUT'
     },
@@ -16,79 +16,104 @@ angular.module('civis.youpower')
     deleteAction: {
       method: 'DELETE',
       url: Config.host + '/api/cooperative/:id/action/:actionId'
+    },
+    commentAction: {
+      method: 'POST',
+      url: Config.host + '/api/cooperative/:id/action/:actionId/comment'
+    },
+    getMoreComments: {
+      method: 'GET',
+      isArray: true,
+      url: Config.host + '/api/cooperative/:id/action/:actionId/comment'
+    },
+    deleteActionComment: {
+      method: 'DELETE',
+      url: Config.host + '/api/cooperative/:id/action/:actionId/comment/:commentId'
     }
   });
 
   result.prototype.getEnergyData = function(type, granularity, period){
-    var meterId = this.meters[type];
-    return $http.get("https://app.energimolnet.se/api/2.0/consumptions/" +
-      meterId + "/" +
-      granularity + "/" +
-      period + "?metrics=energy",{
+    return $http.get(Config.host + '/api/cooperative/' + this._id + '/consumption/' +
+      type + "/" +
+      granularity + "?from=" +
+      period,{
         cached:true,
-        headers:{
-          'Authorization':'OAuth a4f4e751401477d5e3f1c68805298aef9807c0eae1b31db1009e2ee90c6e'
-        }
-
       })
   };
 
-  result.VentilationTypes = ["FTX (mekanisk från- och tilluft med återvinning)","FVP (frånluftsvärmepump)","F(mekanisk frånluftsventilation)","FT (mekanisk från- och tilluftsventilation)","S (självdragsventilation)","Vet ej","Övrig"]
+  result.prototype.getAvgEnergyData = function(type, granularity, period) {
+    return $http.get(Config.host + '/api/cooperative/consumption/' +
+      type + "/" +
+      granularity + "?from=" +
+      period,{
+        cached:true,
+      })
+  };
+
+  var energyClassReqValue = 70;
+
+  result.prototype.getEnergyClass = function() {
+    if(this.performance <= energyClassReqValue * 0.5) {
+      return 'A';
+    } else if(this.performance > energyClassReqValue * 0.5 && this.performance <= energyClassReqValue * 0.75) {
+      return 'B';
+    } else if(this.performance > energyClassReqValue * 0.75 && this.performance <= energyClassReqValue * 1.0) {
+      return 'C';
+    } else if(this.performance > energyClassReqValue * 1.0 && this.performance <= energyClassReqValue * 1.35) {
+      return 'D';
+    } else if(this.performance > energyClassReqValue * 1.35 && this.performance <= energyClassReqValue * 1.8) {
+      return 'E';
+    } else if(this.performance > energyClassReqValue * 1.8 && this.performance <= energyClassReqValue * 2.35) {
+      return 'F';
+    } else if(this.performance > energyClassReqValue * 2.35) {
+      return 'G';
+    } else {
+      return 'unknown';
+    }
+  }
+
+  result.VentilationTypes = ["FTX (mekanisk från- och tilluft med återvinning)","FVP (frånluftsvärmepump)","F (mekanisk frånluftsventilation)","FT (mekanisk från- och tilluftsventilation)","S (självdragsventilation)","Vet ej","Övrig"]
 
   result.getActionTypes = function(){
     var actions = [{
       id: 100,
-      name: "Heating and hot water"
     },{
       id: 101,
-      name: "Control and optimisation",
       parent: 100
     },{
       id: 102,
-      name: "Hot water",
       parent: 100
     },{
       id: 103,
-      name: "Radiator system",
       parent: 100
     },{
       id: 104,
-      name: "Ventilation",
       parent: 100
     },{
       id: 105,
-      name: "Sub metering",
       parent: 100
     },{
       id: 106,
-      name: "Household actions",
       parent: 100
     },{
       id: 200,
-      name: "Electricity"
     },{
       id: 201,
-      name: "Outdoor/roof heating",
       parent: 200
     },{
       id: 202,
-      name: "Lighting",
       parent: 200
     },{
       id: 203,
-      name: "Laundry room",
       parent: 200
     },{
       id: 204,
-      name: "PV panels",
       parent: 200
     },{
       id: 205,
-      name: "Sub metering",
       parent: 200
     },{
       id: 206,
-      name: "Household actions",
       parent: 200
     }];
     actions.getById = function(id) {

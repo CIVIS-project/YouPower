@@ -45,6 +45,42 @@ router.post('/', function(req, res) {
   });
 });
 
+
+/**
+ * @api {get} /cooperative/consumption Get average consumption for cooperatives
+ * @apiGroup Cooperative
+ *
+ * @apiParam {String} name Cooperative name
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
+ *  '{
+ *    "name": "BRF Hamarby",
+ *  }' \
+ *  http://localhost:3000/api/cooperative
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "__v": 0,
+ *     "_id": "55f14ce337d4bef728a861ab",
+ *     "name": "BRF Hamarby"
+ *   }
+ */
+router.get('/consumption/:type/:granularity', function(req, res) {
+  Cooperative.getAvgConsumption(req.params.type, req.params.granularity, req.query.from, req.query.to, res.successRes);
+  Log.create({
+    // userId: req.user._id,
+    category: 'Cooperative',
+    type: 'geAvgConsumption',
+    data: {
+      params: req.params
+    }
+  });
+});
+
 /**
  * @api {get} /cooperative/:id Fetch an cooperative by id
  * @apiGroup Cooperative
@@ -86,7 +122,6 @@ router.get('/:id', function(req, res) {
 });
 
 router.get('/', function(req, res) {
-
   var err;
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
@@ -119,8 +154,31 @@ router.put('/:id', function(req, res) {
   }
 });
 
-router.post('/:id/action', function(req, res) {
+router.post('/:id/meter', function(req, res) {
+
   req.checkParams('id', 'Invalid cooperative id').isMongoId();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    Cooperative.addMeter(req.params.id, req.body.meterId, req.body.type, req.body.useInCalc, res.successRes);
+
+    Log.create({
+      // userId: req.user._id,
+      category: 'Cooperative',
+      type: 'addMeter',
+      data: {
+        cooperativeId: req.params.id,
+        params: req.body
+      }
+    });
+  }
+});
+
+router.post('/:id/action', function(req, res) {
+
+    req.checkParams('id', 'Invalid cooperative id').isMongoId();
 
   var err;
   if ((err = req.validationErrors())) {
@@ -184,5 +242,143 @@ router.delete('/:id/action/:actionId', function(req, res) {
     });
   }
 });
+
+router.post('/:id/action/:actionId/comment', auth.authenticate(), function(req, res) {
+  req.checkParams('id', 'Invalid cooperative id').isMongoId();
+  req.checkParams('actionId', 'Invalid cooperative action id').isMongoId();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    Cooperative.commentAction(req.params.id, req.params.actionId, req.body, req.user, res.successRes);
+
+    Log.create({
+      // userId: req.user._id,
+      category: 'Cooperative',
+      type: 'commentAction',
+      data: {
+        cooperativeId: req.params.id,
+        actionId: req.params.actionId,
+        comment: req.body
+      }
+    });
+  }
+});
+
+router.get('/:id/action/:actionId/comment', function(req, res) {
+  req.checkParams('id', 'Invalid cooperative id').isMongoId();
+  req.checkParams('actionId', 'Invalid cooperative action id').isMongoId();
+  req.checkQuery('lastCommentId', 'Invalid comment id').isMongoId();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    Cooperative.getMoreComments(req.params.id, req.params.actionId, req.query.lastCommentId, null, res.successRes);
+
+    Log.create({
+      // userId: req.user._id,
+      category: 'Cooperative',
+      type: 'getMoreComments',
+      data: {
+        cooperativeId: req.params.id,
+        actionId: req.params.actionId,
+        lastCommentId: req.params.lastCommentId
+      }
+    });
+  }
+});
+
+
+router.delete('/:id/action/:actionId/comment/:commentId', function(req, res) {
+  req.checkParams('id', 'Invalid cooperative id').isMongoId();
+  req.checkParams('actionId', 'Invalid cooperative action id').isMongoId();
+  req.checkParams('commentId', 'Invalid comment id').isMongoId();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    Cooperative.deleteActionComment(req.params.id, req.params.actionId, req.params.commentId, null, res.successRes);
+
+    Log.create({
+      // userId: req.user._id,
+      category: 'Cooperative',
+      type: 'deleteActionComment',
+      data: {
+        cooperativeId: req.params.id,
+        actionId: req.params.actionId,
+        commentId: req.params.commentId
+      }
+    });
+  }
+});
+
+
+router.post('/:id/editor', function(req, res) {
+  req.checkParams('id', 'Invalid cooperative id').isMongoId();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    Cooperative.addEditor(req.params.id, req.body, null, res.successRes);
+
+    Log.create({
+      // userId: req.user._id,
+      category: 'Cooperative',
+      type: 'addEditor',
+      data: {
+        cooperativeId: req.params.id,
+        editor: req.body
+      }
+    });
+  }
+});
+
+router.delete('/:id/editor/:coopEditorId', function(req, res) {
+  req.checkParams('id', 'Invalid cooperative id').isMongoId();
+  req.checkParams('coopEditorId', 'Invalid cooperative editor id').isMongoId();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    Cooperative.deleteEditor(req.params.id, req.params.coopEditorId, null, res.successRes);
+
+    Log.create({
+      // userId: req.user._id,
+      category: 'Cooperative',
+      type: 'deleteEditor',
+      data: {
+        cooperativeId: req.params.id,
+        coopEditorId: req.params.coopEditorId
+      }
+    });
+  }
+});
+
+router.get('/:id/consumption/:type/:granularity', function(req, res) {
+  req.checkParams('id', 'Invalid cooperative id').isMongoId();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    Cooperative.getConsumption(req.params.id, req.params.type, req.params.granularity, req.query.from, req.query.to, res.successRes);
+
+    Log.create({
+      // userId: req.user._id,
+      category: 'Cooperative',
+      type: 'geConsumption',
+      data: {
+        cooperativeId: req.params.id,
+        params: req.params
+      }
+    });
+  }
+});
+
 
 module.exports = router;
