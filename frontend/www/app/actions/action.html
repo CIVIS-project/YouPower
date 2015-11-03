@@ -10,7 +10,7 @@
 
 		<ng-include src="'app/actions/actionDescription.html'"></ng-include>
 
-		<div class="text-small space-top"><span class="balanced" ng-if="actions[action._id].numUsers>0">{{num=actions[action._id].numUsers}} <span translate>{{num > 1 ? 'Participants':'Participant'}}</span></span> <span class="balanced" ng-if="actions[action._id].numLikes>0">{{num2=actions[action._id].numLikes}} <span translate>{{num2 > 1 ? 'Likes':'Like'}}</span></span> <span translate>TAKE_TO_SEE_MORE</span></div>
+		<div class="text-small space-top"><span class="balanced" ng-if="actions[action._id].numUsers>0">{{num=actions[action._id].numUsers}} <span translate>{{num === 1 ? 'Participant':'Participants'}}</span></span> <span class="balanced" ng-if="actions[action._id].numLikes>0">{{num2=actions[action._id].numLikes}} <span translate>{{num2 === 1 ? 'Like':'Likes'}}</span></span> <span translate>TAKE_TO_SEE_MORE</span></div>
 		<div>
 			<a class="item item-icon-left" ng-click="chooseSuggestedAction('alreadyDoing')" ng-if="actions[action._id].type != 'regular' && actions[action._id].type != 'irregular'">
 				<i class="icon ion-android-done positive"></i>

@@ -221,36 +221,40 @@ function FormsCtrl($scope, $timeout, $stateParams, $ionicPopup, User, Actions, $
 
 	$scope.completed = function(){
 
-		//user rated the effort level of the action
-		if ($scope.data.rating != 0){
 
-			Actions.rateEffort(
-		        {id: $scope.currentAction._id}, {effort: $scope.data.rating}).$promise.then(function(data){
-
-		          //console.log("rating: ");
-		          //console.log(data); 
-		          
-		          $scope.data.rating = 0; 
-		      });
-		}
-
-		if ($scope.feedback.text){
+		if ($scope.data.rating != 0 || $scope.feedback.text) {
 
 			$scope.hasFeedback = true; 
 
-			//the "feedback" text is an action comment (appear under action details)
-			Actions.postComment(
-		        {actionId: $scope.currentAction._id}, {comment: $scope.feedback.text}).$promise.then(function(data){
+			if ($scope.data.rating != 0){
 
-		          //add action comment to local list 
-		          $scope.comments.unshift(data);
-		          //console.log($scope.feedback.text); 
+				Actions.rateEffort(
+			        {id: $scope.currentAction._id}, {effort: $scope.data.rating}).$promise.then(function(data){
 
-		          $scope.addCommentPoints(); 
-		          $scope.points += $scope.commentPoints; 
-		          
-		          $scope.feedback = {text: ""}; 
-		    });
+			          //console.log("rating: ");
+			          //console.log(data); 
+			          
+			          $scope.data.rating = 0; 
+			      });
+			}
+
+			if ($scope.feedback.text){
+
+				//the "feedback" text is an action comment (appear under action details)
+				Actions.postComment(
+			        {actionId: $scope.currentAction._id}, {comment: $scope.feedback.text}).$promise.then(function(data){
+
+			          //add action comment to local list 
+			          $scope.comments.unshift(data);
+			          //console.log($scope.feedback.text); 
+
+			          $scope.addCommentPoints(); 
+			          $scope.points += $scope.commentPoints; 
+			          
+			          $scope.feedback = {text: ""}; 
+			    });
+			}
+
 		}
 
 		if (!$scope.hasFeedback){

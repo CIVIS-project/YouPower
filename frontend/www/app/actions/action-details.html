@@ -19,7 +19,7 @@
       <span ng-if="action.latestState==='pending'"><span translate>Scheduled_for</span> {{_.last(action.postponedDate) | date: "yyyy-MM-dd"}}.</span>
       <span ng-if="action.latestState==='done'"><span translate>You_completed_on</span> {{_.last(action.doneDate) | date: "yyyy-MM-dd"}}.</span>
       <span ng-if="action.latestState==='alreadyDoing'"><span translate>You_confirmed_doing_this_on</span> {{_.last(action.alreadyDoingDate) | date: "yyyy-MM-dd"}}.</span>
-      <span href="#" class="balanced">{{num=actions[action._id].numUsers}} <span translate>{{num > 1 ? 'Participants':'Participant'}}</span></span> 
+      <span href="#" class="balanced">{{num=actions[action._id].numUsers}} <span translate>{{num === 1 ? 'Participant':'Participants'}}</span></span> 
     </span>
   </div>
 </div>
@@ -63,15 +63,15 @@
   <div class="item item-divider tabs tabs-secondary tabs-icon-left">
     <a class="tab-item" ng-click="likeAction(actions[action._id])">
       <i class="icon ion-thumbsup"></i>
-      {{num2=actions[action._id].numLikes}} <span translate>{{num2 > 1 ? 'Likes':'Like'}}</span>
+      {{num2=actions[action._id].numLikes}} <span translate>{{num2 === 1 ? 'Like':'Likes'}}</span>
     </a>
     <a class="tab-item" ng-click="commentClicked()">
       <i class="icon ion-chatbox"></i>
-      {{size=actions[action._id].numComments}} <span translate>{{size > 1 ? 'Comments' : 'Comment'}}</span>
+      {{size=actions[action._id].numComments}} <span translate>{{size === 1 ? 'Comment' : 'Comments'}}</span>
     </a>
     <a class="tab-item" ng-click="shareClicked()">
       <i class="icon ion-share"></i>
-      {{num3=actions[action._id].shares}} <span translate>{{num3 > 1 ? 'Shares':'Share'}}</span>
+      {{num3=actions[action._id].shares}} <span translate>{{num3 === 1 ? 'Share':'Shares'}}</span>
     </a>
   </div>
   <p class="message" ng-show="share.err" translate>{{share.err}}</p>
