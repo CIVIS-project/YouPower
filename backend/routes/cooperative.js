@@ -154,8 +154,30 @@ router.put('/:id', function(req, res) {
   }
 });
 
+router.post('/:id/meter', function(req, res) {
+
+  req.checkParams('id', 'Invalid cooperative id').isMongoId();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    Cooperative.addMeter(req.params.id, req.body.meterId, req.body.type, req.body.useInCalc, res.successRes);
+
+    Log.create({
+      // userId: req.user._id,
+      category: 'Cooperative',
+      type: 'addMeter',
+      data: {
+        cooperativeId: req.params.id,
+        params: req.body
+      }
+    });
+  }
+});
+
 router.post('/:id/action', function(req, res) {
- 
+
     req.checkParams('id', 'Invalid cooperative id').isMongoId();
 
   var err;

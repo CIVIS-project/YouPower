@@ -27,10 +27,11 @@ var CooperativeSchema = new Schema({
     type: Number,
     required: true,
   },
-  meters: {
-    electricity: String,
-    heating: String
-  },
+  meters: [{
+    mType: String,
+    useInCalc: Boolean,
+    meterId: String,
+  }],
   actions: [{
     name: String,
     description: String,
@@ -53,7 +54,7 @@ var CooperativeSchema = new Schema({
       }
     }]
   }],
-  ventilationType: String,
+  ventilationType: [String],
   performances: [{
     year: Number,
     value: Number,
@@ -67,8 +68,9 @@ var CooperativeSchema = new Schema({
 
 var Cooperative = mongoose.model('Cooperative', CooperativeSchema);
 
+var sumFn = function(a,b) { return a+b };
 
-var getConsumption = function(meterId, granularity, from, to, cb) {
+var getConsumptionFromAPI = function(meterId, granularity, from, to, cb) {
   var to = to ? '-' + to : '';
   request({
     url: 'https://app.energimolnet.se/api/2.0/consumptions/'+ meterId + '/' + granularity + '/' + from + to + '/',
@@ -83,6 +85,28 @@ var getConsumption = function(meterId, granularity, from, to, cb) {
   });
 }
 
+var getConsumption = function(cooperative, type, granularity, from, to, cb) {
+  var cooperative = cooperative.toObject();
+  var meterIds = _.filter(cooperative.meters, function(meter){ return meter.mType == type && meter.useInCalc});
+  async.map(meterIds, function(meter,cb2){
+    getConsumptionFromAPI(meter.meterId, granularity, from, to, cb2);
+  },function(err,results){
+    if(err) {
+      cb(err);
+    } else {
+      var result = _.chain(results)
+      .unzip()
+      .map(function(data,index){
+        return _.reduce(data,function(memo, num){
+          return memo + num
+        },0);
+      })
+      .value()
+      cb(null,result);
+    }
+  });
+}
+
 var calculatePerformance = function(cooperative,cb) {
   cooperative = cooperative.toObject();
   var year = new Date().getFullYear();
@@ -91,7 +115,7 @@ var calculatePerformance = function(cooperative,cb) {
     cooperative.performance = performance.value;
     return cb(null,cooperative);
   } else {
-    getConsumption(cooperative.meters.heating, 'month', year - 1, null, function(err, result){
+    getConsumption(cooperative, 'heating', 'month', year - 1, null, function(err, result){
       if(!err) {
         var value = _.reduce(result,function(memo,num){return memo + num;})/cooperative.area;
         cooperative.performances.push({
@@ -400,10 +424,9 @@ exports.getAvgConsumption = function(type, granularity, from, to, cb) {
   Cooperative.find({},function(err,cooperatives){
     async.map(cooperatives,function(cooperative,cb2){
       cooperative = cooperative.toObject();
-      getConsumption(cooperative.meters[type], granularity, from, to, cb2);
+      getConsumption(cooperative, type, granularity, from, to, cb2);
     },function(err,coopsData){
       var avg = _.chain(coopsData)
-      .map(function(coopData){ return coopData })
       .unzip()
       .map(function(data,index){
         return _.reduce(data,function(memo, num){
@@ -416,6 +439,28 @@ exports.getAvgConsumption = function(type, granularity, from, to, cb) {
   });
 }
 
+exports.addMeter = function(id, meterId, type, useInCalc, cb) {
+  Cooperative.findOne({
+    _id:id
+  },function(err,cooperative){
+    if(err) {
+      cb(err);
+    } else if (!cooperative){
+      cb('Cooperative not found');
+    } else {
+      cooperative.meters.push({
+        mType:type,
+        meterId: meterId,
+        useInCalc: useInCalc
+      });
+      cooperative.markModified('meters');
+      cooperative.save(function(err){
+        cb(err,cooperative);
+      })
+    }
+  })
+}
+
 exports.getConsumption = function(id, type, granularity, from, to, cb) {
   Cooperative.findOne({
     _id:id
@@ -425,11 +470,7 @@ exports.getConsumption = function(id, type, granularity, from, to, cb) {
     } else if (!cooperative) {
       cb('Cooperative not found');
     } else {
-      if(!cooperative.meters[type]){
-        cb('No meter ID defined for ' + type);
-      } else {
-        getConsumption(cooperative.meters[type],granularity,from,to,cb);
-      }
+      getConsumption(cooperative,type,granularity,from,to,cb);
     }
   })
 }
