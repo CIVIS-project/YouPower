@@ -26,46 +26,6 @@ angular.module('civis.youpower.translations',[])
       en: 'Energy actions',
       se: 'Energiåtgärder',
     },
-    COOPERATIVE_DATA_MONTHLY : {
-      en: 'Monthly',
-      se: 'Månad',
-    },
-    COOPERATIVE_DATA_YEARLY : {
-      en: 'Yearly',
-      se: 'År',
-    },
-    COOPERATIVE_DATA_HEATING : {
-      en: 'Heating & Hot water',
-      se: 'Värme & Varmvatten',
-    },
-    COOPERATIVE_DATA_ELECTRICITY : {
-      en: 'Facilities electricity',
-      se: 'Fastighetsel',
-    },
-    COOPERATIVE_DATA_COMPARE : {
-      en: 'Compare to',
-      se: 'Jämför med',
-    },
-    COOPERATIVE_COMPARE_AVG : {
-      en: 'neighborhood average',
-      se: 'medel i området',
-    },
-    COOPERATIVE_COMPARE_PREV_YEAR : {
-      en: 'previous year',
-      se: 'föregående år',
-    },
-    COOPERATIVE_COMPARE_PREV_YEAR_NORM : {
-      en: 'previous year (normalized)',
-      se: 'föregående år (normaliserad)',
-    },
-    COOPERATIVE_DATA_ENERGY_USE : {
-      en: 'Energy use',
-      se: 'Energianvändning',
-    },
-    COOPERATIVE_DATA_AVERAGE : {
-      en: 'average',
-      se: 'medel',
-    },
     COOPERATIVE_MAP : {
       en: 'Map',
       se: 'Karta',
@@ -178,6 +138,57 @@ angular.module('civis.youpower.translations',[])
       en: "Household actions",
       se: "Hushållsaktiviteter",
     }
+  }
+
+  graphTranslations = {
+    GRAPH_DATA_HOURLY : {
+      en: 'Hourly',
+      // se: 'Månad',
+    },
+    GRAPH_DATA_DAILY : {
+      en: 'Daily',
+      // se: 'Månad',
+    },
+    GRAPH_DATA_MONTHLY : {
+      en: 'Monthly',
+      se: 'Månad',
+    },
+    GRAPH_DATA_YEARLY : {
+      en: 'Yearly',
+      se: 'År',
+    },
+    GRAPH_DATA_HEATING : {
+      en: 'Heating & Hot water',
+      se: 'Värme & Varmvatten',
+    },
+    GRAPH_DATA_ELECTRICITY : {
+      en: 'Facilities electricity',
+      se: 'Fastighetsel',
+    },
+    GRAPH_DATA_COMPARE : {
+      en: 'Compare to',
+      se: 'Jämför med',
+    },
+    GRAPH_COMPARE_AVG : {
+      en: 'neighborhood average',
+      se: 'medel i området',
+    },
+    GRAPH_COMPARE_PREV_YEAR : {
+      en: 'previous year',
+      se: 'föregående år',
+    },
+    GRAPH_COMPARE_PREV_YEAR_NORM : {
+      en: 'previous year (normalized)',
+      se: 'föregående år (normaliserad)',
+    },
+    GRAPH_DATA_ENERGY_USE : {
+      en: 'Energy use',
+      se: 'Energianvändning',
+    },
+    GRAPH_DATA_AVERAGE : {
+      en: 'average',
+      se: 'medel',
+    },
   }
 
   var extractLanguageAndCombine = function(lang, def){
@@ -461,7 +472,7 @@ Your_password:  "Your password",
 Add_more:  "Add more",
 Pull_to_refresh:  "Pull to refresh",
 
-},cooperativesTranslations));
+},cooperativesTranslations,graphTranslations));
 
 
   $translateProvider.translations('Italian', {
@@ -1003,7 +1014,7 @@ Your_name: "Ditt namn",
 Your_password: "Ditt lösenord",
 Add_more: "Lägg till fler",
 Pull_to_refresh: "Dra för att uppdatera",
-},cooperativesTranslations));
+},cooperativesTranslations,graphTranslations));
 
 
   $translateProvider.preferredLanguage('English')
