@@ -1,22 +1,21 @@
 <div class="item item-no-border-bottom">
   <div class="button-bar">
-    <a ng-repeat="granularity in settings.granularities" class="button button-small button-mulitline" ng-class="{active:settings.granularity==granularity}" ng-click="changeGranularity(granularity)">
+    <a ng-repeat="granularity in settings.granularities" class="button button-small button-mulitline" ng-class="{active:settings.granularity==granularity}" ng-click="changeGranularity(granularity)" ng-disabled="granularity == 'daily' || granularity=='hourly'">
     {{'GRAPH_DATA_' + (granularity | uppercase) | translate}}</a>
   </div>
   <div class="button-bar padding-top padding-bottom">
-    <a class="button button-small button-multiline" ng-class="{active:settings.type == 'heating',positive:settings.type == 'heating'}" ng-click="changeType('heating')">{{'GRAPH_DATA_HEATING' | translate}}</a>
-    <a class="button button-small button-multiline" ng-class="{active:settings.type == 'electricity', balanced:settings.type == 'electricity'}" ng-click="changeType('electricity')">{{'GRAPH_DATA_ELECTRICITY' | translate}}</a>
+    <a ng-repeat="type in settings.types" class="button button-small button-multiline {{getTypeClass(type)}}" ng-class="{active:settings.type == type.name}" ng-click="changeType(type.name)">{{'GRAPH_DATA_' + (type.name | uppercase) | translate}}</a>
   </div>
-  <label class="item item-input item-select select-small">
+  <label class="item item-input item-select select-small" ng-if="settings.comparisons.length > 1">
     <div class="input-label">
       {{'GRAPH_DATA_COMPARE' | translate}}
     </div>
     <select ng-model="settings.compareTo" ng-change="changeComparison()">
-      <option ng-repeat="option in comparisons" value="{{option.name}}" translate>{{option.name}}</option>
+      <option ng-repeat="option in settings.comparisons" value="{{option.name}}" translate>{{option.name}}</option>
     </select>
   </label>
   <div class="padding-top">
-    <h2>{{'GRAPH_DATA_ENERGY_USE' | translate}} (kWh/m<sup>2</sup>)</h2>
+    <h2>{{'GRAPH_DATA_ENERGY_USE' | translate}} (<span ng-bind-html="settings.unit"></span>)</h2>
     <table>
       <tr>
         <td class="padding-horizontal padding-top text-right">

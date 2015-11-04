@@ -16,20 +16,25 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
     });
   })
 
-
-  var currentDate = new Date();
-  currentDate.setDate(1);
-  currentDate.setHours(0)
-  currentDate.setMinutes(0);
-  currentDate.setSeconds(0);
-  currentDate.setMilliseconds(0);
-
   $scope.energyGraphSettings = {
     granularity: "monthly",
     compareTo: "",
     type: "electricity",
-    endDate: currentDate,
-    granularities: ['monthly','yearly']
+    unit: "kWh/m<sup>2</sup>",
+    granularities: ['monthly','yearly'],
+    types: [{
+      name:'heating',
+      cssClass: 'positive'
+    },{
+      name:'electricity',
+      cssClass: 'balanced'
+    }],
+    comparisons: [
+      {name: ""},
+      {name: "GRAPH_COMPARE_AVG"},
+      {name: "GRAPH_COMPARE_PREV_YEAR"},
+      // {name: "COOPERATIVE_COMPARE_PREV_YEAR_NORM"}
+    ]
   }
 
   $scope.actionFilter = function(action, index) {

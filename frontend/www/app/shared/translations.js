@@ -191,11 +191,21 @@ angular.module('civis.youpower.translations',[])
     },
   }
 
+  householdTranslations = {
+    HOUSEHOLD_ENERGY_DEMO : {
+      en: 'This is an example of household energy data. You will be informed when and if your household data becomes available as well as get the instructions on how to enable it in the app. The household data is always private (seen only by the household members).',
+      se: 'Detta är ett exempel på energidata från ett hushåll. Du kommer få mer information om och när hushållsdata finns tillgängligt för ditt hushåll samt hur du gör för att se denna i appen. Hushållets energidata är alltid privat (kan bara ses av hushållets medlemmar).'
+    },
+    HOUSEHOLD_ENERGY : {
+      en: 'Household energy',
+      se: 'Hushållsenergi'
+    }
+  }
+
   var extractLanguageAndCombine = function(lang, def){
     var args = [];
     for (var i = 2; i < arguments.length; ++i) args.push(arguments[i]);
     var result = _.reduceRight(args,function(memo,argument){
-      console.log("Argument",argument);
       return _.extend(_.pick(_.mapObject(argument,function(key){
         return key[lang];
       }),_.identity),memo);
@@ -472,7 +482,7 @@ Your_password:  "Your password",
 Add_more:  "Add more",
 Pull_to_refresh:  "Pull to refresh",
 
-},cooperativesTranslations,graphTranslations));
+},cooperativesTranslations,graphTranslations,householdTranslations));
 
 
   $translateProvider.translations('Italian', {
@@ -1014,7 +1024,7 @@ Your_name: "Ditt namn",
 Your_password: "Ditt lösenord",
 Add_more: "Lägg till fler",
 Pull_to_refresh: "Dra för att uppdatera",
-},cooperativesTranslations,graphTranslations));
+},cooperativesTranslations,graphTranslations,householdTranslations));
 
 
   $translateProvider.preferredLanguage('English')

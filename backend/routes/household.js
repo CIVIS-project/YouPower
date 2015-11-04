@@ -93,13 +93,13 @@ router.post('/', auth.authenticate(), function(req, res) {
 /**
  * @api {post} /household/invite/:userId Invite a user to your household
  * @apiGroup Household
- * 
+ *
  * @apiParam {String} id MongoId of an user
  *
  * @apiExample {curl} Example usage:
- *  curl -i -X POST -H "Content-Type: application/json" -d \ 
+ *  curl -i -X POST -H "Content-Type: application/json" -d \
  *  http://localhost:3000/api/household/invite/555f0163688305b57c7cef6c
- * 
+ *
  */
 router.post('/invite/:userId', auth.authenticate(), function(req, res) {
   req.checkParams('userId', 'Invalid user id').isMongoId();
@@ -118,7 +118,7 @@ router.post('/invite/:userId', auth.authenticate(), function(req, res) {
 /**
  * @api {put} /household/invite/:id Accept or reject a household invite
  * @apiGroup Household
- * 
+ *
  * @apiParam {String} id MongoId of the household (that sent the invitation)
  * @apiParam {Boolean} accepted TRUE if the received invitation is accepted, FALSE otherwise
  *
@@ -128,7 +128,7 @@ router.post('/invite/:userId', auth.authenticate(), function(req, res) {
  *    "accepted": "true",
  *  }' \
  *  http://localhost:3000/api/household/555f0163688305b57c7cef6c
- * 
+ *
  */
 router.put('/invite/:id', auth.authenticate(), function(req, res) {
   req.checkParams('id', 'Invalid household id').isMongoId();
@@ -246,7 +246,7 @@ router.delete('/:id', auth.authenticate(), function(req, res) {
  * @apiParam {String} id MongoId of household
  * @apiParam {Object} [address] Adress Object of household
  * @apiParam {Object} [houseType] housetyp of household
- * 
+ *
  * @apiExample {curl} Example usage:
  *  curl -i -X PUT \
  *  -H "Authorization: Bearer 615ea82f7fec0ffaee5..." \
@@ -263,7 +263,7 @@ router.put('/:id', auth.authenticate(), function(req, res) {
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    
+
     //Household.updateAddress(req.body, res.successRes);
 
     Household.update(req.params.id, req.body, res.successRes);
@@ -272,7 +272,7 @@ router.put('/:id', auth.authenticate(), function(req, res) {
       userId: req.user._id,
       category: 'Household',
       type: 'update ' + req.params.id,
-      data: req.body 
+      data: req.body
     });
   }
 });
@@ -406,7 +406,7 @@ router.put('/addmember/:id', auth.authenticate(), function(req, res) {
  *  http://localhost:3000/api/household/removemember/555ef84b2fd41ffef6e078a34
  */
 router.put('/removemember/:householdId/:userId', auth.authenticate(), function(req, res) {
-  req.checkParams('householdId', 'Invalid household id').isMongoId(); 
+  req.checkParams('householdId', 'Invalid household id').isMongoId();
 
   var err;
   if ((err = req.validationErrors())) {
@@ -476,6 +476,29 @@ router.post('/connectUsagePoint', auth.authenticate(), function(req, res) {
     type: 'connectUsagePoint',
     data: usagepoint
   });
+});
+
+
+router.get('/:id/consumption/:type/:granularity',function(req,res){
+  // TODO: make it work with real households
+  // req.checkParams('id', 'Invalid cooperative id').isMongoId();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    Household.getConsumption(req.params.id, req.params.type, req.params.granularity, req.query.from, req.query.to, res.successRes);
+
+    Log.create({
+      // userId: req.user._id,
+      category: 'Household',
+      type: 'getConsumption',
+      data: {
+        householdId: req.params.id,
+        params: req.params
+      }
+    });
+  }
 });
 
 module.exports = router;

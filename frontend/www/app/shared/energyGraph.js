@@ -4,13 +4,6 @@ angular.module('civis.youpower')
 
   var startYear = 2010;
 
-  $scope.comparisons = [
-    {name: ""},
-    {name: "GRAPH_COMPARE_AVG"},
-    {name: "GRAPH_COMPARE_PREV_YEAR"},
-    // {name: "COOPERATIVE_COMPARE_PREV_YEAR_NORM"}
-  ]
-
   $scope.changeComparison = function(){
     updateEnergyData();
   };
@@ -35,6 +28,10 @@ angular.module('civis.youpower')
       }
       return result;
     }
+  }
+
+  $scope.getTypeClass = function(type) {
+    return $scope.settings.type == type.name ? type.cssClass : '';
   }
 
   // Sets the initial chart configuration
@@ -71,7 +68,7 @@ angular.module('civis.youpower')
             }],
             tooltip: {
               shared: true,
-              valueSuffix: " kWh/m<sup>2</sup>",
+              valueSuffix: " " + $scope.settings.unit,
               valueDecimals: 0,
               pointFormat: '<span style="color:{point.color}">\u25CF </span><b>{point.y}</b><br/>'
             },
@@ -84,7 +81,7 @@ angular.module('civis.youpower')
           onSeries: 'dataseries',
           tooltip: {
             shared: true,
-            valueSuffix: " kWh/m<sup>2</sup>",
+            valueSuffix: " " + $scope.settings.unit,
             valueDecimals: 2
           }
         },{
@@ -92,7 +89,7 @@ angular.module('civis.youpower')
           onSeries: 'dataseries',
           tooltip: {
             shared: true,
-            valueSuffix: " kWh/m<sup>2</sup>",
+            valueSuffix: " " + $scope.settings.unit,
             valueDecimals: 2,
           }
         },{
@@ -325,9 +322,19 @@ angular.module('civis.youpower')
     // transclude: true,
     // compile: function(tElement, tAttrs, function transclude(function(scope, cloneLinkingFn){ return function linking(scope, elm, attrs){}})),
     link: function($scope, iElm, iAttrs, controller) {
+
       if(!$scope.settings) {
         throw 'Need to provide settings object to civis-energy-graph directive';
       }
+
+      var currentDate = new Date();
+      currentDate.setDate(1);
+      currentDate.setHours(0)
+      currentDate.setMinutes(0);
+      currentDate.setSeconds(0);
+      currentDate.setMilliseconds(0);
+
+      $scope.settings.endDate = currentDate;
     }
   };
 }]);

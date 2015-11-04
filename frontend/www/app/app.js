@@ -15,6 +15,7 @@ angular.module('civis.youpower', [
   'civis.youpower.actions',
   'civis.youpower.communities',
   'civis.youpower.cooperatives',
+  'civis.youpower.households',
   'civis.youpower.settings',
   'civis.youpower.welcome',
   'civis.youpower.translations',
@@ -323,6 +324,18 @@ angular.module('civis.youpower', [
     'tab-my@main.cooperative': {
       templateUrl: 'app/cooperative/editAction.html',
       controller: 'CooperativeActionUpdateCtrl'
+    }
+  }
+})
+
+/* Household states */
+
+.state('main.household', {
+  url: '/household',
+  views: {
+    'menuContent': {
+      templateUrl: 'app/household/energy.html',
+      controller: 'HouseholdEnergyCtrl'
     }
   }
 })
