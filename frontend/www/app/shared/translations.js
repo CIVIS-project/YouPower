@@ -14,6 +14,10 @@ angular.module('civis.youpower.translations',[])
       en: 'Cooperative',
       se: 'Förening'
     },
+    COOPERATIVE_NEIGHBOURHOOD: {
+      en: 'Neighbouring cooperatives',
+      se: 'Föreningar i området'
+    },
     COOPERATIVE_DESCRIPTION: {
       en: '{{name}} has a heated area of {{area}} m2, the building was constructed in {{yearOfConst}} and has ventilation type {{ventilationType.join(", ")}}.',
       se: '<b>{{name}}</b> har en uppvärmd area på <b>{{area}} m2</b>, byggnadsår <b>{{yearOfConst}}</b> och ventilation av typen <b>{{ventilationType.join(", ")}}</b>.',
@@ -104,7 +108,7 @@ angular.module('civis.youpower.translations',[])
     },
     COOPERATIVE_ACTION_DATE_COMPLETED : {
       en: 'Date completed',
-      se: 'Datum genomoförd',
+      se: 'Datum genomförd',
     },
     COOPERATIVE_ACTION_TITLE : {
       en: 'Title',
