@@ -14,6 +14,10 @@ angular.module('civis.youpower.translations',[])
       en: 'Cooperative',
       se: 'Förening'
     },
+    COOPERATIVE_NEIGHBOURHOOD: {
+      en: 'Neighbouring cooperatives',
+      se: 'Föreningar i området'
+    },
     COOPERATIVE_DESCRIPTION: {
       en: '{{name}} has a heated area of {{area}} m2, the building was constructed in {{yearOfConst}} and has ventilation type {{ventilationType.join(", ")}}.',
       se: '<b>{{name}}</b> har en uppvärmd area på <b>{{area}} m2</b>, byggnadsår <b>{{yearOfConst}}</b> och ventilation av typen <b>{{ventilationType.join(", ")}}</b>.',
@@ -21,46 +25,6 @@ angular.module('civis.youpower.translations',[])
     COOPERATIVE_ENERGY_ACTIONS : {
       en: 'Energy actions',
       se: 'Energiåtgärder',
-    },
-    COOPERATIVE_DATA_MONTHLY : {
-      en: 'Monthly',
-      se: 'Månad',
-    },
-    COOPERATIVE_DATA_YEARLY : {
-      en: 'Yearly',
-      se: 'År',
-    },
-    COOPERATIVE_DATA_HEATING : {
-      en: 'Heating & Hot water',
-      se: 'Värme & Varmvatten',
-    },
-    COOPERATIVE_DATA_ELECTRICITY : {
-      en: 'Facilities electricity',
-      se: 'Fastighetsel',
-    },
-    COOPERATIVE_DATA_COMPARE : {
-      en: 'Compare to',
-      se: 'Jämför med',
-    },
-    COOPERATIVE_COMPARE_AVG : {
-      en: 'neighborhood average',
-      se: 'medel i området',
-    },
-    COOPERATIVE_COMPARE_PREV_YEAR : {
-      en: 'previous year',
-      se: 'föregående år',
-    },
-    COOPERATIVE_COMPARE_PREV_YEAR_NORM : {
-      en: 'previous year (normalized)',
-      se: 'föregående år (normaliserad)',
-    },
-    COOPERATIVE_DATA_ENERGY_USE : {
-      en: 'Energy use',
-      se: 'Energianvändning',
-    },
-    COOPERATIVE_DATA_AVERAGE : {
-      en: 'average',
-      se: 'medel',
     },
     COOPERATIVE_MAP : {
       en: 'Map',
@@ -104,7 +68,7 @@ angular.module('civis.youpower.translations',[])
     },
     COOPERATIVE_ACTION_DATE_COMPLETED : {
       en: 'Date completed',
-      se: 'Datum genomoförd',
+      se: 'Datum genomförd',
     },
     COOPERATIVE_ACTION_TITLE : {
       en: 'Title',
@@ -176,11 +140,72 @@ angular.module('civis.youpower.translations',[])
     }
   }
 
+  graphTranslations = {
+    GRAPH_DATA_HOURLY : {
+      en: 'Hourly',
+      // se: 'Månad',
+    },
+    GRAPH_DATA_DAILY : {
+      en: 'Daily',
+      // se: 'Månad',
+    },
+    GRAPH_DATA_MONTHLY : {
+      en: 'Monthly',
+      se: 'Månad',
+    },
+    GRAPH_DATA_YEARLY : {
+      en: 'Yearly',
+      se: 'År',
+    },
+    GRAPH_DATA_HEATING : {
+      en: 'Heating & Hot water',
+      se: 'Värme & Varmvatten',
+    },
+    GRAPH_DATA_ELECTRICITY : {
+      en: 'Facilities electricity',
+      se: 'Fastighetsel',
+    },
+    GRAPH_DATA_COMPARE : {
+      en: 'Compare to',
+      se: 'Jämför med',
+    },
+    GRAPH_COMPARE_AVG : {
+      en: 'neighborhood average',
+      se: 'medel i området',
+    },
+    GRAPH_COMPARE_PREV_YEAR : {
+      en: 'previous year',
+      se: 'föregående år',
+    },
+    GRAPH_COMPARE_PREV_YEAR_NORM : {
+      en: 'previous year (normalized)',
+      se: 'föregående år (normaliserad)',
+    },
+    GRAPH_DATA_ENERGY_USE : {
+      en: 'Energy use',
+      se: 'Energianvändning',
+    },
+    GRAPH_DATA_AVERAGE : {
+      en: 'average',
+      se: 'medel',
+    },
+  }
+
+  householdTranslations = {
+    HOUSEHOLD_ENERGY_DEMO : {
+      en: 'This is an example of household energy data. You will be informed when and if your household data becomes available as well as get the instructions on how to enable it in the app. The household data is always private (seen only by the household members).',
+      se: 'Detta är ett exempel på energidata från ett hushåll. Du kommer få mer information om och när hushållsdata finns tillgängligt för ditt hushåll samt hur du gör för att se denna i appen. Hushållets energidata är alltid privat (kan bara ses av hushållets medlemmar).'
+    },
+    HOUSEHOLD_ENERGY : {
+      en: 'Household energy',
+      se: 'Hushållsenergi'
+    }
+  }
+
   var extractLanguageAndCombine = function(lang, def){
     var args = [];
     for (var i = 2; i < arguments.length; ++i) args.push(arguments[i]);
     var result = _.reduceRight(args,function(memo,argument){
-      console.log("Argument",argument);
       return _.extend(_.pick(_.mapObject(argument,function(key){
         return key[lang];
       }),_.identity),memo);
@@ -457,7 +482,7 @@ Your_password:  "Your password",
 Add_more:  "Add more",
 Pull_to_refresh:  "Pull to refresh",
 
-},cooperativesTranslations));
+},cooperativesTranslations,graphTranslations,householdTranslations));
 
 
   $translateProvider.translations('Italian', {
@@ -892,8 +917,8 @@ NOT_USEFUL: "Aktiviteten är inte relevant för dig.",
 NOT_WANT_TO_DO: "Jag vill inte göra detta.",
 NOT_WANT_TO_DO_ANYMORE: "Jag vill inte göra detta längre.",
 NUMBER_1000: "Ange ett nummer mellan 1 och 1000.",
-Number_of_Adults: "Antal vuxna",
-Number_of_Children: "Antal barn",
+Number_of_Adults: "Antal vuxna, 18 år och äldre",
+Number_of_Children: "Antal barn, under 18 år",
 OK: "OK",
 OK_I_C: "OK, jag förstår.",
 ONE_MEMBER_HOUSEHOLD: "det finns andra medlemmar i ditt hushåll",
@@ -946,7 +971,7 @@ Shares: "Delningar",
 Show_me_less: "Visa mindre",
 Show_me_more: "Visa mer",
 Sign_up: "Registrera",
-Size: "Storlek",
+Size: "Storlek lägenhet",
 SIZE_M2: "i kvadratmeter",
 SLOGAN: "",
 SORRY_ADD: "Tråkigt att den här aktiviteten inte passade. Vill du prova en annan?",
@@ -999,7 +1024,7 @@ Your_name: "Ditt namn",
 Your_password: "Ditt lösenord",
 Add_more: "Lägg till fler",
 Pull_to_refresh: "Dra för att uppdatera",
-},cooperativesTranslations));
+},cooperativesTranslations,graphTranslations,householdTranslations));
 
 
   $translateProvider.preferredLanguage('English')

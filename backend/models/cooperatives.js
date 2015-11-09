@@ -6,10 +6,7 @@ var Schema = mongoose.Schema;
 var escapeStringRegexp = require('escape-string-regexp');
 var request = require('request');
 var async = require('async');
-
-var energimolnetHeaders = {
-    Authorization: 'OAuth a4f4e751401477d5e3f1c68805298aef9807c0eae1b31db1009e2ee90c6e'
-  }
+var Consumption = require('./consumption');
 
 var CooperativeSchema = new Schema({
   name: {
@@ -68,48 +65,16 @@ var CooperativeSchema = new Schema({
 
 var Cooperative = mongoose.model('Cooperative', CooperativeSchema);
 
-var sumFn = function(a,b) { return a+b };
-
-var getConsumptionFromAPI = function(meterId, granularity, from, to, cb) {
-  var to = to ? '-' + to : '';
-  request({
-    url: 'https://app.energimolnet.se/api/2.0/consumptions/'+ meterId + '/' + granularity + '/' + from + to + '/',
-    headers: energimolnetHeaders
-  },function(error, response, body){
-    if(!error && response.statusCode == 200) {
-      var result = JSON.parse(body).data[0].periods[0].energy;
-      cb(null, result);
-    } else {
-      cb(error);
-    }
-  });
-}
-
 var getConsumption = function(cooperative, type, granularity, from, to, cb) {
   var cooperative = cooperative;
   if(cooperative.constructor.name == 'model') {
     cooperative = cooperative.toObject();
   }
-  var meterIds = _.filter(cooperative.meters, function(meter){ return meter.mType == type && meter.useInCalc});
-  async.map(meterIds, function(meter,cb2){
-    getConsumptionFromAPI(meter.meterId, granularity, from, to, cb2);
-  },function(err,results){
-    if(err) {
-      cb(err);
-    } else {
-      var result = _.chain(results)
-      .unzip()
-      .map(function(data,index){
-        return _.reduce(data,function(memo, num){
-          return memo + num
-        },0);
-      })
-      .map(function(value){
-        return value / (cooperative.area ? cooperative.area : 1);
-      })
-      .value()
-      cb(null,result);
-    }
+  Consumption.getEnergimolnetConsumption(cooperative.meters,type, granularity, from, to, function(err, results){
+    results = _.map(results, function(value){
+      return value / (cooperative.area ? cooperative.area : 1);
+    });
+    cb(null,results);
   });
 }
 

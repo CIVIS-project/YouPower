@@ -6,19 +6,20 @@ var mongoose = require('mongoose');
 var _ = require('underscore');
 var Schema = mongoose.Schema;
 var usagePoint = require('./usagePoint');
+var Consumption = require('./consumption');
 //Appliance Schema
 var applianceSchema = new Schema({
   appliance: String,
   quantity: Number
-}); 
+});
 
 var HouseSchema = new Schema({
   // apartmentId: {
   //   type: String,
   //   // required: true,
-  //   unique: true 
+  //   unique: true
   // },
-  apartmentId: String, 
+  apartmentId: String,
   /*'connected' Tells whether the house is connected to a UsagePoint
     If TRUE, _apartmentId gives the REAL apartmentId according to Energy meter UsagePoint
   */
@@ -34,7 +35,7 @@ var HouseSchema = new Schema({
   },
   address: {
     country: String,
-    city: String, 
+    city: String,
     postalCode: String,
     street: String,
     default: {}
@@ -44,27 +45,27 @@ var HouseSchema = new Schema({
     default: []
   },
   houseType : {
-    type: String, 
+    type: String,
     enum : ['Apartment' , 'Town_house', 'Detached_house'],
   },
   ownership : {
     type: String,
-    enum : ['Rental' , 'Owner'], 
+    enum : ['Rental' , 'Owner'],
   },
   size : {
     type: Number
   },
-  composition : { 
+  composition : {
     numAdults: {
       type: Number
     },
     numChildren:  {
       type: Number
-    }, 
+    },
     default: {}
   },
   energyVal: {
-    type: String 
+    type: String
   },
   ownerId: {
     type: Schema.Types.ObjectId,
@@ -208,7 +209,7 @@ exports.handleInvite = function(householdId, userId, accepted, cb) {
         household.members.push(userId);
       }
 
-      //console.log("household.members: "+JSON.stringify(household.members, null, 4));    
+      //console.log("household.members: "+JSON.stringify(household.members, null, 4));
       household.save(cb);
     }
   });
@@ -262,27 +263,27 @@ exports.update = function(id, profile, cb) {
     } else {
 
       if (profile.address) {
-        household.address = profile.address; 
+        household.address = profile.address;
       }
 
       if (profile.houseType) {
-        household.houseType = profile.houseType; 
+        household.houseType = profile.houseType;
       }
 
       if (profile.size) {
-        household.size = profile.size; 
+        household.size = profile.size;
       }
 
       if (profile.ownership) {
-        household.ownership = profile.ownership; 
+        household.ownership = profile.ownership;
       }
 
       if (profile.composition) {
-        household.composition = profile.composition; 
+        household.composition = profile.composition;
       }
 
       if (profile.appliancesList) {
-        household.appliancesList = profile.appliancesList; 
+        household.appliancesList = profile.appliancesList;
       }
 
       household.save(cb);
@@ -415,5 +416,16 @@ exports.connectUsagePoint = function(usagepoint, cb) {
     }
   });
 };
+
+// Stockholm case
+
+exports.getConsumption = function(id, type, granularity, from, to, cb) {
+  var meters = [{
+    mType: 'electricity',
+    meterId: '56150dc2adc6b45f008b4666',
+    useInCalc: true
+  }]
+  Consumption.getEnergimolnetConsumption(meters,type, granularity, from, to, cb);
+}
 
 exports.model = Household;

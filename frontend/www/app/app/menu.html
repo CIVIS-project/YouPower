@@ -24,7 +24,10 @@
           <span translate>Actions</span>
         </ion-item>
         <ion-item nav-clear menu-close ng-show="currentUser.householdId&&households[currentUser.householdId].connected===true" href="#/app/prosumption">
-          <<span translate>Energy_Data</span>
+          <span translate>Energy_Data</span>
+        </ion-item>
+        <ion-item nav-clear menu-close ng-show="currentUser.cooperativeId" ui-sref=".household">
+          <span translate>HOUSEHOLD_ENERGY</span>
         </ion-item>
        <!--  <ion-item nav-clear menu-close href="#/app/household">
           Household

@@ -1,7 +1,7 @@
 angular.module('civis.youpower')
 
-.factory('Household', function($resource, Config) {
-  return $resource(Config.host + '/api/household/:id', {}, { 
+.factory('Household', function($resource, $http, Config) {
+  var result =  $resource(Config.host + '/api/household/:id', {id:'@_id'}, {
     create : {
       method: 'POST',
       url: Config.host + '/api/household'
@@ -11,29 +11,39 @@ angular.module('civis.youpower')
       url: Config.host + '/api/household/:id'
     },
     invite : {
-      method: 'POST', 
+      method: 'POST',
       url: Config.host + '/api/household/invite/:userId'
     },
     responseInvite : {
-      method: 'PUT', 
+      method: 'PUT',
       url: Config.host + '/api/household/invite/:id'
     },
     removeMember : {
-      method: 'PUT', 
+      method: 'PUT',
       url: Config.host + '/api/household/removemember/:householdId/:userId'
-    }, 
+    },
     addAppliance: {
       method: 'PUT',
       url: Config.host + '/api/household/add/:id'
-    }, 
-    removeAppliance: { 
+    },
+    removeAppliance: {
       method: 'PUT',
       url: Config.host + '/api/household/remove/:id'
-    }, 
+    },
     update : {
-      method: 'PUT', 
+      method: 'PUT',
       url: Config.host + '/api/household/:id'
     }
-
   });
+
+  result.prototype.getEnergyData = function(type, granularity, period){
+    return $http.get(Config.host + '/api/household/' + this._id + '/consumption/' +
+      type + "/" +
+      granularity + "?from=" +
+      period,{
+        cached:true,
+      })
+  };
+
+  return result;
 });

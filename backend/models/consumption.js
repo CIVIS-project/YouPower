@@ -5,6 +5,7 @@ var request = require('request');
 var moment = require('moment');
 var xml2js = require('xml2js');
 var async = require('async');
+var _ = require('underscore');
 var usagePoint = require('./usagePoint');
 var sensor = require('./sensor');
 var intervalBlock = require('./intervalBlock');
@@ -225,3 +226,49 @@ exports.downloadMyData = function(usagepoint, from, to, resType, ctype, cb) {
     }
   });
 };
+
+// Stockholm Energimolnet consumption
+
+var energimolnetHeaders = {
+  Authorization: 'OAuth a4f4e751401477d5e3f1c68805298aef9807c0eae1b31db1009e2ee90c6e'
+}
+
+var getConsumptionFromAPI = function(meterId, granularity, from, to, cb) {
+  var to = to ? '-' + to : '';
+  console.log(meterId,granularity,from,to);
+  request({
+    url: 'https://app.energimolnet.se/api/2.0/consumptions/'+ meterId + '/' + granularity + '/' + from + to + '/',
+    headers: energimolnetHeaders
+  },function(error, response, body){
+    if(!error && response.statusCode == 200) {
+      var result = JSON.parse(body).data[0].periods[0].energy;
+      cb(null, result);
+    } else {
+      cb(error);
+    }
+  });
+}
+
+exports.getEnergimolnetConsumption = function(meters, type, granularity, from, to, cb) {
+  var meterIds = _.filter(meters, function(meter){ return meter.mType == type && meter.useInCalc});
+  async.map(meterIds, function(meter,cb2){
+    getConsumptionFromAPI(meter.meterId, granularity, from, to, cb2);
+  },function(err,results){
+    if(err) {
+      cb(err);
+    } else {
+      var result = _.chain(results)
+      .unzip()
+      .map(function(data,index){
+        return _.reduce(data,function(memo, num){
+          return memo + num
+        },0);
+      })
+      .map(function(value){
+        return value;
+      })
+      .value()
+      cb(null,result);
+    }
+  });
+}
