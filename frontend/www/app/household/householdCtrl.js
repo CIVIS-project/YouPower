@@ -197,7 +197,7 @@ function HouseholdCtrl($scope, $filter, $translate, $state, $ionicPopup, $ionicS
 		var temp = null; 
 
 		if ($scope.households[householdId].ownerId === userId){
-			temp = "<span class='text-medium'>ASK_REMOVE_HOUSEHOLD</span>"; 
+			temp = "<span class='text-medium' translate>ASK_REMOVE_HOUSEHOLD</span>"; 
 		}else{
 			$scope.name = $scope.users[$scope.households[householdId].ownerId].profile.name; 
 			temp = "<span class='text-medium' translate translate-values='{name:name}'>ASK_LEAVE_HOUSEHOLD</span>"; 
