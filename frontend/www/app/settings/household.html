@@ -1,59 +1,86 @@
-<ion-view view-title="Household Profile">
-  <ion-content>
+<ion-view cache-view="false" view-title={{"Household_Profile"|translate}}>
+<ion-content class="padding">
+<ion-refresher
+  pulling-text={{"Pull_to_refresh"|translate}}
+  on-refresh="reloadCurrentHousehold()">
+</ion-refresher>
+<div ng-if="currentUser.householdId===null" class="item card item-text-wrap">
+  <p translate>HOUSEHOLD_SETTING_DISABLED</p>
+</div>
 
-<div class="list card">
+<div ng-if="currentUser.householdId!==null">
+
+  <div class="list card" ng-if="households[currentUser.householdId].connected">
+    <div class="item item-divider" translate>Energy_Data_Account</div>
+  </div>
+  <!-- <div ng-if="!households[currentUser.householdId].connected">
+    <button class="button icon-left button-full button-dark" ng-click="">
+      <i class="icon ion-link"></i>
+      <b translate>Link_Energy_Data_Account</b>
+    </button>
+    <p class="message" translate>APARTMENTID_INFO</p>
+  </div> -->
+  <div class="list card">
     <label class="item item-input">
       <span class="input-label" translate>Address</span>
-      <input type="text" ng-model="currentUser.profile.name" placeholder="Name">
+      <input type="text" ng-model="households[currentUser.householdId].address.street" ng-change="setHouseInfoChanged()" placeholder={{"Street"|translate}}>
     </label>
-    <label class="item item-input" >
-      <span class="input-label" translate>Nickname</span>
-      <input type="text" ng-model="currentUser.profile.nickname" placeholder="Nickname">
+    <label class="item item-input">
+      <span class="input-label"></span>
+      <input type="text" ng-model="households[currentUser.householdId].address.postalCode" ng-change="setHouseInfoChanged()" placeholder={{"Postal_Code"|translate}}>
+    </label>
+    <label class="item item-input">
+      <span class="input-label"></span>
+      <input type="text" ng-model="households[currentUser.householdId].address.city" ng-change="setHouseInfoChanged()" placeholder={{"City"|translate}}>
+    </label>
+    <label class="item item-input">
+      <span class="input-label"></span>
+      <input type="text" ng-model="households[currentUser.householdId].address.country" ng-change="setHouseInfoChanged()" placeholder={{"Country"|translate}}>
     </label>
     <label class="item item-input item-select">
-      <span class="input-label" translate>Gender</span>
-      <select ng-model="currentUser.profile.gender">
-        <option></option>
-        <option value=0 translate>Male</option>
-        <option value=1 translate>Female</option>
+      <span class="input-label" translate>House_type</span>
+       <select ng-model="households[currentUser.householdId].houseType" ng-change="setHouseInfoChanged()">
+        <option translate>Apartment</option>
+        <option translate>Town_house</option>
+        <option translate>Detached_house</option>
       </select>
     </label>
-    <!-- shall do auto-save -->
-  <!-- <div class="button-bar">
-    <a href="#" class="button button-balanced" translate>Cancel</a>
-    <a href="#" class="button button-balanced" ng-click="save()" translate>Save</a>
-  </div> -->
+    <label class="item item-input item-select">
+      <span class="input-label" translate>Ownership</span>
+       <select ng-model="households[currentUser.householdId].ownership" ng-change="setHouseInfoChanged()">
+        <option translate>Rental</option>
+        <option translate>Owner</option>
+      </select>
+    </label>
+    <label class="item item-input">
+      <span class="input-label" translate>Size</span>
+      <input type="number" ng-model="households[currentUser.householdId].size" ng-change="setHouseInfoChanged()" placeholder={{"SIZE_M2"|translate}}>
+    </label>
+    <div class="item item-divider" translate>Household_Composition</div>
+    <label class="item item-input">
+      <span class="input-label" translate>Adults</span>
+      <input type="number" ng-model="households[currentUser.householdId].composition.numAdults" ng-change="setHouseholdCompositionChanged()" placeholder={{"Number_of_Adults"|translate}}>
+    </label>
+    <label class="item item-input">
+      <span class="input-label" translate>Children</span>
+      <input type="number" ng-model="households[currentUser.householdId].composition.numChildren" ng-change="setHouseholdCompositionChanged()" placeholder={{"Number_of_Children"|translate}}>
+    </label>
+    <!-- HIDE APPLIANCES FOR STOCKHOLM TESTBEDS -->
+    <div ng-if="!currentUser.testbed.isStockholm()">
+      <div class="item item-divider" translate>Major_Appliances</div>
+      <div class="item" ng-repeat="description in households[currentUser.householdId].appliancesList track by $index">
+        {{description}}
+        <button class="button button-clear button-energized ion-close button-float-right" ng-click="removeAppliance($index)"></button>
+      </div>
+      <div class="item item-input">
+        <input type="text" placeholder={{"APPLIANCES_EG"|translate}} ng-model="input.description" ng-enter="addAppliance()">
+        <button class="button button-clear button-balanced icon ion-plus button_pos_left" ng-click="addAppliance()"></button>
+      </div>
+    </div>
   </div>
+  <p class="errors text-center" ng-if="input.err" translate>{{input.err}}</p>
 
-
-<div class="list card">
-  <div class="item item-divider">Household Composition</div>
-  <a class="item item-input">
-    <span class="input-label">Adults</span>
-    2
-  </a>
-  <a class="item item-input">
-    <span class="input-label">Children</span>
-    3
-  </a>
 </div>
 
-<div class="list card">
-  <div class="item item-divider">Major Appliances List</div>
-  <a class="item item-input">
-    <span class="input-label">Adults</span>
-    2
-  </a>
-  <a class="item item-input">
-    <span class="input-label">Children</span>
-    3
-  </a>
-  <a href="#/tab/household-profile" class="item item-divider item-icon-left">
-    <i class="icon ion-android-add"></i>
-    Add more
-  </a>
-</div>
-
-
-  </ion-content>
+</ion-content>
 </ion-view>

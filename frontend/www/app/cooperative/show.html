@@ -1,0 +1,36 @@
+<ion-view view-title="{{cooperative.name}}">
+  <ion-nav-buttons side="secondary">
+    <a ui-sref=".cooperative.my.edit" class="button button-clear button-positive" ng-if="currentUser.cooperativeId == cooperative._id">
+      {{'EDIT' | translate}}
+    </a>
+  </ion-nav-buttons>
+  <ion-content>
+    <div class="list">
+      <div class="item item-body" style="padding: 10px 0px;">
+        <div class="row">
+          <div class="col col-100">
+            <div style="float: right; margin-left: 5px;">
+              <span class="bigger-2 energized"><b>{{cooperative.actions.length}}</b></span>
+            </div>
+            <div style="float:right;" class="text-right">
+              {{'COOPERATIVE_ENERGY_ACTIONS' | translate}}
+            </div>
+            <div style="float: left" class="text-right">
+              <i class="icon flaticon-building80 bigger-2 energy-class-{{cooperative.getEnergyClass()}}"></i>
+            </div>
+            <div>
+              <b>{{cooperative.performance | number:0}}</b>
+              <small>kWh/m<sup>2</sup></small>
+            </div>
+          </div>
+        </div>
+        <div class="row" style="padding: 0px 10px">
+          <small class="col col-100" ng-bind-html="'COOPERATIVE_DESCRIPTION' | translate:cooperative">
+          </small >
+        </div>
+      </div>
+      <div civis-energy-graph='energyGraphSettings' civis-energy-graph-data="cooperative"></div>
+    </div>
+    <div ng-include src="'app/cooperative/actions.html'"></div>
+  </ion-content>
+</ion-view>

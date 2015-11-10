@@ -1,134 +1,170 @@
 'use strict';
 
 var auth = require('../middleware/auth');
-//var util = require('util');
 var express = require('express');
 var router = express.Router();
-//var User = require('../models/user').User;
-var Action = require('../models/action');
+var achievements = require('../common/achievements');
+var User = require('../models').users;
+var Action = require('../models').actions;
+var Log = require('../models').logs;
 
 /**
  * @api {get} /user/action Get user's action list
  * @apiGroup User Action
  *
- * @apiVersion 1.0.0
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/user/action
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ *   "pending": {},
+ *   "inProgress": {
+ *     "55b230d69a8c96f177154fa1": {
+ *       "_id": "55b230d69a8c96f177154fa1",
+ *       "name": "Disable standby",
+ *       "description": "Turn off and unplug standby power of TV, stereo, computer, etc.",
+ *       "effort": 2,
+ *       "impact": 2,
+ *       "category": null,
+ *       "startedDate": "2015-08-11T10:31:39.934Z"
+ *     },
+ *     "55b230d69a8c96f177154fa2": {
+ *       "startedDate": "2015-08-11T10:43:33.485Z",
+ *       "impact": 3,
+ *       "effort": 4,
+ *       "description": "Find and seal up leaks",
+ *       "name": "Leaks",
+ *       "_id": "55b230d69a8c96f177154fa2"
+ *     }
+ *   },
+ *   "done": {},
+ *   "declined": {},
+ *   "na": {}
+ * }
  */
 router.get('/', auth.authenticate(), function(req, res) {
   res.json(req.user.actions);
-});
 
-/**
- * @api {post} /user/action/start/:actionId Start an action for current user
- * @apiGroup User Action
- *
- * @apiParam {String} actionId Action's MongoId
- *
- * @apiVersion 1.0.0
- */
-router.post('/start/:actionId', auth.authenticate(), function(req, res) {
-  Action.get(req.params.actionId, function(err, actionResult) {
-    if (err) {
-      res.status(500).json({err: err});
-    } else {
-      // store this action in inProgress list
-      req.user.actions.inProgress[req.params.actionId] = actionResult.toObject();
-      var action = req.user.actions.inProgress[req.params.actionId];
-
-      action.startedDate = new Date();
-
-      // get rid of the action in other lists
-      delete(req.user.actions.done[req.params.actionId]);
-      delete(req.user.actions.canceled[req.params.actionId]);
-
-      // must be manually marked as modified due to mixed type schemas
-      req.user.markModified('actions.inProgress');
-      req.user.markModified('actions.done');
-      req.user.markModified('actions.canceled');
-      req.user.save(function(err, user) {
-        if (err) {
-          res.status(500).json({err: err});
-        } else {
-          res.json({user: user});
-        }
-      });
-    }
+  Log.create({
+    userId: req.user._id,
+    category: 'User Action',
+    type: 'get',
+    data: {}
   });
 });
 
 /**
- * @api {post} /user/action/cancel/:actionId Cancel an action for current user
+ * @api {get} /user/action/suggested Get list of suggested user actions
  * @apiGroup User Action
- * @apiDescription Note: action must be currently in progress.
+ * @apiDescription Returns top three most recent actions that the user has not tried
  *
- * @apiParam {String} actionId Action's MongoId
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/user/action/suggested
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * [
+ *   {
+ *     "__v": 0,
+ *     "_id": "555f0163688305b57c7cef6c",
+ *     "description": "Disabling standby can save up to 10% in total electricity costs.",
+ *     "effort": 2,
+ *     "impact": 2,
+ *     "name": "Disable standby on your devices",
+ *     "ratings": []
+ *   },
+ *   {
+ *     ...
+ *   }
+ * ]
  *
  * @apiVersion 1.0.0
  */
-router.post('/cancel/:actionId', auth.authenticate(), function(req, res) {
-  var action = req.user.actions.inProgress[req.params.actionId];
+router.get('/suggested', auth.authenticate(), function(req, res) {
+  Action.getSuggested(req.user, res.successRes);
 
-  if (!action) {
-    res.status(404).json({err: 'Action not in progress'});
-  } else {
-    // store this action in canceled list
-    req.user.actions.canceled[req.params.actionId] = action;
-
-    action.canceledDate = new Date();
-
-    // get rid of the action in other lists
-    delete(req.user.actions.done[req.params.actionId]);
-    delete(req.user.actions.inProgress[req.params.actionId]);
-
-    // must be manually marked as modified due to mixed type schemas
-    req.user.markModified('actions.inProgress');
-    req.user.markModified('actions.done');
-    req.user.markModified('actions.canceled');
-    req.user.save(function(err, user) {
-      if (err) {
-        res.status(500).json({err: err});
-      } else {
-        res.json({user: user});
-      }
-    });
-  }
+  Log.create({
+    userId: req.user._id,
+    category: 'User Action',
+    type: 'getSuggested',
+    data: res.successRes
+  });
 });
 
 /**
- * @api {post} /user/action/complete/:actionId Complete an action for current user
+ * @api {post} /user/action/:actionId Change state for user action
  * @apiGroup User Action
- * @apiDescription Note: action must be currently in progress.
+ * @apiDescription Used to start/stop actions for a user.
  *
  * @apiParam {String} actionId Action's MongoId
+ * @apiParam {String} state Can be one of: 'pending', 'inProgress', 'alreadyDoing',
+ * 'done', 'canceled', 'declined', 'na'.
+ * @apiParam {Date} postponed Must be provided if state is 'pending'. Specifies
+ * at which time the user will be reminded of the action again.
  *
- * @apiVersion 1.0.0
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X POST -H "Authorization: Bearer $API_TOKEN" -H "Content-Type: application/json" -d \
+ *  '{
+ *    "state": "inProgress"
+ *  }' \
+ *  http://localhost:3000/api/user/action/55b230d69a8c96f177154fa1
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ *   "pending": {},
+ *   "inProgress": {
+ *     "55b230d69a8c96f177154fa1": {
+ *       "_id": "55b230d69a8c96f177154fa1",
+ *       "name": "Disable standby",
+ *       "description": "Turn off and unplug standby power of TV, stereo, computer, etc.",
+ *       "effort": 2,
+ *       "impact": 2,
+ *       "category": null,
+ *       "startedDate": "2015-08-11T10:31:39.934Z"
+ *     },
+ *     "55b230d69a8c96f177154fa2": {
+ *       "startedDate": "2015-08-11T10:43:33.485Z",
+ *       "impact": 3,
+ *       "effort": 4,
+ *       "description": "Find and seal up leaks",
+ *       "name": "Leaks",
+ *       "_id": "55b230d69a8c96f177154fa2"
+ *     }
+ *   },
+ *   "done": {},
+ *   "declined": {},
+ *   "na": {}
+ * }
  */
-router.post('/complete/:actionId', auth.authenticate(), function(req, res) {
-  var action = req.user.actions.inProgress[req.params.actionId];
+router.post('/:actionId', auth.authenticate(), function(req, res) {
+  User.setActionState(req.user, req.params.actionId, req.body.state, req.body.postponed,
+  function(err, user) {
+    if (!err) {
+      achievements.updateAchievement(req.user, 'actionsDone', function(oldVal) {
+        // make sure we never decerase the action count
+        return Math.max(oldVal, user.actions ? user.actions.done.length : 0);
+      });
+    }
 
-  if (!action) {
-    res.status(404).json({err: 'Action not in progress'});
-  } else {
-    // store this action in done list
-    req.user.actions.done[req.params.actionId] = action;
+    res.successRes(err, user);
+  });
 
-    action.doneDate = new Date();
-
-    // get rid of the action in other lists
-    delete(req.user.actions.canceled[req.params.actionId]);
-    delete(req.user.actions.inProgress[req.params.actionId]);
-
-    // must be manually marked as modified due to mixed type schemas
-    req.user.markModified('actions.inProgress');
-    req.user.markModified('actions.done');
-    req.user.markModified('actions.canceled');
-    req.user.save(function(err, user) {
-      if (err) {
-        res.status(500).json({err: err});
-      } else {
-        res.json({user: user});
-      }
-    });
-  }
+  Log.create({
+    userId: req.user._id,
+    category: 'User Action',
+    type: 'update',
+    data: req.body
+  });
 });
 
 module.exports = router;

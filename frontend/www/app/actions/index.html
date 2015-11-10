@@ -1,44 +1,62 @@
-<ion-view view-title="Your Actions">
+<ion-view view-title={{"Your_Actions"|translate}}>
+  <ion-nav-buttons side="right">
+  <button class="button button-clear button-dark icon ion-android-add" ng-click="addActions()">&#8200;</button>
+  </ion-nav-buttons>
 <ion-content class="padding">
-
+<ion-refresher
+  pulling-text={{"Pull_to_refresh"|translate}}
+  on-refresh="reloadActions()">
+</ion-refresher>
 <div class="list card">
-  <div class="item item-divider">Current Actions ({{_.size(currentUser.actions.inProgress)}})</div>
-  <a class="item item-icon-left item-icon-right" ng-repeat="action in currentUser.actions.inProgress" ng-href="#/app/actions/active/{{$index}}">
-    <i class="icon ion-leaf balanced"></i>
-    <span class="leafs balanced">
-      {{getActionPoints(action)}}
-    </span>{{action.name}}
+  <div class="item item-divider"><span translate>Current_Actions</span> ({{_.size(currentUser.actions.inProgress)}})</div>
+  <a class="item item-icon-left item-text-wrap item-icon-right" ng-repeat="action in _.toArray(currentUser.actions.inProgress) | orderBy: '-startedDate[startedDate.length-1]' | limitTo: maxNumberShow.inProgress" ng-href="#/app/actions/current/{{$index}}">
+    <i class="icon ion-leaf balanced"><span class="leaves-nr">{{getActionPoints(action)}}</span></i>
+    {{actions[action._id].name}}
     <i class="icon ion-chevron-right icon-accessory"></i>
   </a>
+  <div class="text-right" ng-if="_.size(currentUser.actions.inProgress) >= maxNumberShow.inProgress">
+    <a ng-if="maxNumberShow.inProgress>sNr" class="button button-clear button-stable icon-left ion-chevron-up button-small" ng-click="showLess('inProgress')" translate>Show_me_less</a> 
+    <a ng-if="maxNumberShow.inProgress<_.size(currentUser.actions.inProgress)" class="button button-clear button-stable icon-left ion-chevron-down button-small" ng-click="showMore('inProgress')" translate>Show_me_more</a>
+  </div>
 </div>
 
-<div class="list card" > <!-- ng-if="actionsPending.length > 0" -->
-  <div class="item item-divider">Pending Actions ({{_.size(currentUser.actions.pending)}})</div>
-  <a class="item item-icon-left item-icon-right" ng-repeat="action in currentUser.actions.pending" ng-href="#/app/actions/Pending/{{$index}}">
+<div class="list card" ng-if="_.size(currentUser.actions.pending) > 0"> 
+  <div class="item item-divider"><span translate>Pending</span> ({{_.size(currentUser.actions.pending)}})</div>
+  <a class="item item-icon-left item-text-wrap item-icon-right" ng-repeat="action in _.toArray(currentUser.actions.pending) | orderBy: 'postponedDate[postponedDate.length-1]' | limitTo: maxNumberShow.pending" ng-href="#/app/actions/pending/{{$index}}">
     <!-- ng-repeat="(idx, action) in actions" > -->
-    <span class="balanced" >
-      <b>{{action.points}}</b>
-    </span>
-    <i class="icon ion-leaf balanced"></i>
-    {{action.title}}
+    <i class="icon ion-leaf balanced"><span class="leaves-nr">{{getActionPoints(action)}}</span></i>
+    {{actions[action._id].name}}
     <i class="icon ion-chevron-right icon-accessory"></i>
   </a>
+  <div class="text-right" ng-if="_.size(currentUser.actions.pending) >= maxNumberShow.pending">
+    <a ng-if="maxNumberShow.pending>sNr" class="button button-clear button-stable icon-left ion-chevron-up button-small" ng-click="showLess('pending')" translate>Show_me_less</a> 
+    <a ng-if="maxNumberShow.pending<_.size(currentUser.actions.pending)" class="button button-clear button-stable icon-left ion-chevron-down button-small" ng-click="showMore('pending')" translate>Show_me_more</a>
+  </div>
 </div>
 
-<div class="list card">
-  <div class="item item-divider">Completed Actions ({{_.size(currentUser.actions.done)}})</div>
-  <a href="#" class="item item-icon-left item-icon-right">
-    <i class="icon ion-leaf balanced"></i>
-    <span class="leafs balanced">
-      <b>{{user.points ? user.points : 0}}</b>
-    </span> Leafs earned in total
+<div class="list card" ng-if="_.size(currentUser.actions.done) > 0">
+  <div class="item item-divider"><span translate>Recently_Completed</span> ({{_.size(currentUser.actions.done)}})</div>
+  <a class="item item-icon-left item-text-wrap item-icon-right" ng-repeat="action in _.toArray(currentUser.actions.done) | orderBy: '-latestDate' | limitTo: maxNumberShow.done" ng-href="#/app/actions/completed/{{$index}}">
+    <!-- ng-repeat="(idx, action) in actions" > -->
+    <i class="icon ion-leaf balanced"><span class="leaves-nr">{{getActionPoints(action)}}</span></i>
+    {{actions[action._id].name}}
     <i class="icon ion-chevron-right icon-accessory"></i>
   </a>
+  <div class="text-right" ng-if="_.size(currentUser.actions.done) >= maxNumberShow.done">
+    <a ng-if="maxNumberShow.done>sNr" class="button button-clear button-stable icon-left ion-chevron-up button-small" ng-click="showLess('done')" translate>Show_me_less</a>
+    <a ng-if="maxNumberShow.done<_.size(currentUser.actions.done)" class="button button-clear button-stable icon-left ion-chevron-down button-small" ng-click="showMore('done')" translate>Show_me_more</a>
+  </div>
 </div>
 
-<button class="button icon-left button-full button-dark" ng-click="nextTip()">
+<div class="list card" ng-if="currentUser.leaves>0">
+  <div class="item item-text-wrap ">
+  <span translate translate-values="{ number: '{{currentUser.leaves}}'}">LEAVES_COUNT</span> <i class="icon ion-happy-outline"></i>
+  </div>
+</div>
+
+<button class="button icon-left button-full button-dark" ng-click="addActions()">
   <i class="icon ion-android-add"></i>
-  Add actions
+  <b translate>Add_Action</b>
 </button>
 
 </ion-content>

@@ -1,56 +1,74 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-	<title></title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" sizes="192x192" href="img/icon192.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="apple-touch-icon-144x144.png">
+  <link rel="apple-touch-startup-image" href="/img/splash.png">
 
-	<link href="css/ionic.app.css" rel="stylesheet">
+  <title></title>
 
-	<!-- ionic/angularjs js -->
-	<script src="lib/ionic/js/ionic.bundle.js"></script>
+  <link href="css/ionic.app.css" rel="stylesheet">
 
-	<!-- cordova script (this will be a 404 during development) -->
-	<script src="cordova.js"></script>
+  <!-- Custom fonts -->
+  <link rel="stylesheet" type="text/css" href="fonts/flaticon.css">
 
-	<script src="lib/angular-translate/angular-translate.js"></script>
-	<!-- <script src="lib/firebase/firebase.js"></script> -->
-	<!-- quick fix? DM 	<script src="https://cdn.firebase.com/js/client/2.2.9/firebase.js"></script>
--->
-	<script src="lib/angular-resource/angular-resource.js"></script>
-	<!-- <script src="lib/angularfire/dist/angularfire.js"></script> -->
-	<script src="lib/underscore/underscore.js"></script>
-	<!-- DM: added for data visualization purposes -->
-	<script src="http://code.highcharts.com/adapters/standalone-framework.js"></script>
-	<script src="http://code.highcharts.com/highcharts.js"></script>
-	<script src="http://code.highcharts.com/highcharts-more.js"></script>
-	<script src="http://code.highcharts.com/modules/solid-gauge.src.js"></script>
-		<!-- DM: slow in loading, install locally with bower -->
-	<!--  <script src="https://rawgit.com/pablojim/highcharts-ng/master/src/highcharts-ng.js"></script>  -->
-	<script src="lib/highcharts-ng/src/highcharts-ng.js"></script>
-	
-	<!-- your app's js -->
-	<script src="app/app.js"></script>
-	<!-- inject:js -->
-	<script src="app/actions/actionCtrl.js"></script>
-	<script src="app/actions/actionsCtrl.js"></script>
-	<script src="app/actions/actionsListCtrl.js"></script>
-	<script src="app/actions/formsCtrl.js"></script>
-	<script src="app/app/AppCtrl.js"></script>
-	<script src="app/communities/communitiesCtrl.js"></script>
-	<script src="app/welcome/welcomeCtrl.js"></script>
-	<script src="app/donation/donationCtrl.js"></script>
-	<script src="app/prosumption/ProsumptionCtrl.js"></script>
-	<script src="app/prosumption/dataVizCtrl.js"></script>
-	<script src="app/prosumption/prosumptionCtrl.js"></script>
-	<script src="app/shared/actions.js"></script>
-	<script src="app/shared/authService.js"></script>
-	<script src="app/shared/personalProfile-service.js"></script>
-	<script src="app/shared/rating.js"></script>
-	<script src="app/shared/translations.js"></script>
-	<script src="app/shared/user.js"></script>
-	<script src="app/settings/settingsCtrl.js"></script>
-	<!-- endinject -->
+  <!-- ionic/angularjs js -->
+  <script src="lib/ionic/js/ionic.bundle.js"></script>
+
+  <!-- highcharts -->
+  <script src="//code.highcharts.com/adapters/standalone-framework.js"></script>
+  <script src="//code.highcharts.com/stock/highstock.js"></script>
+  <script src="//code.highcharts.com/highcharts-more.js"></script>
+  <script src="//code.highcharts.com/modules/solid-gauge.src.js"></script>
+  <script src="lib/highcharts-ng/dist/highcharts-ng.js"></script>
+
+  <script src="lib/angular-translate/angular-translate.js"></script>
+  <script src="lib/angular-resource/angular-resource.js"></script>
+
+  <script src="lib/underscore/underscore.js"></script>
+
+  <!-- your app's js -->
+  <script src="app/app.js"></script>
+  <!-- inject:js -->
+  <script src="app/actions/actionCtrl.js"></script>
+  <script src="app/actions/actionsCtrl.js"></script>
+  <script src="app/actions/actionsListCtrl.js"></script>
+  <script src="app/actions/formsCtrl.js"></script>
+  <script src="app/app/AppCtrl.js"></script>
+  <script src="app/cooperative/controllers.js"></script>
+  <script src="app/communities/communitiesCtrl.js"></script>
+  <script src="app/donation/donationCtrl.js"></script>
+  <script src="app/household/controllers.js"></script>
+  <script src="app/household/householdCtrl.js"></script>
+  <script src="app/household/memberCtrl.js"></script>
+  <script src="app/prosumption/dataVizCtrl.js"></script>
+  <script src="app/prosumption/prosumptionCtrl.js"></script>
+  <script src="app/settings/householdSettingsCtrl.js"></script>
+  <script src="app/settings/personalSettingsCtrl.js"></script>
+  <script src="app/settings/settingsCtrl.js"></script>
+  <script src="app/shared/actions.js"></script>
+  <script src="app/shared/authService.js"></script>
+  <script src="app/shared/config.js"></script>
+  <script src="app/shared/cooperatives.js"></script>
+  <script src="app/shared/energyGraph.js"></script>
+  <script src="app/shared/household.js"></script>
+  <script src="app/shared/rating.js"></script>
+  <script src="app/shared/testbed.js"></script>
+  <script src="app/shared/translations.js"></script>
+  <script src="app/shared/user.js"></script>
+  <script src="app/welcome/signupCtrl.js"></script>
+  <script src="app/welcome/welcomeCtrl.js"></script>
+  <!-- endinject -->
+
+  <script src="//maps.googleapis.com/maps/api/js?key=AIzaSyAI7j4LZI132q62VGRFRfOsZlIOIavRrk8&sensor=true"></script>
 </head>
 <body ng-app="civis.youpower">
   <ion-nav-view>

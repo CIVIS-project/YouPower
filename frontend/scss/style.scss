@@ -9,6 +9,11 @@ $color_gray_nurse_approx: #e8e8e8;
   height: 50px;
   @include border-radius(30px);
 }
+%frame20 {
+  width: 20px;
+  height: 20px;
+  @include border-radius(10px);
+}
 
 
 // .card {
@@ -37,11 +42,9 @@ $color_gray_nurse_approx: #e8e8e8;
 //   }
 // }
 
-h1 { 
+h1 {
     font-size: 1.5em;
 }
-
-
 .capitalize {
     text-transform: capitalize;
 }
@@ -59,17 +62,62 @@ td {
   //Instead of the line below you could use @include word-break($value)
   word-break: normal;
 }
+.header{
+  background-color: #f5f5f5;
+  z-index: 3 !important;
+}
 .icon-large {
   font-size: 32px;
 }
 .text-small {
-  font-size: 10px;
+  font-size: 12px;
   color: gray;
+}
+.text-medium {
+  font-size: 16px;
+}
+.text-medium-large {
+  font-size: 18px;
+}
+.text-large {
+  font-size: 32px;
+}
+.text-bold {
+  font-weight: bold;
+}
+.space-bottom {
+  margin-bottom: 6px;
+}
+.space-top {
+  margin-top: 6px;
+}
+.button-top-right{
+  float: right;
+  position: absolute;
+  top: 15px;
+  right: 10px;
+  // margin-bottom: 5px;
+  width: 30%;
 }
 .button-right{
   float: right;
   width: 30%;
   // margin-bottom: 5px;
+}
+.button-float-right{
+  //float: right;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  font-size: 20px;
+}
+.button_pos_left {
+    position: relative;
+    left: -10px;
+}
+.button-40{
+  width: 40%;
+  margin-top: 5px;
 }
 hr {
   color: $color_gray_nurse_approx;
@@ -77,6 +125,13 @@ hr {
   background-color: $color_gray_nurse_approx;
   height: 1px;
   border: 0;
+}
+.icon-frame {
+  // border: 0px solid $white;
+  @extend %frame20;
+  img {
+    @extend %frame20;
+  }
 }
 .avatar-frame {
   border: 2px solid $white;
@@ -92,11 +147,48 @@ hr {
   font-size: 20px;
   font-weight: bold;
 }
-
+.leaves-nr {
+  position: relative;
+  top: -5px;
+  right: 12px;
+  font-size: 22px;
+  // font-weight: bold;
+  text-shadow:
+    // -1px -1px 0 white,
+    // 1px -1px 0 white,
+    // -1px 1px 0 white,
+    // 1px 1px 0 white ;
+    white 0px 0px 4px,   white 0px 0px 4px,   white 0px 0px 4px,
+    white 0px 0px 4px,   white 0px 0px 4px,   white 0px 0px 4px,
+    white 0px 0px 4px,   white 0px 0px 4px,   white 0px 0px 4px;
+}
 .item-select select {
   right: auto;
   padding: 13px 45px 15px 0;
   direction: ltr;
+}
+.errors {
+  color: red;
+  font-size: 14px;
+}
+.errors_icon {
+  color: red;
+  font-size: 20px;
+}
+.pos_left {
+    position: relative;
+    left: -20px;
+}
+.errors_icon_float_label {
+    position: absolute;
+    top: 35px;
+    right: 10px;
+}
+.message {
+    position: relative;
+    left: 20px;
+    color: gray;
+    width: 90%;
 }
 ul.rating li {
   display: inline;
@@ -107,3 +199,69 @@ ul.rating li {
     font-size: 30px;
   }
 }
+
+.float-button {
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+  width: 30px;
+  padding: 30px;
+  font-size: 40px;
+  background: $balanced;
+  position: fixed;
+  bottom: 20px; /* Adjust to where you want it */
+  right: 20px; /* Adjust to where you want it */
+  z-index: 9999;
+}
+
+.float-button .height_fix {
+  margin-top: 100%;
+}
+
+.float-button .content {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  margin-top: -20px; /* Note, this must be half the font size */
+  color: $light;
+}
+
+.item-no-border-bottom {
+  border-bottom: none;
+}
+
+.item-complex-left .item-complex-header {
+  padding-left: 49px;
+  padding-right: 16px;
+  .badge {
+    right: initial;
+    left: 16px;
+  }
+}
+
+
+.button.button-multiline {
+  padding: 6px 16px;
+  white-space: normal;
+  line-height: normal;
+}
+
+.item-select.select-small {
+  padding: 0 0 0 16px;
+  select {
+    padding: 5px 45px 5px 0;
+    font-size: 12px;
+  }
+
+  .input-label {
+    font-size: 12px;
+  }
+}
+
+.button.active {
+  font-weight: bold;
+}
+

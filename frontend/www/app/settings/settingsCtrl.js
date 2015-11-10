@@ -4,45 +4,109 @@ angular.module('civis.youpower.settings').controller('SettingsCtrl', SettingsCtr
 // Inject my dependencies
 //SettingsCtrl.$inject = ['$scope', '$filter', '$translate'];
 
-function SettingsCtrl($scope, $filter, $translate, PersonalProfile) {
+function SettingsCtrl($scope, $filter, $translate, $state, User, Household) {
 
-	$scope.person = PersonalProfile.personalData;
+	/*/
+		$ionicView.beforeLeave does not work with the tabs
+		$stateChangeStart also does not work well if it is put in the tab's controller
+	/*/
+	$scope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
 
-	$scope.person.birthday = $filter("date")($scope.person.birthday, 'yyyy-MM-dd');
+		console.log('state change');
 
-	$scope.person.isDataComplete = true;
+		if (fromState.name === 'main.settings.index' || 
+			fromState.name === 'main.settings.personal') {
 
-	$scope.personDataView = [];
+			if ($scope.isToSignout()){
+				$scope.clearToSignout(); 
+				$scope.postPersonalProfile($scope.logout); 
+			}else{
+				$scope.postPersonalProfile(); 
+			}
 
-	$scope.languages = ["English", "Italian"];
+		} else if (fromState.name === 'main.settings.household') {
 
-	$scope.$on("$ionicView.loaded", function() {
-		$scope.setPersonDataView();
-	});
+			if ($scope.isToSignout()){
+				$scope.clearToSignout(); 
+				$scope.postHouseholdProfile($scope.logout); 
+			}else{
+				$scope.postHouseholdProfile(); 
+			}
 
-	$scope.setPersonDataView = function() {
-		$scope.addPersonDataView("Password", PersonalProfile.getPwdDate());
-		$scope.addPersonDataView("Name", PersonalProfile.getFullName());
-		$scope.addPersonDataView("Birthday", $scope.person.birthday);
-		$scope.addPersonDataView("Language", $scope.languages[$scope.person.language]);
-	};
+		} else {
+			console.log("Do nothing: from state -- "+fromState.name); 
+		}
+	 });
 
 
-	$scope.addPersonDataView = function(l, v) {
-		if (v) {$scope.personDataView.push({label: l, value: v});}
-		else {$scope.person.isDataComplete = false;}
-	};
+	$scope.postPersonalProfile = function(cb){
 
-	$scope.save = function () {
-		if ($scope.currentUser.language == 1){
-			$translate.use("it");
-		}else $translate.use("en");
-	};
+		if ($scope.isPersonalProfileChanged()) {
 
-	//////////////////////////
-	$scope.household = {};
-	//////////////////////////
-	$scope.pref = {};
+			var profile = $scope.currentUser.profile; 
 
+			if (profile.name === "") profile.name = null; 
+
+			for(var key in profile) {
+		        if(profile.hasOwnProperty(key) && profile[key] === null) {
+		            delete profile[key]; 
+		        }
+		    }
+
+			User.profile({}, profile).$promise.then(function(data) {
+
+				$scope.currentUser.profile = data; 
+
+				console.log(data);
+
+				if (data.dob && data.dob !== null){
+					$scope.currentUser.profile.dob = new Date(data.dob);
+				}
+				$scope.clearPersonalProfileChanged(); 
+				if (typeof cb === 'function') cb();
+			}, function(err){
+				console.log(err);
+				if (typeof cb === 'function') cb(); 
+			});
+		}
+	}
+
+	$scope.postHouseholdProfile = function(cb){
+
+		if (!$scope.isHouseholdProfileChanged()) return; 
+
+		var data = {};
+
+		if ($scope.isHouseInfoChanged()) {
+			data.address = $scope.households[$scope.currentUser.householdId].address;
+			data.houseType = $scope.households[$scope.currentUser.householdId].houseType;
+			data.size = $scope.households[$scope.currentUser.householdId].size;
+			data.ownership = $scope.households[$scope.currentUser.householdId].ownership;
+		}
+
+		if ($scope.isHouseholdCompositionChanged()) {
+			data.composition = $scope.households[$scope.currentUser.householdId].composition;
+		}
+
+		if ($scope.isAppliancesListChanged()) {
+			data.appliancesList = $scope.households[$scope.currentUser.householdId].appliancesList;
+		}
+
+		Household.update({id: $scope.currentUser.householdId}, data).$promise.then(function(data) {
+
+			$scope.households[$scope.currentUser.householdId] = data; 
+
+			console.log(data);
+
+			// if (data.dob && data.dob !== null){
+			// 	$scope.currentUser.profile.dob = new Date(data.dob);
+			// }
+			$scope.clearHouseholdProfileChanged(); 
+			if (typeof cb === 'function') cb();
+		}, function(err){
+			console.log(err);
+			if (typeof cb === 'function') cb(); 
+		});
+	}
 };
 

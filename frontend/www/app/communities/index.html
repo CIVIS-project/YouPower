@@ -4,12 +4,12 @@
 <div class="list card">
   <div class="item item-divider">Your Communities ({{_.size(user.communities)}})</div>
   <a ng-href="#" class="item item-icon-left item-icon-right" ng-repeat="community in user.communities" ng-click="setCommunity(community.id);">
-    <span from="communities comm"  provider="firebase" where="comm.id=community.id" loaded="setCommunity(comm.id,comm.name, community.friends);">
+   <!--  <span from="communities comm"  provider="firebase" where="comm.id=community.id" loaded="setCommunity(comm.id,comm.name, community.friends);"> -->
       <i class="icon ion-person-stalker"></i>
       {{comm.name}} ({{comm.members}}), {{_.size(community.friends)}} friends
       <b class="balanced" style="float: right; white-space:pre"><i class="icon ion-leaf balanced"></i>        {{comm.points}}</b>
       <i class="icon ion-chevron-right icon-accessory"></i>
-    </span>
+    <!-- </span> -->
   </a>
   <a href="#" class="item item-divider item-icon-left">
     <i class="icon ion-android-add"></i>
@@ -33,9 +33,9 @@
 
 <div class="list card">
   <div class="item item-divider">Top Actions in {{community[communityId].name}}</div>
-  <span from="communities comm"  provider="firebase" where="comm.id=communityId">
+  <!-- <span from="communities comm"  provider="firebase" where="comm.id=communityId"> -->
     <a href="#" class="item item-icon-left item-icon-right" ng-repeat="act in comm.topActions" ng-click="goToAction(user,act.id)">
-     <span from="actions act2"  provider="firebase" where="act2.id=act.id">
+     <!-- <span from="actions act2"  provider="firebase" where="act2.id=act.id"> -->
       <i class="icon ion-leaf balanced"></i>
       <span class="balanced">
         <b>{{act2.points}}</b>
@@ -45,9 +45,9 @@
         {{act.participants}} people are doing it<span from="user.actionsActive act3" where="act3.id=act.id">, you as well
             </span></span>
         <i class="icon ion-chevron-right icon-accessory"></i>
-      </span>
+      <!-- </span> -->
     </a>
-  </span>
+  <!-- </span> -->
   <a href="#" class="item item-divider item-icon-right">
     <i class="icon ion-chevron-down icon-accessory"></i> 
     <span class="item-note">

@@ -12,41 +12,53 @@ angular.module('civis.youpower', [
   'ionic',
   'ionic.rating',
   'ngResource',
-  // 'firebase',
+  'ngSanitize',
   'pascalprecht.translate',
   'civis.youpower.main',
   'civis.youpower.actions',
   'civis.youpower.communities',
+  'civis.youpower.cooperatives',
+  'civis.youpower.households',
   'civis.youpower.settings',
   'civis.youpower.welcome',
-  'civis.youpower.services',
   'civis.youpower.translations',
   //DM: added module
   'civis.youpower.prosumption',
   'civis.youpower.donation',
   ])
 
-.run(function($ionicPlatform, $rootScope, $window, AuthService) {
+.run(function($ionicPlatform, $rootScope, $window, $state, AuthService) {
 
   $rootScope.scale = 5;
 
   // Making underscore available in the angular expressions
   $rootScope._=_;
 
-
-  HOST = 'https://app.civisproject.eu';
-
   $rootScope.getNumber = function(num) {
     return new Array(num);
   }
 
-  $rootScope.$on('$stateChangeStart', function (event,next, nextParams, fromState) {
-    if (!AuthService.isAuthenticated()) {
-      if (next.name !== 'welcome') {
-        event.preventDefault();
-        $state.go('welcome');
+  $rootScope.$on('$stateChangeStart', function (event, next, nextParams, fromState) {
+
+    // console.log("stateChangeStart: 1." + fromState.name + " 2." + next.name + " isAuthenticated: "+AuthService.isAuthenticated());
+
+   if (!AuthService.isAuthenticated()) {
+
+      if (next.name !== 'welcome' && next.name !== 'signup'){
+          event.preventDefault();
+          $state.go('welcome');
       }
     }
+  });
+
+  $rootScope.$on('$stateChangeError', function(event, next, nextParams, fromState, fromParams, error) {
+      console.error("State Change error occurred!");
+      console.error(arguments);
+      // console.log("stateChangeError: 1." + fromState.name + " 2." + next.name);
+      if (next.name !== 'welcome' && next.name !== 'signup'){
+          event.preventDefault();
+          $state.go('welcome');
+      }
   });
 
 
@@ -76,9 +88,37 @@ angular.module('civis.youpower', [
   $stateProvider
 
   .state('welcome', {
-    url: "/welcome",
+    url: "/welcome/:token",
     templateUrl: "app/welcome/welcome.html",
     controller: 'WelcomeCtrl'
+  })
+
+  .state('signup', {
+    url: "/signup?tid&cid",
+    templateUrl: "app/welcome/signup.html",
+    controller: 'SignupCtrl',
+    resolve: {
+      Testbed: 'Testbed',
+      Cooperative: 'Cooperatives',
+      testbed: function(Testbed,$stateParams){
+        if($stateParams.tid){
+          return Testbed.get({id:$stateParams.tid},function(data){
+            return data;
+          },function(){return null}).$promise;
+        }else {
+          return null;
+        }
+      },
+      cooperative: function(Cooperative,$stateParams){
+        if($stateParams.cid){
+          return Cooperative.get({id:$stateParams.cid},function(data){
+            return data;
+          },function(){return null}).$promise;
+        }else {
+          return null;
+        }
+      }
+    }
   })
 
   // setup an abstract state that will contain the main navigation (i.e. menu)
@@ -86,7 +126,13 @@ angular.module('civis.youpower', [
     url: "/app",
     abstract: true,
     templateUrl: "app/app/menu.html",
-    controller: 'AppCtrl'
+    controller: 'AppCtrl',
+    resolve: {
+      User: 'User',
+      currentUser: function(User){
+        return User.get().$promise;
+      }
+    }
   })
 
   .state('main.actions', {
@@ -95,7 +141,12 @@ angular.module('civis.youpower', [
     views: {
       'menuContent': {
         templateUrl: 'app/actions/tabs.html',
-        controller: 'ActionsCtrl'
+        controller: 'ActionsCtrl',
+        resolve: {
+          pendingInvites: function(User){
+            return User.getPendingInvites().$promise;
+          }
+        }
       }
     }
   })
@@ -106,7 +157,7 @@ angular.module('civis.youpower', [
     views: {
       'tab-actions': {
         templateUrl: 'app/actions/index.html',
-        controller: 'ActionCtrl' 
+        controller: 'ActionCtrl'
       }
     }
   })
@@ -121,14 +172,6 @@ angular.module('civis.youpower', [
       }
     }
   })
-
-
-
-    // .state('main.actions.action', {
-    //   url: '/:id',
-    //   templateUrl: 'app/actions/action.html',
-    //   controller: 'ActionCtrl'
-    // })
 
 .state('main.actions.details', {
   url: '/:type/:index',
@@ -162,13 +205,23 @@ angular.module('civis.youpower', [
   }
 })
 
-///////
 
 .state('main.actions.household', {
   url: '/household',
   views: {
     'tab-household': {
       templateUrl: 'app/household/index.html',
+      controller: 'HouseholdCtrl'
+    }
+  }
+})
+
+.state('main.actions.addmember', {
+  url: '/household/members/add',
+  views: {
+    'tab-household': {
+      templateUrl: 'app/household/addmember.html',
+      controller: 'MemberCtrl'
     }
   }
 })
@@ -191,7 +244,6 @@ angular.module('civis.youpower', [
   }
 })
 
-
 .state('main.donation', {
   url: '/donation',
   views: {
@@ -200,8 +252,9 @@ angular.module('civis.youpower', [
       controller: 'donationCtrl'
     }
   }
-}
-)
+})
+
+/* Prosumption states */
 
 .state('main.prosumption', {
   url: '/prosumption',
@@ -213,13 +266,12 @@ angular.module('civis.youpower', [
       }
     })
 
-
   .state('main.prosumption.yours', {
     url: '/yours',
     views: {
       'tab-prosumption-yours': {
         templateUrl: 'app/prosumption/index_yours.html',
-       controller: 'dataVizCtrl' 
+       controller: 'dataVizCtrl'
       }
     }
   })
@@ -228,7 +280,7 @@ angular.module('civis.youpower', [
     views: {
       'tab-prosumption-appliances': {
         templateUrl: 'app/prosumption/index_appliances.html',
-       //controller: 'dataVizCtrl' 
+       //controller: 'dataVizCtrl'
       }
     }
   })
@@ -238,12 +290,12 @@ angular.module('civis.youpower', [
     views: {
       'tab-prosumption-community': {
         templateUrl: 'app/prosumption/index_community.html',
-       controller: 'dataVizCtrl' 
+       controller: 'dataVizCtrl'
       }
     }
   })
 .state('main.prosumption.vizEnergyMeteo', {
-  url: '/vizEnergyMeteo', 
+  url: '/vizEnergyMeteo',
   views: {
     'tab-prosumption-yours': {
       templateUrl: 'app/prosumption/viz_energy_meteo.html',
@@ -295,15 +347,99 @@ angular.module('civis.youpower', [
     views: {
       'tab-prosumption-appliances': {
         templateUrl: 'app/prosumption/viz_appliance.html',
-       controller: 'dataVizCtrl' 
+       controller: 'dataVizCtrl'
       }
     }
   })
-.state('main.brf', {
-  url: '/brf',
+
+/* Cooperative states */
+
+.state('main.cooperative', {
+  url: '/cooperatives',
+  abstract: true,
   views: {
     'menuContent': {
-      templateUrl: 'app/brf/index.html',
+      templateUrl: 'app/cooperative/tabs.html'
+    }
+  }
+})
+
+.state('main.cooperative.my',{
+  url: '/my',
+  cached: false,
+  views: {
+    'tab-my': {
+      templateUrl: 'app/cooperative/show.html',
+      controller: 'CooperativeCtrl'
+    }
+  }
+})
+
+.state('main.cooperative.list',{
+  url: '/list',
+  cached: false,
+  views: {
+    'tab-list': {
+      templateUrl: 'app/cooperative/index.html',
+      controller: 'CooperativesCtrl'
+    }
+  },
+  resolve: {
+    Cooperatives: 'Cooperatives',
+    cooperatives: function(Cooperatives){
+      return Cooperatives.query().$promise;
+    }
+  }
+})
+
+.state('main.cooperative.show',{
+  url: '/:id',
+  views: {
+    'tab-my': {
+      templateUrl: 'app/cooperative/show.html',
+      controller: 'CooperativeCtrl'
+    }
+  }
+})
+
+.state('main.cooperative.my.edit', {
+  url: '/edit',
+  views: {
+    'tab-my@main.cooperative': {
+      templateUrl: 'app/cooperative/edit.html',
+      controller: 'CooperativeEditCtrl'
+    }
+  }
+})
+
+.state('main.cooperative.my.edit.actionAdd', {
+  url: '/action',
+  views: {
+    'tab-my@main.cooperative': {
+      templateUrl: 'app/cooperative/editAction.html',
+      controller: 'CooperativeActionAddCtrl'
+    }
+  }
+})
+
+.state('main.cooperative.my.edit.actionUpdate', {
+  url: '/action/:id',
+  views: {
+    'tab-my@main.cooperative': {
+      templateUrl: 'app/cooperative/editAction.html',
+      controller: 'CooperativeActionUpdateCtrl'
+    }
+  }
+})
+
+/* Household states */
+
+.state('main.household', {
+  url: '/household',
+  views: {
+    'menuContent': {
+      templateUrl: 'app/household/energy.html',
+      controller: 'HouseholdEnergyCtrl'
     }
   }
 })
@@ -330,10 +466,11 @@ angular.module('civis.youpower', [
 })
 
 .state('main.settings.index', {
-  url: '',
+  url: '/main/:res',
   views: {
     'tab-index': {
       templateUrl: 'app/settings/index.html',
+      controller: 'PersonalSettingsCtrl'
     }
   }
 })
@@ -343,6 +480,7 @@ angular.module('civis.youpower', [
   views: {
     'tab-personal': {
       templateUrl: 'app/settings/personal.html',
+      controller: 'PersonalSettingsCtrl'
     }
   }
 })
@@ -351,16 +489,16 @@ angular.module('civis.youpower', [
   url: '/household',
   views: {
     'tab-household': {
-      templateUrl: 'app/settings/household.html'
-    }
-  }
-})
+      templateUrl: 'app/settings/household.html',
+      controller: 'HouseholdSettingsCtrl',
+      resolve: {
+        currentHousehold: function(Household, currentUser){
+          if (currentUser.householdId) {
+            return Household.get({id: currentUser.householdId}).$promise;
+          }else{return null;}
 
-.state('main.settings.preferences', {
-  url: '/preferences',
-  views: {
-    'tab-preferences': {
-      templateUrl: 'app/settings/preferences.html',
+        }
+      }
     }
   }
 })
@@ -395,9 +533,8 @@ angular.module('civis.youpower', [
   // })
 
 ;
-
-  // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/welcome');
+  //$urlRouterProvider.otherwise('/app/actions/yours');
+  $urlRouterProvider.otherwise('/welcome/');
 
 });
 

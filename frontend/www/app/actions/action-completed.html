@@ -1,27 +1,27 @@
-<ion-view view-title="Action Completed">
+<ion-view view-title={{"Action_Completed"|translate}}>
 <ion-content class="padding">
 
 <div class="list card">
   <div class="item item-text-wrap">
-    Congratulations! You will earn <b class="balanced text-large"><i class="icon ion-leaf icon-large balanced"></i> {{getActionPoints(currentAction)}}</b> for the action: {{currentAction.name}}<br/>
-    You can earn <b class="balanced text-large"><i class="icon ion-leaf icon-large balanced"></i> {{getFormBonus(currentAction)}} extra</b> by filling the feedback form. We'd love to hear your opinion.
+    <span translate>YOU_EARN</span> <i class="icon ion-leaf icon-large balanced"></i> <span class="balanced text-large">{{getActionPoints(currentAction)}}</span> <span translate>FOR_ACTION</span> {{currentAction.name}}<br/>
+    <span translate translate-values="{ points: '{{commentPoints}}'}">EARN_EXTRA_POINTS</span>
   </div>
 </div>
 
 <div class="list card">
   <div class="item item-divider item-icon-left item-text-wrap">
   <i class="icon ion-android-bulb energized"></i>
-    Feedback Form
+    <span translate>Feedback_Form</span>
   </div>
   <div class="item item-text-wrap">
-    Please rate the level of <b>effort</b> for this action from 1 (very low) to 5 (very high):
+    <span translate>RATE_EFFORT</span>
     <hr> 
     <rating class="text-center" ng-model="data.rating" max="data.max" ></rating>
   </div>
   <div class="item item-text-wrap">
-    What are your comments or tips to other users in performing this action?
+    <span translate>WHAT_ACTION_COMMENTS</span>
     <label class="item item-input">
-      <textarea type="text" ng-model="feedback.text" placeholder="Give your comments here."></textarea>
+      <textarea type="text" ng-model="feedback.text" placeholder={{"Give_your_comments_here"|translate}}></textarea>
     </label>
   </div>
     <!-- <div class="item item-text-wrap">
@@ -39,8 +39,8 @@
   </div>
 
   <div class="button-bar">
-    <a class="button button-dark" ng-click="goBack()">Cancel</a>
-    <a class="button button-dark" ng-click="completed()">Done</a>
+    <button class="button button-dark" ng-click="goBack()"><b translate>Cancel</b></button>
+    <button class="button button-dark" ng-click="completed()"><b translate>Done</b></button>
   </div>
   <!-- 
   <a style="width:50%" class="button button-balanced" remove-from="action.feedback" ng-click="remove(feedback);goBack()">Cancel</a><a class="button button-balanced" style="width:50%" remove-from="user.actionsActive" from="user.actionsActive act" where="act.id=action.id" insert-into="user.actionsDone" loaded="_act={id:action.id, dateStarted:act.date, dateCompleted:Date.now()}" data-click="setPoints(user.points + action.points + (feedback.effort > 0 ? bonus : 0)); remove(act); insert(_act); completed(user)"> Done </a> -->

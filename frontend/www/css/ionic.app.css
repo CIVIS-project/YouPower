@@ -7681,6 +7681,12 @@ a.button {
   -webkit-border-radius: 30px;
   border-radius: 30px; }
 
+.icon-frame, .icon-frame img {
+  width: 20px;
+  height: 20px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px; }
+
 h1 {
   font-size: 1.5em; }
 
@@ -7699,16 +7705,59 @@ td {
   overflow: hidden;
   word-break: normal; }
 
+.header {
+  background-color: #f5f5f5;
+  z-index: 3 !important; }
+
 .icon-large {
   font-size: 32px; }
 
 .text-small {
-  font-size: 10px;
+  font-size: 12px;
   color: gray; }
+
+.text-medium {
+  font-size: 16px; }
+
+.text-medium-large {
+  font-size: 18px; }
+
+.text-large {
+  font-size: 32px; }
+
+.text-bold {
+  font-weight: bold; }
+
+.space-bottom {
+  margin-bottom: 6px; }
+
+.space-top {
+  margin-top: 6px; }
+
+.button-top-right {
+  float: right;
+  position: absolute;
+  top: 15px;
+  right: 10px;
+  width: 30%; }
 
 .button-right {
   float: right;
   width: 30%; }
+
+.button-float-right {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  font-size: 20px; }
+
+.button_pos_left {
+  position: relative;
+  left: -10px; }
+
+.button-40 {
+  width: 40%;
+  margin-top: 5px; }
 
 hr {
   color: #e8e8e8;
@@ -7727,10 +7776,40 @@ hr {
   font-size: 20px;
   font-weight: bold; }
 
+.leaves-nr {
+  position: relative;
+  top: -5px;
+  right: 12px;
+  font-size: 22px;
+  text-shadow: white 0px 0px 4px, white 0px 0px 4px, white 0px 0px 4px, white 0px 0px 4px, white 0px 0px 4px, white 0px 0px 4px, white 0px 0px 4px, white 0px 0px 4px, white 0px 0px 4px; }
+
 .item-select select {
   right: auto;
   padding: 13px 45px 15px 0;
   direction: ltr; }
+
+.errors {
+  color: red;
+  font-size: 14px; }
+
+.errors_icon {
+  color: red;
+  font-size: 20px; }
+
+.pos_left {
+  position: relative;
+  left: -20px; }
+
+.errors_icon_float_label {
+  position: absolute;
+  top: 35px;
+  right: 10px; }
+
+.message {
+  position: relative;
+  left: 20px;
+  color: gray;
+  width: 90%; }
 
 ul.rating li {
   display: inline;
@@ -7739,3 +7818,123 @@ ul.rating li {
   padding: 5px 10px; }
   ul.rating li i {
     font-size: 30px; }
+
+.float-button {
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+  width: 30px;
+  padding: 30px;
+  font-size: 40px;
+  background: #008000;
+  position: fixed;
+  bottom: 20px;
+  /* Adjust to where you want it */
+  right: 20px;
+  /* Adjust to where you want it */
+  z-index: 9999; }
+
+.float-button .height_fix {
+  margin-top: 100%; }
+
+.float-button .content {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  margin-top: -20px;
+  /* Note, this must be half the font size */
+  color: #fff; }
+
+.item-no-border-bottom {
+  border-bottom: none; }
+
+.item-complex-left .item-complex-header {
+  padding-left: 49px;
+  padding-right: 16px; }
+  .item-complex-left .item-complex-header .badge {
+    right: initial;
+    left: 16px; }
+
+.button.button-multiline {
+  padding: 6px 16px;
+  white-space: normal;
+  line-height: normal; }
+
+.item-select.select-small {
+  padding: 0 0 0 16px; }
+  .item-select.select-small select {
+    padding: 5px 45px 5px 0;
+    font-size: 12px; }
+  .item-select.select-small .input-label {
+    font-size: 12px; }
+
+.button.active {
+  font-weight: bold; }
+
+.chart-container {
+  padding-left: 28px;
+  padding-right: 28px;
+  position: relative; }
+  .chart-container #chart {
+    height: 300px; }
+  .chart-container .chart-navigation {
+    position: absolute;
+    height: 300px;
+    line-height: 300px;
+    top: 0;
+    max-height: none;
+    font-size: 30px; }
+    .chart-container .chart-navigation.ion-chevron-right {
+      right: -10px; }
+    .chart-container .chart-navigation.ion-chevron-left {
+      left: -10px; }
+    .chart-container .chart-navigation:before, .chart-container .chart-navigation:after {
+      vertical-align: middle; }
+
+.energy-class-A {
+  color: #009036; }
+
+.energy-class-B {
+  color: #55AB26; }
+
+.energy-class-C {
+  color: #C8D200; }
+
+.energy-class-D {
+  color: #FFED00; }
+
+.energy-class-E {
+  color: #FBBA00; }
+
+.energy-class-F {
+  color: #EB6909; }
+
+.energy-class-G {
+  color: #E2001A; }
+
+.energy-class-unknown {
+  color: #bbbbbb; }
+
+.bigger-1 {
+  font-size: 1.5em; }
+
+.bigger-2 {
+  font-size: 2em; }
+
+.bigger-3 {
+  font-size: 2.5em; }
+
+.electricity {
+  color: #7cb5ec; }
+
+.subaction {
+  margin-left: 25px; }
+
+.full-height .scroll {
+  height: 100%; }
+.full-height #map {
+  width: 100%;
+  height: 80%; }
