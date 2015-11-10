@@ -1,6 +1,7 @@
 angular.module('civis.youpower')
 
-.factory('Actions', function($resource, $firebaseArray, AuthService, $q) {
+.factory('Actions', function($resource) {
+  // , $firebaseArray, AuthService, $q) {
   /* Dummy for old Firebase data
    ----------------------------------------------*/
   // return {

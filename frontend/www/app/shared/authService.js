@@ -2,7 +2,8 @@
 
 angular.module('civis.youpower')
 
-.service('AuthService', function($q, $http, $window, $timeout, Base64, $firebaseObject) {
+.service('AuthService', function($q, $http, $window, $timeout, Base64 ) {
+  // $firebaseObject) {
   var LOCAL_TOKEN_KEY = 'CIVIS_TOKEN';
   var isAuthenticated = false;
 

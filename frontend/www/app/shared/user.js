@@ -1,6 +1,9 @@
 angular.module('civis.youpower')
 
-.factory('User', function($resource, $firebaseArray, $firebaseObject, AuthService, $q) {
+.factory('User', function($resource ) { 
+  // , $q) {
+  // firebaseArray, $q) {
+  // firebaseObject, AuthService, $q) {
   /* Dummy for old Firebase data, should be just removed (if it doesn't work don't try to fix
   instead just focus on making the backend API work)
    ----------------------------------------------*/

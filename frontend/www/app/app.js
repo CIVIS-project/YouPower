@@ -11,7 +11,7 @@ angular.module('civis.youpower', [
   'ionic',
   'ionic.rating',
   'ngResource',
-  'firebase',
+  // 'firebase',
   'pascalprecht.translate',
   'civis.youpower.main',
   'civis.youpower.actions',
@@ -31,7 +31,7 @@ angular.module('civis.youpower', [
   // Making underscore available in the angular expressions
   $rootScope._=_;
 
-  HOST = 'http://civis.tbm.tudelft.nl';
+  HOST = 'https://app.civisproject.eu';
 
   $rootScope.getNumber = function(num) {
     return new Array(num);
