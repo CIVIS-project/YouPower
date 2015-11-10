@@ -1,0 +1,7 @@
+{
+    "name": "CIVIS YouPower App",
+    "description": "Test deployment for the YouPower frontend",
+    "repository": "https://github.com/CIVIS-project/YouPower/tree/master/frontend",
+    "logo": "http://greencampushackathon.aalto.fi/wp-content/uploads/2014/04/civis_rgb-300x300.png",
+    "keywords": ["ionic", "civis", "youpower"]
+}

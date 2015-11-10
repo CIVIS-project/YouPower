@@ -6,6 +6,7 @@ angular.module('civis.youpower.settings',[]);
 angular.module('civis.youpower.welcome',[]);
 //DM: added module
 angular.module('civis.youpower.prosumption',['highcharts-ng']);
+angular.module('civis.youpower.donation',[]);
 
 angular.module('civis.youpower', [
   'ionic',
@@ -22,6 +23,7 @@ angular.module('civis.youpower', [
   'civis.youpower.translations',
   //DM: added module
   'civis.youpower.prosumption',
+  'civis.youpower.donation',
   ])
 
 .run(function($ionicPlatform, $rootScope, $window, AuthService) {
@@ -30,6 +32,7 @@ angular.module('civis.youpower', [
 
   // Making underscore available in the angular expressions
   $rootScope._=_;
+
 
   HOST = 'https://app.civisproject.eu';
 
@@ -189,7 +192,16 @@ angular.module('civis.youpower', [
 })
 
 
-
+.state('main.donation', {
+  url: '/donation',
+  views: {
+    'menuContent': {
+      templateUrl: 'app/donation/index.html',
+      controller: 'donationCtrl'
+    }
+  }
+}
+)
 
 .state('main.prosumption', {
   url: '/prosumption',
@@ -203,7 +215,7 @@ angular.module('civis.youpower', [
 
 
   .state('main.prosumption.yours', {
-    url: '/prosumption/yours',
+    url: '/yours',
     views: {
       'tab-prosumption-yours': {
         templateUrl: 'app/prosumption/index_yours.html',
@@ -212,7 +224,7 @@ angular.module('civis.youpower', [
     }
   })
 .state('main.prosumption.appliances', {
-    url: '/prosumption/appliances',
+    url: '/appliances',
     views: {
       'tab-prosumption-appliances': {
         templateUrl: 'app/prosumption/index_appliances.html',
@@ -220,18 +232,73 @@ angular.module('civis.youpower', [
       }
     }
   })
+
 .state('main.prosumption.community', {
-    url: '/prosumption/community',
+    url: '/community',
     views: {
       'tab-prosumption-community': {
         templateUrl: 'app/prosumption/index_community.html',
-       //controller: 'dataVizCtrl' 
+       controller: 'dataVizCtrl' 
       }
     }
   })
-
-
-
+.state('main.prosumption.vizEnergyMeteo', {
+  url: '/vizEnergyMeteo', 
+  views: {
+    'tab-prosumption-yours': {
+      templateUrl: 'app/prosumption/viz_energy_meteo.html',
+      controller: 'dataVizCtrl',
+    }
+  }
+}
+)
+.state('main.prosumption.vizConsumption', {
+  url: '/viz',
+  views: {
+    'tab-prosumption-yours': {
+    templateUrl: 'app/prosumption/viz_consumption_yours.html',
+    controller: 'dataVizCtrl' ,
+    }
+  }
+})
+.state('main.prosumption.vizProduction', {
+  url: '/viz2',
+  views: {
+    'tab-prosumption-yours': {
+    templateUrl: 'app/prosumption/viz_production_yours.html',
+    controller: 'dataVizCtrl' ,
+    }
+  }
+})
+.state('main.prosumption.vizHistoricalPersonal', {
+  url: '/vizHistoricalPersonal',
+  views: {
+    'tab-prosumption-yours': {
+      templateUrl: 'app/prosumption/viz_historical_personal.html',
+      controller: 'dataVizCtrl',
+    }
+  }
+}
+)
+.state('main.prosumption.vizHistoricalComparison', {
+  url: '/vizHistoricalComparison',
+  views: {
+    'tab-prosumption-yours' : {
+      templateUrl: 'app/prosumption/viz_historical_comparison.html',
+      controller: 'dataVizCtrl',
+    }
+  }
+}
+)
+.state('main.prosumption.vizAppliance', {
+    url: '/vizAppliance',
+    views: {
+      'tab-prosumption-appliances': {
+        templateUrl: 'app/prosumption/viz_appliance.html',
+       controller: 'dataVizCtrl' 
+      }
+    }
+  })
 .state('main.brf', {
   url: '/brf',
   views: {
