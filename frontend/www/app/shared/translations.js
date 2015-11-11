@@ -19,16 +19,16 @@ angular.module('civis.youpower.translations',[])
       se: 'Föreningar i området'
     },
     COOPERATIVE_DESCRIPTION: {
-      en: '<b>{{name}}</b> has <b>{{numOfApartments}} apartments</b>, a heated area of <b>{{area}} m2</b>, the building was constructed in <b>{{yearOfConst}}</b> and has ventilation type <b>{{ventilationType.join(", ")}}</b>.',
-      se: '<b>{{name}}</b> har <b>{{numOfApartments}} lägenheter</b>, en uppvärmd area på <b>{{area}} m2</b>, byggnadsår <b>{{yearOfConst}}</b> och ventilation av typen <b>{{ventilationType.join(", ")}}</b>.',
+      en: '<b>{{name}}</b> has <b>{{numOfApartments}} apartments</b>, a heated area of <b>{{area}} m<sup>2</sup></b>, the building was constructed in <b>{{yearOfConst}}</b> and has ventilation type <b>{{ventilationType.join(", ")}}</b>.',
+      se: '<b>{{name}}</b> har <b>{{numOfApartments}} lägenheter</b>, en uppvärmd area på <b>{{area}} m<sup>2</sup></b>, byggnadsår <b>{{yearOfConst}}</b> och ventilation av typen <b>{{ventilationType.join(", ")}}</b>.',
     },
     COOPERATIVE_PERFORMANCE: {
       en: 'Energy performance',
-      // se: ''
+      se: 'Energianvändning'
     },
     COOPERATIVE_PERFORMANCE_DESCRIPTION: {
-      en: 'The measured heating and hot water use during <b>{{year | date:"yyyy"}}</b> was <b>{{value | number:0}}</b> kWh/m2.',
-      se: 'Uppmätt värme- och varmvattenanvändning var under <b>{{year | date:"yyyy"}}</b> <b>{{value | number:0}}</b> kWh/m2.'
+      en: 'The measured heating and hot water use during <b>{{year | date:"yyyy"}}</b> was <b>{{value | number:0}}</b> kWh/m<sup>2</sup>.',
+      se: 'Uppmätt värme- och varmvattenanvändning var <b>{{value | number:0}}</b> kWh/m<sup>2</sup> under <b>{{year | date:"yyyy"}}</b>.'
     },
     COOPERATIVE_ENERGY_ACTIONS : {
       en: 'Energy actions',
@@ -56,11 +56,11 @@ angular.module('civis.youpower.translations',[])
     },
     COOPERATIVE_NUMBER_OF_APARTMENTS : {
       en: 'Number of apartments',
-      // se: 'Uppvärmd area/A<sub>temp</sub> (m<sup>2</sup>)',
+      se: 'Antal lägenheter',
     },
     COOPERATIVE_CONTACT : {
-      en: 'Contact email',
-      // se: 'Uppvärmd area/A<sub>temp</sub> (m<sup>2</sup>)',
+      en: 'Contact for energy questions',
+      se: 'Kontakt för energifrågor',
     },
     COOPERATIVE_VENTILATION_TYPE : {
       en: 'Ventilation type',

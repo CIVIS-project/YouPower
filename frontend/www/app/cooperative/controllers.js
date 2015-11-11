@@ -69,7 +69,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
 
   $scope.performanceInfo = function() {
     $ionicPopup.alert({
-      title: 'Energy performance',
+      title: $translate.instant('COOPERATIVE_PERFORMANCE'),
       template: $translate.instant('COOPERATIVE_PERFORMANCE_DESCRIPTION',{year: $scope.performanceYear, value: $scope.cooperative.performance}),
     })
   }
@@ -110,7 +110,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
       title: $translate.instant('COOPERATIVE_ACTION_TYPE'),
       cssClass: 'popup-flexible',
       buttons: [{
-        text: "Cancel"
+        text: $translate.instant("Cancel")
       },{
         text: "OK",
         type: 'button-positive',
@@ -215,6 +215,8 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
         new google.maps.Point(10, 34));
       });
 
+      var infowindow = new google.maps.InfoWindow();
+
       angular.forEach($scope.cooperatives, function(coop) {
           //Marker + infowindow + angularjs compiled ng-click
           var contentString = "<div ng-click='cooperativeClick(\""
@@ -225,10 +227,6 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
           + coop.actions.length + "</b></p></div>";
           var compiled = $compile(contentString)($scope);
 
-          var infowindow = new google.maps.InfoWindow({
-              content: compiled[0]
-          });
-
           var marker = new google.maps.Marker({
               position: new google.maps.LatLng(coop.lat, coop.lng),
               map: map,
@@ -237,6 +235,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
           });
 
           google.maps.event.addListener(marker, 'click', function() {
+            infowindow.setContent(compiled[0]);
             infowindow.open(map,marker);
           });
       })
