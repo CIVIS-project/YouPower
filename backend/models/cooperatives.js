@@ -14,6 +14,7 @@ var CooperativeSchema = new Schema({
     required: true,
     unique: true
   },
+  email: String,
   lat: Number,
   lng: Number,
   yearOfConst: {
@@ -24,6 +25,7 @@ var CooperativeSchema = new Schema({
     type: Number,
     required: true,
   },
+  numOfApartments: Number,
   meters: [{
     mType: String,
     useInCalc: Boolean,
@@ -109,10 +111,12 @@ var calculatePerformance = function(cooperative,cb) {
 exports.create = function(cooperative, cb) {
   Cooperative.create({
     name: cooperative.name,
-    yearOfConst: cooperative.yearOfConst,
-    area: cooperative.area,
+    email: cooperative.email,
     lng: cooperative.lng,
     lat: cooperative.lat,
+    yearOfConst: cooperative.yearOfConst,
+    area: cooperative.area,
+    numOfApartments: cooperative.numOfApartments,
     meters: cooperative.meters,
     ventilationType: cooperative.ventilationType
   }, cb);
@@ -166,9 +170,11 @@ exports.update = function(id, cooperative, cb) {
   Cooperative.findByIdAndUpdate(id, {
     $set : {
       name: cooperative.name,
+      email: cooperative.email,
       yearOfConst: cooperative.yearOfConst,
       area: cooperative.area,
-      ventilationType: cooperative.ventilationType
+      numOfApartments: cooperative.numOfApartments,
+      ventilationType: cooperative.ventilationType,
     }
   }, cb);
 };

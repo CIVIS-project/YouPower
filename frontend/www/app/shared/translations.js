@@ -19,8 +19,8 @@ angular.module('civis.youpower.translations',[])
       se: 'Föreningar i området'
     },
     COOPERATIVE_DESCRIPTION: {
-      en: '{{name}} has a heated area of {{area}} m2, the building was constructed in {{yearOfConst}} and has ventilation type {{ventilationType.join(", ")}}.',
-      se: '<b>{{name}}</b> har en uppvärmd area på <b>{{area}} m2</b>, byggnadsår <b>{{yearOfConst}}</b> och ventilation av typen <b>{{ventilationType.join(", ")}}</b>.',
+      en: '<b>{{name}}</b> has <b>{{numOfApartments}} apartments</b>, a heated area of <b>{{area}} m2</b>, the building was constructed in <b>{{yearOfConst}}</b> and has ventilation type <b>{{ventilationType.join(", ")}}</b>.',
+      se: '<b>{{name}}</b> har <b>{{numOfApartments}} lägenheter</b>, en uppvärmd area på <b>{{area}} m2</b>, byggnadsår <b>{{yearOfConst}}</b> och ventilation av typen <b>{{ventilationType.join(", ")}}</b>.',
     },
     COOPERATIVE_ENERGY_ACTIONS : {
       en: 'Energy actions',
@@ -45,6 +45,14 @@ angular.module('civis.youpower.translations',[])
     COOPERATIVE_AREA : {
       en: 'Heated area/A<sub>temp</sub> (m<sup>2</sup>)',
       se: 'Uppvärmd area/A<sub>temp</sub> (m<sup>2</sup>)',
+    },
+    COOPERATIVE_NUMBER_OF_APARTMENTS : {
+      en: 'Number of apartments',
+      // se: 'Uppvärmd area/A<sub>temp</sub> (m<sup>2</sup>)',
+    },
+    COOPERATIVE_CONTACT : {
+      en: 'Contact email',
+      // se: 'Uppvärmd area/A<sub>temp</sub> (m<sup>2</sup>)',
     },
     COOPERATIVE_VENTILATION_TYPE : {
       en: 'Ventilation type',

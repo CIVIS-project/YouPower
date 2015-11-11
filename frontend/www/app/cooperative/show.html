@@ -28,6 +28,11 @@
           <small class="col col-100" ng-bind-html="'COOPERATIVE_DESCRIPTION' | translate:cooperative">
           </small >
         </div>
+        <div class="row" style="padding: 0px 10px" ng-show="cooperative.email">
+          <small class="col col-100">
+            <b translate>COOPERATIVE_CONTACT</b>: <a ng-href="mailto:{{cooperative.email}}">{{cooperative.email}}</a>
+          </small>
+        </div>
       </div>
       <div civis-energy-graph='energyGraphSettings' civis-energy-graph-data="cooperative" civis-energy-graph-actions="cooperative.actions"></div>
     </div>
