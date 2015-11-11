@@ -114,10 +114,6 @@ angular.module('civis.youpower.translations',[])
       en: "Radiator system",
       se: "Radiatorsystem",
     },
-    COOPERATIVE_ACTION_TYPE_104 : {
-      en: "Ventilation",
-      se: "Ventilation",
-    },
     COOPERATIVE_ACTION_TYPE_105 : {
       en: "Sub metering",
       se: "Individuell mätning",
@@ -153,6 +149,18 @@ angular.module('civis.youpower.translations',[])
     COOPERATIVE_ACTION_TYPE_206 : {
       en: "Household actions",
       se: "Hushållsaktiviteter",
+    },
+    COOPERATIVE_ACTION_TYPE_300 : {
+      en: "Ventilation",
+      se: "Ventilation",
+    },
+    COOPERATIVE_ACTION_TYPE_301 : {
+      en: "Control & optimisation",
+      se: "Kontroll & optimering",
+    },
+    COOPERATIVE_ACTION_TYPE_302 : {
+      en: "Investments",
+      se: "Investeringar",
     }
   }
 

@@ -7874,6 +7874,10 @@ ul.rating li {
 .button.active {
   font-weight: bold; }
 
+.popup-flexible .popup {
+  width: 90%;
+  max-width: 450px; }
+
 .chart-container {
   padding-left: 28px;
   padding-right: 28px;

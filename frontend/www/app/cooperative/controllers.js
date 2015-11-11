@@ -96,7 +96,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
 
 })
 
-.factory('CooperativeActionTypePopup', function($ionicPopup){
+.factory('CooperativeActionTypePopup', function($ionicPopup, $translate){
   return function($scope){
     _.each($scope.actionTypes,function(type){
       type.selected = false;
@@ -107,6 +107,8 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
     $ionicPopup.show({
       templateUrl: "app/cooperative/actionTypes.html",
       scope: $scope,
+      title: $translate.instant('COOPERATIVE_ACTION_TYPE'),
+      cssClass: 'popup-flexible',
       buttons: [{
         text: "Cancel"
       },{

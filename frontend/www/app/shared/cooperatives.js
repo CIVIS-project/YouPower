@@ -87,9 +87,6 @@ angular.module('civis.youpower')
       id: 103,
       parent: 100
     },{
-      id: 104,
-      parent: 100
-    },{
       id: 105,
       parent: 100
     },{
@@ -115,6 +112,14 @@ angular.module('civis.youpower')
     },{
       id: 206,
       parent: 200
+    },{
+      id: 300,
+    },{
+      id: 301,
+      parent: 300
+    },{
+      id: 302,
+      parent: 300
     }];
     actions.getById = function(id) {
       return _.findWhere(this,{id:id});
