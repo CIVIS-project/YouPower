@@ -11,6 +11,7 @@ var achievements = require('../common/achievements');
 var actionComments = require('./actionComments');
 var communityComments = require('./communityComments');
 var households = require('./households');
+var cooperatives = require('./cooperatives');
 var async = require('async');
 var _ = require('underscore');
 var FB = require('fb');
@@ -144,6 +145,7 @@ exports.getProfile = function(id, cb) {
     var householdId = null;
     var pendingHouseholdInvites = [];
     var pendingCommunityInvites = ['TODO'];
+    var cooperative = null;
 
     async.parallel([
       function(cb) {
@@ -193,6 +195,22 @@ exports.getProfile = function(id, cb) {
           totalLeaves += cComments.length;
           cb();
         });
+      },
+      function(cb) {
+        if(user.cooperativeId) {
+          cooperatives.getProfile(user.cooperativeId,user,function(err,coop){
+            console.log('Here');
+            if(err){
+              return cb(err);
+            }
+            coop = coop.toObject();
+            cooperative = {
+              id: coop._id,
+              name: coop.name
+            };
+          });
+        }
+        cb();
       }
     ], function(err) {
       if (err) {
@@ -213,6 +231,7 @@ exports.getProfile = function(id, cb) {
         leaves: totalLeaves,
         energyConsumption: {}, // TODO
         cooperativeId: user.cooperativeId,
+        cooperative: cooperative,
         testbed: user.testbed
       });
     });

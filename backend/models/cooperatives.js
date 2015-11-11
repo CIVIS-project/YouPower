@@ -166,6 +166,21 @@ exports.get = function(id, user, cb) {
   });
 };
 
+exports.getProfile = function(id, user, cb) {
+  Cooperative.findOne({
+    _id: id
+  })
+  .exec(function(err, cooperative) {
+    if (err) {
+      cb(err);
+    } else if (!cooperative) {
+      cb('Cooperative not found');
+    } else {
+      cb(null, cooperative);
+    }
+  });
+};
+
 exports.update = function(id, cooperative, cb) {
   Cooperative.findByIdAndUpdate(id, {
     $set : {
