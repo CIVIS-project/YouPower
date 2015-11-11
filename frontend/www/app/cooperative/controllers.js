@@ -2,7 +2,7 @@
 
 angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
 
-.controller('CooperativeCtrl', function($scope,$timeout,$state,$q,$stateParams,$translate,Cooperatives,currentUser) {
+.controller('CooperativeCtrl', function($scope,$timeout,$state,$q,$stateParams,$translate,$ionicPopup,Cooperatives,currentUser) {
 
   $scope.actionTypes = Cooperatives.getActionTypes();
 
@@ -37,6 +37,9 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
     ]
   }
 
+  $scope.performanceYear = new Date();
+  $scope.performanceYear.setFullYear($scope.performanceYear.getFullYear()-1);
+
   $scope.actionFilter = function(action, index) {
     var type = $scope.energyGraphSettings.type == 'electricity' ? 200 : 100;
     return action.types.indexOf(type) >= 0;
@@ -62,6 +65,13 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
       action.comments.splice(action.comments.indexOf(comment),1);
       action.commentsCount --;
     });
+  }
+
+  $scope.performanceInfo = function() {
+    $ionicPopup.alert({
+      title: 'Energy performance',
+      template: $translate.instant('COOPERATIVE_PERFORMANCE_DESCRIPTION',{year: $scope.performanceYear, value: $scope.cooperative.performance}),
+    })
   }
 
 })

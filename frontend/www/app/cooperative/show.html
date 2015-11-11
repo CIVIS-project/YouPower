@@ -15,12 +15,13 @@
             <div style="float:right;" class="text-right">
               {{'COOPERATIVE_ENERGY_ACTIONS' | translate}}
             </div>
-            <div style="float: left" class="text-right">
+            <div style="float: left" class="text-right" ng-click="performanceInfo()">
               <i class="icon flaticon-building80 bigger-2 energy-class-{{cooperative.getEnergyClass()}}"></i>
             </div>
-            <div>
+            <div ng-click="performanceInfo()">
               <b>{{cooperative.performance | number:0}}</b>
               <small>kWh/m<sup>2</sup></small>
+              <i class="icon ion-help positive"></i>
             </div>
           </div>
         </div>

@@ -22,6 +22,14 @@ angular.module('civis.youpower.translations',[])
       en: '<b>{{name}}</b> has <b>{{numOfApartments}} apartments</b>, a heated area of <b>{{area}} m2</b>, the building was constructed in <b>{{yearOfConst}}</b> and has ventilation type <b>{{ventilationType.join(", ")}}</b>.',
       se: '<b>{{name}}</b> har <b>{{numOfApartments}} lägenheter</b>, en uppvärmd area på <b>{{area}} m2</b>, byggnadsår <b>{{yearOfConst}}</b> och ventilation av typen <b>{{ventilationType.join(", ")}}</b>.',
     },
+    COOPERATIVE_PERFORMANCE: {
+      en: 'Energy performance',
+      // se: ''
+    },
+    COOPERATIVE_PERFORMANCE_DESCRIPTION: {
+      en: 'The measured heating and hot water use during <b>{{year | date:"yyyy"}}</b> was <b>{{value | number:0}}</b> kWh/m2.',
+      se: 'Uppmätt värme- och varmvattenanvändning var under <b>{{year | date:"yyyy"}}</b> <b>{{value | number:0}}</b> kWh/m2.'
+    },
     COOPERATIVE_ENERGY_ACTIONS : {
       en: 'Energy actions',
       se: 'Energiåtgärder',
