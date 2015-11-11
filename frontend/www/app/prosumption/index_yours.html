@@ -1,0 +1,39 @@
+<ion-view view-title="Energy Data">
+<ion-content class="padding">
+
+<div class="list card">
+  <div class="item item-divider"><h1>Energy Meteo - valid for the next {{timeRemaining}}</h1></div>
+  <!-- <div class="item item-text-wrap"> -->
+ <a class="item item-icon-right" ui-sref="main.prosumption.vizEnergyMeteo" ui-view="tab-prosumption-yours"> <h1> <i class="icon-large {{priceIcon}} {{priceIconColor}}"></i>&nbsp  &nbsp  &nbsp <!-- &nbsp Current estimated price: 0.158 &euro;/kWh --> <i class="icon-large ion-stats-bars"></i></a>
+<!--     {{currentPrice}} &euro;/kWh <i class="icon-large ion-stats-bars"></i>
+<!--   </div>
+ -->
+</div>
+
+<div class="list card">
+  <div class="item item-divider"> Actual Consumption/Production Level</div>
+  <a class="item item-icon-right" ui-sref="main.prosumption.vizConsumption" ui-view="tab-prosumption-yours"> 
+    <!-- <div class="item item-text-wrap"> -->
+    Last measured consumption: <span class="bold"> {{lastConsumption}} kWh </span>&nbsp  &nbsp  &nbsp <i class="icon-large ion-stats-bars"></i><!-- ion-arrow-graph-up-right" ></i> -->
+<!-- </div>
+ --></a>
+<a class="item item-icon-right" ui-sref="main.prosumption.vizProduction" ui-view="tab-prosumption-yours">
+  Last measured production: {{lastProduction}} kWh &nbsp  &nbsp  &nbsp<i class="icon-large ion-stats-bars"></i><!-- <i class="icon-large ion-arrow-graph-up-right" font-size:larger></i> -->
+  </a>
+</div>
+
+<div class="list card">
+  <div class="item item-divider">Historical Consumption/Production Level</div>
+ <a class="item item-icon-right" ui-sref="main.prosumption.vizHistoricalPersonal" ui-view="tab-prosumption-yours"> 
+    <!-- <div class="item item-text-wrap"> -->
+    My historical data <i class="icon-large ion-stats-bars"></i><!-- <i class="icon-large ion-arrow-graph-up-right" ></i> -->
+<!-- </div>
+ --></a>
+ <a class="item item-icon-right" ui-sref="main.prosumption.vizHistoricalComparison" ui-view="tab-prosumption-yours"> 
+    <!-- <div class="item item-text-wrap"> -->
+    Comparison <i class="icon-large ion-stats-bars"></i><!-- <i class="icon-large ion-arrow-graph-up-right" ></i> -->
+<!-- </div>
+ --></a>
+
+</ion-content>
+</ion-view>

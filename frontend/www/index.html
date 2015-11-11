@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <link rel="manifest" href="manifest.json">
@@ -13,61 +13,65 @@
   <link rel="apple-touch-icon" sizes="144x144" href="apple-touch-icon-144x144.png">
   <link rel="apple-touch-startup-image" href="/img/splash.png">
 
-	<title></title>
+  <title></title>
 
-	<link href="css/ionic.app.css" rel="stylesheet">
+  <link href="css/ionic.app.css" rel="stylesheet">
 
   <!-- Custom fonts -->
   <link rel="stylesheet" type="text/css" href="fonts/flaticon.css">
 
-  <!-- jQuery required by highcharts -->
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-
-	<!-- ionic/angularjs js -->
-	<script src="lib/ionic/js/ionic.bundle.js"></script>
+  <!-- ionic/angularjs js -->
+  <script src="lib/ionic/js/ionic.bundle.js"></script>
 
   <!-- highcharts -->
+  <script src="//code.highcharts.com/adapters/standalone-framework.js"></script>
   <script src="//code.highcharts.com/stock/highstock.js"></script>
+  <script src="//code.highcharts.com/highcharts-more.js"></script>
+  <script src="//code.highcharts.com/modules/solid-gauge.src.js"></script>
   <script src="lib/highcharts-ng/dist/highcharts-ng.js"></script>
 
-	<script src="lib/angular-translate/angular-translate.js"></script>
-	<script src="lib/angular-resource/angular-resource.js"></script>
-	<script src="lib/underscore/underscore.js"></script>
+  <script src="lib/angular-translate/angular-translate.js"></script>
+  <script src="lib/angular-resource/angular-resource.js"></script>
 
-	<!-- your app's js -->
-	<script src="app/app.js"></script>
-	<!-- inject:js -->
-	<script src="app/actions/actionCtrl.js"></script>
-	<script src="app/actions/actionsCtrl.js"></script>
-	<script src="app/actions/actionsListCtrl.js"></script>
-	<script src="app/actions/formsCtrl.js"></script>
-	<script src="app/app/AppCtrl.js"></script>
-	<script src="app/communities/communitiesCtrl.js"></script>
-	<script src="app/cooperative/controllers.js"></script>
-	<script src="app/household/controllers.js"></script>
-	<script src="app/household/householdCtrl.js"></script>
-	<script src="app/household/memberCtrl.js"></script>
-	<script src="app/settings/householdSettingsCtrl.js"></script>
-	<script src="app/settings/personalSettingsCtrl.js"></script>
-	<script src="app/settings/settingsCtrl.js"></script>
-	<script src="app/shared/actions.js"></script>
-	<script src="app/shared/authService.js"></script>
-	<script src="app/shared/config.js"></script>
-	<script src="app/shared/cooperatives.js"></script>
-	<script src="app/shared/energyGraph.js"></script>
-	<script src="app/shared/household.js"></script>
-	<script src="app/shared/rating.js"></script>
-	<script src="app/shared/testbed.js"></script>
-	<script src="app/shared/translations.js"></script>
-	<script src="app/shared/user.js"></script>
-	<script src="app/welcome/signupCtrl.js"></script>
-	<script src="app/welcome/welcomeCtrl.js"></script>
-	<!-- endinject -->
+  <script src="lib/underscore/underscore.js"></script>
+
+  <!-- your app's js -->
+  <script src="app/app.js"></script>
+  <!-- inject:js -->
+  <script src="app/actions/actionCtrl.js"></script>
+  <script src="app/actions/actionsCtrl.js"></script>
+  <script src="app/actions/actionsListCtrl.js"></script>
+  <script src="app/actions/formsCtrl.js"></script>
+  <script src="app/app/AppCtrl.js"></script>
+  <script src="app/cooperative/controllers.js"></script>
+  <script src="app/communities/communitiesCtrl.js"></script>
+  <script src="app/donation/donationCtrl.js"></script>
+  <script src="app/household/controllers.js"></script>
+  <script src="app/household/householdCtrl.js"></script>
+  <script src="app/household/memberCtrl.js"></script>
+  <script src="app/prosumption/dataVizCtrl.js"></script>
+  <script src="app/prosumption/prosumptionCtrl.js"></script>
+  <script src="app/settings/householdSettingsCtrl.js"></script>
+  <script src="app/settings/personalSettingsCtrl.js"></script>
+  <script src="app/settings/settingsCtrl.js"></script>
+  <script src="app/shared/actions.js"></script>
+  <script src="app/shared/authService.js"></script>
+  <script src="app/shared/config.js"></script>
+  <script src="app/shared/cooperatives.js"></script>
+  <script src="app/shared/energyGraph.js"></script>
+  <script src="app/shared/household.js"></script>
+  <script src="app/shared/rating.js"></script>
+  <script src="app/shared/testbed.js"></script>
+  <script src="app/shared/translations.js"></script>
+  <script src="app/shared/user.js"></script>
+  <script src="app/welcome/signupCtrl.js"></script>
+  <script src="app/welcome/welcomeCtrl.js"></script>
+  <!-- endinject -->
 
   <script src="//maps.googleapis.com/maps/api/js?key=AIzaSyAI7j4LZI132q62VGRFRfOsZlIOIavRrk8&sensor=true"></script>
 </head>
 <body ng-app="civis.youpower">
-	<ion-nav-view>
-	</ion-nav-view>
+  <ion-nav-view>
+  </ion-nav-view>
 </body>
 </html>
