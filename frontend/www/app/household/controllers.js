@@ -2,7 +2,7 @@
 
 angular.module('civis.youpower.households', ['highcharts-ng'])
 
-.controller('HouseholdEnergyCtrl', function($scope,Household) {
+.controller('HouseholdEnergyCtrl', function($scope,$timeout,Household) {
 
   $scope.household = new Household();
   $scope.household._id = 'demo';
@@ -15,7 +15,9 @@ angular.module('civis.youpower.households', ['highcharts-ng'])
   }
 
   $scope.$on("$ionicView.enter",function(){
-    $scope.$broadcast('civisEnergyGraph.init');
+    $timeout(function(){
+      $scope.$broadcast('civisEnergyGraph.init');
+    });
   })
 
 
