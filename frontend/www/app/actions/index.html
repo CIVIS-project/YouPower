@@ -35,7 +35,7 @@
 </div>
 
 <div class="list card" ng-if="_.size(currentUser.actions.done) > 0">
-  <div class="item item-divider"><span translate>Recently Completed</span> ({{_.size(currentUser.actions.done)}})</div>
+  <div class="item item-divider"><span translate>Recently_Completed</span> ({{_.size(currentUser.actions.done)}})</div>
   <a class="item item-icon-left item-text-wrap item-icon-right" ng-repeat="action in _.toArray(currentUser.actions.done) | orderBy: '-latestDate' | limitTo: maxNumberShow.done" ng-href="#/app/actions/completed/{{$index}}">
     <!-- ng-repeat="(idx, action) in actions" > -->
     <i class="icon ion-leaf balanced"><span class="leaves-nr">{{getActionPoints(action)}}</span></i>
