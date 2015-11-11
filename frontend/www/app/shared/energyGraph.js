@@ -311,6 +311,7 @@ angular.module('civis.youpower')
     scope: {
       settings: '=civisEnergyGraph',
       object: '=civisEnergyGraphData',
+      actions: '=civisEnergyGraphActions',
       actionFilter: '=civisEnergyGraphActionFilterFn'
     }, // {} = isolate, true = child, false/undefined = no change
     controller: 'EnergyGraphCtrl',
