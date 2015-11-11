@@ -124,7 +124,18 @@ angular.module('civis.youpower', [
     resolve: {
       User: 'User',
       currentUser: function(User){
-        return User.get().$promise;
+        var userPromise = User.get().$promise;
+        userPromise.then(function(user){
+          mixpanel.identify(user._id);
+          mixpanel.people.set({
+              "$name": user.profile.name,
+              "$created": new Date(parseInt(user._id.toString().slice(0,8), 16)*1000),
+              "$email": user.email,
+              "Testbed": (user.testbed || {}).name,
+              'Cooperative': (user.cooperative || {}).name,
+          });
+        });
+        return userPromise;
       }
     }
   })

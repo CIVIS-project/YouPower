@@ -13,6 +13,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
       $scope.cooperative = data;
       $scope.cooperative.actions = _.sortBy($scope.cooperative.actions,function(a){ return new Date(a.date)}).reverse();
       $scope.$broadcast('civisEnergyGraph.init');
+      mixpanel.track('Cooperative viewed',{name: data.name, own: id == currentUser.cooperativeId});
     });
   })
 
@@ -50,7 +51,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
       action.comments.push(comment);
       action.commentsCount ++;
       action.newComment = undefined;
-
+      mixpanel.track('Cooperative Action Comment added',{'action name': action.name, 'action id': action._id});
     });
   }
 
@@ -64,6 +65,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
     Cooperatives.deleteActionComment({id:$scope.cooperative._id,actionId:action._id,commentId:comment._id},function(){
       action.comments.splice(action.comments.indexOf(comment),1);
       action.commentsCount --;
+      mixpanel.track('Cooperative Action Comment deleted',{'action name': action.name, 'action id': action._id});
     });
   }
 
@@ -72,6 +74,10 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
       title: $translate.instant('COOPERATIVE_PERFORMANCE'),
       template: $translate.instant('COOPERATIVE_PERFORMANCE_DESCRIPTION',{year: $scope.performanceYear, value: $scope.cooperative.performance}),
     })
+  }
+
+  $scope.trackActionClicked = function(action) {
+    mixpanel.track('Cooperative Action expanded',{'action name': action.name, 'action id': action._id});
   }
 
 })
@@ -91,6 +97,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
   $scope.save = function(){
     Cooperatives.update({id:$scope.cooperative._id},$scope.cooperative,function(){
       $state.go("^");
+      mixpanel.track('Cooperative updated',{id:$scope.cooperative._id, name:$scope.cooperative.name});
     })
   }
 
@@ -141,6 +148,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
   $scope.addAction = function(){
     Cooperatives.addAction({id:currentUser.cooperativeId},$scope.action,function(){
       $state.go("^");
+      mixpanel.track('Cooperative Action added',$scope.action);
     })
   };
 })
@@ -161,12 +169,14 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
   $scope.deleteAction = function(action){
     Cooperatives.deleteAction({id:currentUser.cooperativeId,actionId:action._id},function(){
       $state.go("^");
+      mixpanel.track('Cooperative Action deleted',{id:action._id, name:action.name});
     });
   }
 
   $scope.updateAction = function(){
     Cooperatives.updateAction({id:currentUser.cooperativeId,actionId:$scope.action._id},$scope.action,function(){
       $state.go("^");
+      mixpanel.track('Cooperative Action updated',{id:$scope.action._id, name:$scope.action.name});
     })
   };
 })

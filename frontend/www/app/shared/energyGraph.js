@@ -5,18 +5,22 @@ angular.module('civis.youpower')
   var startYear = 2010;
 
   $scope.changeComparison = function(){
-    updateEnergyData();
+    updateEnergyData().then(function(){
+      mixpanel.track('Graph filtered', {granularity: $scope.settings.granularity, type: $scope.settings.type, compareTo: $scope.settings.compareTo});
+    });
   };
 
   $scope.changeType = function(type){
     updateEnergyData(type).then(function(){
       $scope.settings.type = type;
+      mixpanel.track('Graph filtered', {granularity: $scope.settings.granularity, type: $scope.settings.type, compareTo: $scope.settings.compareTo});
     });
   }
 
   $scope.changeGranularity = function(granularity){
     updateEnergyData($scope.settings.type,granularity).then(function(){
       $scope.settings.granularity = granularity;
+      mixpanel.track('Graph filtered', {granularity: $scope.settings.granularity, type: $scope.settings.type, compareTo: $scope.settings.compareTo});
     });
   }
 
@@ -295,6 +299,7 @@ angular.module('civis.youpower')
           }
           updateActionFlags();
           chart.redraw();
+          mixpanel.track('Graph moved', {granularity: $scope.settings.granularity, type: $scope.settings.type, compareTo: $scope.settings.compareTo, date: date});
         }
         $scope.chartConfig.loading = false;
       });
