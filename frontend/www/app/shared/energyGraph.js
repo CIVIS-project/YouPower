@@ -1,6 +1,6 @@
 angular.module('civis.youpower')
 
-.controller('EnergyGraphCtrl', ['$scope','$timeout','$q','$translate', function($scope,$timeout,$q,$translate){
+.controller('EnergyGraphCtrl', ['$scope','$timeout','$q','$translate','$filter', function($scope,$timeout,$q,$translate,$filter){
 
   var startYear = 2010;
 
@@ -239,7 +239,7 @@ angular.module('civis.youpower')
     } else {
       startDate.setFullYear(startDate.getFullYear() - 1);
     }
-    var actions = _.filter($scope.actions, $scope.actionFilter);
+    var actions = $filter('orderBy')(_.filter($scope.actions, $scope.actionFilter),'date',true);
     var length = actions.length;
     _.each(actions, function(action,index){
       var date = new Date(action.date);
