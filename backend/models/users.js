@@ -15,9 +15,13 @@ var cooperatives = require('./cooperatives');
 var async = require('async');
 var _ = require('underscore');
 var FB = require('fb');
+var crypto = require('crypto');
+var moment = require('moment');
 
 var UserSchema = new Schema({
   token: String,
+  passwordResetToken: String,
+  passwordResetTokenDate: Date,
   facebookId: String,
   accessToken: String,
   profile: {
@@ -199,7 +203,6 @@ exports.getProfile = function(id, cb) {
       function(cb) {
         if(user.cooperativeId) {
           cooperatives.getProfile(user.cooperativeId,user,function(err,coop){
-            console.log('Here');
             if(err){
               return cb(err);
             }
@@ -774,5 +777,73 @@ exports.postFB = function(user, postInfo, post, cb) {
     }
   });
 };
+
+exports.generatePasswordResetToken = function(email, cb) {
+  User.findOne({email: email}, false, function(err, user){
+    if (err) {
+      return cb(err);
+    }
+    if (!user) {
+      return cb('User not found');
+    }
+
+    user.passwordResetToken = crypto.randomBytes(12).toString('hex');
+    user.passwordResetTokenDate = new Date();
+
+    user.save(function(err) {
+      // TODO Send email
+      console.log('Token',user.passwordResetToken);
+      cb(err);
+    });
+  });
+}
+
+exports.checkResetToken = function(token, cb) {
+  User.findOne({passwordResetToken:token}, false, function(err, user) {
+    if (err){
+      return cb(err);
+    }
+    if (!user) {
+      return cb('User not found');
+    }
+
+    if (moment(user.passwordResetTokenDate).add(24, 'hours').isBefore(new Date())) {
+      return cb('Reset token expired');
+    }
+
+    cb();
+  });
+}
+
+exports.resetPassword = function(token, password, cb) {
+  User.findOne({passwordResetToken:token}, false, function(err, user) {
+    if (err){
+      return cb(err);
+    }
+    if (!user) {
+      return cb('User not found');
+    }
+
+    if (moment(user.passwordResetTokenDate).add(24, 'hours').isBefore(new Date())) {
+      return cb('Reset token expired');
+    }
+
+    user.setPassword(password,function(err,user){
+      if (err){
+        return cb(err);
+      }
+      if (!user) {
+        return cb('User not found');
+      }
+
+      user.passwordResetToken = undefined;
+      user.passwordResetTokenDate = undefined;
+
+      user.save(function(err) {
+        cb(err);
+      });
+    });
+  });
+}
 
 exports.model = User;

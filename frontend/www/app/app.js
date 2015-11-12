@@ -38,7 +38,7 @@ angular.module('civis.youpower', [
 
    if (!AuthService.isAuthenticated()) {
 
-      if (next.name !== 'welcome' && next.name !== 'signup'){
+      if (next.name.indexOf('main') == 0){
           event.preventDefault();
           $state.go('welcome');
       }
@@ -119,6 +119,24 @@ angular.module('civis.youpower', [
         }
       }
     }
+  })
+
+
+  .state('passwordRecovery',{
+    url: "/recover",
+    templateUrl: "app/welcome/recover.html",
+    controller: 'PasswordRecoveryCtrl',
+  })
+
+  .state('passwordRecoverySent',{
+    url: "/recover/sent",
+    templateUrl: "app/welcome/sent.html",
+  })
+
+  .state('resetPassword', {
+    url: "/recover/:token",
+    templateUrl: "app/welcome/reset.html",
+    controller: 'PasswordRecoveryCtrl',
   })
 
   // setup an abstract state that will contain the main navigation (i.e. menu)

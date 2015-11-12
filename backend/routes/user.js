@@ -557,6 +557,89 @@ router.get('/token', auth.basicauth(), function(req, res) {
 });
 
 /**
+ * @api {post} /user/password_reset Create new password reset token and send email to user
+ * @apiGroup User
+ *
+ * @apiParam (Body) {String} email Account of the user
+ *
+ * @apiVersion 1.0.0
+ */
+router.post('/password_reset', function(req, res){
+
+  req.checkBody('email').notEmpty();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+
+    User.generatePasswordResetToken(req.body.email, res.successRes);
+
+    Log.create({
+      category: 'User Password Reset',
+      type: 'post',
+      data: req.body,
+    })
+  }
+})
+
+
+/**
+ * @api {get} /user/password_reset/:token Get current API token
+ * @apiGroup User
+ *
+ * @apiParam (String) token Reset token received by email
+ *
+ * @apiVersion 1.0.0
+ */
+router.get('/password_reset/:token', function(req, res){
+  req.checkParams('token').notEmpty();
+
+  var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+
+    User.checkResetToken(req.params.token, res.successRes);
+
+    Log.create({
+      category: 'User Password Reset',
+      type: 'get',
+      data: req.params.token,
+    })
+  }
+})
+
+/**
+ * @api {put} /user/password_reset/:token Update user's password
+ * @apiGroup User
+ *
+ * @apiParam (String) token Reset token received by email
+ * @apiParam (Body) {String} password The new password
+ *
+ * @apiVersion 1.0.0
+ */
+router.put('/password_reset/:token', function(req, res){
+  req.checkParams('token').notEmpty();
+  req.checkBody('password').notEmpty();
+
+   var err;
+  if ((err = req.validationErrors())) {
+    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  } else {
+    User.resetPassword(req.params.token, req.body.password, res.successRes);
+
+    Log.create({
+      category: 'User Password Reset',
+      type: 'put',
+      data: req.params.token,
+    });
+  }
+})
+
+
+
+/**
  * @api {get} /user/:userId/achievements Get user's achievements
  * @apiGroup User
  *

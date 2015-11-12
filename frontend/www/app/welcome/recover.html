@@ -1,0 +1,21 @@
+<ion-view view-title="CIVIS">
+<ion-content class="padding">
+
+  <div class="list card">
+    <div class="item item-divider" translate>RECOVERY_TITLE</div>
+    <p class="item item-body" translate>RECOVERY_TEXT</p>
+  </div>
+  <form class="list" name="input">
+    <label class="item item-input">
+      <span class="input-label" translate>Email</span>
+      <input type="email" name="email" placeholder={{"Your_email_address"|translate}} ng-model="account.email" required>
+      <span class="errors_icon pos_left" ng-show="input.email.$error.required || input.email.$error.email"><i class="icon ion-alert-circled"></i></span>
+    </label>
+    <!-- END HIDDEN -->
+    <a class="button button-dark button-full text-bold" ng-click="recover()" ng-disabled="input.$invalid" translate>SEND</a>
+    <p class="errors text-center" ng-show="errorMsg">
+      {{errorMsg}}. <span translate>TRY_AGAIN</span>
+    </p>
+  </form>
+</ion-content>
+</ion-view>

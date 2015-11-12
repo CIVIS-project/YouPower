@@ -1,0 +1,26 @@
+<ion-view view-title="CIVIS">
+<ion-content class="padding">
+
+  <div class="list card">
+    <div class="item item-divider" translate>PASSWORD_RESET_TITLE</div>
+    <p class="item item-body" translate>PASSWORD_RESET_TEXT</p>
+  </div>
+  <form class="list" name="input">
+    <label class="item item-input">
+      <span class="input-label" translate>Password</span>
+      <input type="password" ng-minlength="6" name="password" placeholder={{"Select_your_password"|translate}} ng-model="account.password" required>
+      <span class="errors_icon pos_left" ng-show="input.password.$invalid"><i class="icon ion-alert-circled"></i></span>
+    </label>
+    <label class="item item-input">
+      <span class="input-label"> </span>
+      <input type="password" name="confirmPassword" placeholder={{"Repeat_your_password"|translate}} ng-model="account.confirmPassword" ng-change="comparePasswords()" required compare-to="account.password">
+      <span class="errors_icon pos_left" ng-show="input.confirmPassword.$invalid"><i class="icon ion-alert-circled"></i></span>
+    </label>
+    <!-- END HIDDEN -->
+    <a class="button button-dark button-full text-bold" ng-click="resetPassword()" ng-disabled="input.$invalid" translate>Save</a>
+    <p class="errors text-center" ng-show="errorMsg">
+      {{errorMsg}}. <span translate>TRY_AGAIN</span>
+    </p>
+  </form>
+</ion-content>
+</ion-view>
