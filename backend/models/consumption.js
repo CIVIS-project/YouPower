@@ -271,4 +271,17 @@ exports.getEnergimolnetConsumption = function(meters, type, granularity, from, t
       cb(null,result);
     }
   });
+
+  // Stockholm Self Hosted consumption
+
+  exports.getStoredConsumption = function(meterId, type, granularity, from, to, cb) {
+    // TODO Cristi: implement the API
+    // _from_ and _to_ can be any combination of YYYY, YYYYMM, YYYYMMDD; _to_ can also be left out
+    // granularity can be year, month, day, hour
+    // the call always returns an array of values
+    // the array is of exact size of the expected number of values depending on the from/to and granularity
+    // and returning null for values that don't exist
+    // e.g. for { from:2015,  granularity: 'month'} it will return 12 values where last will be null
+    // if granularity parameter is finer than data stored it should return all nulls, while in other case it should do the aggregation
+  }
 }
