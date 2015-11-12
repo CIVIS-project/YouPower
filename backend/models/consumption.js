@@ -274,8 +274,9 @@ exports.getEnergimolnetConsumption = function(meters, type, granularity, from, t
 
   // Stockholm Self Hosted consumption
 
-  exports.getStoredConsumption = function(meterId, type, granularity, from, to, cb) {
+  exports.getStoredConsumption = function(meterId, granularity, from, to, cb) {
     // TODO Cristi: implement the API
+    // _meterId_ is any string uniquely identifying the meter, if you think we might have more than 1 meter per household we can change it to an array
     // _from_ and _to_ can be any combination of YYYY, YYYYMM, YYYYMMDD; _to_ can also be left out
     // granularity can be year, month, day, hour
     // the call always returns an array of values
