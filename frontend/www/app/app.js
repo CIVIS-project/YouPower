@@ -94,20 +94,26 @@ angular.module('civis.youpower', [
     resolve: {
       Testbed: 'Testbed',
       Cooperative: 'Cooperatives',
-      testbed: function(Testbed,$stateParams){
+      testbed: function(Testbed,$stateParams,$q){
         if($stateParams.tid){
-          return Testbed.get({id:$stateParams.tid},function(data){
-            return data;
-          },function(){return null}).$promise;
+          // Wrapping in promise so it breaks silently
+          return $q(function(resolve){
+            Testbed.get({id:$stateParams.tid},function(data){
+              resolve(data);
+            },function(){resolve()})
+          });
         }else {
           return null;
         }
       },
-      cooperative: function(Cooperative,$stateParams){
+      cooperative: function(Cooperative,$stateParams,$q){
         if($stateParams.cid){
-          return Cooperative.get({id:$stateParams.cid},function(data){
-            return data;
-          },function(){return null}).$promise;
+          // Wrapping in promise so it breaks silently
+          return $q(function(resolve){
+            Cooperative.get({id:$stateParams.cid},function(data){
+              resolve(data);
+            },function(){resolve()})
+          });
         }else {
           return null;
         }
