@@ -316,6 +316,9 @@ router.delete('/:id/action/:actionId/comment/:commentId', function(req, res) {
 });
 
 
+/*
+curl  -X POST http://localhost:3000/api/cooperative/5623feb4fa9bee84098e7ce0/editor -d'{"editorId" : "55f91cacf9b31654b8758efd"}' -H "Content-Type: application/json" | python -m json.tool
+*/
 router.post('/:id/editor', function(req, res) {
   req.checkParams('id', 'Invalid cooperative id').isMongoId();
 
@@ -337,6 +340,9 @@ router.post('/:id/editor', function(req, res) {
   }
 });
 
+/**
+ curl  -X DELETE http://localhost:3000/api/cooperative/5623feb4fa9bee84098e7ce0/editor/56240d8a830db5840a70571a | python -m json.tool
+*/
 router.delete('/:id/editor/:coopEditorId', function(req, res) {
   req.checkParams('id', 'Invalid cooperative id').isMongoId();
   req.checkParams('coopEditorId', 'Invalid cooperative editor id').isMongoId();
