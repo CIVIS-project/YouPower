@@ -1,0 +1,19 @@
+{
+  "PASSWORD_RESET": {
+    "SUBJECT": "Återställning av lösenord för YouPower",
+    "TEXT_BEFORE": "PASSWORD_RESET.TEXT_BEFORE",
+    "TEXT_AFTER": "PASSWORD_RESET.TEXT_AFTER"
+  },
+  "GREETING": "Hej!",
+  "SIGNATURE": "YouPower team",
+  "INVITATION": {
+    "PERSONAL_TITLE": "Inbjudan från {{name}} att testa YouPower",
+    "PERSONAL_TEXT1": "{{name}} använder YouPower och har bjudit in dig att testa. YouPower är en social energiapp där du enkelt, och gratis, kan få och dela tips kring energianvändning med familj, vänner och grannar.",
+    "SUBJECT": "Inbjudan att testa YouPower",
+    "BUTTON_TEXT": "Registrera dig här",
+    "TEXT1": "Vi vill bjuda in dig till att upptäcka YouPower, en social energiapp där du enkelt, och gratis, kan få och dela tips kring energianvändning med familj, vänner och grannar.",
+    "TEXT2": "Tillsammans kan ni sänka er energianvändning och göra skillnad!",
+    "TEXT3": "Hälsningar",
+    "TITLE": "Inbjudan att testa YouPower"
+  }
+}
