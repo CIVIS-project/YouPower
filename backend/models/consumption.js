@@ -231,7 +231,7 @@ exports.downloadMyData = function(usagepoint, from, to, resType, ctype, cb) {
 
 var energimolnetHeaders = {
   Authorization: 'OAuth a4f4e751401477d5e3f1c68805298aef9807c0eae1b31db1009e2ee90c6e'
-}
+};
 
 var getConsumptionFromAPI = function(meterId, granularity, from, to, cb) {
   var to = to ? '-' + to : '';
@@ -267,14 +267,63 @@ exports.getEnergimolnetConsumption = function(meters, type, granularity, from, t
       .map(function(value){
         return value;
       })
-      .value()
+	      .value();
       cb(null,result);
     }
   });
+};
 
-  // Stockholm Self Hosted consumption
+var fs=require("fs");
+var readline=require("readline");
 
-  exports.getStoredConsumption = function(meterId, granularity, from, to, cb) {
+String.prototype.endsWith = function(suffix) {
+    return this.indexOf(suffix, this.length - suffix.length) !== -1;
+};
+
+var CIVIS_DATA="../civis-data/localCSV/";
+
+var meterdata={"EL":{},"VV":{}};
+readMeterData();
+
+function readMeterData(){
+    fs.readdirSync(CIVIS_DATA).filter(function(name){return name.endsWith(".txt");})
+	.forEach(function(nm){
+	    readline.createInterface({input:fs.createReadStream(CIVIS_DATA+nm)}).on('line', function(line){
+		var ln= line.split(";");
+		var startDate= ln[1].split('-');
+		
+		if(!meterdata[ln[3]][ln[0]])
+		    meterdata[ln[3]][ln[0]]={};
+		if(!meterdata[ln[3]][ln[0]][parseInt(startDate[0])])
+		    meterdata[ln[3]][ln[0]][parseInt(startDate[0])]=Array(12);
+		
+		meterdata[ln[3]][ln[0]][parseInt(startDate[0])][parseInt(startDate[1])-1]=parseFloat(ln[6].replace(',','.'));
+	    });
+	});
+    
+
+}
+
+var typeMap={electricity:'EL', "hot water":'VV'};
+
+exports.data=meterdata;
+// Stockholm Self Hosted consumption
+
+exports.getStoredConsumption = function(meterId, type, granularity, from, to, cb) {
+    
+    var ret= meterdata[typeMap[type]][meterId][parseInt(from.substring(0, 4))] || Array(12);
+    if(ret.length>4)
+	ret= ret.slice(parseInt(from.substring(4, 6))-1);
+    if(to){
+	var t= meterdata[typeMap[type]][meterId][parseInt(to.substring(0, 4))] || Array(12);
+	if(to.length>4){
+	    t=t.slice(0, parseInt(to.substring(4, 6)));
+	}
+	ret= Array.prototype.concat(ret, t);
+    }
+    cb(null, ret);
+    
+    
     // TODO Cristi: implement the API
     // _meterId_ is any string uniquely identifying the meter, if you think we might have more than 1 meter per household we can change it to an array
     // _from_ and _to_ can be any combination of YYYY, YYYYMM, YYYYMMDD; _to_ can also be left out
@@ -284,5 +333,12 @@ exports.getEnergimolnetConsumption = function(meters, type, granularity, from, t
     // and returning null for values that don't exist
     // e.g. for { from:2015,  granularity: 'month'} it will return 12 values where last will be null
     // if granularity parameter is finer than data stored it should return all nulls, while in other case it should do the aggregation
-  }
-}
+
+    /*
+[13/11/15 13:46:16] Filip Kis: 1) 201411-201510 (default, to load last 12 months)
+[13/11/15 13:47:00] Filip Kis: 2) 201410 (to load just one month, i.e. I get one result back, when I move left in graph from previous default)
+[13/11/15 13:47:47] Filip Kis: 3) 2010-2015 (for the yearly view)
+*/
+};
+
+
