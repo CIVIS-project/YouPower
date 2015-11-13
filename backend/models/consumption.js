@@ -297,7 +297,7 @@ function readMeterData(){
 		if(!meterdata[ln[3]][ln[0]][parseInt(startDate[0])])
 		    meterdata[ln[3]][ln[0]][parseInt(startDate[0])]=Array(12);
 		
-		meterdata[ln[3]][ln[0]][parseInt(startDate[0])][parseInt(startDate[1])]=parseFloat(ln[6].replace(',','.'));
+		meterdata[ln[3]][ln[0]][parseInt(startDate[0])][parseInt(startDate[1])-1]=parseFloat(ln[6].replace(',','.'));
 	    });
 	});
     
@@ -311,17 +311,34 @@ exports.data=meterdata;
 
 exports.getStoredConsumption = function(meterId, type, granularity, from, to, cb) {
     
-    cb(null, meterdata[typeMap[type]][meterId][parseInt(from.substring(0, 4))]);
+    var ret= meterdata[typeMap[type]][meterId][parseInt(from.substring(0, 4))] || Array(12);
+    if(ret.length>4)
+	ret= ret.slice(parseInt(from.substring(4, 6))-1);
+    if(to){
+	var t= meterdata[typeMap[type]][meterId][parseInt(to.substring(0, 4))] || Array(12);
+	if(to.length>4){
+	    t=t.slice(0, parseInt(to.substring(4, 6)));
+	}
+	ret= Array.prototype.concat(ret, t);
+    }
+    cb(null, ret);
+    
     
     // TODO Cristi: implement the API
     // _meterId_ is any string uniquely identifying the meter, if you think we might have more than 1 meter per household we can change it to an array
     // _from_ and _to_ can be any combination of YYYY, YYYYMM, YYYYMMDD; _to_ can also be left out
     // granularity can be year, month, day, hour
-    // the call always meterdataurns an array of values
+    // the call always returns an array of values
     // the array is of exact size of the expected number of values depending on the from/to and granularity
-    // and meterdataurning null for values that don't exist
-    // e.g. for { from:2015,  granularity: 'month'} it will meterdataurn 12 values where last will be null
+    // and returning null for values that don't exist
+    // e.g. for { from:2015,  granularity: 'month'} it will return 12 values where last will be null
     // if granularity parameter is finer than data stored it should return all nulls, while in other case it should do the aggregation
+
+    /*
+[13/11/15 13:46:16] Filip Kis: 1) 201411-201510 (default, to load last 12 months)
+[13/11/15 13:47:00] Filip Kis: 2) 201410 (to load just one month, i.e. I get one result back, when I move left in graph from previous default)
+[13/11/15 13:47:47] Filip Kis: 3) 2010-2015 (for the yearly view)
+*/
 };
 
 
