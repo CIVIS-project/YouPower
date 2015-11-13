@@ -283,9 +283,11 @@ String.prototype.endsWith = function(suffix) {
 var CIVIS_DATA="../civis-data/localCSV/";
 
 var meterdata={"EL":{},"VV":{}};
+
 readMeterData();
 
 function readMeterData(){
+    try{
     fs.readdirSync(CIVIS_DATA).filter(function(name){return name.endsWith(".txt");})
 	.forEach(function(nm){
 	    readline.createInterface({input:fs.createReadStream(CIVIS_DATA+nm)}).on('line', function(line){
@@ -300,7 +302,9 @@ function readMeterData(){
 		meterdata[ln[3]][ln[0]][parseInt(startDate[0])][parseInt(startDate[1])-1]=parseFloat(ln[6].replace(',','.'));
 	    });
 	});
-    
+    }catch(x){
+	console.log("Static Stockholm consumption data not found ",x.message);
+    }
 
 }
 
@@ -310,7 +314,7 @@ exports.data=meterdata;
 // Stockholm Self Hosted consumption
 
 exports.getStoredConsumption = function(meterId, type, granularity, from, to, cb) {
-    
+    try{
     var ret= meterdata[typeMap[type]][meterId][parseInt(from.substring(0, 4))] || Array(12);
     if(ret.length>4)
 	ret= ret.slice(parseInt(from.substring(4, 6))-1);
@@ -322,7 +326,8 @@ exports.getStoredConsumption = function(meterId, type, granularity, from, to, cb
 	ret= Array.prototype.concat(ret, t);
     }
     cb(null, ret);
-    
+    }
+    catch(e){cb(e);}
     
     // TODO Cristi: implement the API
     // _meterId_ is any string uniquely identifying the meter, if you think we might have more than 1 meter per household we can change it to an array
