@@ -231,7 +231,7 @@ exports.downloadMyData = function(usagepoint, from, to, resType, ctype, cb) {
 
 var energimolnetHeaders = {
   Authorization: 'OAuth a4f4e751401477d5e3f1c68805298aef9807c0eae1b31db1009e2ee90c6e'
-}
+};
 
 var getConsumptionFromAPI = function(meterId, granularity, from, to, cb) {
   var to = to ? '-' + to : '';
@@ -267,22 +267,61 @@ exports.getEnergimolnetConsumption = function(meters, type, granularity, from, t
       .map(function(value){
         return value;
       })
-      .value()
+	      .value();
       cb(null,result);
     }
   });
+};
 
-  // Stockholm Self Hosted consumption
+var fs=require("fs");
+var readline=require("readline");
 
-  exports.getStoredConsumption = function(meterId, granularity, from, to, cb) {
+String.prototype.endsWith = function(suffix) {
+    return this.indexOf(suffix, this.length - suffix.length) !== -1;
+};
+
+var CIVIS_DATA="../civis-data/localCSV/";
+
+var meterdata={"EL":{},"VV":{}};
+readMeterData();
+
+function readMeterData(){
+    fs.readdirSync(CIVIS_DATA).filter(function(name){return name.endsWith(".txt");})
+	.forEach(function(nm){
+	    readline.createInterface({input:fs.createReadStream(CIVIS_DATA+nm)}).on('line', function(line){
+		var ln= line.split(";");
+		var startDate= ln[1].split('-');
+		
+		if(!meterdata[ln[3]][ln[0]])
+		    meterdata[ln[3]][ln[0]]={};
+		if(!meterdata[ln[3]][ln[0]][parseInt(startDate[0])])
+		    meterdata[ln[3]][ln[0]][parseInt(startDate[0])]=Array(12);
+		
+		meterdata[ln[3]][ln[0]][parseInt(startDate[0])][parseInt(startDate[1])]=parseFloat(ln[6].replace(',','.'));
+	    });
+	});
+    
+
+}
+
+var typeMap={electricity:'EL', "hot water":'VV'};
+
+exports.data=meterdata;
+// Stockholm Self Hosted consumption
+
+exports.getStoredConsumption = function(meterId, type, granularity, from, to, cb) {
+    
+    cb(null, meterdata[typeMap[type]][meterId][parseInt(from.substring(0, 4))]);
+    
     // TODO Cristi: implement the API
     // _meterId_ is any string uniquely identifying the meter, if you think we might have more than 1 meter per household we can change it to an array
     // _from_ and _to_ can be any combination of YYYY, YYYYMM, YYYYMMDD; _to_ can also be left out
     // granularity can be year, month, day, hour
-    // the call always returns an array of values
+    // the call always meterdataurns an array of values
     // the array is of exact size of the expected number of values depending on the from/to and granularity
-    // and returning null for values that don't exist
-    // e.g. for { from:2015,  granularity: 'month'} it will return 12 values where last will be null
+    // and meterdataurning null for values that don't exist
+    // e.g. for { from:2015,  granularity: 'month'} it will meterdataurn 12 values where last will be null
     // if granularity parameter is finer than data stored it should return all nulls, while in other case it should do the aggregation
-  }
-}
+};
+
+
