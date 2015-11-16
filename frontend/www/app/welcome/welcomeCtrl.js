@@ -1,7 +1,7 @@
 angular.module('civis.youpower.welcome').controller('WelcomeCtrl', WelcomeCtrl);
 
 
-function WelcomeCtrl($translate, $scope, $state, $stateParams, AuthService) {
+function WelcomeCtrl($translate, $scope, $state, $stateParams, $window, AuthService, Config) {
 
   if ($stateParams
     && $stateParams.token !== undefined
