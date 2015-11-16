@@ -293,12 +293,12 @@ function readMeterData(){
 	    readline.createInterface({input:fs.createReadStream(CIVIS_DATA+nm)}).on('line', function(line){
 		var ln= line.split(";");
 		var startDate= ln[1].split('-');
-		
+
 		if(!meterdata[ln[3]][ln[0]])
 		    meterdata[ln[3]][ln[0]]={};
 		if(!meterdata[ln[3]][ln[0]][parseInt(startDate[0])])
 		    meterdata[ln[3]][ln[0]][parseInt(startDate[0])]=Array(12);
-		
+
 		meterdata[ln[3]][ln[0]][parseInt(startDate[0])][parseInt(startDate[1])-1]=parseFloat(ln[6].replace(',','.'));
 	    });
 	});
@@ -308,27 +308,30 @@ function readMeterData(){
 
 }
 
-var typeMap={electricity:'EL', "hot water":'VV'};
+var typeMap={electricity:'EL', "hot_water":'VV'};
 
 exports.data=meterdata;
 // Stockholm Self Hosted consumption
 
 exports.getStoredConsumption = function(meterId, type, granularity, from, to, cb) {
-    try{
+  try{
     var ret= meterdata[typeMap[type]][meterId][parseInt(from.substring(0, 4))] || Array(12);
     if(ret.length>4)
-	ret= ret.slice(parseInt(from.substring(4, 6))-1);
-    if(to){
-	var t= meterdata[typeMap[type]][meterId][parseInt(to.substring(0, 4))] || Array(12);
-	if(to.length>4){
-	    t=t.slice(0, parseInt(to.substring(4, 6)));
-	}
-	ret= Array.prototype.concat(ret, t);
-    }
-    cb(null, ret);
-    }
-    catch(e){cb(e);}
-    
+     ret= ret.slice(parseInt(from.substring(4, 6))-1);
+   if(to){
+     var t= meterdata[typeMap[type]][meterId][parseInt(to.substring(0, 4))] || Array(12);
+     if(to.length>4){
+       t=t.slice(0, parseInt(to.substring(4, 6)));
+     }
+     ret= Array.prototype.concat(ret, t);
+   }
+   cb(null, ret);
+ }
+ catch(e) {
+  console.error(e);
+  cb(e);
+}
+
     // TODO Cristi: implement the API
     // _meterId_ is any string uniquely identifying the meter, if you think we might have more than 1 meter per household we can change it to an array
     // _from_ and _to_ can be any combination of YYYY, YYYYMM, YYYYMMDD; _to_ can also be left out

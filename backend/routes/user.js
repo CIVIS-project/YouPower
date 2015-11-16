@@ -83,7 +83,6 @@ router.post('/register', function(req, res) {
           var household = req.body.household;
           household.ownerId = user._id;
           Household.create(household,function(er2){
-            console.log(er2);
             res.successRes(err, {
               token: token
             });

@@ -44,26 +44,13 @@
         <span class="input-label" translate>COOPERATIVE</span>
         <span class="input-label" translate>{{cooperative.name}}</span>
       </label>
-      <!-- <label class="item item-input" >
-        <span class="input-label" translate>HOUSEHOLD_ID</span>
-        <input type="text" name="identifier" placeholder={{"Enter_your_identifier"|translate}} ng-model="loginData.household.householdId" required>
+      <div class="item item-input" ng-if="cooperative.hasHouseholdData">
+        <span class="input-label" ng-click="showHouseholdIdInfo(cooperative)">{{"HOUSEHOLD_ID" | translate}}
+          <i class="icon ion-information-circled positive" ></i>
+        </span>
+        <input type="text" name="identifier" placeholder='{{"HOUSEHOLD_ID_PLACEHOLDER_" + cooperative.name.toUpperCase() |translate}}' ng-model="loginData.household.apartmentId" required>
         <span class="errors_icon pos_left" ng-show="input.identifier.$error.required"><i class="icon ion-alert-circled"></i></span>
-      </label>
-      <label class="item item-input item-select">
-        <span class="input-label" translate>House_type</span>
-         <select ng-model="loginData.household.houseType" ng-change="setHouseInfoChanged()">
-          <option translate>Apartment</option>
-          <option translate>Town_house</option>
-          <option translate>Detached_house</option>
-        </select>
-      </label>
-      <label class="item item-input item-select">
-        <span class="input-label" translate>Ownership</span>
-         <select ng-model="loginData.household.ownership" ng-change="setHouseInfoChanged()">
-          <option translate>Rental</option>
-          <option translate>Owner</option>
-        </select>
-      </label> -->
+      </div>
       <label class="item item-input">
         <span class="input-label" translate>Size</span>
         <input type="number" ng-model="loginData.household.size" ng-change="setHouseInfoChanged()" placeholder={{"SIZE_M2"|translate}}>

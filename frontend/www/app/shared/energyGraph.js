@@ -43,7 +43,7 @@ angular.module('civis.youpower')
     if($scope.chartConfig) {
       return;
     }
-
+    $scope.chartLoaded = false;
     $scope.chartConfig = {
 
         // Standard configuration option
@@ -157,6 +157,7 @@ angular.module('civis.youpower')
               // var chart = $scope.chartConfig.getHighcharts();
               return _.chain(chart.series[1].data).reject(function(value){return !value || !value.y}).reduce(function(memo, value){return memo + (value ? value.y : 0)},0)/chart.series[1].data.length;
             }
+            $scope.chartLoaded = true;
           });
         }
       }
@@ -304,6 +305,20 @@ angular.module('civis.youpower')
         $scope.chartConfig.loading = false;
       });
     }
+  }
+
+  $scope.hasMoreData = function(direction) {
+    if($scope.chartLoaded) {
+      var fn = direction > 0 ? _.last : _.first;
+      var chart = $scope.chartConfig.getHighcharts();
+      if(fn(chart.series[0].data)){
+        var date = new Date(fn(chart.series[0].data).x)
+        date.setMonth(date.getMonth() + direction);
+        var currentStartOfMonth = new Date(new Date().setDate(1)).setHours(0,0,0,0);
+        return date < currentStartOfMonth && fn(chart.series[0].data).y;
+      }
+    }
+    return false;
   }
 
 }])

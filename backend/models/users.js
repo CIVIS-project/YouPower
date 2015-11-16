@@ -173,6 +173,7 @@ exports.getProfile = function(id, cb) {
 
           if (household) {
             householdId = household._id;
+            return cb(null, household);
           }
 
           cb();
@@ -207,15 +208,16 @@ exports.getProfile = function(id, cb) {
               return cb(err);
             }
             coop = coop.toObject();
-            cooperative = {
+            return cb(null, {
               id: coop._id,
               name: coop.name
-            };
+            });
           });
+        } else {
+          cb();
         }
-        cb();
       }
-    ], function(err) {
+    ], function(err, results) {
       if (err) {
         return cb(err);
       }
@@ -229,12 +231,13 @@ exports.getProfile = function(id, cb) {
         facebookId: user.facebookId,
         production: user.production,
         householdId: householdId,
+        household: results[1],
         pendingHouseholdInvites: pendingHouseholdInvites,
         pendingCommunityInvites: pendingCommunityInvites,
         leaves: totalLeaves,
         energyConsumption: {}, // TODO
         cooperativeId: user.cooperativeId,
-        cooperative: cooperative,
+        cooperative: results[4],
         testbed: user.testbed
       });
     });
