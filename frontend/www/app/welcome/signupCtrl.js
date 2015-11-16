@@ -1,7 +1,7 @@
 angular.module('civis.youpower.welcome').controller('SignupCtrl', SignupCtrl);
 
 
-function SignupCtrl($translate, $scope, $state, $stateParams, AuthService, testbed, cooperative) {
+function SignupCtrl($translate, $scope, $state, $stateParams, $ionicPopup, AuthService, testbed, cooperative) {
 
   $scope.testbed = testbed;
   $scope.cooperative = cooperative;
@@ -79,6 +79,13 @@ function SignupCtrl($translate, $scope, $state, $stateParams, AuthService, testb
   $scope.languageChanged = function () {
     $translate.use($scope.loginData.language);
   };
+
+  $scope.showHouseholdIdInfo = function(cooperative) {
+    $ionicPopup.alert({
+      title: $translate.instant('HOUSEHOLD_ID'),
+      template: $translate.instant('HOUSEHOLD_ID_DESCRIPTION_' + cooperative.name.toUpperCase()),
+    })
+  }
 
 };
 

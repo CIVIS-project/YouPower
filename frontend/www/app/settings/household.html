@@ -21,37 +21,53 @@
     <p class="message" translate>APARTMENTID_INFO</p>
   </div> -->
   <div class="list card">
-    <label class="item item-input">
-      <span class="input-label" translate>Address</span>
-      <input type="text" ng-model="households[currentUser.householdId].address.street" ng-change="setHouseInfoChanged()" placeholder={{"Street"|translate}}>
-    </label>
-    <label class="item item-input">
-      <span class="input-label"></span>
-      <input type="text" ng-model="households[currentUser.householdId].address.postalCode" ng-change="setHouseInfoChanged()" placeholder={{"Postal_Code"|translate}}>
-    </label>
-    <label class="item item-input">
-      <span class="input-label"></span>
-      <input type="text" ng-model="households[currentUser.householdId].address.city" ng-change="setHouseInfoChanged()" placeholder={{"City"|translate}}>
-    </label>
-    <label class="item item-input">
-      <span class="input-label"></span>
-      <input type="text" ng-model="households[currentUser.householdId].address.country" ng-change="setHouseInfoChanged()" placeholder={{"Country"|translate}}>
-    </label>
-    <label class="item item-input item-select">
-      <span class="input-label" translate>House_type</span>
-       <select ng-model="households[currentUser.householdId].houseType" ng-change="setHouseInfoChanged()">
-        <option translate>Apartment</option>
-        <option translate>Town_house</option>
-        <option translate>Detached_house</option>
-      </select>
-    </label>
-    <label class="item item-input item-select">
-      <span class="input-label" translate>Ownership</span>
-       <select ng-model="households[currentUser.householdId].ownership" ng-change="setHouseInfoChanged()">
-        <option translate>Rental</option>
-        <option translate>Owner</option>
-      </select>
-    </label>
+    <!-- HIDDEN FOR SWEDISH TESTBED -->
+    <div ng-if="!currentUser.testbed.isStockholm()">
+      <label class="item item-input">
+        <span class="input-label" translate>Address</span>
+        <input type="text" ng-model="households[currentUser.householdId].address.street" ng-change="setHouseInfoChanged()" placeholder={{"Street"|translate}}>
+      </label>
+      <label class="item item-input">
+        <span class="input-label"></span>
+        <input type="text" ng-model="households[currentUser.householdId].address.postalCode" ng-change="setHouseInfoChanged()" placeholder={{"Postal_Code"|translate}}>
+      </label>
+      <label class="item item-input">
+        <span class="input-label"></span>
+        <input type="text" ng-model="households[currentUser.householdId].address.city" ng-change="setHouseInfoChanged()" placeholder={{"City"|translate}}>
+      </label>
+      <label class="item item-input">
+        <span class="input-label"></span>
+        <input type="text" ng-model="households[currentUser.householdId].address.country" ng-change="setHouseInfoChanged()" placeholder={{"Country"|translate}}>
+      </label>
+      <label class="item item-input item-select">
+        <span class="input-label" translate>House_type</span>
+         <select ng-model="households[currentUser.householdId].houseType" ng-change="setHouseInfoChanged()">
+          <option translate>Apartment</option>
+          <option translate>Town_house</option>
+          <option translate>Detached_house</option>
+        </select>
+      </label>
+      <label class="item item-input item-select">
+        <span class="input-label" translate>Ownership</span>
+         <select ng-model="households[currentUser.householdId].ownership" ng-change="setHouseInfoChanged()">
+          <option translate>Rental</option>
+          <option translate>Owner</option>
+        </select>
+      </label>
+    </div>
+    <!-- END OF HIDDEN -->
+    <!-- SWEDISH TESTBED ONLY -->
+    <div ng-if="currentUser.testbed.isStockholm()">
+      <label class="item item-input" >
+        <span class="input-label" translate>COOPERATIVE</span>
+        <span class="input-label" translate>{{currentUser.cooperative.name}}</span>
+      </label>
+      <label class="item item-input" ng-if="currentUser.cooperative.hasHoushouldData">
+        <span class="input-label" translate>HOUSEHOLD_ID</span>
+        <span class="input-label" translate>{{households[currentUser.householdId].householdId}}</span>
+      </label>
+    </div>
+    <!-- END SWEDISH TESTBED ONLY -->
     <label class="item item-input">
       <span class="input-label" translate>Size</span>
       <input type="number" ng-model="households[currentUser.householdId].size" ng-change="setHouseInfoChanged()" placeholder={{"SIZE_M2"|translate}}>
@@ -65,7 +81,7 @@
       <span class="input-label" translate>Children</span>
       <input type="number" ng-model="households[currentUser.householdId].composition.numChildren" ng-change="setHouseholdCompositionChanged()" placeholder={{"Number_of_Children"|translate}}>
     </label>
-    <!-- HIDE APPLIANCES FOR STOCKHOLM TESTBEDS -->
+    <!-- HIDDEN FOR SWEDISH TESTBED -->
     <div ng-if="!currentUser.testbed.isStockholm()">
       <div class="item item-divider" translate>Major_Appliances</div>
       <div class="item" ng-repeat="description in households[currentUser.householdId].appliancesList track by $index">
@@ -77,6 +93,7 @@
         <button class="button button-clear button-balanced icon ion-plus button_pos_left" ng-click="addAppliance()"></button>
       </div>
     </div>
+    <!-- END OF HIDDEN -->
   </div>
   <p class="errors text-center" ng-if="input.err" translate>{{input.err}}</p>
 

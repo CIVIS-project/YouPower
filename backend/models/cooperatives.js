@@ -31,6 +31,7 @@ var CooperativeSchema = new Schema({
     useInCalc: Boolean,
     meterId: String,
   }],
+  hasHoushouldData: Boolean,
   actions: [{
     name: String,
     description: String,

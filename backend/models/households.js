@@ -7,6 +7,8 @@ var _ = require('underscore');
 var Schema = mongoose.Schema;
 var usagePoint = require('./usagePoint');
 var Consumption = require('./consumption');
+var Cooperative = require('./cooperatives');
+var async = require('async');
 //Appliance Schema
 var applianceSchema = new Schema({
   appliance: String,
@@ -84,7 +86,12 @@ var HouseSchema = new Schema({
       Schema.Types.ObjectId
     ],
     default: []
-  }
+  },
+  meters: [{
+    mType: String,
+    meterId: String,
+    source: String, // energimolnet, stored
+  }],
 });
 
 var Household = mongoose.model('Household', HouseSchema);
@@ -92,18 +99,40 @@ var Household = mongoose.model('Household', HouseSchema);
 // create household entity
 exports.create = function(household, cb) {
 
-  Household.create({
-    // apartmentId: household.apartmentId,
-    address: household.address,
-    houseType: household.houseType,
-    ownership: household.ownership,
-    size: household.size,
-    composition: household.composition,
-    appliancesList: household.appliancesList,
-    energyVal: household.energyVal,
-    ownerId: household.ownerId,
-    members: [household.ownerId]
-  }, cb);
+  async.parallel([function(cb){
+    Cooperative.getProfile(household.cooperativeId, null, function(err, cooperative){
+      if(!err && cooperative){
+        return cb(null, cooperative.toObject());
+      }
+      cb();
+    })
+  }],function(err,results){
+    var newHousehold = {
+      apartmentId: household.apartmentId,
+      address: household.address,
+      houseType: household.houseType,
+      ownership: household.ownership,
+      size: household.size,
+      composition: household.composition,
+      appliancesList: household.appliancesList,
+      energyVal: household.energyVal,
+      ownerId: household.ownerId,
+      members: [household.ownerId],
+    }
+    if(results[0] && results[0].hasHouseholdData) {
+      newHousehold.connected = true;
+      if(household.apartmentId) {
+        newHousehold.meters = _.map(['electricity','hot_water'],function(type){
+          return {
+            mType: type,
+            meterId:household.apartmentId,
+            source: 'stored'
+          }
+        });
+      }
+    }
+    Household.create(newHousehold, cb);
+  })
 };
 
 // get household by id
@@ -117,6 +146,7 @@ exports.get = function(id, cb) {
       cb('Household not found');
     } else {
       household = household.toObject();
+      household.meters = _.map(household.meters,function(meter){return meter.mType});
       cb(null, household);
     }
   });
@@ -420,12 +450,34 @@ exports.connectUsagePoint = function(usagepoint, cb) {
 // Stockholm case
 
 exports.getConsumption = function(id, type, granularity, from, to, cb) {
-  var meters = [{
-    mType: 'electricity',
-    meterId: '56150dc2adc6b45f008b4666',
-    useInCalc: true
-  }]
-  Consumption.getEnergimolnetConsumption(meters,type, granularity, from, to, cb);
+  Household.findOne({
+    _id: id
+  }, function(err, household) {
+    /* istanbul ignore if: db errors are hard to unit test */
+    if (err) {
+      cb(err);
+    } else if (!household) {
+      cb('Household not found');
+    } else {
+      household = household.toObject();
+      var meter = _.findWhere(household.meters,{mType: type})
+      if(meter) {
+        switch(meter.source) {
+          case 'stored':
+            Consumption.getStoredConsumption(meter.meterId, type, granularity, from.split("-")[0], from.split("-")[1], cb);
+            break;
+          case 'energimolnet':
+            meter.useInCalc = true;
+            Consumption.getEnergimolnetConsumption([meter],type, granularity, from, to, cb);
+            break;
+          default:
+            cb('Unknown meter source');
+        }
+      } else {
+        cb('No ' + type + ' meter found for household');
+      }
+    }
+  });
 }
 
 exports.model = Household;

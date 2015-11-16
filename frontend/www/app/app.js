@@ -147,9 +147,13 @@ angular.module('civis.youpower', [
     controller: 'AppCtrl',
     resolve: {
       User: 'User',
-      currentUser: function(User){
+      Testbed: 'Testbed',
+      currentUser: function(User,Testbed){
         var userPromise = User.get().$promise;
         userPromise.then(function(user){
+          if(user.testbed) {
+            user.testbed = new Testbed(user.testbed);
+          }
           mixpanel.identify(user._id);
           mixpanel.people.set({
               "$name": user.profile.name,
