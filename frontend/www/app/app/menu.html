@@ -23,10 +23,10 @@
         <ion-item nav-clear menu-close href="#/app/actions/yours">
           <span translate>Actions</span>
         </ion-item>
-        <ion-item nav-clear menu-close ng-show="currentUser.householdId&&households[currentUser.householdId].connected===true" href="#/app/prosumption">
+        <ion-item nav-clear menu-close ng-show="currentUser.householdId&&households[currentUser.householdId].connected===true && !currentUser.testbed.isStockholm() " href="#/app/prosumption">
           <span translate>Energy_Data</span>
         </ion-item>
-        <ion-item nav-clear menu-close ng-show="currentUser.cooperativeId" ui-sref=".household">
+        <ion-item nav-clear menu-close ng-show="currentUser.testbed.isStockholm() && currentUser.household.connected==true" ui-sref=".household">
           <span translate>HOUSEHOLD_ENERGY</span>
         </ion-item>
        <!--  <ion-item nav-clear menu-close href="#/app/household">

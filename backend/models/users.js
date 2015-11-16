@@ -5,7 +5,7 @@ var Action = require('./actions');
 //var Community = require('./communities');
 var Schema = mongoose.Schema;
 var passportLocalMongoose = require('passport-local-mongoose');
-var mailer = require('../mailer')
+var nodemailer = require('nodemailer');
 var escapeStringRegexp = require('escape-string-regexp');
 var achievements = require('../common/achievements');
 var actionComments = require('./actionComments');
@@ -15,13 +15,9 @@ var cooperatives = require('./cooperatives');
 var async = require('async');
 var _ = require('underscore');
 var FB = require('fb');
-var crypto = require('crypto');
-var moment = require('moment');
 
 var UserSchema = new Schema({
   token: String,
-  passwordResetToken: String,
-  passwordResetTokenDate: Date,
   facebookId: String,
   accessToken: String,
   profile: {
@@ -173,6 +169,7 @@ exports.getProfile = function(id, cb) {
 
           if (household) {
             householdId = household._id;
+            return cb(null, household);
           }
 
           cb();
@@ -207,15 +204,16 @@ exports.getProfile = function(id, cb) {
               return cb(err);
             }
             coop = coop.toObject();
-            cooperative = {
+            return cb(null, {
               id: coop._id,
               name: coop.name
-            };
+            });
           });
+        } else {
+          cb();
         }
-        cb();
       }
-    ], function(err) {
+    ], function(err, results) {
       if (err) {
         return cb(err);
       }
@@ -229,12 +227,13 @@ exports.getProfile = function(id, cb) {
         facebookId: user.facebookId,
         production: user.production,
         householdId: householdId,
+        household: results[1],
         pendingHouseholdInvites: pendingHouseholdInvites,
         pendingCommunityInvites: pendingCommunityInvites,
         leaves: totalLeaves,
         energyConsumption: {}, // TODO
         cooperativeId: user.cooperativeId,
-        cooperative: cooperative,
+        cooperative: results[4],
         testbed: user.testbed
       });
     });
@@ -451,7 +450,147 @@ exports.updateProfile = function(user, profile, cb) {
 };
 
 exports.mailHouseholdMember = function(user, mail, cb) {
-  mailer.invitation_personal(user, mail, cb);
+
+  if (user.profile.language === 'Swedish') {
+    mailInvitation_personal_swedish(user, mail, cb);
+
+  }else if (user.profile.language === 'Italian') {
+    mailInvitation_personal_italian(user, mail, cb);
+
+  }else{
+    mailInvitation_personal_english(user, mail, cb);
+  }
+};
+
+
+var mailInvitation_personal_italian = function(user, mail, cb) {
+
+  mail.from = mail.from || (user.profile.name + ' via YouPower <youpower.app@gmail.com>');
+  mail.title = mail.title || (user.profile.name + ' ti ha invitato a unirti a YouPower');
+  mail.text1 = mail.text1 || user.profile.name + ' usa YouPower e crede che anche a te possa interessare. YouPower è una social app gratuita incentrata su tematiche energetiche. Provala, è semplice e piacevole da usare!';
+
+  mailInvitation_general_italian(user, mail, cb);
+
+}
+
+var mailInvitation_general_italian = function(user, mail, cb) {
+
+  mail.from = mail.from || 'YouPower <youpower.app@gmail.com>';
+  mail.to = mail.to || (mail.name + '<' + mail.email + '>');
+  mail.subject = mail.subject || 'Unisciti a YouPower';
+  mail.title = mail.title || 'Unisciti a YouPower';
+  mail.imageLink =  mail.imageLink || 'https://app.civisproject.eu/images/banner.jpg';
+  mail.greetings =  mail.greetings || 'Ciao,'
+  mail.text1 = mail.text1 || 'ti invitiamo a scoprire YouPower, una social app gratuita incentrata su tematiche energetiche. Provala, è semplice e piacevole da usare!';
+  mail.buttonText = mail.buttonText ||'Unisciti ora';
+  mail.text2 = mail.text2 || 'Grazie a YouPower potrai trovare risposta alle tue domande riguardo al risparmio energetico. Potrai mettere in pratica i nostri consigli assieme ai tuoi familiari e confrontare i risultati con quelli di amici e vicini. Registrati per saperne di più!';
+  mail.text3 = mail.text3 || 'Ti auguriamo una splendida giornata';
+  mail.signiture = mail.signiture || 'Il team YouPower';
+
+  mailInvitation(mail, cb);
+}
+
+
+var mailInvitation_personal_swedish = function(user, mail, cb) {
+
+  mail.from = mail.from || (user.profile.name + ' via YouPower <youpower.app@gmail.com>');
+  mail.title = mail.title || ('Inbjudan från ' + user.profile.name + ' att testa YouPower');
+  mail.text1 = mail.text1 || user.profile.name + ' använder YouPower och har bjudit in dig att testa. YouPower är en social energiapp där du enkelt, och gratis, kan få och dela tips kring energianvändning med familj, vänner och grannar.';
+
+  mailInvitation_general_swedish(user, mail, cb);
+
+}
+
+var mailInvitation_general_swedish = function(user, mail, cb) {
+
+  mail.from = mail.from || 'YouPower <youpower.app@gmail.com>';
+  mail.to = mail.to || (mail.name + '<' + mail.email + '>');
+  mail.subject = mail.subject || 'Inbjudan att testa YouPower';
+  mail.title = mail.title || 'Inbjudan att testa YouPower';
+  mail.imageLink =  mail.imageLink || 'https://app.civisproject.eu/images/banner.jpg';
+  mail.greetings =  mail.greetings || 'Hej!'
+  mail.text1 = mail.text1 || 'Vi vill bjuda in dig till att upptäcka YouPower, en social energiapp där du enkelt, och gratis, kan få och dela tips kring energianvändning med familj, vänner och grannar.';
+  mail.buttonText = mail.buttonText ||'Registrera dig här';
+  mail.text2 = mail.text2 || 'Tillsammans kan ni sänka er energianvändning och göra skillnad!';
+  mail.text3 = mail.text3 || 'Hälsningar';
+  mail.signiture = mail.signiture || 'YouPower-teamet';
+
+  mailInvitation(mail, cb);
+}
+
+
+var mailInvitation_personal_english = function(user, mail, cb) {
+
+  mail.from = mail.from || (user.profile.name + ' via YouPower <youpower.app@gmail.com>');
+  mail.title = mail.title || ('Invitation from ' + user.profile.name + ' to join YouPower');
+  mail.text1 = mail.text1 || user.profile.name + ' joined YouPower and is inviting you to join as well. YouPower is a free energy social app that is simple and fun to use.';
+
+  mailInvitation_general_english(user, mail, cb)
+
+}
+
+var mailInvitation_general_english = function(user, mail, cb) {
+
+  mail.from = mail.from || 'YouPower <youpower.app@gmail.com>';
+  mail.to = mail.to || (mail.name + '<' + mail.email + '>');
+  mail.subject = mail.subject || 'Invitation to join YouPower';
+  mail.title = mail.title || 'Invitation to join YouPower';
+  mail.imageLink =  mail.imageLink || 'https://app.civisproject.eu/images/banner.jpg';
+  mail.greetings =  mail.greetings || 'Hi there,'
+  mail.text1 = mail.text1 || 'We invite you to discover YouPower, a free energy social app that is simple and fun to use.';
+  mail.buttonText = mail.buttonText ||'Join Now';
+  mail.text2 = mail.text2 || 'With YouPower you can find answers to your questions about different energy practices and save energy together with your family, friends or neighbors. Sign up to disover more.';
+  mail.text3 = mail.text3 || 'Thanks, have a lovely day!';
+  mail.signiture = mail.signiture || 'YouPower Team';
+
+  mailInvitation(mail, cb);
+}
+
+
+var mailInvitation = function(mail, cb) {
+
+  mail.html = '<body bgcolor="#f6f6f6" style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; -webkit-font-smoothing: antialiased; height: 100%; -webkit-text-size-adjust: none; width: 100% !important; margin: 0; padding: 0;"><table class="body-wrap" bgcolor="#f6f6f6" style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; width: 100%; margin: 0; padding: 20px;"><tr style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; margin: 0; padding: 0;"> <td class="container" bgcolor="#FFFFFF" style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; clear: both !important; display: block !important; max-width: 600px !important; margin: 0 auto; padding: 20px; border: 1px solid #f0f0f0;"> <div class="content" style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; display: block; max-width: 600px; margin: 0 auto; padding: 0;"> <table style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; width: 100%; margin: 0; padding: 0;"><tr style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; margin: 0; padding: 0;"><td style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; margin: 0; padding: 0;"><h2 style="font-family: Helvetica, Arial, sans-serif; font-size: 28px; line-height: 1.2em; color: #111111; font-weight: 200; margin: 40px 0 10px; padding: 0;">'
+    + mail.title +
+    '</h2><img src='
+    + mail.imageLink +
+    ' style="max-width: 600px; width: 100%; margin: 0; padding: 0;"></td> </tr><tr style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; margin: 0; padding: 0;"><td style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; margin: 0; padding: 0;"> <p style="font-family: Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.6em; font-weight: normal; margin: 0 0 10px; padding: 0;">'
+    + mail.greetings +
+    '</p> <p style="font-family: Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.6em; font-weight: normal; margin: 0 0 10px; padding: 0;">'
+    + mail.text1 +
+    '</p> <table class="btn-primary" cellpadding="0" cellspacing="0" border="0" style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; width: auto !important; margin: 0 0 10px; padding: 0;"><tr style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; margin: 0; padding: 0;"><td style="font-family: Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.6em; border-radius: 25px; text-align: center; vertical-align: top; background-color: #008000; margin: 0; padding: 0;" align="center" bgcolor="#008000" valign="top"> <a href="https://app.civisproject.eu/frontend.html" style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 2; color: #ffffff; border-radius: 25px; display: inline-block; cursor: pointer; font-weight: bold; text-decoration: none; background-color: #008000; margin: 0; padding: 0; border-color: #008000; border-style: solid; border-width: 10px 20px;">'
+    + mail.buttonText +
+    '</a> </td> </tr></table><p style="font-family: Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.6em; font-weight: normal; margin: 0 0 10px; padding: 0;">'
+    + mail.text2 +
+    '</p> <p style="font-family: Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.6em; font-weight: normal; margin: 0 0 10px; padding: 0;">'
+    + mail.text3 +
+    '</p> <p style="font-family: Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.6em; font-weight: normal; margin: 0 0 10px; padding: 0;"><a href="https://app.civisproject.eu" style="font-family: Helvetica, Arial, sans-serif; font-size: 100%; line-height: 1.6em; color: #008000; margin: 0; padding: 0;">'
+    + mail.signiture +
+    '</a></p> </td> </tr></table></div> </td> </tr></table></body>';
+
+  var mailOptions = {
+      from: mail.from,
+      to: mail.to,
+      subject: mail.subject,
+      html: mail.html
+  };
+
+  sendMail(mailOptions, cb);
+};
+
+
+var sendMail = function(mailOptions, cb) {
+
+  var transporter = nodemailer.createTransport({
+      service: 'Gmail',
+      auth: {
+          user: 'youpower.app@gmail.com', // YouPower email id
+          pass: 'S+bk@4uQ<A6wk0<u3~.o]q6iA' // YouPower email password
+      }
+  });
+
+  transporter.sendMail(mailOptions, function(err, info){
+    cb(err, mailOptions);
+  });
 };
 
 
@@ -637,71 +776,5 @@ exports.postFB = function(user, postInfo, post, cb) {
     }
   });
 };
-
-exports.generatePasswordResetToken = function(email, cb) {
-  User.findOne({email: email}, false, function(err, user){
-    if (err) {
-      return cb(err);
-    }
-    if (!user) {
-      return cb('User not found');
-    }
-
-    user.passwordResetToken = crypto.randomBytes(12).toString('hex');
-    user.passwordResetTokenDate = new Date();
-
-    user.save(function(err) {
-      mailer.resetPassword(user,cb);
-    });
-  });
-}
-
-exports.checkResetToken = function(token, cb) {
-  User.findOne({passwordResetToken:token}, false, function(err, user) {
-    if (err){
-      return cb(err);
-    }
-    if (!user) {
-      return cb('User not found');
-    }
-
-    if (moment(user.passwordResetTokenDate).add(24, 'hours').isBefore(new Date())) {
-      return cb('Reset token expired');
-    }
-
-    cb();
-  });
-}
-
-exports.resetPassword = function(token, password, cb) {
-  User.findOne({passwordResetToken:token}, false, function(err, user) {
-    if (err){
-      return cb(err);
-    }
-    if (!user) {
-      return cb('User not found');
-    }
-
-    if (moment(user.passwordResetTokenDate).add(24, 'hours').isBefore(new Date())) {
-      return cb('Reset token expired');
-    }
-
-    user.setPassword(password,function(err,user){
-      if (err){
-        return cb(err);
-      }
-      if (!user) {
-        return cb('User not found');
-      }
-
-      user.passwordResetToken = undefined;
-      user.passwordResetTokenDate = undefined;
-
-      user.save(function(err) {
-        cb(err);
-      });
-    });
-  });
-}
 
 exports.model = User;

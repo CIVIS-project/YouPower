@@ -189,6 +189,14 @@ angular.module('civis.youpower.translations',[])
       en: 'Facilities electricity',
       se: 'Fastighetsel',
     },
+    GRAPH_DATA_HOUSEHOLD_ELECTRICITY : {
+      en: 'Electricity',
+      se: 'El',
+    },
+    GRAPH_DATA_HOT_WATER : {
+      en: 'Hot water',
+      se: 'Varmvatten',
+    },
     GRAPH_DATA_COMPARE : {
       en: 'Compare to',
       se: 'Jämför med',

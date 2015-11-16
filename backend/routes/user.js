@@ -83,7 +83,6 @@ router.post('/register', function(req, res) {
           var household = req.body.household;
           household.ownerId = user._id;
           Household.create(household,function(er2){
-            console.log(er2);
             res.successRes(err, {
               token: token
             });
@@ -275,11 +274,11 @@ router.post('/profile', auth.authenticate(), function(req, res) {
  *
  *   - **householdMember**: The mail receiver is invited to sign up YouPower and to join the sender's household
  *   - **TODO**: The mail receiver is invited to sign up YouPower
- * 
+ *
  * @apiParam {String} email Email address of the receiver
  * @apiParam {String} [name] Name of the receiver
  * @apiParam {String} [message] The sender's private message to the receiver
- * 
+ *
  * @apiExample {curl} Example usage:
  *  # Get API token via /api/user/profile
  *  export API_TOKEN=fc35e6b2f27e0f5ef...
@@ -294,7 +293,7 @@ router.post('/profile', auth.authenticate(), function(req, res) {
  *
  */
 router.post('/sendMail/:type', auth.authenticate(), function(req, res) {
-  req.checkBody('email').notEmpty(); 
+  req.checkBody('email').notEmpty();
 
   var err;
   if ((err = req.validationErrors())) {
@@ -315,7 +314,7 @@ router.post('/sendMail/:type', auth.authenticate(), function(req, res) {
 
 
 router.post('/sendMail/householdMember', auth.authenticate(), function(req, res) {
-  req.checkBody('email').notEmpty(); 
+  req.checkBody('email').notEmpty();
 
   var err;
   if ((err = req.validationErrors())) {
@@ -442,7 +441,7 @@ router.get('/profile/:userId', auth.authenticate(), function(req, res) {
  * @apiGroup User
  *
  * @apiParam {String} [email] Search by email
- * @apiParam {String} [name] Search by user's profile name 
+ * @apiParam {String} [name] Search by user's profile name
  * @apiParam {String} [userId] Search by user's MongoId
  *
  * @apiExample {curl} Example usage:
@@ -472,11 +471,11 @@ router.get('/profile/:userId', auth.authenticate(), function(req, res) {
  */
 router.get('/search', auth.authenticate(), function(req, res) {
 
-  // console.log("req.params:" + JSON.stringify(req.params, null, 4)); 
-  // console.log("req.body:" + JSON.stringify(req.body, null, 4)); 
-  // console.log("req.query:" + JSON.stringify(req.query, null, 4)); 
+  // console.log("req.params:" + JSON.stringify(req.params, null, 4));
+  // console.log("req.body:" + JSON.stringify(req.body, null, 4));
+  // console.log("req.query:" + JSON.stringify(req.query, null, 4));
 
-  User.find(req.query, true, 50, null, res.successRes); 
+  User.find(req.query, true, 50, null, res.successRes);
 
   Log.create({
     userId: req.user._id,
@@ -734,9 +733,9 @@ router.get('/:userId/fbfriends', auth.authenticate(), function(req, res) {
  * @api {post} /user/postFB/:type/:id Post on Facebook
  * @apiGroup User
  *
- * @apiParam {String} type Indicates the content of the post (or share), e.g. "action" means that the post is about an action 
+ * @apiParam {String} type Indicates the content of the post (or share), e.g. "action" means that the post is about an action
  * @apiParam {String} id The id of the content, e.g. if type is "action", then the id is an actoin id
- * @apiParam (Body) {Object} object The content to be posted. Details see: 
+ * @apiParam (Body) {Object} object The content to be posted. Details see:
  <a href="https://developers.facebook.com/docs/graph-api/reference/v2.4/post">https://developers.facebook.com/docs/graph-api/reference/v2.4/post</a>
  *
  * @apiExample {curl} Example usage:

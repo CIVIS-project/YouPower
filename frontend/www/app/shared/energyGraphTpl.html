@@ -1,10 +1,10 @@
 <div class="item item-no-border-bottom">
   <div class="button-bar">
-    <a ng-repeat="granularity in settings.granularities" class="button button-small button-mulitline" ng-class="{active:settings.granularity==granularity}" ng-click="changeGranularity(granularity)" ng-disabled="granularity == 'daily' || granularity=='hourly'">
+    <a ng-repeat="granularity in settings.granularities" class="button button-small button-mulitline" ng-class="{active:settings.granularity==granularity}" ng-click="changeGranularity(granularity)" ng-disabled="settings.disabledGranularities.indexOf(granularity)>=0">
     {{'GRAPH_DATA_' + (granularity | uppercase) | translate}}</a>
   </div>
   <div class="button-bar padding-top padding-bottom">
-    <a ng-repeat="type in settings.types" class="button button-small button-multiline {{getTypeClass(type)}}" ng-class="{active:settings.type == type.name}" ng-click="changeType(type.name)">{{'GRAPH_DATA_' + (type.name | uppercase) | translate}}</a>
+    <a ng-repeat="type in settings.types" class="button button-small button-multiline {{getTypeClass(type)}}" ng-class="{active:settings.type == type.name}" ng-click="changeType(type.name)">{{'GRAPH_DATA_' + (type.label || type.name | uppercase) | translate}}</a>
   </div>
   <label class="item item-input item-select select-small" ng-if="settings.comparisons.length > 1">
     <div class="input-label">
@@ -62,7 +62,7 @@
   </div>
 </div>
 <div class="chart-container">
-  <a class="button button-clear button-stable chart-navigation ion-chevron-left" ng-click="move(-1)" ng-disabled="chartConfig.loading" ng-hide="settings.granularity=='yearly'"></a>
+  <a class="button button-clear button-stable chart-navigation ion-chevron-left" ng-click="move(-1)" ng-disabled="chartConfig.loading" ng-hide="settings.granularity=='yearly' || !hasMoreData(-1)"></a>
   <highchart id="chart" config="chartConfig"></highchart>
-  <a class="button button-clear button-stable chart-navigation ion-chevron-right" ng-click="move(1)" ng-disabled="chartConfig.loading" ng-hide="settings.granularity=='yearly'"></a>
+  <a class="button button-clear button-stable chart-navigation ion-chevron-right" ng-click="move(1)" ng-disabled="chartConfig.loading" ng-hide="settings.granularity=='yearly' || !hasMoreData(+1)"></a>
 </div>
