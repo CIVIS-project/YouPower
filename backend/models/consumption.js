@@ -292,21 +292,23 @@ function readMeterData(){
 	.forEach(function(nm){
     var file = fs.createReadStream(CIVIS_DATA+nm);
 	  readline.createInterface({terminal: false, input:file})
-      .on('line', function(line){
-    		var ln= line.split(";");
-    		var startDate= ln[1].split('-');
-
-    		if(!meterdata[ln[3]][ln[0]])
-    		    meterdata[ln[3]][ln[0]]={};
-    		if(!meterdata[ln[3]][ln[0]][parseInt(startDate[0])])
-    		    meterdata[ln[3]][ln[0]][parseInt(startDate[0])]=Array(12);
-
-    		meterdata[ln[3]][ln[0]][parseInt(startDate[0])][parseInt(startDate[1])-1]=parseFloat(ln[6].replace(',','.'));
-	    });
+		.on('line', function(line){
+		    if(!line)
+			return;
+    		    var ln= line.split(";");
+    		    var startDate= ln[1].split('-');
+		    
+    		    if(!meterdata[ln[3]][ln[0]])
+    			meterdata[ln[3]][ln[0]]={};
+    		    if(!meterdata[ln[3]][ln[0]][parseInt(startDate[0])])
+    			meterdata[ln[3]][ln[0]][parseInt(startDate[0])]=Array(12);
+		    
+    		    meterdata[ln[3]][ln[0]][parseInt(startDate[0])][parseInt(startDate[1])-1]=parseFloat(ln[6].replace(',','.'));
+		});
 	});
     }catch(x){
 	console.log("Static Stockholm consumption data not found ",x.message);
-  console.log(x.stack);
+	console.log(x.stack);
     }
 
 }
