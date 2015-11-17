@@ -280,7 +280,7 @@ String.prototype.endsWith = function(suffix) {
     return this.indexOf(suffix, this.length - suffix.length) !== -1;
 };
 
-var CIVIS_DATA="../civis-data/localCSV/";
+var CIVIS_DATA= __dirname + "/../../../civis-data/localCSV/";
 
 var meterdata={"EL":{},"VV":{}};
 
