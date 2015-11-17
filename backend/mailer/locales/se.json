@@ -1,8 +1,8 @@
 {
   "PASSWORD_RESET": {
-    "SUBJECT": "Återställning av lösenord för YouPower",
-    "TEXT_BEFORE": "PASSWORD_RESET.TEXT_BEFORE",
-    "TEXT_AFTER": "PASSWORD_RESET.TEXT_AFTER"
+    "SUBJECT": "Begäran om nytt lösenord för YouPower",
+    "TEXT_BEFORE": "Du har begärt att få lösenordet återställt. Klicka på länken nedan för att välja ett nytt lösenord:",
+    "TEXT_AFTER": "Om du inte har begärt ett nytt lösenord kan du ignorera det här mailet och ditt lösenord kommer vara samma som tidigare."
   },
   "GREETING": "Hej!",
   "SIGNATURE": "YouPower team",
