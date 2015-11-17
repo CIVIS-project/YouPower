@@ -96,43 +96,92 @@ var HouseSchema = new Schema({
 
 var Household = mongoose.model('Household', HouseSchema);
 
+var HouseholdLookupSchema = new Schema({
+  apartmentId: String,
+  uniqueCode: {
+    type: String,
+    required: true,
+    unique: true,
+  }
+});
+
+var HouseholdLookup = mongoose.model('HouseholdLookup',HouseholdLookupSchema);
+
 // create household entity
 exports.create = function(household, cb) {
 
-  async.parallel([function(cb){
+  async.waterfall([function(cb){
+    // Find household cooperative if any
     Cooperative.getProfile(household.cooperativeId, null, function(err, cooperative){
+      if(err){
+        console.log(err);
+      }
       if(!err && cooperative){
         return cb(null, cooperative.toObject());
       }
       cb();
     })
-  }],function(err,results){
-    var newHousehold = {
-      apartmentId: household.apartmentId,
-      address: household.address,
-      houseType: household.houseType,
-      ownership: household.ownership,
-      size: household.size,
-      composition: household.composition,
-      appliancesList: household.appliancesList,
-      energyVal: household.energyVal,
-      ownerId: household.ownerId,
-      members: [household.ownerId],
+  },function(cooperative, cb){
+    // If we have household data, get the apartment ID from unique code (the lookup)
+    if(cooperative && cooperative.hasHouseholdData){
+      HouseholdLookup.findOne({uniqueCode:household.uniqueCode},function(err, lookupResult){
+        if(err){
+          console.log(err);
+        } else {
+          if(!lookupResult) {
+            return cb('HOUSEHOLD_ID not found');
+          }
+          return cb(null, lookupResult.toObject());
+        }
+        cb();
+      })
+    } else {
+      cb();
     }
-    if(results[0] && results[0].hasHouseholdData) {
-      newHousehold.connected = true;
-      if(household.apartmentId) {
+  },function(lookupResult,cb){
+    // If we have lookup results, find (if existing) matching household
+    if(lookupResult) {
+      Household.findOne({apartmentId:lookupResult.apartmentId},function(err, eHousehold){
+        if(err){
+          console.log(err);
+        }
+        cb(null, lookupResult, eHousehold);
+      })
+    } else {
+      cb();
+    }
+  },function(lookupResult, eHousehold, cb){
+    // If household already exists add the user to it
+    if(eHousehold) {
+      eHousehold.members.push(household.ownerId);
+      eHousehold.save(cb);
+    } else {
+      var newHousehold = {
+        address: household.address,
+        houseType: household.houseType,
+        ownership: household.ownership,
+        size: household.size,
+        composition: household.composition,
+        appliancesList: household.appliancesList,
+        energyVal: household.energyVal,
+        ownerId: household.ownerId,
+        members: [household.ownerId],
+      }
+      if(lookupResult) {
+        newHousehold.apartmentId = lookupResult.apartmentId;
+        newHousehold.connected = true;
+        // FOR BRF Seglatsen
         newHousehold.meters = _.map(['electricity','hot_water'],function(type){
           return {
             mType: type,
-            meterId:household.apartmentId,
+            meterId:lookupResult.apartmentId,
             source: 'stored'
           }
         });
       }
+      Household.create(newHousehold, cb);
     }
-    Household.create(newHousehold, cb);
-  })
+  }],cb);
 };
 
 // get household by id
