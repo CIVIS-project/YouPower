@@ -291,7 +291,7 @@ function readMeterData(){
     fs.readdirSync(CIVIS_DATA).filter(function(name){return name.endsWith(".txt");})
 	.forEach(function(nm){
     var file = fs.createReadStream(CIVIS_DATA+nm);
-	  readline.createInterface({input:file})
+	  readline.createInterface({termina: false, input:file})
       .on('line', function(line){
     		var ln= line.split(";");
     		var startDate= ln[1].split('-');
