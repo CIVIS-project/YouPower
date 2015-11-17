@@ -232,7 +232,7 @@ angular.module('civis.youpower.translations',[])
       en: 'Household energy',
       se: 'Hushållsenergi'
     },
-    HOUSEHOLD_ENERGY_DISCLAIMER: {
+    HOUSEHOLD_ENERGY_DISCLAIMER_BRFSEGLATSEN: {
       en: 'This is your household energy data currently available in the app. In the future more detailed data might be available.',
       se: 'Här ser du den energidata som för tillfället är tillgänglig för ditt hushåll. Framöver kan mer detaljerad data komma att bli tillgänglig.',
     },
@@ -240,11 +240,11 @@ angular.module('civis.youpower.translations',[])
       en: 'Household code',
       se: 'Hushållskod',
     },
-    HOUSEHOLD_ID_PLACEHOLDER: {
+    HOUSEHOLD_ID_PLACEHOLDER_BRFSEGLATSEN: {
       en: 'Code from invitation mail',
       se: 'Kod från inbjudan',
     },
-    HOUSEHOLD_ID_DESCRIPTION: {
+    HOUSEHOLD_ID_DESCRIPTION_BRFSEGLATSEN: {
       en: 'You can find your unique household code in the invitation mail. All members in your household can create their own accounts using the same code.',
       se: 'Du hittar er unika hushållskod i inbjudan. Alla medlemmar i hushållet kan skapa sina egna konton med samma kod.',
     }

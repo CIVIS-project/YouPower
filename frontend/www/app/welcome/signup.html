@@ -48,7 +48,7 @@
         <span class="input-label" ng-click="showHouseholdIdInfo(cooperative)">{{"HOUSEHOLD_ID" | translate}}
           <i class="icon ion-information-circled positive" ></i>
         </span>
-        <input type="text" name="identifier" placeholder='{{"HOUSEHOLD_ID_PLACEHOLDER_" + cooperative.name.toUpperCase() |translate}}' ng-model="loginData.household.apartmentId" required>
+        <input type="text" name="identifier" placeholder='{{"HOUSEHOLD_ID_PLACEHOLDER_" + cooperative.getStringId() |translate}}' ng-model="loginData.household.uniqueCode" required>
         <span class="errors_icon pos_left" ng-show="input.identifier.$error.required"><i class="icon ion-alert-circled"></i></span>
       </div>
       <label class="item item-input">

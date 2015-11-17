@@ -148,11 +148,15 @@ angular.module('civis.youpower', [
     resolve: {
       User: 'User',
       Testbed: 'Testbed',
-      currentUser: function(User,Testbed){
+      Cooperatives: 'Cooperatives',
+      currentUser: function(User,Testbed,Cooperatives){
         var userPromise = User.get().$promise;
         userPromise.then(function(user){
           if(user.testbed) {
             user.testbed = new Testbed(user.testbed);
+          }
+          if(user.cooperative) {
+            user.cooperative = new Cooperatives(user.cooperative);
           }
           mixpanel.identify(user._id);
           mixpanel.people.set({

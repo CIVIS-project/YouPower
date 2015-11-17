@@ -32,6 +32,10 @@ angular.module('civis.youpower')
     }
   });
 
+  result.prototype.getStringId = function() {
+    return this.name.toUpperCase().replace(/ /g,'');
+  }
+
   result.prototype.getEnergyData = function(type, granularity, period){
     return $http.get(Config.host + '/api/cooperative/' + this._id + '/consumption/' +
       type + "/" +

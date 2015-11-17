@@ -2,7 +2,7 @@
   <ion-content>
     <div class="list">
       <div class="item item-text-wrap">
-        <small>{{"HOUSEHOLD_ENERGY_DISCLAIMER_" + currentUser.cooperative.name.toUpperCase() | translate}}</small>
+        <small>{{"HOUSEHOLD_ENERGY_DISCLAIMER_" + currentUser.cooperative.getStringId() | translate}}</small>
       </div>
       <div civis-energy-graph='energyGraphSettings' civis-energy-graph-data="household"></div>
     </div>

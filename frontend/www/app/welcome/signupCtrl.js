@@ -83,7 +83,7 @@ function SignupCtrl($translate, $scope, $state, $stateParams, $ionicPopup, AuthS
   $scope.showHouseholdIdInfo = function(cooperative) {
     $ionicPopup.alert({
       title: $translate.instant('HOUSEHOLD_ID'),
-      template: $translate.instant('HOUSEHOLD_ID_DESCRIPTION_' + cooperative.name.toUpperCase()),
+      template: $translate.instant('HOUSEHOLD_ID_DESCRIPTION_' + cooperative.getStringId()),
     })
   }
 
