@@ -92,6 +92,7 @@ var HouseSchema = new Schema({
     meterId: String,
     source: String, // energimolnet, stored
   }],
+  extraInfo: Schema.Types.Mixed
 });
 
 var Household = mongoose.model('Household', HouseSchema);
@@ -156,6 +157,12 @@ exports.create = function(household, cb) {
     // If household already exists add the user to it
     if(eHousehold) {
       eHousehold.members.push(household.ownerId);
+      if(household.extraInfo && household.extraInfo.smappee) {
+        if(!eHousehold.extraInfo) {
+          eHousehold.extraInfo = {};
+        }
+        eHousehold.extraInfo.smappee = household.extraInfo.smappee;
+      }
       eHousehold.save(cb);
     } else {
       var newHousehold = {
@@ -168,6 +175,7 @@ exports.create = function(household, cb) {
         energyVal: household.energyVal,
         ownerId: household.ownerId,
         members: [household.ownerId],
+        extraInfo: household.extraInfo
       }
       if(lookupResult) {
         newHousehold.apartmentId = lookupResult.apartmentId;

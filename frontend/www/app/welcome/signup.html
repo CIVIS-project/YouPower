@@ -55,6 +55,18 @@
         <span class="input-label" translate>Size</span>
         <input type="number" ng-model="loginData.household.size" ng-change="setHouseInfoChanged()" placeholder={{"SIZE_M2"|translate}}>
       </label>
+      <li class="item item-toggle item-text-wrap" style="pointer-events:initial !important;" ng-if="cooperative.extraInfo.smappee">
+        <a ng-click="showSmappeeInfo()">
+        {{"SMAPPEE_LABEL" | translate}}
+        <i class="icon ion-information-circled positive"></i>
+        </a>
+        <label class="toggle toggle-positive">
+          <input type="checkbox" ng-model="loginData.household.extraInfo.smappee" ng-change="setHouseInfoChanged()">
+          <div class="track">
+              <div class="handle"></div>
+            </div>
+        </label>
+      </li>
       <div class="item item-divider" translate>Household_Composition</div>
       <label class="item item-input">
         <span class="input-label" translate>Adults</span>

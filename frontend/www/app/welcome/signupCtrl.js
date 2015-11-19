@@ -24,7 +24,8 @@ function SignupCtrl($translate, $scope, $state, $stateParams, $ionicPopup, AuthS
     $scope.loginData.testbed = testbed._id;
     $scope.loginData.household = {
       composition : {},
-      testbed: testbed._id
+      testbed: testbed._id,
+      extraInfo: {}
     };
     if(cooperative) {
       $scope.loginData.household.cooperativeId = cooperative._id;
@@ -84,6 +85,13 @@ function SignupCtrl($translate, $scope, $state, $stateParams, $ionicPopup, AuthS
     $ionicPopup.alert({
       title: $translate.instant('HOUSEHOLD_ID'),
       template: $translate.instant('HOUSEHOLD_ID_DESCRIPTION_' + cooperative.getStringId()),
+    })
+  }
+
+  $scope.showSmappeeInfo = function(cooperative) {
+    $ionicPopup.alert({
+      title: $translate.instant('SMAPPEE_INFO_TITLE'),
+      template: $translate.instant('SMAPPEE_INFO_TEXT'),
     })
   }
 

@@ -64,6 +64,7 @@ var CooperativeSchema = new Schema({
       editorId: Schema.Types.ObjectId,
       name: String,
   }],
+  extraInfo: Schema.Types.Mixed
 });
 
 var Cooperative = mongoose.model('Cooperative', CooperativeSchema);

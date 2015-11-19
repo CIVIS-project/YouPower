@@ -247,6 +247,18 @@ angular.module('civis.youpower.translations',[])
     HOUSEHOLD_ID_DESCRIPTION_BRFSEGLATSEN: {
       en: 'You can find your unique household code in the invitation mail. All members in your household can create their own accounts using the same code.',
       se: 'Du hittar er unika hushållskod i inbjudan. Alla medlemmar i hushållet kan skapa sina egna konton med samma kod.',
+    },
+    SMAPPEE_LABEL: {
+      en: 'I/my household is interested in Smappee',
+      se: 'Jag/mitt hushåll är intresserad av att testa Smappee'
+    },
+    SMAPPEE_INFO_TITLE: {
+      en: 'What is Smappee?',
+      se: 'Vad är Smappee?'
+    },
+    SMAPPEE_INFO_TEXT: {
+      en: 'Smappee is a smart home system that gives you the possibility to see, in real-time, how much electricity your lamps and other devices are using and to turn them on and off with mobile phone. As part of the research project we will give Smappee to 50 households to test for free.',
+      se: 'Smappee är ett smarta hem-system som ger dig möjlighet att i realtid se hur mycket el olika lampor och apparater använder och att slå på och av utvalda lampor eller apparater via mobilen. Inom forskningsprojektet har vi Smappees till 50 hushåll som får testa systemet kostnadsfritt.'
     }
   }
 
@@ -435,6 +447,8 @@ Ownership:  "Ownership",
 Participant:  "Participant",
 Participants:  "Participants",
 Password:  "Password",
+PASSWORD_RESET_TITLE: 'Password reset',
+PASSWORD_RESET_TEXT: 'Enter a new password with minimum length of 6 characters.',
 Pending:  "Pending",
 pending:  "Pending Actions",
 Pending_Invitation:  "Pending Invitation",
