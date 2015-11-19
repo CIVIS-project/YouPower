@@ -1,6 +1,6 @@
 <ion-view view-title="{{cooperative.name}}">
   <ion-nav-buttons side="secondary">
-    <a ui-sref=".cooperative.my.edit" class="button button-clear button-positive" ng-if="currentUser.cooperativeId == cooperative._id">
+    <a ui-sref=".cooperative.my.edit" class="button button-clear button-positive" ng-if="_.findWhere(cooperative.editors,{editorId:currentUser._id})">
       {{'EDIT' | translate}}
     </a>
   </ion-nav-buttons>
