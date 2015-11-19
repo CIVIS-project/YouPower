@@ -273,6 +273,19 @@ exports.getEnergimolnetConsumption = function(meters, type, granularity, from, t
   });
 };
 
+var computeCheckDigit = function(numberStr) {
+  var oddSum = 0;
+  var evenSum = 0;
+  _.each(numberStr,function(digit,index){
+    if(index % 2) {
+      evenSum += parseInt(digit);
+    } else {
+      oddSum += parseInt(digit);
+    }
+  })
+  return (oddSum*3 + evenSum) % 10;
+}
+
 var fs=require("fs");
 var readline=require("readline");
 
@@ -288,29 +301,58 @@ readMeterData();
 
 function readMeterData(){
     try{
-    fs.readdirSync(CIVIS_DATA).filter(function(name){return name.endsWith(".txt");})
-	.forEach(function(nm){
-    var file = fs.createReadStream(CIVIS_DATA+nm);
-	  readline.createInterface({terminal: false, input:file})
-		.on('line', function(line){
-		    if(!line)
-			return;
-    		    var ln= line.split(";");
-    		    var startDate= ln[1].split('-');
-		    
-    		    if(!meterdata[ln[3]][ln[0]])
-    			meterdata[ln[3]][ln[0]]={};
-    		    if(!meterdata[ln[3]][ln[0]][parseInt(startDate[0])])
-    			meterdata[ln[3]][ln[0]][parseInt(startDate[0])]=Array(12);
-		    
-    		    meterdata[ln[3]][ln[0]][parseInt(startDate[0])][parseInt(startDate[1])-1]=parseFloat(ln[6].replace(',','.'));
-		});
-	});
-    }catch(x){
-	console.log("Static Stockholm consumption data not found ",x.message);
-	console.log(x.stack);
-    }
+      var files = fs.readdirSync(CIVIS_DATA).filter(function(name){return name.endsWith(".txt");})
+      async.forEachOf(files, function(nm, index, cb){
+        try {
+          var file = fs.createReadStream(CIVIS_DATA+nm);
+      	  readline.createInterface({terminal: false, input:file})
+      		.on('line', function(line){
+      		    if(!line)
+      			return;
+          		    var ln= line.split(";");
+          		    var startDate= ln[1].split('-');
 
+          		    if(!meterdata[ln[3]][ln[0]])
+          			meterdata[ln[3]][ln[0]]={};
+          		    if(!meterdata[ln[3]][ln[0]][parseInt(startDate[0])])
+          			meterdata[ln[3]][ln[0]][parseInt(startDate[0])]=Array(12);
+
+          		    meterdata[ln[3]][ln[0]][parseInt(startDate[0])][parseInt(startDate[1])-1]=parseFloat(ln[6].replace(',','.'));
+      		}).on('close',function(){
+            cb();
+          });
+        }catch(e) {
+          cb(e);
+        }
+      }, function(err){
+        if(err){
+          console.log("Static Stockholm consumption data not found ",err.message);
+          console.log(err.stack);
+          return;
+        }
+        // Create unique IDs
+        _.each(meterdata.EL,function(value, key){
+          var code = computeCheckDigit(key.replace(/-/g,'')) + String("0000" + parseInt(key.split("-")[1])*3).slice(-4);
+          Household.lookup.findOne({apartmentId:key},function(err,lookupResult){
+            if(err) {
+              console.log("Error generating code for:", key);
+            } else {
+              if(!lookupResult) {
+                Household.lookup.create({apartmentId:key, uniqueCode: code});
+              } else {
+                if(lookupResult.uniqueCode != code) {
+                  console.error("Key already exists but not the same", key, code, lookupResult.uniqueCode);
+                }
+              }
+            }
+          });
+        });
+
+      });
+    }catch(x){
+    	console.log("Static Stockholm consumption data not found ",x.message);
+    	console.log(x.stack);
+    }
 }
 
 var typeMap={electricity:'EL', "hot_water":'VV'};

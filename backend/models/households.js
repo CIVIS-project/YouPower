@@ -107,6 +107,8 @@ var HouseholdLookupSchema = new Schema({
 
 var HouseholdLookup = mongoose.model('HouseholdLookup',HouseholdLookupSchema);
 
+exports.lookup = HouseholdLookup;
+
 // create household entity
 exports.create = function(household, cb) {
 
