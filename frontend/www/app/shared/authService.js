@@ -4,7 +4,8 @@ angular.module('civis.youpower')
 
 .service('AuthService', function($q, $http, $window, $timeout, Base64, Config) {
   var LOCAL_TOKEN_KEY = 'CIVIS_TOKEN';
-  var isAuthenticated = false; 
+  var isAuthenticated = false;
+  var isAdmin = false;
 
   function loadUserCredentials() {
     var token = $window.localStorage.getItem(LOCAL_TOKEN_KEY);
@@ -27,6 +28,7 @@ angular.module('civis.youpower')
 
   function destroyUserCredentials() {
     isAuthenticated = false;
+    isAdmin = false;
     $http.defaults.headers.common['Authorization'] = undefined;
     $window.localStorage.removeItem(LOCAL_TOKEN_KEY);
   }
@@ -44,8 +46,8 @@ angular.module('civis.youpower')
        });
 
     });
-    
-  }; 
+
+  };
 
 
   var login = function(username, password) {
@@ -60,12 +62,44 @@ angular.module('civis.youpower')
           resolve('Login success.');
        })
        .error(function(data){
-          reject(data); 
+          reject(data);
        });
 
     });
 
   };
+
+  var checkAdmin = function() {
+    return $q(function(resolve, reject){
+      if (!isAuthenticated) {
+        reject('Not logged in');
+        return;
+      }
+      if (isAdmin) {
+        resolve(true);
+        return;
+      }
+      $http.get(Config.host + '/api/admin/')
+      .success(function(){
+        isAdmin = true;
+        resolve(true);
+      })
+      .error(function(data){
+        reject(data);
+      })
+    })
+  }
+
+  var loginAdmin = function(username, password) {
+    return $q(function(resolve, reject) {
+      isAdmin = false;
+      login(username,password).then(function(){
+        checkAdmin().then(resolve,reject);
+      },function(data){
+        reject(data);
+      })
+    });
+  }
 
   var fbLoginSuccess = function(token) {
       storeUserCredentials(token);
@@ -79,9 +113,11 @@ angular.module('civis.youpower')
 
   return {
     login: login,
+    loginAdmin: loginAdmin,
     logout: logout,
     signup: signup,
     fbLoginSuccess: fbLoginSuccess,
+    isAdmin: checkAdmin,
     isAuthenticated: function() {return isAuthenticated;},
     getToken: function() {return $window.localStorage.getItem(LOCAL_TOKEN_KEY);}
   };

@@ -1,0 +1,14 @@
+<table class="table">
+  <tr>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Cooperative</th>
+    <th>Apartment ID</th>
+  </tr>
+  <tr ng-repeat="user in smappeeUsers">
+    <td>{{user.profile.name}}</td>
+    <td><a ng-href="mailto:{{user.email}}">{{user.email}}</a></td>
+    <td>{{user.cooperative.name}}</td>
+    <td>{{user.household.apartmentId}}</td>
+  </tr>
+</table>

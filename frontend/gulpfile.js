@@ -13,12 +13,13 @@ var paths = {
   sass: ['./scss/**/*.scss'],
   javascript: [
     './www/**/*.js',
+    '!./www/admin/**',
     '!./www/app/app.js',
     '!./www/lib/**'
   ]
 };
 
-gulp.task('default', ['sass','index']);
+gulp.task('default', ['sass','index','sass-admin']);
 
 gulp.task('sass', function(done) {
   gulp.src('./scss/ionic.app.scss')
@@ -34,6 +35,20 @@ gulp.task('sass', function(done) {
     .on('end', done);
 });
 
+gulp.task('sass-admin', function(done) {
+  gulp.src('./scss/admin.scss')
+    .pipe(sass({
+      errLogToConsole: true
+    }))
+    .pipe(gulp.dest('./www/admin/css/'))
+    .pipe(minifyCss({
+      keepSpecialComments: 0
+    }))
+    .pipe(rename({ extname: '.min.css' }))
+    .pipe(gulp.dest('./www/admin/css/'))
+    .on('end', done);
+});
+
 gulp.task('index', function(done) {
     gulp.src('./www/index.html')
       .pipe(inject(
@@ -44,7 +59,7 @@ gulp.task('index', function(done) {
 });
 
 gulp.task('watch', function() {
-  gulp.watch(paths.sass, ['sass']);
+  gulp.watch(paths.sass, ['sass','sass-admin']);
   // gulp.watch(paths.javascript, ['index']);
   watch(paths.javascript, {events:['add','unlink']}, function () {
         gutil.log("Test");

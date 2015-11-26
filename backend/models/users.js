@@ -24,6 +24,10 @@ var UserSchema = new Schema({
   passwordResetTokenDate: Date,
   facebookId: String,
   accessToken: String,
+  isAdmin: {
+    type: Boolean,
+    default: false
+  },
   profile: {
     name: String,
     nickname: String,
@@ -705,6 +709,21 @@ exports.resetPassword = function(token, password, cb) {
       });
     });
   });
+}
+
+// Admin methods
+
+exports.getSmappeeUsers = function(cb) {
+  households.bySmappee(function(err, households){
+    async.map(households,function(household, cb){
+      household = household.toObject();
+      exports.getProfile(household.ownerId,function(err,user){
+        cb(err,user);
+      })
+    },function(err,results){
+      cb(err,results);
+    });
+  })
 }
 
 exports.model = User;

@@ -539,4 +539,14 @@ exports.getConsumption = function(id, type, granularity, from, to, cb) {
   });
 }
 
+exports.bySmappee = function(cb) {
+  Household.find({
+    extraInfo: {
+      smappee: true
+    }
+  },function(err,households){
+    cb(err,households);
+  });
+}
+
 exports.model = Household;

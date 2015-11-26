@@ -1,0 +1,14 @@
+<div class="container">
+  <h1>Login to YouPower Admin</h1>
+  <form name="form">
+    <div class="form-group">
+      <label for="exampleInputEmail1">Email address</label>
+      <input ng-model="loginData.email" name="email" type="email" class="form-control" id="exampleInputEmail1" placeholder="Email" required="">
+    </div>
+    <div class="form-group">
+      <label for="exampleInputPassword1">Password</label>
+      <input ng-model="loginData.password" type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" required="">
+    </div>
+    <button type="submit" ng-disabled="form.$invalid" class="btn btn-default" ng-click="signin()">Login</button>
+  </form>
+</div>

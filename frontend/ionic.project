@@ -4,6 +4,7 @@
   "gulpStartupTasks": [
     "sass",
     "index",
+    "sass-admin",
     "watch"
   ],
   "watchPatterns": [

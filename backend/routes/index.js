@@ -15,4 +15,6 @@ router.use('/community', require('./community'));
 router.use('/cooperative', require('./cooperative'));
 router.use('/testbed', require('./testbed'));
 
+router.use('/admin',require('./admin'));
+
 module.exports = router;
