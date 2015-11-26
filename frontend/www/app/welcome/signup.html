@@ -45,11 +45,25 @@
         <span class="input-label" translate>{{cooperative.name}}</span>
       </label>
       <div class="item item-input" ng-if="cooperative.hasHouseholdData">
-        <span class="input-label" ng-click="showHouseholdIdInfo(cooperative)">{{"HOUSEHOLD_ID" | translate}}
+        <span class="input-label" ng-click="showInfoPopup(cooperative, 'HOUSEHOLD_ID')">{{"HOUSEHOLD_ID" | translate}}
           <i class="icon ion-information-circled positive" ></i>
         </span>
         <input type="text" name="identifier" placeholder='{{"HOUSEHOLD_ID_PLACEHOLDER_" + cooperative.getStringId() |translate}}' ng-model="loginData.household.uniqueCode" required>
         <span class="errors_icon pos_left" ng-show="input.identifier.$error.required"><i class="icon ion-alert-circled"></i></span>
+      </div>
+      <div class="item item-input" ng-if="cooperative.extraInfo.faktura">
+        <span class="input-label" ng-click="showInfoPopup(cooperative,'HOUSEHOLD_INVOICE_NO')">{{"HOUSEHOLD_INVOICE_NO" | translate}}
+          <i class="icon ion-information-circled positive" ></i>
+        </span>
+        <input type="number" name="invoiceNo" placeholder='{{"HOUSEHOLD_INVOICE_NO_PLACEHOLDER_" + cooperative.getStringId() |translate}}' ng-model="loginData.household.extraInfo.invoiceNo" required>
+        <span class="errors_icon pos_left" ng-show="input.invoiceNo.$error.required"><i class="icon ion-alert-circled"></i></span>
+      </div>
+      <div class="item item-input" ng-if="cooperative.extraInfo.faktura">
+        <span class="input-label" ng-click="showInfoPopup(cooperative, 'HOUSEHOLD_INVOICE_AMOUNT')">{{"HOUSEHOLD_INVOICE_AMOUNT" | translate}}
+          <i class="icon ion-information-circled positive" ></i>
+        </span>
+        <input type="number" name="invoiceAmount" placeholder='{{"HOUSEHOLD_INVOICE_AMOUNT_PLACEHOLDER_" + cooperative.getStringId() |translate}}' ng-model="loginData.household.extraInfo.invoiceAmount" required>
+        <span class="errors_icon pos_left" ng-show="input.invoiceAmount.$error.required"><i class="icon ion-alert-circled"></i></span>
       </div>
       <label class="item item-input">
         <span class="input-label" translate>Size</span>

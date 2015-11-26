@@ -248,6 +248,30 @@ angular.module('civis.youpower.translations',[])
       en: 'You can find your unique household code in the invitation mail. All members in your household can create their own accounts using the same code.',
       se: 'Du hittar er unika hushållskod i inbjudan. Alla medlemmar i hushållet kan skapa sina egna konton med samma kod.',
     },
+    HOUSEHOLD_INVOICE_NO: {
+      en: 'Invoice no.',
+      se: 'Fakturanummer'
+    },
+    HOUSEHOLD_INVOICE_NO_PLACEHOLDER_BRFGRYNNAN: {
+      en: "e.g. 123456789012",
+      se: "t.ex. 123456789012"
+    },
+    HOUSEHOLD_INVOICE_NO_DESCRIPTION_BRFGRYNNAN: {
+      en: 'Enter the invoice number from an invoice you have paid to Ellevio. It is important to input the information from a paid faktura to be able to see your energy data.',
+      se: 'Ange Faktura-/OCR-nummer från en betald faktura från Ellevio. Det är viktigt att du anger information från en faktura som är betald för att du ska kunna få tillgång till din energidata.',
+    },
+    HOUSEHOLD_INVOICE_AMOUNT: {
+      en: 'Invoice amount',
+      se: 'Betalt belopp'
+    },
+    HOUSEHOLD_INVOICE_AMOUNT_PLACEHOLDER_BRFGRYNNAN: {
+      en: "e.g. 199",
+      se: "t.ex. 199"
+    },
+    HOUSEHOLD_INVOICE_AMOUNT_DESCRIPTION_BRFGRYNNAN: {
+      en: 'Enter the amount from an invoice you have paid to Ellevio. It is important to input the information from a paid faktura to be able to see your energy data.',
+      se: 'Ange belopp från en betald faktura från Ellevio. Det är viktigt att du anger information från en faktura som är betald för att du ska kunna få tillgång till din energidata.',
+    },
     SMAPPEE_LABEL: {
       en: 'I/my household is interested in Smappee',
       se: 'Jag/mitt hushåll är intresserad av att testa Smappee'

@@ -122,7 +122,7 @@ exports.create = function(household, cb) {
       if(!err && cooperative){
         return cb(null, cooperative.toObject());
       }
-      cb();
+      cb(null, null);
     })
   },function(cooperative, cb){
     // If we have household data, get the apartment ID from unique code (the lookup)
@@ -136,10 +136,10 @@ exports.create = function(household, cb) {
           }
           return cb(null, lookupResult.toObject());
         }
-        cb();
+        cb(null, null);
       })
     } else {
-      cb();
+      cb(null, null);
     }
   },function(lookupResult,cb){
     // If we have lookup results, find (if existing) matching household
@@ -151,7 +151,7 @@ exports.create = function(household, cb) {
         cb(null, lookupResult, eHousehold);
       })
     } else {
-      cb();
+      cb(null, null, null);
     }
   },function(lookupResult, eHousehold, cb){
     // If household already exists add the user to it
