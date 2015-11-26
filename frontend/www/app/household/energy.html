@@ -2,7 +2,8 @@
   <ion-content>
     <div class="list">
       <div class="item item-text-wrap">
-        <small>{{"HOUSEHOLD_ENERGY_DISCLAIMER_" + currentUser.cooperative.getStringId() | translate}}</small>
+        <small ng-if="currentUser.household.connected">{{"HOUSEHOLD_ENERGY_DISCLAIMER_" + currentUser.cooperative.getStringId() | translate}}</small>
+        <small ng-if="!currentUser.household.connected">{{"HOUSEHOLD_ENERGY_DISCLAIMER_MISSING_" + currentUser.cooperative.getStringId() | translate}}</small>
       </div>
       <div civis-energy-graph='energyGraphSettings' civis-energy-graph-data="household"></div>
     </div>

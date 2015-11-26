@@ -236,6 +236,14 @@ angular.module('civis.youpower.translations',[])
       en: 'This is your household energy data currently available in the app. In the future more detailed data might be available.',
       se: 'Här ser du den energidata som för tillfället är tillgänglig för ditt hushåll. Framöver kan mer detaljerad data komma att bli tillgänglig.',
     },
+    HOUSEHOLD_ENERGY_DISCLAIMER_BRFGRYNNAN: {
+      en: 'This is your household energy data currently available in the app.',
+      se: 'Här ser du den energidata som för tillfället är tillgänglig för ditt hushåll.'
+    },
+    HOUSEHOLD_ENERGY_DISCLAIMER_MISSING_BRFGRYNNAN: {
+      en: 'Here your energy data will be shown. It may take a couple of days from registration before the data is available.',
+      se: 'Här kommer din energidata att visas. Det kan ta ett par dagar från registreringen innan du kan se datan.'
+    },
     HOUSEHOLD_ID: {
       en: 'Household code',
       se: 'Hushållskod',

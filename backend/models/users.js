@@ -214,7 +214,8 @@ exports.getProfile = function(id, cb) {
             coop = coop.toObject();
             return cb(null, {
               id: coop._id,
-              name: coop.name
+              name: coop.name,
+              extraInfo: coop.extraInfo
             });
           });
         } else {

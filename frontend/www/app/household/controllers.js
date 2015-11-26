@@ -10,9 +10,9 @@ angular.module('civis.youpower.households', ['highcharts-ng'])
     granularity: "monthly",
     type: "electricity",
     unit: "kWh",
-    granularities: ['hourly','daily','monthly','yearly'],
-    disabledGranularities: ['hourly','daily','yearly'],
-    types: [{
+    granularities: ($scope.currentUser.cooperative.extraInfo || {}).granularities || ['hourly','daily','monthly','yearly'],
+    disabledGranularities: ($scope.currentUser.cooperative.extraInfo || {}).disabledGranularities || ['hourly','daily','yearly'],
+    types: ($scope.currentUser.cooperative.extraInfo || {}).meterTypes || [{
       name:'hot_water',
       cssClass: 'positive'
     },{
@@ -27,6 +27,8 @@ angular.module('civis.youpower.households', ['highcharts-ng'])
       $scope.$broadcast('civisEnergyGraph.init');
     });
   })
+
+
 
 
 })
