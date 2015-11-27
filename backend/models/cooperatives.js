@@ -472,5 +472,9 @@ exports.getConsumption = function(id, type, granularity, from, to, cb) {
   })
 }
 
+exports.getAll = function(cb){
+  Cooperative.find({},cb);
+}
+
 
 exports.model = Cooperative;

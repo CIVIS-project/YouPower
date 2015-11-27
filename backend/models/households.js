@@ -126,7 +126,7 @@ exports.create = function(household, cb) {
     })
   },function(cooperative, cb){
     // If we have household data, get the apartment ID from unique code (the lookup)
-    if(cooperative && cooperative.hasHouseholdData){
+    if(cooperative && cooperative.hasHouseholdData && household.uniqueCode){
       HouseholdLookup.findOne({uniqueCode:household.uniqueCode},function(err, lookupResult){
         if(err){
           console.log(err);
@@ -375,6 +375,10 @@ exports.update = function(id, profile, cb) {
         household.appliancesList = profile.appliancesList;
       }
 
+      if (profile.hasOwnProperty('connected')) {
+        household.connected = profile.connected;
+      }
+
       household.save(cb);
     }
   });
@@ -547,6 +551,78 @@ exports.bySmappee = function(cb) {
   },function(err,households){
     cb(err,households);
   });
+}
+
+exports.getAll = function(cb) {
+  Household
+  .find({})
+  .populate('members','profile email cooperativeId')
+  .populate('ownerId','profile email cooperativeId')
+  .exec(function(err,households){
+    async.map(households,function(household,cb){
+      household = household.toObject();
+      household.owner = household.ownerId;
+      delete household.ownerId;
+      if(household.owner && household.owner.cooperativeId){
+        Cooperative.getProfile(household.owner.cooperativeId, null, function(err, cooperative){
+          if(err){
+            console.log(err);
+          }
+          if(!err && cooperative){
+            household.owner.cooperative = cooperative.toObject();
+            return cb(null, household);
+          }
+          cb(null, null);
+        })
+      } else {
+        cb(null, household);
+      }
+    },function(err,households){
+      cb(err,households);
+    });
+  });
+}
+
+exports.addMeter = function(id, meterId, type, source, cb) {
+  Household.findOne({
+    _id:id
+  },function(err,household){
+    if(err) {
+      cb(err);
+    } else if (!household){
+      cb('Cooperative not found');
+    } else {
+      household.meters.push({
+        mType:type,
+        meterId: meterId,
+        source: source
+      });
+      household.markModified('meters');
+      household.save(function(err){
+        cb(err,household.toObject());
+      })
+    }
+  })
+}
+
+exports.removeMeter = function(id, mId, cb) {
+  Household.findOne({
+    _id:id
+  },function(err,household){
+    if(err) {
+      cb(err);
+    } else if (!household){
+      cb('Cooperative not found');
+    } else {
+      household.meters.pull({
+        _id:mId
+      });
+      household.markModified('meters');
+      household.save(function(err){
+        cb(err,household);
+      })
+    }
+  })
 }
 
 exports.model = Household;

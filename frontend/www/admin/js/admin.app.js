@@ -1,7 +1,17 @@
+mixpanel = {
+  track: angular.noop
+}
+
 angular.module('civis.youpower',[])
 angular.module('civis.youpower.admin', [
   'ui.router',
-  'civis.youpower'
+  'ngSanitize',
+  'ngResource',
+  'civis.youpower',
+  'ui.bootstrap',
+  'pascalprecht.translate',
+  'civis.youpower.translations',
+  'highcharts-ng',
 ])
 
 .run(function($rootScope, $location, $state, AuthService) {
@@ -28,7 +38,8 @@ angular.module('civis.youpower.admin', [
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider) {
+.config(function($stateProvider, $urlRouterProvider, $translateProvider) {
+  $translateProvider.useSanitizeValueStrategy('sanitize');
 
   // Learn more here: https://github.com/angular-ui/ui-router
   // Set up the various states which the app can be in.
@@ -46,10 +57,13 @@ angular.module('civis.youpower.admin', [
     controller: "MainController",
   })
 
-  .state('main.smappee', {
-    url: "/smappee",
-    controller: "SmappeeUsersController",
-    templateUrl: "templates/smappee.html"
+  .state('main.households',{
+    url: "/households",
+    templateUrl: "templates/households.html",
+    controller: 'HouseholdsController',
+    params: {
+      household: null
+    },
   })
 
   //$urlRouterProvider.otherwise('/app/actions/yours');
@@ -81,6 +95,15 @@ angular.module('civis.youpower.admin', [
     AuthService.logout();
     $state.go('login');
   }
+
+  $scope.equalOrEmpty = function(property,expected){
+    return function(value){
+      if (!expected)
+        return true
+      else
+        return angular.equals(value[property], expected);
+    }
+  }
 })
 
 .controller('SmappeeUsersController', function($scope,$http,Config) {
@@ -88,6 +111,116 @@ angular.module('civis.youpower.admin', [
     $scope.smappeeUsers = response.data;
   })
 
+})
+
+.controller('HouseholdsController', function($scope,$http,$uibModal,Config) {
+  $http.get(Config.host + '/api/admin/households').then(function(response){
+    $scope.households = response.data;
+  })
+  $http.get(Config.host + '/api/admin/cooperatives').then(function(response){
+    $scope.cooperatives = response.data;
+  })
+
+  $scope.addMeter = function(household) {
+    $uibModal.open({
+      templateUrl: "templates/addMeterModal.html",
+      controller: 'MeterAddController',
+      resolve: {
+        household: function() {return household}
+      }
+    }).result.then(function(result){
+      angular.extend(household,result);
+    })
+  }
+
+  $scope.removeMeter = function(household, meter){
+    $uibModal.open({
+      templateUrl: "templates/deleteConfirmationModal.html",
+      controller: 'DeleteModalController',
+      resolve: {
+        message: function() {return 'the meter: ' + meter.meterId}
+      }
+    }).result.then(function(){
+      $http.delete(Config.host + '/api/admin/households/' + household._id + "/meters/" + meter._id).then(function(response){
+        angular.extend(household,response.data)
+      });
+    });
+  }
+
+  $scope.previewData = function(household){
+    $uibModal.open({
+      templateUrl: "templates/previewDataModal.html",
+      controller: 'HouseholdDataPreviewController',
+      resolve: {
+        household: function() {return household}
+      }
+    })
+  }
+
+  $scope.connectHousehold = function(household) {
+    var data = {
+      connected: !household.connected
+    }
+    $http.post(Config.host + '/api/admin/households/' + household._id, data).then(function(response){
+      angular.extend(household,response.data)
+    });
+  }
+
+})
+
+.controller('MeterAddController', function($scope, $timeout, $uibModalInstance, $http, Config, Household, household){
+  $scope.type = 'electricity';
+  $http.get("https://app.energimolnet.se/api/2.0/meters?active=true",{
+    headers: {
+      'Authorization': 'OAuth a4f4e751401477d5e3f1c68805298aef9807c0eae1b31db1009e2ee90c6e'
+    }
+  }).then(function(response){
+    $scope.availableMeters=response.data.data
+  })
+
+  $scope.save = function (){
+    $scope.error;
+    $scope.working = true;
+    var meterData = {
+      id: $scope.meterId,
+      type: 'electricity',
+      source: 'energimolnet'
+    }
+    $http.post(Config.host + '/api/admin/households/' + household._id + "/meters", meterData).then(function(response){
+      $uibModalInstance.close(response.data);
+    },function(response){
+      $scope.error = response.data;
+    }).finally(function(){
+      $scope.working = false;
+    })
+  }
+})
+
+.controller('HouseholdDataPreviewController', function($scope, $timeout, Household, household){
+  $scope.household = new Household(household);
+
+  $scope.energyGraphSettings = {
+    granularity: "monthly",
+    type: "electricity",
+    unit: "kWh",
+    types: []
+  }
+
+  angular.forEach(household.meters, function(meter){
+    $scope.energyGraphSettings.types.push({
+      name: meter.mType,
+      label: meter.mType == 'electricity' ? 'household_electricity' : undefined
+    })
+  })
+
+  $timeout(function(){
+    $scope.$broadcast('civisEnergyGraph.init');
+  });
+
+})
+
+.controller('DeleteModalController',function($scope,message){
+  $scope.message = message;
 })
 
 

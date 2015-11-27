@@ -1,10 +1,10 @@
 <div class="item item-no-border-bottom">
   <div class="button-bar">
-    <a ng-repeat="granularity in settings.granularities" class="button button-small button-mulitline" ng-class="{active:settings.granularity==granularity}" ng-click="changeGranularity(granularity)" ng-disabled="settings.disabledGranularities.indexOf(granularity)>=0">
+    <a ng-repeat="granularity in settings.granularities" class="button button-small button-mulitline btn btn btn-default" ng-class="{active:settings.granularity==granularity}" ng-click="changeGranularity(granularity)" ng-disabled="settings.disabledGranularities.indexOf(granularity)>=0">
     {{'GRAPH_DATA_' + (granularity | uppercase) | translate}}</a>
   </div>
   <div class="button-bar padding-top padding-bottom" ng-if="settings.types.length > 1">
-    <a ng-repeat="type in settings.types" class="button button-small button-multiline {{getTypeClass(type)}}" ng-class="{active:settings.type == type.name}" ng-click="changeType(type.name)">{{'GRAPH_DATA_' + (type.label || type.name | uppercase) | translate}}</a>
+    <a ng-repeat="type in settings.types" class="button button-small button-multiline {{getTypeClass(type)}} btn btn-default" ng-class="{active:settings.type == type.name}" ng-click="changeType(type.name)">{{'GRAPH_DATA_' + (type.label || type.name | uppercase) | translate}}</a>
   </div>
   <h1 class="{{getTypeClass(settings.types[0])}}" ng-if="settings.types.length == 1">{{'GRAPH_DATA_' + (settings.types[0].label || settings.types[0].name | uppercase) | translate }}</h1>
   <label class="item item-input item-select select-small" ng-if="settings.comparisons.length > 1">

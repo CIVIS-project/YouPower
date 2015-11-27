@@ -1,0 +1,68 @@
+
+<div class="panel panel-default">
+  <div class="panel-heading">Filter</div>
+  <div class="panel-body">
+    <form class="form-inline">
+      <div class="form-group">
+        <label for="brf">BRF:</label>
+        <select ng-model="brf" class="form-control">
+          <option value="">All</option>
+          <option value="{{c.name}}" ng-repeat="c in cooperatives">{{c.name}}</option>
+        </select>
+      </div>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" ng-model="extraInfo" ng-true-value="{smappee:true}" ng-false-value="null"/> Interested in Smappee
+        </label>
+      </div>
+    </form>
+  </div>
+</div>
+<table class="table table-condensed">
+  <tr>
+    <th>Owner</th>
+    <th>Members</th>
+    <th>Cooperative</th>
+    <th>Apartment ID</th>
+    <th>Extra Info</th>
+    <th>Meters</th>
+    <th>Size</th>
+    <th>Composition</th>
+  </tr>
+  <tr ng-repeat="h in households | filter:{$:(brf || '')} | filter:equalOrEmpty('extraInfo',extraInfo) | orderBy: '_id'">
+    <td>{{h.owner.profile.name}} <small><a ng-href="mailto:{{h.owner.email}}">{{h.owner.email}}</a></small></td>
+    <td>
+      <span ng-repeat="m in h.members" ng-if="m._id != h.owner._id">
+        <span ng-if="$index > 1"> <br></span>
+        {{m.profile.name}}
+        <small>
+          <a ng-href="mailto:{{m.email}}">{{m.email}}</a>
+        </small>
+      </span>
+    </td>
+    <td>{{h.owner.cooperative.name}}</td>
+    <td>{{h.apartmentId}}</td>
+    <td>
+      <span ng-repeat="(key,value) in h.extraInfo">
+        <b>{{key}}</b>:{{value}}<br>
+      </span>
+    </td>
+    <td>
+      <div ng-repeat="m in h.meters" style="border-bottom: 1px solid #bbb; margin-bottom: 5px;">
+        <button class="btn btn-link" ng-click="removeMeter(h,m)"><i class="fa fa-trash"></i></button>
+        <b>{{m.mType}}</b> <small>({{m.source}})</small>: {{m.meterId}}<br>
+      </div>
+      <button class="btn btn-success btn-xs" ng-click="addMeter(h)">
+        Add
+      </button>
+      <button class="btn btn-default btn-xs" ng-click="previewData(h)">
+        Preview data
+      </button>
+      <button class="btn btn-xs" ng-class="{'btn-success':h.connected, 'btn-danger':!h.connected}" ng-click="connectHousehold(h)">
+        {{h.connected ? 'Connected' : 'Not connected'}}
+      </button>
+    </td>
+    <td>{{h.size}}</td>
+    <td>Adults: {{h.composition.numAdults}}<br>Children: {{h.composition.numChildren}}</td>
+  </tr>
+</table>
