@@ -74,6 +74,16 @@ exports.resetPassword = function(user, cb) {
   sendMailTemplate('password_reset', mail, cb);
 }
 
+exports.notifyNewUserRegistered = function(user, household, cb) {
+  var mail = {
+    from: defaultEmailSender,
+    to: 'omars@kth.se',
+    subject: '[CIVIS-App] New household registered',
+    text: 'New user ' + user.profile.name + ' ' + user.email + ' with \nInvoice No: ' + household.extraInfo.invoiceNo + '\nInvoice Amount: ' + household.extraInfo.invoiceAmount
+  }
+  sendMail(mail,cb);
+}
+
 var sendMailTemplate = function(templateName, locals, cb) {
 
   emailTemplates(__dirname + '/templates', function(err, templates){

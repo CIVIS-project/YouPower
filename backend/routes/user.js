@@ -12,6 +12,7 @@ var achievements = require('../common/achievements');
 var User = require('../models').users;
 var Log = require('../models').logs;
 var Household = require('../models').households;
+var mailer = require('../mailer')
 var defaultPath = path.dirname(require.main.filename) + '/res/missingProfile.png';
 
 router.use('/action', require('./userAction'));
@@ -83,6 +84,13 @@ router.post('/register', function(req, res) {
           var household = req.body.household;
           household.ownerId = user._id;
           Household.create(household,function(er2){
+            if(!er2 && household && household.extraInfo && household.extraInfo.invoiceNo){
+              mailer.notifyNewUserRegistered(user,household,function(err){
+                if(err)
+                  console.log('Sending notification error:', err);
+              });
+            }
+
             res.successRes(err, {
               token: token
             });
