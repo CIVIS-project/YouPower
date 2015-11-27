@@ -66,7 +66,7 @@ exports.resetPassword = function(user, cb) {
     subject: i18n.__('PASSWORD_RESET.SUBJECT:Password reset for YouPower'),
     greeting: i18n.__('GREETING:Hi there,'),
     textBefore: i18n.__('PASSWORD_RESET.TEXT_BEFORE:You have requested password reset. To reset your password, click the URL below:'),
-    tokenLink: 'https://app.civisproject.eu/#/recover/' + user.passwordResetToken,
+    tokenLink: 'https://app.civisproject.eu/frontend.html#/recover/' + user.passwordResetToken,
     textAfter: i18n.__('PASSWORD_RESET.TEXT_AFTER:If you did not request your password to be reset, just ignore this email and your password will continue to stay the same.'),
     signature: i18n.__('SIGNATURE:YouPower team')
   }
