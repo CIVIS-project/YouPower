@@ -176,7 +176,7 @@ angular.module('civis.youpower')
     var period;
     var chart = $scope.chartConfig.getHighcharts();
     var startDate = new Date($scope.settings.endDate);
-    var toYear = startDate.getFullYear();
+    var toYear = startDate.getMonth() == 0 ? startDate.getFullYear() - 1 : startDate.getFullYear();
     if(type == 'electricity') {
       chart.series[0].update({color:'#5cad5c', name: $translate.instant('GRAPH_DATA_ELECTRICITY')},false);
       chart.series[1].name = 'Electricity';
@@ -188,9 +188,9 @@ angular.module('civis.youpower')
       var fromYear = startYear;
       var current = new Date();
       // Show new year only if there are already 2 months in it
-      period = fromYear + '-' + (current.getMonth() > 1 ? current.getFullYear() : current.getFullYear - 1);
+      period = fromYear + '-' + (current.getMonth() >= 1 ? current.getFullYear() : current.getFullYear() - 1);
     } else {
-      var toMonth = padMonth(startDate.getMonth())
+      var toMonth = padMonth(startDate.getMonth() || 12)
       startDate.setFullYear(startDate.getFullYear()-1);
       var fromYear = startDate.getFullYear();
       var fromMonth = padMonth(startDate.getMonth() + 1);
