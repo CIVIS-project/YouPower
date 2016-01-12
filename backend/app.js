@@ -49,6 +49,14 @@ var db = mongoose.connection;
 var app = express();
 app.set('view engine', 'jade');
 app.set('views', __dirname + '/apidoc');
+
+var options = {
+  host : 'civisprod.cloud.reply.eu',
+  path: '/CivisEnergy/InterfaceWP3.svc/'
+}
+
+app.set('civis_opt',options);
+
 app.use(function(req, res, next) {
   res.successRes = function(err, json, errStatus, okStatus) {
     errStatus = errStatus || 500;
