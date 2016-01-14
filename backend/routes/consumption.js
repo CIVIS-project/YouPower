@@ -1,368 +1,389 @@
 'use strict';
 
+/**
+ * CONSUMPTION API
+ */
+var TYPE = 'S_CONS';
+
+var dateFormat = require('dateformat');
+var https = require('https');
 var express = require('express');
 var router = express.Router();
-var Consumption = require('../models').consumption;
+var querystring = require('querystring');
+var xml2js = require('xml2js');
+var apart = require('../models/apartment.js');
 var auth = require('../middleware/auth');
-var Log = require('../models').logs;
 
-/**
- * @api {get} /consumption Get energy consumption data
- * @apiGroup Consumption
- *
- * @apiParam {String} userId CIVIS backend user ID
- * @apiParam {String} token CIVIS backend user token
- * @apiParam {Date} from Start date string in simplified extended
- * ISO8601 format
- * @apiParam {Date} to End date string in simplified extended
- * ISO8601 format
- * @apiParam {String} res Granularity of the answer. Possible values:
- * quarterly, hourly, daily, weekly, monthly
- *
- * @apiVersion 1.0.0
- */
-
-//curl "http://civis.cloud.reply.eu/Civis/EnergyPlatform.svc/downloadMyData?
-//userID=387051&token=688b026c-665f-4994-9139-6b21b13fbeee
-//&from=23-Mar-13%207%3A00:00%20PM&to=25-Apr-13%208:30:00%20PM&res=daily"
-router.get('/', auth.authenticate(), function(req, res) {
-  Consumption.get(req.body, res.successRes);
-
-  Log.create({
-    userId: req.user._id,
-    category: 'Consumption Data',
-    type: 'get',
-    data: req.body
-  });
+var parser = new xml2js.Parser({
+    explicitArray:false
 });
 
 /**
- * @api {get} /consumption/appliance/:id Consumption data for a specific appliance
+ * @api {get} /api/consumption Request a time series of consumption data
  * @apiGroup Consumption
- *
- * @apiParam {String} id appliance id
- *
- * @apiExample {curl} Example usage
- *  # Get API token via /api/user/token
- *  export API_TOKEN=fc35e6b2f27e0f5ef...
- *  curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
- *  http://localhost:3000/api/consumption/appliance/164172718301
- *
- * @apiSuccessExample {[json]} Success-Response:
- *   [
- *    0.1187375511508435,
- *    0.9294693802949041,
- *    0.1715518836863339,
- *    0.10940657090395689,
- *    0.6286844359710813
- *  ]
- */
-router.get('/appliance/:id', auth.authenticate(), function(req, res) {
-  var rand = [];
-  for (var i = 0; i < 5; i++) {
-    rand.push(Math.random());
-  }
-  res.successRes(null, rand);
-});
-
-/**
- * @api {get} /consumption/getSensors list of sensors and appliances for that user
- * @apiGroup Consumption
- *
- * @apiExample {curl} Example usage
- *  # Get API token via /api/user/token
- *  export API_TOKEN=fc35e6b2f27e0f5ef...
- *  curl -i -X GET -H "Authorization: Bearer $API_TOKEN" \
- *  http://localhost:3000/api/consumption/getSensors
- * @apiSuccessExample {[json]} Success-Response:
- *   [
- *    {
- *        "appliances": [
- *            {
- *                "appliance": "Washing Machine",
- *                "quantity": 2,
- *                "_id": "55d2f971dfe4845d50451705"
- *            },
- *            {
- *                "appliance": "Heater",
- *                "quantity": 4,
- *                "_id": "55d2f971dfe4845d50451704"
- *            }
- *        ]
- *    },
- *    {
- *        "sensors": [
- *            {
- *                "_id": "55d2ef2f739304394f9f079f",
- *                "sensorNumber": 0,
- *                "sensorType": 0,
- *                "measureUnit": "Wh",
- *                "label": "Consumo Elettrico",
- *                "lastSampleTimestamp": "2015-07-10T15:42:11.000Z",
- *                "_apartmentId": "55d2ef2f739304394f9f0795",
- *                "__v": 0
- *            },..
- *        ]
- *    }
- */
-router.get('/getSensors', auth.authenticate(), function(req, res) {
-  Consumption.getAllSensorsForUser(req.user._id, res.successRes);
-  Log.create({
-    userId: req.user._id,
-    category: 'consumption',
-    type: 'getSensors',
-    data: req.user._id
-  });
-});
-
-/**
- * @api {get} /consumption/last Last reading of consumption data
- * @apiGroup Consumption
- *
- * @apiParam {String} userId
+ * @apiParam {Number} userid ContractID
  * @apiParam {String} token
+ * @apiParam {Date} from
+ * @apiParam {Date} to
+ * @apiParam {String} res=DAILY resolution (RAW,HOURLY,DAILY,WEEKLY,MONTHLY)
  *
- * @apiExample {curl} Example usage
+ *  @apiExample {curl} Example usage:
  *  # Get API token via /api/user/token
  *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
  *  curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
  *  '{
- *    "userId": "dummy",
- *    "token": "dummy"
- *  }' \
+ *      "userid":104532,
+ *      "from":2015-10-10,
+ *      "to":2015-10-11
+ *  }'\
+ *  http://localhost:3000/api/consumption
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *[
+ *  {
+ *      "date": "2015-10-10T00:00:00+02:00",
+ *      "consumption": 7050.58074736595
+ *  },
+ *  {
+ *      "date": "2015-10-11T00:00:00+02:00",
+ *      "consumption": 7425.87361526489
+ *  }
+ *]
+ */
+router.get('/',auth.authenticate(),function(request,response,next){
+    var userid = request.query.userid;
+    var from = request.query.from;
+    var to = request.query.to;
+    var res = request.query.res || 'DAILY';
+    if(userid !== undefined && from !== undefined && to !== undefined ) {
+        apart.getApartmentID(userid,function(err,a) {
+            if(!err) {
+                var id = a.ApartmentID;
+                var options = {
+                    host: request.app.get('civis_opt').host,
+                    path: request.app.get('civis_opt').path + 'downloadmydata?' + querystring.stringify(
+                        {
+                            usagepoint: id,
+                            from: from,
+                            to: to,
+                            res: res,
+                            type: TYPE
+                        })
+                };
+                https.get(options, function (res) {
+                    var data = [];
+                    res.on('data', function (d) {
+                        data.push(d);
+                    }).on('end', function () {
+                        data = Buffer.concat(data).toString();
+                        parser.parseString(data, function (err, result) {
+                            //entry[0] is about current call (apartmentID, type, category)
+                            var content = result.feed.entry[1].content;
+                            if (content.hasOwnProperty('IntervalBlock')) {
+                                var ms = [];
+                                var block = content.IntervalBlock;
+                                var value = 0.0;
+                                block.IntervalReading.forEach(function (interval) {
+                                    value += parseFloat(interval.value);
+                                    if (interval.timeslot == 'F3') {
+                                        ms.push({
+                                            date: interval.timePeriod.start,
+                                            consumption: value
+                                        });
+                                        value = 0.0;
+                                    }
+                                });
+                                response.type('json').status('200').send(ms);
+                            } else {
+                                response.status(400).send(content.Message);
+                            }
+                        });
+                    }).on('error', function (e) {
+                        response.error(e);
+                    });
+                });
+            }else {
+                response.sendStatus(500);
+            }
+        });
+    }else{
+        response.sendStatus(400);
+    }
+});
+
+/**
+ * @api {get} /api/consumption/last Request the last consumption data
+ * @apiGroup Consumption
+ * @apiParam {Number} userid ContractID
+ * @apiParam {String} token
+ *
+ *  *  @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
+ *  '{
+ *      "userid":104532,
+ *  }'\
  *  http://localhost:3000/api/consumption/last
  *
- * @apiSuccessExample {[json]} Success-Response:
- * {
- *   consumption: 0.9164172718301415,
- * }
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "consumption": 4864.516356505453
+ *   }
  */
-router.get('/last', auth.authenticate(), function(req, res) {
-  res.successRes(null, Math.random());
+router.get('/last',auth.authenticate(),function(request,response,next){
+    var userid = request.query.userid;
+    if(userid !== undefined ) {
+        apart.getApartmentID(userid,function(err,a) {
+            if(!err) {
+                var id = a.ApartmentID;
+                var now = new Date();
+                var options = {
+                    host: request.app.get('civis_opt').host,
+                    path: request.app.get('civis_opt').path + 'downloadmydata?' + querystring.stringify(
+                        {
+                            usagepoint: id,
+                            from: dateFormat(now, "yyyy-mm-dd") + 'T00:00:00',
+                            to: dateFormat(now, "yyyy-mm-dd") + 'T23:59:59',
+                            res: 'RAW',
+                            type: TYPE
+                        })
+                };
+                https.get(options, function (res) {
+                    var data = [];
+                    res.on('data', function (d) {
+                        data.push(d);
+                    }).on('end', function () {
+                        data = Buffer.concat(data).toString();
+                        parser.parseString(data, function (err, result) {
+                            var content = result.feed.entry[1].content;
+                            if (content.hasOwnProperty('IntervalBlock')) {
+                                var block = content.IntervalBlock;
+                                if (block.IntervalReading.length > 0) {
+                                    var last = block.IntervalReading[block.IntervalReading.length - 1];
+                                    response.type('json').status('200').send({
+                                        "consumption": parseFloat(last.value)
+                                    });
+                                } else {
+                                    response.status('204').send();
+                                }
+                            } else {
+                                response.status(400).send(content.Message);
+                            }
+                        });
+                    }).on('error', function (e) {
+                        response.error(e);
+                    });
+                });
+            }else {
+                response.sendStatus(500);
+            }
+        });
+    }else{
+        response.sendStatus(400);
+    }
 });
 
 /**
- * @api {get} /consumption/tou Time of Usage
+ * @api {get} /api/consumption/appliance Request a list of appliances for which detailed consumption data is available
  * @apiGroup Consumption
- *
- * @apiParam {String} userId
+ * @apiParam {Number} userid ContractID
  * @apiParam {String} token
- * @apiParam {Number} horizon must be one of the following [1,6,12,24,48,72]
  *
- * @apiExample {curl} Example usage
+ *  @apiExample {curl} Example usage:
  *  # Get API token via /api/user/token
  *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
  *  curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
  *  '{
- *    "userId": "dummy",
- *    "token": "dummy",
- *    "horizon": 6
- *  }' \
- *  http://localhost:3000/api/consumption/tou
- *
- * @apiSuccessExample {[json]} Success-Response:
- *   [
- *    0.9164172718301415,
- *    0.1187375511508435,
- *    0.9294693802949041,
- *    0.1715518836863339,
- *    0.10940657090395689,
- *    0.6286844359710813
- *  ]
- */
-router.get('/tou', auth.authenticate(), function(req, res) {
-  var rand = [];
-  for (var i = 0; i < req.body.horizon; i++) {
-    rand.push(Math.random());
-  }
-  res.successRes(null, rand);
-});
-
-/**
- * @api {post} /consumption/getAllUsagePointsData Fetch all UsagePoints & Sensors from Reply
- * @apiGroup Consumption
- *
- * @apiParam {Boolean} AddUsagePoints adds new usage points only
- * @apiParam {Boolean} [UpdateUsagePoints] updates existing UsagePoints
- *   with new sensor data if available
- * @apiParam {[Number]} [ApartmentId] Adds/Updates the value of only
- *  that particular ApartmentId/Ids
- * @apiExample {curl} Example usage(PENDING-For now only data is fetched!!):
- *  # Get API token via /api/user/token
- *  export API_TOKEN=fc35e6b2f27e0f5ef...
- *
- *  curl -i -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
- *  '{
- *    'AddUsagePoints': true,
- *    'UpdateUsagePoints': true,
- *    'ApartmentId': [14,17]
- *  }' \
- *  http://localhost:3000/api/consumption/getAllUsagePointsData
- *
- * @apiSuccessExample {[json]} Success-Response:
- *   [
- *    { ApartmentID: '14',
- *      Success: true,
- *      UsagePoint: { __v: 0, apartmentId: '14', _id: 55acb78868440371168b57c7 }
- *    },
- *    { ApartmentID: '42',
- *      Success: true,
- *      UsagePoint: { __v: 0, apartmentId: '42', _id: 55acb78868440371168b57cc }
- *    },
- *    { ApartmentID: '17',
- *      Success: true,
- *      UsagePoint: { __v: 0, apartmentId: '17', _id: 55acb78868440371168b57c8 }
- *    },
- *    { ApartmentID: '73',
- *      Success: true,
- *      UsagePoint: { __v: 0, apartmentId: '73', _id: 55acb78868440371168b57cd }
- *    }
- *   ]
- */
-router.post('/getAllUsagePointsData', auth.authenticate(), function(req, res) {
-  Consumption.getAllUsagePointsData(req.body, res.successRes);
-
-  Log.create({
-    userId: req.user._id,
-    category: 'Consumption Data',
-    type: 'getAll',
-    data: req.body
-  });
-});
-
-/**
- * @api {get} /consumption/getUsagePoint/:apartmentId Get UsagePoint and sensors
- * @apiGroup Consumption
- *
- * @apiParam {String} apartmentId apartmentId of desired UsagePoint
- *
- * @apiExample {curl} Example usage:
- *  # Get API token via /api/user/token
- *  export API_TOKEN=fc35e6b2f27e0f5ef...
- *
- *  curl -i -X GET "Authorization: Bearer $API_TOKEN" \
- *  http://localhost:3000/api/consumption/getUsagePoint/14
+ *      "userid":104532,
+ *  }'\
+ *  http://localhost:3000/api/consumption/appliance
  *
  * @apiSuccessExample {json} Success-Response:
+ * [
  *  {
- *  "apartmentId":"14",
- *  "_id":"55af508c9210ee7b13342d8e",
- *  "__v":0,
- *  "Sensors":[
- *    {
- *    "sensorNumber":0,
- *    "sensorType":0,
- *    "measureUnit":"Wh",
- *    "label":"Consumo Elettrico",
- *    "lastSampleTimestamp":"2015-07-10T15:42:11.000Z",
- *    "_apartmentId":"55af508c9210ee7b13342d8e",
- *    "_id":"55af508d9210ee7b13342d90","__v":0
+ *      "appliance": "Consumo Elettrico",
+ *      "_id": "0"
  *    },
  *    {
- *    "sensorNumber":1,
- *    "sensorType":1,
- *    "measureUnit":"Wh",
- *    "label":"Freezer",
- *    "lastSampleTimestamp":"2015-07-10T15:45:23.000Z",
- *    "_apartmentId":"55af508c9210ee7b13342d8e",
- *    "_id":"55af508d9210ee7b13342d91",
- *    "__v":0
- *    }]
- *  }
+ *      "appliance": "Freezer",
+ *      "_id": "1"
+ *    },
+ *    {
+ *      "appliance": "Lavatrice",
+ *      "_id": "2"
+ *    },
+ *    {
+ *      "appliance": "Produz. Elettrica",
+ *      "_id": "8"
+ *    },
+ *    {
+ *      "appliance": "Temp. Interna",
+ *      "_id": "32"
+ *    }
+ * ]
  */
-router.get('/getUsagePoint/:apartmentId', auth.authenticate(), function(req, res) {
-  Consumption.getUsagePoint(req.params.apartmentId, res.successRes);
+router.get('/appliance',auth.authenticate(),function(request,response,next){
+    var userid = request.query.userid;
+    if(userid !== undefined){
+        apart.getApartmentID(userid,function(err,a) {
+            if(!err) {
+                var id = a.ApartmentID;
+                console.log(id);
+                var options = {
+                    host: request.app.get('civis_opt').host,
+                    path: request.app.get('civis_opt').path + 'getAllSensors'
+                };
+                https.get(options, function (res) {
+                    var data = [];
+                    res.on('data', function (d) {
+                        data.push(d);
+                    }).on('end', function () {
 
-  Log.create({
-    userId: req.user._id,
-    category: 'Consumption Data',
-    type: 'getUP',
-    data: req.body
-  });
-});
+                        data = Buffer.concat(data).toString();
+                        parser.parseString(data, function (err, result) {
+                            var content = result.feed.entry.content;
+                            var res = [];
+                            for (var i = 0; i < content.UsagePoint.length; i++) {
+                                if (content.UsagePoint[i].ApartmentID == id) {
+                                    content.UsagePoint[i].sensors.sensor.forEach(function (sensor) {
+                                        res.push({
+                                            appliance: sensor.label,
+                                            _id: sensor.sensorNumber
+                                        });
+                                    });
+                                    //stop here
+                                    break;
+                                }
+                            }
+                            response.status(200).type('json').send(res);
+                        });
+
+                    })
+                })
+            }else {
+                response.sendStatus(500);
+            }
+        });
+    }else{
+        response.sendStatus(400);
+    }
+})
 
 /**
- * @api {get} /downloadMyData Fetch IntervalBlock data from Reply
+ * @api {get} /api/consumption/appliance/:applID Request a time series of consumption data for the appliance
  * @apiGroup Consumption
+ * @apiParam {Number} applID
+ * @apiParam {Number} userid ContractID
+ * @apiParam {String} token
+ * @apiParam {Date} from
+ * @apiParam {Date} to
+ * @apiParam {String} res=DAILY resolution (RAW,HOURLY,DAILY,WEEKLY,MONTHLY)
  *
- * @apiParam {Integer} usagepoint ApartmentID/UsagePoint
- * @apiParam {Date} from Starting Date to fetch data from
- * @apiParam {Date} to Ending Date to fetch data from
- * @apiParam {String} [res='MONTHLY'] Other types RAW/DAILY/WEEKLY/MONTHLY. Stream will be
- * saved in db only if its MONTHLY.
- * @apiParam {String} [ctype='S_CONS'] S_CONS/S_PROD
- *
- * @apiExample {curl} Example usage:
+ *  @apiExample {curl} Example usage:
  *  # Get API token via /api/user/token
  *  export API_TOKEN=fc35e6b2f27e0f5ef...
  *
- *  curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d '{
- *   "usagepoint": 14,
- *   "from": "2015-06-01",
- *  "to":"2015-06-06",
- *  "ctype":"S_CONS",
- *  "res":"MONTHLY
- *  }' http://localhost:3000/api/consumption/downloadMyData
+ *  curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
+ *  '{
+ *      "userid":104532,
+ *      "from":2015-10-05,
+ *      "to":2015-10-06
+ *  }'\
+ *  http://localhost:3000/api/consumption/appliance/1
  *
  * @apiSuccessExample {json} Success-Response:
- * {
- *    "IntervalBlock": [
- *        {
- *            "__v": 0,
- *            "apartmentId": "14",
- *            "_apartmentId": "55af508c9210ee7b13342d8e",
- *            "type": "S_CONS",
- *            "kind": 0,
- *            "_id": "55b6427740e5c8de12e3aae1"
- *        }
- *    ],
- *    "IntervalReadings": [
- *        {
- *            "__v": 0,
- *            "_intervalBlockId": "55b6427740e5c8de12e3aae1",
- *            "value": "5928.74046667293",
- *            "timeslot": "F2",
- *            "_id": "55b6427740e5c8de12e3aae5",
- *            "timePeriod": {
- *                "start": "2015-05-31T22:00:00.000Z",
- *                "duration": 2592000,
- *                "datacoverage": 597586
- *            }
- *        },
- *        {
- *            "__v": 0,
- *            "_intervalBlockId": "55b6427740e5c8de12e3aae1",
- *            "value": "6627.6354826726",
- *            "timeslot": "F1",
- *            "_id": "55b6427740e5c8de12e3aaea",
- *            "timePeriod": {
- *                "start": "2015-05-31T22:00:00.000Z",
- *                "duration": 2592000,
- *                "datacoverage": 833685
- *            }
- *        },
- *        .....
- *    ]
+ * [
+ *    {
+ *      "date": "2015-10-05T00:00:00+02:00",
+ *      "consumption": "534.827468425035"
+ *    },
+ *    {
+ *      "date": "2015-10-05T00:00:00+02:00",
+ *      "consumption": "213.072995232185"
+ *    },
+ *   {
+ *      "date": "2015-10-05T00:00:00+02:00",
+ *      "consumption": "281.020645804703"
+ *    },
+ *    {
+ *      "date": "2015-10-06T00:00:00+02:00",
+ *      "consumption": "526.704251356423"
+ *    },
+ *    {
+ *      "date": "2015-10-06T00:00:00+02:00",
+ *      "consumption": "218.13283588551"
+ *    },
+ *    {
+ *      "date": "2015-10-06T00:00:00+02:00",
+ *      "consumption": "299.548069406301"
+ *    }
+ * ]
  */
-router.get('/downloadMyData', auth.authenticate(), function(req, res) {
-  req.checkBody('usagepoint').isInt();
-  req.checkBody('from').isDate();
-  req.checkBody('to').isDate();
-  Consumption.downloadMyData(
-  req.body.usagepoint,
-  req.body.from,
-  req.body.to,
-  req.body.res || 'MONTHLY',
-  req.body.ctype || 'S_CONS',
-  res.successRes
-  );
-
-  Log.create({
-    userId: req.user._id,
-    category: 'Consumption Data',
-    type: 'getMyData',
-    data: req.body
-  });
+router.get('/appliance/:applID',auth.authenticate(),function(request,response,next){
+    var appliance = request.params.applID;
+    var userid = request.query.userid;
+    var from = request.query.from;
+    var to = request.query.to;
+    var res = request.query.res || 'DAILY';
+    if(appliance == undefined){
+        response.status(400).send('No appliance ID');
+    }
+    //mandatory fields
+    if(userid !== undefined && from !== undefined && to !== undefined ) {
+        apart.getApartmentID(userid,function(err,a){
+            if(!err) {
+                var id = a.ApartmentID;
+                var options = {
+                    host: request.app.get('civis_opt').host,
+                    path: request.app.get('civis_opt').path + 'downloadmyappliancedata?' + querystring.stringify(
+                        {
+                            usagepoint: id,
+                            from: from,
+                            to: to,
+                            res: res
+                        })
+                };
+                https.get(options, function (res) {
+                    var data = [];
+                    res.on('data', function (d) {
+                        data.push(d);
+                    }).on('end', function () {
+                        data = Buffer.concat(data).toString();
+                        parser.parseString(data, function (err, result) {
+                            var content = result.feed.entry[1].content;
+                            if (content.hasOwnProperty('IntervalBlock')) {
+                                //content is the list of intervals
+                                var ms = [];
+                                var block = content.IntervalBlock;
+                                block.IntervalReading.forEach(function (interval) {
+                                    if (interval.sensorNumber === appliance) {
+                                        ms.push({
+                                            date: interval.timePeriod.start,
+                                            consumption: interval.value
+                                        });
+                                    }
+                                });
+                                response.type('json').status('200').send(ms);
+                            } else {
+                                //content should be an error message
+                                response.status(400).send(content.Message);
+                            }
+                        });
+                    }).on('error', function (e) {
+                        response.error(e);
+                    });
+                });
+            }else {
+                response.sendStatus(500);
+            }
+        })
+    }else{
+        response.sendStatus(400);
+    }
 });
 
 module.exports = router;
