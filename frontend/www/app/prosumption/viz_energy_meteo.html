@@ -1,0 +1,14 @@
+<ion-view view-title="Prediction for the next 30 hours">
+<ion-content>
+<!-- <div><highchart id="chart2" config="chartConfigEnergyMeteo"></highchart></div>
+ -->
+<!-- fully revised -->
+<div class="list card">
+<div class="item item-divider"> <h1> Time &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Energy Meteo </h1> </div>
+  <div class="item item-divider" ng-repeat="n in energyWeatherDataVector track by $index"> &nbsp; {{energyWeatherDataVector[$index].date}} -  {{energyWeatherDataVector[$index+1].date}} &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;  <i class="icon-large {{futurePriceIcons[$index]}} {{futurePriceIconColors[$index]}}"></i></div>
+</div>
+</ion-content>
+</ion-view>
+<!-- <ion-nav-bar> <ion-nav-back-button class="button-icon ion-arrow-left-c">
+      </ion-nav-back-button></ion-nav-bar>
+ -->

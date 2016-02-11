@@ -1,0 +1,135 @@
+[connected]
+
+
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 13, args: (null), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 12, args: (null), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Error>: CGContextClosePath: no current point.
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 0, args: (
+	    "#1a2a3c"
+	), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 11, args: (null), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 10, args: (
+	    0,
+	    106
+	), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 9, args: (
+	    155,
+	    159
+	), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 9, args: (
+	    0,
+	    212
+	), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 9, args: (
+	    0,
+	    106
+	), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 5, args: (
+	    5
+	), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 13, args: (null), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 12, args: (null), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Error>: CGContextClosePath: no current point.
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 0, args: (
+	    "#253648"
+	), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 11, args: (null), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 10, args: (
+	    5,
+	    "112.9938989209813"
+	), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 9, args: (
+	    "139.5461446650546",
+	    159
+	), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 9, args: (
+	    5,
+	    "205.0061010790187"
+	), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 9, args: (
+	    5,
+	    "112.9938989209813"
+	), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 5, args: (
+	    5
+	), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 13, args: (null), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 12, args: (null), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Error>: CGContextClosePath: no current point.
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 0, args: (
+	    "#649f3a"
+	), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 11, args: (null), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 10, args: (
+	    0,
+	    212
+	), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 9, args: (
+	    155,
+	    159
+	), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 9, args: (
+	    155,
+	    319
+	), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 9, args: (
+	    0,
+	    212
+	), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 5, args: (
+	    5
+	), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 13, args: (null), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 12, args: (null), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Error>: CGContextClosePath: no current point.
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 0, args: (
+	    "#5a8f34"
+	), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 11, args: (null), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 10, args: (
+	    "11.00488418408501",
+	    "213.5212611031974"
+	), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 9, args: (
+	    150,
+	    "165.9938989209813"
+	), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 9, args: (
+	    150,
+	    "309.4727281503129"
+	), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 9, args: (
+	    "11.00488418408501",
+	    "213.5212611031974"
+	), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 5, args: (
+	    5
+	), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 13, args: (null), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 12, args: (null), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Error>: CGContextClosePath: no current point.
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 27, args: (
+	    "83.33333333333333",
+	    186,
+	    40,
+	    40,
+	    "icons/tile_icon5.png"
+	), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 23, args: (
+	    Arial,
+	    13
+	), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 0, args: (
+	    "#fefefe"
+	), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 5, args: (
+	    1
+	), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 26, args: (
+	    "50 points",
+	    "77.33333333333333",
+	    248
+	), size: 310.000000x319.000000
+Jan 20 18:11:27 Danieles-iPhone dpHero[711] <Warning>: [DEBUG] operation: 0, args: (
+	    "#1a2a3c"
+	), size: 310.000000x319.000000
