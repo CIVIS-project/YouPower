@@ -42,6 +42,10 @@ var UserSchema = new Schema({
       type: String,
       default: 'English'
     },
+    testLocation:{
+      type: String,
+      required: true
+    },
     toRehearse: {
       setByUser: {
         type: Boolean,
