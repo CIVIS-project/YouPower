@@ -11,6 +11,7 @@ var sensor = require('./sensor');
 var intervalBlock = require('./intervalBlock');
 var intervalReading = require('./intervalReading');
 var Household = require('./households');
+var normalisation = require('../common/normalisation')
 
 exports.create = function(usagePt, cb1) {
   //console.log('TETS', usagePt);
@@ -249,7 +250,17 @@ var getConsumptionFromAPI = function(meterId, granularity, from, to, cb) {
   });
 }
 
-exports.getEnergimolnetConsumption = function(meters, type, granularity, from, to, cb) {
+var uniqueApiCallHash = function(meters, type, granularity, from, to) {
+  var result = _.chain(meters)
+    .filter(function(meter){ return meter.mType == type && meter.useInCalc})
+    .map(function(meter){return meter.meterId})
+    .reduce(function(memo,value){return  memo + "-" + value})
+    .value();
+  result = result + '-' + type + '-' + granularity + '-' + from + '-' + to;
+  return result;
+}
+
+var getRawEnergimolnetConsumption = async.memoize(function(meters, type, granularity, from, to, cb) {
   var meterIds = _.filter(meters, function(meter){ return meter.mType == type && meter.useInCalc});
   async.map(meterIds, function(meter,cb2){
     getConsumptionFromAPI(meter.meterId, granularity, from, to, cb2);
@@ -258,20 +269,33 @@ exports.getEnergimolnetConsumption = function(meters, type, granularity, from, t
       cb(err);
     } else {
       var result = _.chain(results)
-      .unzip()
-      .map(function(data,index){
-        return _.reduce(data,function(memo, num){
-          return memo + num
-        },0);
-      })
-      .map(function(value){
-        return value;
-      })
-	      .value();
+        .unzip()
+        .map(function(data,index){
+          return _.reduce(data,function(a,b){return a+b;},0);
+        })
+        .map(function(value){
+          return value;
+        })
+        .value();
       cb(null,result);
     }
   });
-};
+},uniqueApiCallHash);
+
+exports.getEnergimolnetConsumption = function(meters, type, granularity, from, to, cb) {
+  getRawEnergimolnetConsumption(meters,type,granularity,from,to,function(err, results){
+    console.log('Meters', meters);
+    console.log('Type', type);
+    if(type == 'heating') {
+      normalisation.normalizeHeating(meters,from,to,results,getRawEnergimolnetConsumption,cb);
+    } else {
+      cb(err,results);
+    }
+  });
+}
+
+
+
 
 var computeCheckDigit = function(numberStr) {
   var oddSum = 0;

@@ -37,6 +37,7 @@
     "body-parser": "~1.12.0",
     "colors": "^1.1.2",
     "cookie-parser": "~1.3.3",
+    "csv": "^0.4.6",
     "dateformat": "^1.0.12",
     "email-templates": "^2.0.1",
     "escape-string-regexp": "^1.0.3",
