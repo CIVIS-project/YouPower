@@ -22,6 +22,17 @@
       <span class="input-label" translate>Nickname</span>
       <input type="text" ng-model="currentUser.profile.nickname" placeholder={{"Select_your_nickname"|translate}} ng-change="setPersonalProfileChanged()">
     </label>
+     <label class="item item-input" >
+      <span class="input-label" translate>Contract_Id</span>
+      <input type="text" ng-model="currentUser.profile.contractId" placeholder={{"Select_your_contractID"|translate}} ng-change="setPersonalProfileChanged()">
+    </label>
+    <label class="item item-input item-select">
+      <span class="input-label" translate>Test_Location</span>
+      <select ng-model="currentUser.profile.testLocation" ng-change="setPersonalProfileChanged()">
+        <option translate>CEIS</option>
+        <option translate>CEdiS</option>
+      </select>
+    </label>
     <label class="item item-input item-select">
       <span class="input-label" translate>Gender</span>
       <select ng-model="currentUser.profile.gender" ng-change="setPersonalProfileChanged()">

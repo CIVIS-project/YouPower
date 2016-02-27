@@ -28,6 +28,13 @@ angular.module('civis.youpower', [
 .run(function($ionicPlatform, $rootScope, $window, $state, AuthService) {
 
   $rootScope.scale = 5;
+  var z = [];
+  $rootScope.chartConfigComparisonHistorical = [];
+  $rootScope.applicanceDataStore = [];
+  $rootScope.chartConfigAppliance2 = [];
+  $rootScope.energyWeatherDataVector=[];
+  $rootScope.chartConfigLastProduction = [];
+  $rootScope.chartConfigLastConsumption = [];
 
   // Making underscore available in the angular expressions
   $rootScope._=_;
@@ -150,7 +157,7 @@ angular.module('civis.youpower', [
     templateUrl: "app/app/menu.html",
     controller: 'AppCtrl',
     resolve: {
-      User: 'User',
+      User: 'User',     
       Testbed: 'Testbed',
       Cooperatives: 'Cooperatives',
       currentUser: function(User,Testbed,Cooperatives){
@@ -324,7 +331,7 @@ angular.module('civis.youpower', [
     views: {
       'tab-prosumption-appliances': {
         templateUrl: 'app/prosumption/index_appliances.html',
-       //controller: 'dataVizCtrl'
+       controller: 'dataVizCtrl'
       }
     }
   })

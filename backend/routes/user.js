@@ -28,6 +28,8 @@ router.use('/community', require('./community'));
  * @apiParam {String} [language] User's preferred language; for now have support for English (default), Italian and Swedish
  * @apiParam {String} [household] Optional household object containing info for automatically creating a household during user registration
  * @apiParam {String} testLocation The test site a user is participating, Trento users should take the default setting, as "Trento"
+ * @apiParam {String} contractId The contact Id a test user took, highly advisable for Trento test site users
+ * @apiParam {String} apartmentId The apartment number a test user took, highly advisable for Trento test site users
  * 
  * @apiExample {curl} Example usage:
  *  # NOTE: this is the only API call which does not require authentication!
@@ -38,7 +40,9 @@ router.use('/community', require('./community'));
  *    "name": "Test User",
  *    "password": "topsecret",
  *    "language": "Swedish",
- *    "testLocation": "Sweden"
+ *    "testLocation": "Sweden",
+ *    "contractId": 1234,
+ *    "apartmentId": 1
  *  }' \
  *  http://localhost:3000/api/user/register
  *
@@ -51,7 +55,6 @@ router.post('/register', function(req, res) {
   req.checkBody('email').notEmpty();
   req.checkBody('password').notEmpty();
   req.checkBody('name').notEmpty();
-  req.checkBody('testLocation').notEmpty();
 
   var err;
   if ((err = req.validationErrors())) {
@@ -62,7 +65,8 @@ router.post('/register', function(req, res) {
       profile: {
         name: req.body.name,
         language: req.body.language || 'English',
-        testLocation: req.body.testLocation
+        testLocation: req.body.testLocation,
+        contractId: req.body.contractId,
       }
     }
     // Adding testbed and cooperative info to user if present

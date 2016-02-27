@@ -1,11 +1,11 @@
-<ion-view view-title="Prediction for the next 30 hours">
-<ion-content>
+<ion-view view-title={{"Prediction_for_thirty"|translate}}>
+<ion-content overflow-scroll = "true">
 <!-- <div><highchart id="chart2" config="chartConfigEnergyMeteo"></highchart></div>
  -->
 <!-- fully revised -->
 <div class="list card">
-<div class="item item-divider"> <h1> Time &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Energy Meteo </h1> </div>
-  <div class="item item-divider" ng-repeat="n in energyWeatherDataVector track by $index"> &nbsp; {{energyWeatherDataVector[$index].date}} -  {{energyWeatherDataVector[$index+1].date}} &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;  <i class="icon-large {{futurePriceIcons[$index]}} {{futurePriceIconColors[$index]}}"></i></div>
+<div class="item item-divider"> <h1> <span translate>Time</span>   &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span translate>Energy_Meteo</span> </h1> </div>
+  <div class="item item-divider" ng-repeat="n in energyWeatherDataVector track by $index"> &nbsp; {{energyWeatherDataVector[$index].date}} -  {{energyWeatherDataVector[$index+1].date}} &nbsp;  <i class="icon-large {{futurePriceIcons[$index]}} {{futurePriceIconColors[$index]}}"></i></div>
 </div>
 </ion-content>
 </ion-view>

@@ -43,9 +43,11 @@ var UserSchema = new Schema({
       default: 'English'
     },
     testLocation:{
-      type: String,
-      required: true
+      type: String
     },
+  contractId: {
+    type: String
+  },
     toRehearse: {
       setByUser: {
         type: Boolean,
@@ -425,6 +427,18 @@ exports.updateProfile = function(user, profile, cb) {
     user.profile.nickname = profile.nickname;
   if (user.profile.nickname === null)
     user.profile.nickname = undefined;
+  //added for contract Id -- trentino users case
+  if (profile.contractId !== undefined)
+    user.profile.contractId = profile.contractId;
+  if (user.profile.contractId === null)
+    user.profile.contractId = undefined;
+
+   if (profile.testLocation !== undefined)
+    user.profile.testLocation = profile.testLocation;
+  if (user.profile.testLocation === null)
+    user.profile.testLocation = undefined;
+
+  //end of edit for contractId
   if (profile.gender !== undefined)
     user.profile.gender = profile.gender;
   if (user.profile.gender === null)

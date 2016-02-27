@@ -1,16 +1,16 @@
-<ion-view view-title="Energy Data">
+<ion-view view-title={{"Energy_Data"|translate}}>
 <ion-content class="padding">
 
 <div class="list card">
-  <div class="item item-divider">Total consumption</div>
+  <div class="item item-divider"><span translate>Total_consumption</span></div>
   <div class="item item-text-wrap">
-Last month: {{totalCommunityConsumption}}  kWh &nbsp &nbsp &nbsp <span class="ng-class: {{colorSpan}}">{{communityConsumptionTrend}} </span></div>
+<span translate>Last_month</span> {{totalCommunityConsumption}}  kWh &nbsp &nbsp &nbsp <span class="ng-class: {{colorSpan}}">{{communityConsumptionTrend}} </span></div>
 </div>
 
 <div class="list card">
-  <div class="item item-divider"> Total production</div>
+  <div class="item item-divider"> <span translate>Total_production</span></div>
   <div class="item item-text-wrap">
-Last month: {{totalCommunityProduction}}  kWh &nbsp &nbsp &nbsp <span class="ng-class: {{colorSpan2}}">{{communityProductionTrend}} </span></div>
+<span translate>Last_month</span> {{totalCommunityProduction}}  kWh &nbsp &nbsp &nbsp <span class="ng-class: {{colorSpan2}}">{{communityProductionTrend}} </span></div>
 </div>
 <div><highchart id="chart3" config="chartConfigCommunityBalance"></highchart></div>
 </ion-content>
