@@ -16,7 +16,8 @@ function SignupCtrl($translate, $scope, $state, $stateParams, $ionicPopup, AuthS
       err: '',
       fbErr: '',
       language: 'English',
-      testLocation: 'Trento'
+      testLocation: '',
+      contractId: ''
   };
 
   if(testbed && testbed.isStockholm()) {
@@ -61,7 +62,7 @@ function SignupCtrl($translate, $scope, $state, $stateParams, $ionicPopup, AuthS
 
     if (_.isEmpty(err) && $scope.isPasswordsSame){
 
-        AuthService.signup($scope.loginData.emailAddress.toLowerCase(), $scope.loginData.name, $scope.loginData.password, $scope.loginData.language, $scope.loginData.testLocation, $scope.loginData.household)
+        AuthService.signup($scope.loginData.emailAddress.toLowerCase(), $scope.loginData.name, $scope.loginData.password, $scope.loginData.language, $scope.loginData.testLocation, $scope.loginData.contractId, $scope.loginData.household)
         .then(function(data){
 
           $scope.signinClicked = false;

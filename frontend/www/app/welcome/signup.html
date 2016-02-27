@@ -104,13 +104,17 @@
     <!-- END HIDDEN -->
     <!-- Added for test location identification mainly for trentino app 
          with the logic of leave blank if users are from sweden-->
-    <label class="item item-input item-select">
+   <!--  <label class="item item-input item-select">
       <span class="input-label" translate>Test_Location</span>
       <select ng-model="loginData.testLocation" ng-change="testLocationChanged()">
-        <option translate>Trento</option>
-        <option translate>Sweden</option>
+        <option translate>CEdiS</option>
+        <option translate>CEIS</option>
       </select>
-    </label>
+    </label> -->
+    <!--  <label class="item item-input">
+      <span class="input-label" translate>Contract_Id</span>
+      <input type="text" name="contractId" ng-model="loginData.contractId" ng-change="clearSigninClicked()" required>
+    </label> -->
     <a class="button button-dark button-full text-bold" ng-disabled="!_.isEmpty(input.$error) || !isPasswordsSame" ng-click="signup(input.$error)" translate>Sign_up</a>
     <p class="errors text-center" ng-show="signinClicked && isRejected">
       {{loginData.err}}. <span translate>TRY_AGAIN</span>

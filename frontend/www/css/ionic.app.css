@@ -7942,3 +7942,7 @@ ul.rating li {
 .full-height #map {
   width: 100%;
   height: 80%; }
+
+.disable-clickon-tabs {
+  pointer-events: none !important;
+  background-color: #f8f8f8; }

@@ -8,6 +8,7 @@ var rename = require('gulp-rename');
 var sh = require('shelljs');
 var inject = require('gulp-inject');
 var watch = require('gulp-watch');
+var Highcharts = require('highcharts');
 
 var paths = {
   sass: ['./scss/**/*.scss'],
