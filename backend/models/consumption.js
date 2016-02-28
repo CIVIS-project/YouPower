@@ -362,15 +362,23 @@ exports.data=meterdata;
 
 exports.getStoredConsumption = function(meterId, type, granularity, from, to, cb) {
   try{
-    var ret= meterdata[typeMap[type]][meterId][parseInt(from.substring(0, 4))] || Array(12);
-    if(ret.length>4)
+    var fromYear = parseInt(from.substring(0, 4));
+    var ret= meterdata[typeMap[type]][meterId][fromYear] || Array(12);
+    if(from.length>4)
      ret= ret.slice(parseInt(from.substring(4, 6))-1);
    if(to){
-     var t= meterdata[typeMap[type]][meterId][parseInt(to.substring(0, 4))] || Array(12);
-     if(to.length>4){
-       t=t.slice(0, parseInt(to.substring(4, 6)));
+     var toYear = parseInt(to.substring(0, 4));
+     if(toYear != fromYear) { //If they're the same year, we assume that from will cover the whole range
+       var t= meterdata[typeMap[type]][meterId][toYear] || Array(12);
+       if(to.length>4){
+         t=t.slice(0, parseInt(to.substring(4, 6)));
+       }
+       ret= Array.prototype.concat(ret, t);
+     } else {
+       if(to.length>4) {
+         ret = ret.slice(0, parseInt(to.substring(4, 6))-parseInt(from.substring(4, 6))+1)
+       }
      }
-     ret= Array.prototype.concat(ret, t);
    }
    cb(null, ret);
  }
