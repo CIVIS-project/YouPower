@@ -150,7 +150,7 @@ router.get('/last',auth.authenticate(),function(request,response,next){
                             res: 'RAW',
                             type: TYPE
                         }),
-                     rejectUnauthorized : false
+                     //rejectUnauthorized : false
                 };
                 https.get(options, function (res) {
                     var data = [];
@@ -237,7 +237,7 @@ router.get('/appliance',auth.authenticate(),function(request,response,next){
                 var options = {
                     host: request.app.get('civis_opt').host,
                     path: request.app.get('civis_opt').path + 'getAllSensors',
-                    rejectUnauthorized : false
+                   // rejectUnauthorized : false
                 };
                 https.get(options, function (res) {
                     var data = [];
@@ -348,7 +348,7 @@ router.get('/appliance/:applID',auth.authenticate(),function(request,response,ne
                             to: to,
                             res: res
                         }),
-                    rejectUnauthorized : false
+                    //rejectUnauthorized : false
                 };
                 https.get(options, function (res) {
                     var data = [];

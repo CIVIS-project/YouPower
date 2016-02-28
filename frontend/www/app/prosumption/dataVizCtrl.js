@@ -73,8 +73,8 @@ $scope.getPersonalHistory = function(startDate,endDate){
    
 
    var promisedData =  $q.all([
-    $http.get('http://localhost:3005/api/consumption?userid='+ currentUserId + '&from='+ historyStartDate + '&to='+ historyEndDate),
-    $http.get('http://localhost:3005/api/production?userid=104532&from='+ historyStartDate + '&to='+ historyEndDate)
+    $http.get('/api/consumption?userid='+ currentUserId + '&from='+ historyStartDate + '&to='+ historyEndDate),
+    $http.get('/api/production?userid=104532&from='+ historyStartDate + '&to='+ historyEndDate)
     ]).then(function(data){
 
         // production
@@ -177,7 +177,7 @@ $scope.currentPrice="High";
 ///fetch data for the yours/ tab
 // $scope.currentPrice= 0.12+(0.08*getRandomData());
 //$http.get(serverCN+'/api/tou/'+venue+'/current').then(function(resp) {
-$http.get('apiCN/api/tou/'+municipalityIdReal+'/current').then(function(resp) {
+$http.get('http://217.77.95.103/api/tou/'+municipalityIdReal+'/current').then(function(resp) {
     // console.log('returned response'+JSON.parse(resp));
     $scope.currentPrice = resp.data.tarif;
 
@@ -198,7 +198,7 @@ $http.get('apiCN/api/tou/'+municipalityIdReal+'/current').then(function(resp) {
 
 //reset global variablemunicipalityIdReal
 
-$http.get('apiCN/api/tou/'+municipalityIdReal).then(function(resp) {
+$http.get('http://217.77.95.103/api/tou/'+municipalityIdReal).then(function(resp) {
     
     var energyWeatherData = resp.data.data;
     //iterate over the array to format data
@@ -322,7 +322,7 @@ $rootScope.chartConfigLastConsumption = {
 
 // update last consumption gauge
 // $http.get(Config.host+'/api/consumption/last?userid='+currentUserId).then(function(resp) {
-$http.get('http://localhost:3005/api/consumption/last?userid='+currentUserId).then(function(resp) {
+$http.get('/api/consumption/last?userid='+currentUserId).then(function(resp) {
     var lastConsumptionData = resp.data.consumption;
     $rootScope.chartConfigLastConsumption.series = [{
             name: 'consumo',
@@ -405,7 +405,7 @@ $rootScope.chartConfigLastProduction = {
     };
 
 //update last consumption gauge
-$http.get('http://localhost:3005/api/production/last?userid='+currentUserId).then(function(resp) {
+$http.get('/api/production/last?userid='+currentUserId).then(function(resp) {
     var lastProductionData = resp.data.production;
     $rootScope.chartConfigLastProduction.series = [{
             name: 'produzione',
@@ -440,7 +440,7 @@ $http.get('http://localhost:3005/api/production/last?userid='+currentUserId).the
 //--------------------------------------------------------------------------//
 
 $scope.listOfAppliancesName=[];
-$http.get('http://localhost:3005/api/consumption/appliance?userid='+currentUserId).then(function(resp) {
+$http.get('/api/consumption/appliance?userid='+currentUserId).then(function(resp) {
     $scope.listOfAppliances=resp.data;
     
 //var applianceId;
@@ -686,7 +686,7 @@ for (i=0;i<$scope.listOfAppliances.length;i++) {
         var startDateAppliance = moment.utc(startDate).add('days',1).format('YYYY-MM-DD') ;
         var endDateAppliance=  moment.utc(endDate).add('days',1).format('YYYY-MM-DD') ;
         var applianceData=[];
-        $http.get('http://localhost:3005/api/consumption/appliance/'+ApplianceId+"?userid="+currentUserId+"&from="+startDateAppliance+ "&to="+endDateAppliance).then(function(resp) {
+        $http.get('/api/consumption/appliance/'+ApplianceId+"?userid="+currentUserId+"&from="+startDateAppliance+ "&to="+endDateAppliance).then(function(resp) {
         applianceData.push(resp.data);
         // create a copy of the array
         var cleanApplianceData = _.clone(applianceData[0]); // create a copy of the array
