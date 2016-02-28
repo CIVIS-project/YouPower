@@ -28,7 +28,6 @@ function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $i
 
 	$scope.commentPoints = 1; 
 	$scope.feedbackPoints = 1;        
-	$scope.communitybuilding = $translate.instant('dfgfdgfdgdfg');
 	$scope.households = {}; //save information of households
 
 	$scope.users = {}; //save user details. not the current user, the other household members and invited members 

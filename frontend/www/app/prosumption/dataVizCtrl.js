@@ -33,7 +33,6 @@ function dataVizCtrl($scope, $rootScope, $state, User, $http, Config, $q, curren
     CEdis -- corresponds to storo
     */
 
-
         $rootScope.chartConfigComparisonHistorical = {
            options: {
              chart: {
@@ -66,9 +65,9 @@ function dataVizCtrl($scope, $rootScope, $state, User, $http, Config, $q, curren
 
 
   
-$scope.getPersonalHistory = function getPersonalHistory(startDate,endDate){
-    var historyStartDate = moment.utc(startDate).format('YYYY-MM-DD');
-    var historyEndDate = moment.utc(endDate).format('YYYY-MM-DD');
+$scope.getPersonalHistory = function(startDate,endDate){
+    var historyStartDate = moment.utc(startDate).add('days',1).format('YYYY-MM-DD');
+    var historyEndDate = moment.utc(endDate).add('days',1).format('YYYY-MM-DD');
     consumptionDataStore='';
     productionDataStore='';
    
@@ -90,12 +89,8 @@ $scope.getPersonalHistory = function getPersonalHistory(startDate,endDate){
             for (i=0;i<cleanApplianceDatap.length;i++) {
                 //create list of names of appliances for visualization purposes
                 var TempArrayp = [];
-                console.dir(cleanApplianceDatap[i]);
                 //format the date for highchart to work
-                console.log("Date before conversion:",cleanApplianceDatap[i].date);
-                console.log("Date after conversion");
                 var tempDayCleanp = moment.utc(cleanApplianceDatap[i].date).format('DD-MM-YYYY');
-                                console.log("Date after conversion",tempDayCleanp);
 
                 tempArrayDaysp.push(tempDayCleanp);
                 TempArrayp.push("\""+tempDayCleanp+"\"",cleanApplianceDatap[i].production.toFixed(2));
@@ -106,22 +101,17 @@ $scope.getPersonalHistory = function getPersonalHistory(startDate,endDate){
                 else{
                 productionDataStore = productionDataStore + '[' + TempArrayp + '],';
             }
-                console.log(TempArrayp);
             }
-                console.log("Are we called from here ++++++++++++++++++++++++");
         productionDataStore = productionDataStore +']';
-        console.log(productionDataStore);
 
 
 
          //preprocess consumption dataset
       var cleanApplianceDatac = _.clone(consumption_data); // create a copy of the array
-        console.dir(cleanApplianceDatac);
         consumptionDataStore = consumptionDataStore + '[';
         for (i=0;i<cleanApplianceDatac.length;i++) {
             //create list of names of appliances for visualization purposes
             var TempArrayc = [];
-            console.dir(cleanApplianceDatac[i]);
             //format the date for highchart to work
             TempArrayc.push("\""+moment.utc(cleanApplianceDatac[i].date).format('DD-MM-YYYY') + "\"",cleanApplianceDatac[i].consumption.toFixed(2));
             //pass the last index
@@ -131,11 +121,8 @@ $scope.getPersonalHistory = function getPersonalHistory(startDate,endDate){
             else{
            consumptionDataStore = consumptionDataStore + '[' + TempArrayc + '],';
         }
-            console.log(TempArrayc);
         }
     consumptionDataStore = consumptionDataStore +']';
-    console.log("Are we called from here ---------------------------");
-    console.log(consumptionDataStore);
     
    
     // $scope.$parent.chartConfigComparisonHistorical.series= [{
@@ -146,8 +133,6 @@ $scope.getPersonalHistory = function getPersonalHistory(startDate,endDate){
     //          name: 'Consumo',
     //          data: ['a':2],   
     //          }];
-
-
         //console.log($scope.chartConfigComparisonHistorical.series);
         $rootScope.chartConfigComparisonHistorical.series = [{
             name: 'Produzione',
@@ -158,11 +143,9 @@ $scope.getPersonalHistory = function getPersonalHistory(startDate,endDate){
                 data: JSON.parse(consumptionDataStore)
             }
         ];
-        console.log("The days are, ",tempArrayDaysp );
         $rootScope.chartConfigComparisonHistorical.xAxis = {
             categories: JSON.parse(JSON.stringify(tempArrayDaysp))
         };
-                console.log($rootScope.chartConfigComparisonHistorical);
 
     //console.log(data[0], data[1]);
 },
@@ -194,8 +177,7 @@ $state.go('main.prosumption.vizHistoricalPersonal');
 
 // console.dir($scope);
 
-// var serverCN="http://217.77.95.103/";
-// //var venue="storo"; //stub: replace with link to location from settings
+
 
 // default value
 $scope.currentPrice="High";
@@ -206,25 +188,21 @@ $scope.currentPrice="High";
 $http.get('apiCN/api/tou/'+municipalityIdReal+'/current').then(function(resp) {
     // console.log('returned response'+JSON.parse(resp));
     $scope.currentPrice = resp.data.tarif;
-    console.log('price isss:',resp.data.tarif);
     if ($scope.currentPrice=="Low") {
         $scope.priceIcon='ion-happy-outline';
         $scope.priceIconColor="balanced";
-        console.log("We are here...");
     }
     else {
         $scope.priceIcon='ion-sad-outline';
         $scope.priceIconColor="energized";
-        console.log("Or here,,,");
     }
   }, function(err) {
-    console.error('ERR, problem in here', err);
+    console.error('ERR,', err);
     // err.status will contain the status code
   });
 // $scope.timeRemaining = getTimeRemaining();
 
 //reset global variablemunicipalityIdReal
-console.log("After energyWeatherDataVector init");
 $http.get('apiCN/api/tou/'+municipalityIdReal).then(function(resp) {
     
     var energyWeatherData = resp.data.data;
@@ -237,27 +215,22 @@ $http.get('apiCN/api/tou/'+municipalityIdReal).then(function(resp) {
         energyWeatherDataArray.push(energyWeatherObj);
     }
     $rootScope.energyWeatherDataVector = energyWeatherDataArray;
-    console.dir($rootScope.energyWeatherDataVector);
      //console.log(resp.data.data);
     }, function(err) {
-        console.error('ERR, energy whether data pro', err);
+        console.error('ERR, energy data cannot be fetched', err);
     // err.status will contain the status code
     });
 
 $scope.futurePriceIcons = [];
 $scope.futurePriceIconColors = [];
-console.log("After init of future price icons");
-console.log("length of data:",$rootScope.energyWeatherDataVector.length);
 for (var i=0; i<$rootScope.energyWeatherDataVector.length; i++) {
     if ($rootScope.energyWeatherDataVector[i].tarif=="Low") {
         $scope.futurePriceIcons[i]='ion-happy-outline';
         $scope.futurePriceIconColors[i]="balanced";
-        console.log("either we are here");
     }
     else {
         $scope.futurePriceIcons[i]='ion-sad-outline';
         $scope.futurePriceIconColors[i]="energized";
-        console.log("or here");
     }  
 }
 // var numberElementsFuture = 12;
@@ -283,10 +256,10 @@ for (var i=0; i<$rootScope.energyWeatherDataVector.length; i++) {
 //     toTime=(toTime+3)%24;
 // }
 
-//var currentUserId='104769';
 
 
 // initialize last consumption gauge
+
 $rootScope.chartConfigLastConsumption = {
         options: {
             chart: {
@@ -312,7 +285,14 @@ $rootScope.chartConfigLastConsumption = {
                 }
             }
         },
-        series: [],
+        series: [{
+            name: 'consumo',
+            data: [],
+             dataLabels: {
+                format: '<div style="text-align:center"><span style="font-size:25px;color:black">{y}</span><br/>' + 
+                    '<span style="font-size:12px;color:silver">km/h</span></div>'
+            }
+        }],
         title: {
             text: 'consumo',
             y: 20
@@ -362,6 +342,8 @@ $http.get('http://localhost:3005/api/consumption/last?userid='+currentUserId).th
 
 // initialize last production gauge
 
+
+
 $rootScope.chartConfigLastProduction = {
         options: {
             chart: {
@@ -387,7 +369,14 @@ $rootScope.chartConfigLastProduction = {
                 }
             }
         },
-        series: [],
+        series: [{
+            name: 'produzione',
+            data: [],
+             dataLabels: {
+                format: '<div style="text-align:center"><span style="font-size:25px;color:black">{y}</span><br/>' + 
+                    '<span style="font-size:12px;color:silver">km/h</span></div>'
+            }
+        }],
         title: {
             text: 'produzione',
             y: 20
@@ -636,7 +625,6 @@ for (i=0;i<$scope.listOfAppliances.length;i++) {
 
       
 
-
     $rootScope.chartConfigAppliance2 = {
                 options: {
                     chart: {
@@ -693,27 +681,20 @@ for (i=0;i<$scope.listOfAppliances.length;i++) {
         chartData = '[';
         
         
-        var startDateAppliance = moment.utc(startDate).format('YYYY-MM-DD') ;
-        var endDateAppliance=  moment.utc(endDate).format('YYYY-MM-DD') ;
-        console.log("Start data:",startDateAppliance);
-        console.log("End date:",endDateAppliance);
+        var startDateAppliance = moment.utc(startDate).add('days',1).format('YYYY-MM-DD') ;
+        var endDateAppliance=  moment.utc(endDate).add('days',1).format('YYYY-MM-DD') ;
         var applianceData=[];
-        console.log("Appliance ID is" ,ApplianceId);
         $http.get('http://localhost:3005/api/consumption/appliance/'+ApplianceId+"?userid="+currentUserId+"&from="+startDateAppliance+ "&to="+endDateAppliance).then(function(resp) {
         applianceData.push(resp.data);
-        console.dir(applianceData[0]);
         // create a copy of the array
         var cleanApplianceData = _.clone(applianceData[0]); // create a copy of the array
-        console.dir(cleanApplianceData);
 
 
         var tempArrayDays = new Array();
         for (i=0;i<cleanApplianceData.length;i++) {
             //create list of names of appliances for visualization purposes
             var TempArray = [];
-            console.dir(cleanApplianceData[i]);
             var tempDayClean = moment.utc(cleanApplianceData[i].date).format('DD-MM-YYYY');
-                                console.log("Date after conversion",tempDayClean);
             //format the date for highchart to work
             tempArrayDays.push(tempDayClean);
             TempArray.push("\""+tempDayClean+ "\"",cleanApplianceData[i].consumption);
@@ -725,16 +706,11 @@ for (i=0;i<$scope.listOfAppliances.length;i++) {
             else{
             chartData = chartData + '[' + TempArray + '],';
         }
-            console.log(TempArray);
         }
     chartData = chartData+']'; // add closing tag for the dataset
-        console.log("We are from the sky");
-        console.info(chartData);
         // start chart configuration
 
-         console.dir($scope.chartConfigAppliance2);
-         console.log(chartData);
-         console.log(chartData.replace(/\"/g, ""));
+         
 
          //update the chart
          $rootScope.chartConfigAppliance2.series = [{

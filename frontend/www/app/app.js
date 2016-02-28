@@ -28,13 +28,19 @@ angular.module('civis.youpower', [
 .run(function($ionicPlatform, $rootScope, $window, $state, AuthService) {
 
   $rootScope.scale = 5;
-  var z = [];
+
+  /**
+      used the global scope to store the value from the web service
+      should be changed with services in later release
+  */
+ 
   $rootScope.chartConfigComparisonHistorical = [];
   $rootScope.applicanceDataStore = [];
   $rootScope.chartConfigAppliance2 = [];
   $rootScope.energyWeatherDataVector=[];
   $rootScope.chartConfigLastProduction = [];
   $rootScope.chartConfigLastConsumption = [];
+
 
   // Making underscore available in the angular expressions
   $rootScope._=_;
