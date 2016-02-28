@@ -89,8 +89,8 @@ $scope.getPersonalHistory = function(startDate,endDate){
             for (i=0;i<cleanApplianceDatap.length;i++) {
                 //create list of names of appliances for visualization purposes
                 var TempArrayp = [];
-                //format the date for highchart to work
                 var tempDayCleanp = moment.utc(cleanApplianceDatap[i].date).format('DD-MM-YYYY');
+                               
 
                 tempArrayDaysp.push(tempDayCleanp);
                 TempArrayp.push("\""+tempDayCleanp+"\"",cleanApplianceDatap[i].production.toFixed(2));
@@ -106,12 +106,15 @@ $scope.getPersonalHistory = function(startDate,endDate){
 
 
 
+
          //preprocess consumption dataset
       var cleanApplianceDatac = _.clone(consumption_data); // create a copy of the array
+
         consumptionDataStore = consumptionDataStore + '[';
         for (i=0;i<cleanApplianceDatac.length;i++) {
             //create list of names of appliances for visualization purposes
             var TempArrayc = [];
+
             //format the date for highchart to work
             TempArrayc.push("\""+moment.utc(cleanApplianceDatac[i].date).format('DD-MM-YYYY') + "\"",cleanApplianceDatac[i].consumption.toFixed(2));
             //pass the last index
@@ -123,6 +126,7 @@ $scope.getPersonalHistory = function(startDate,endDate){
         }
         }
     consumptionDataStore = consumptionDataStore +']';
+
     
    
     // $scope.$parent.chartConfigComparisonHistorical.series= [{
@@ -133,6 +137,7 @@ $scope.getPersonalHistory = function(startDate,endDate){
     //          name: 'Consumo',
     //          data: ['a':2],   
     //          }];
+
         //console.log($scope.chartConfigComparisonHistorical.series);
         $rootScope.chartConfigComparisonHistorical.series = [{
             name: 'Produzione',
@@ -146,6 +151,7 @@ $scope.getPersonalHistory = function(startDate,endDate){
         $rootScope.chartConfigComparisonHistorical.xAxis = {
             categories: JSON.parse(JSON.stringify(tempArrayDaysp))
         };
+
 
     //console.log(data[0], data[1]);
 },
@@ -165,20 +171,6 @@ $state.go('main.prosumption.vizHistoricalPersonal');
 
      //$scope.chartConfigComparisonHistorical.series = z;
 
-
-
-
-
-     
-
-
-
-
-
-// console.dir($scope);
-
-
-
 // default value
 $scope.currentPrice="High";
 
@@ -188,6 +180,7 @@ $scope.currentPrice="High";
 $http.get('apiCN/api/tou/'+municipalityIdReal+'/current').then(function(resp) {
     // console.log('returned response'+JSON.parse(resp));
     $scope.currentPrice = resp.data.tarif;
+
     if ($scope.currentPrice=="Low") {
         $scope.priceIcon='ion-happy-outline';
         $scope.priceIconColor="balanced";
@@ -198,11 +191,13 @@ $http.get('apiCN/api/tou/'+municipalityIdReal+'/current').then(function(resp) {
     }
   }, function(err) {
     console.error('ERR,', err);
+
     // err.status will contain the status code
   });
 // $scope.timeRemaining = getTimeRemaining();
 
 //reset global variablemunicipalityIdReal
+
 $http.get('apiCN/api/tou/'+municipalityIdReal).then(function(resp) {
     
     var energyWeatherData = resp.data.data;
@@ -218,19 +213,23 @@ $http.get('apiCN/api/tou/'+municipalityIdReal).then(function(resp) {
      //console.log(resp.data.data);
     }, function(err) {
         console.error('ERR, energy data cannot be fetched', err);
+
     // err.status will contain the status code
     });
 
 $scope.futurePriceIcons = [];
 $scope.futurePriceIconColors = [];
+
 for (var i=0; i<$rootScope.energyWeatherDataVector.length; i++) {
     if ($rootScope.energyWeatherDataVector[i].tarif=="Low") {
         $scope.futurePriceIcons[i]='ion-happy-outline';
         $scope.futurePriceIconColors[i]="balanced";
+        console.log("either we are here");
     }
     else {
         $scope.futurePriceIcons[i]='ion-sad-outline';
         $scope.futurePriceIconColors[i]="energized";
+        console.log("or here");
     }  
 }
 // var numberElementsFuture = 12;
@@ -256,6 +255,7 @@ for (var i=0; i<$rootScope.energyWeatherDataVector.length; i++) {
 //     toTime=(toTime+3)%24;
 // }
 
+//var currentUserId='104769';
 
 
 // initialize last consumption gauge
@@ -293,6 +293,7 @@ $rootScope.chartConfigLastConsumption = {
                     '<span style="font-size:12px;color:silver">km/h</span></div>'
             }
         }],
+
         title: {
             text: 'consumo',
             y: 20
@@ -343,7 +344,6 @@ $http.get('http://localhost:3005/api/consumption/last?userid='+currentUserId).th
 // initialize last production gauge
 
 
-
 $rootScope.chartConfigLastProduction = {
         options: {
             chart: {
@@ -377,6 +377,7 @@ $rootScope.chartConfigLastProduction = {
                     '<span style="font-size:12px;color:silver">km/h</span></div>'
             }
         }],
+
         title: {
             text: 'produzione',
             y: 20
@@ -625,6 +626,7 @@ for (i=0;i<$scope.listOfAppliances.length;i++) {
 
       
 
+
     $rootScope.chartConfigAppliance2 = {
                 options: {
                     chart: {
@@ -695,6 +697,7 @@ for (i=0;i<$scope.listOfAppliances.length;i++) {
             //create list of names of appliances for visualization purposes
             var TempArray = [];
             var tempDayClean = moment.utc(cleanApplianceData[i].date).format('DD-MM-YYYY');
+
             //format the date for highchart to work
             tempArrayDays.push(tempDayClean);
             TempArray.push("\""+tempDayClean+ "\"",cleanApplianceData[i].consumption);
@@ -710,7 +713,6 @@ for (i=0;i<$scope.listOfAppliances.length;i++) {
     chartData = chartData+']'; // add closing tag for the dataset
         // start chart configuration
 
-         
 
          //update the chart
          $rootScope.chartConfigAppliance2.series = [{
