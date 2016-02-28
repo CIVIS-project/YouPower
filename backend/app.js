@@ -1,6 +1,7 @@
 'use strict';
 
 var winston = require('winston');
+//require('ssl-root-cas').inject("C:\\Users\\Admin\\Downloads\\Reply Certificate\\Reply Certificate.cer");
 winston.loggers.add('default', {
   console: {
     level: 'silly',

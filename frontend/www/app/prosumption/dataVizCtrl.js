@@ -73,8 +73,8 @@ $scope.getPersonalHistory = function(startDate,endDate){
    
 
    var promisedData =  $q.all([
-    $http.get('/api/consumption?userid='+ currentUserId + '&from='+ historyStartDate + '&to='+ historyEndDate),
-    $http.get('/api/production?userid=104532&from='+ historyStartDate + '&to='+ historyEndDate)
+    $http.get('http://app.civisproject.eu/api/consumption?userid='+ currentUserId + '&from='+ historyStartDate + '&to='+ historyEndDate),
+    $http.get('http://app.civisproject.eu/api/production?userid='+ currentUserId+ '&from='+ historyStartDate + '&to='+ historyEndDate)
     ]).then(function(data){
 
         // production
@@ -224,12 +224,10 @@ for (var i=0; i<$rootScope.energyWeatherDataVector.length; i++) {
     if ($rootScope.energyWeatherDataVector[i].tarif=="Low") {
         $scope.futurePriceIcons[i]='ion-happy-outline';
         $scope.futurePriceIconColors[i]="balanced";
-        console.log("either we are here");
     }
     else {
         $scope.futurePriceIcons[i]='ion-sad-outline';
         $scope.futurePriceIconColors[i]="energized";
-        console.log("or here");
     }  
 }
 // var numberElementsFuture = 12;
@@ -322,7 +320,7 @@ $rootScope.chartConfigLastConsumption = {
 
 // update last consumption gauge
 // $http.get(Config.host+'/api/consumption/last?userid='+currentUserId).then(function(resp) {
-$http.get('/api/consumption/last?userid='+currentUserId).then(function(resp) {
+$http.get('http://app.civisproject.eu/api/consumption/last?userid='+currentUserId).then(function(resp) {
     var lastConsumptionData = resp.data.consumption;
     $rootScope.chartConfigLastConsumption.series = [{
             name: 'consumo',
@@ -405,7 +403,7 @@ $rootScope.chartConfigLastProduction = {
     };
 
 //update last consumption gauge
-$http.get('/api/production/last?userid='+currentUserId).then(function(resp) {
+$http.get('http://app.civisproject.eu/api/production/last?userid='+currentUserId).then(function(resp) {
     var lastProductionData = resp.data.production;
     $rootScope.chartConfigLastProduction.series = [{
             name: 'produzione',
@@ -440,7 +438,7 @@ $http.get('/api/production/last?userid='+currentUserId).then(function(resp) {
 //--------------------------------------------------------------------------//
 
 $scope.listOfAppliancesName=[];
-$http.get('/api/consumption/appliance?userid='+currentUserId).then(function(resp) {
+$http.get('http://app.civisproject.eu/api/consumption/appliance?userid='+currentUserId).then(function(resp) {
     $scope.listOfAppliances=resp.data;
     
 //var applianceId;
@@ -686,7 +684,7 @@ for (i=0;i<$scope.listOfAppliances.length;i++) {
         var startDateAppliance = moment.utc(startDate).add('days',1).format('YYYY-MM-DD') ;
         var endDateAppliance=  moment.utc(endDate).add('days',1).format('YYYY-MM-DD') ;
         var applianceData=[];
-        $http.get('/api/consumption/appliance/'+ApplianceId+"?userid="+currentUserId+"&from="+startDateAppliance+ "&to="+endDateAppliance).then(function(resp) {
+        $http.get('http://app.civisproject.eu/api/consumption/appliance/'+ApplianceId+"?userid="+currentUserId+"&from="+startDateAppliance+ "&to="+endDateAppliance).then(function(resp) {
         applianceData.push(resp.data);
         // create a copy of the array
         var cleanApplianceData = _.clone(applianceData[0]); // create a copy of the array
