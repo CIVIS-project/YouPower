@@ -1,0 +1,50 @@
+<ion-view view-title={{"Energy_Data"|translate}}>
+<ion-content overflow-scroll = "true" class="padding">
+
+<div class="list card">
+  <div class="item item-divider"><h1><span translate>Energy_Meteo</span></h1></div>
+  <!-- <div class="item item-text-wrap"> -->
+ <a class="item item-icon-right" ui-sref="main.prosumption.vizEnergyMeteo" ui-view="tab-prosumption-yours"> <h1> <i class="icon-large {{priceIcon}} {{priceIconColor}}"></i>&nbsp  &nbsp  &nbsp <!-- &nbsp Current estimated price: 0.158 &euro;/kWh --> <i class="icon-large ion-stats-bars"></i></a>
+<!--     {{currentPrice}} &euro;/kWh <i class="icon-large ion-stats-bars"></i>
+<!--   </div>
+ -->
+</div>
+
+<div class="list card">
+  <div class="item item-divider"> <span translate>Actual_Prod_Cons_Level</span></div>
+  <a class="item item-icon-right" ui-sref="main.prosumption.vizConsumption" ui-view="tab-prosumption-yours"> 
+    <!-- <div class="item item-text-wrap"> -->
+    <span translate>Last_measured_Cons</span> <span class="bold"> {{lastConsumption}} kWh </span>&nbsp  &nbsp  &nbsp <i class="icon-large ion-stats-bars"></i><!-- ion-arrow-graph-up-right" ></i> -->
+<!-- </div>
+ --></a>
+<a class="item item-icon-right" ui-sref="main.prosumption.vizProduction" ui-view="tab-prosumption-yours">
+  <span translate>Last_measured_prod</span>{{lastProduction}} kWh &nbsp  &nbsp  &nbsp<i class="icon-large ion-stats-bars"></i><!-- <i class="icon-large ion-arrow-graph-up-right" font-size:larger></i> -->
+  </a>
+</div>
+
+<div class="list card">
+  <div class="item item-divider"><span translate>Historical_prod_cons_level</span>
+<label class="item item-input">
+  <span class="input-label"><b>{{"Start_date" |translate}}</b></span>
+  <input type="date" ng-model='params.startDate'>
+  </label>
+  <label class="item item-input">
+  <span class="input-label"><b>{{"End_date" |translate}}</b></span>
+  <input type="date" ng-model="params.endDate">
+  </label>
+  </div>
+ <a class="item item-icon-right" ui-view="tab-prosumption-yours" ng-click='getPersonalHistory(params.startDate,params.endDate)'> 
+    <!-- <div class="item item-text-wrap"> -->
+    <span translate>My_historical_data</span> <i class="icon-large ion-stats-bars"></i><!-- <i class="icon-large ion-arrow-graph-up-right" ></i> -->
+<!-- </div>
+ --></a>
+
+ <!--  //ui-sref="main.prosumption.vizHistoricalComparison" -->
+ <a class="item item-icon-right disable-clickon-tabs"  ui-view="tab-prosumption-yours"> 
+    <!-- <div class="item item-text-wrap"> -->
+    <span translate>Comparison</span> <i class="icon-large ion-stats-bars"></i><!-- <i class="icon-large ion-arrow-graph-up-right" ></i> -->
+<!-- </div>
+ --></a>
+
+</ion-content>
+</ion-view>

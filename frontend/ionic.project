@@ -10,5 +10,15 @@
   "watchPatterns": [
     "www/**/*",
     "!www/lib/**/*"
+  ],
+  "proxies": [
+    {
+      "path": "/apiCN",
+      "proxyUrl": "http://217.77.95.103"
+    },
+    {
+      "path": "/apiTUD",
+      "proxyUrl": "https://app.civisproject.eu/api/"
+    }
   ]
 }

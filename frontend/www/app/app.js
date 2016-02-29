@@ -4,6 +4,8 @@ angular.module('civis.youpower.actions',[]);
 angular.module('civis.youpower.communities',[]);
 angular.module('civis.youpower.settings',[]);
 angular.module('civis.youpower.welcome',[]);
+angular.module('civis.youpower.prosumption',['highcharts-ng']);
+angular.module('civis.youpower.donation',[]);
 
 angular.module('civis.youpower', [
   'ionic',
@@ -19,11 +21,26 @@ angular.module('civis.youpower', [
   'civis.youpower.settings',
   'civis.youpower.welcome',
   'civis.youpower.translations',
+  'civis.youpower.prosumption',
+  'civis.youpower.donation',
   ])
 
 .run(function($ionicPlatform, $rootScope, $window, $state, AuthService) {
 
   $rootScope.scale = 5;
+
+  /**
+      used the global scope to store the value from the web service
+      should be changed with services in later release
+  */
+ 
+  $rootScope.chartConfigComparisonHistorical = [];
+  $rootScope.applicanceDataStore = [];
+  $rootScope.chartConfigAppliance2 = [];
+  $rootScope.energyWeatherDataVector=[];
+  $rootScope.chartConfigLastProduction = [];
+  $rootScope.chartConfigLastConsumption = [];
+
 
   // Making underscore available in the angular expressions
   $rootScope._=_;
@@ -146,7 +163,7 @@ angular.module('civis.youpower', [
     templateUrl: "app/app/menu.html",
     controller: 'AppCtrl',
     resolve: {
-      User: 'User',
+      User: 'User',     
       Testbed: 'Testbed',
       Cooperatives: 'Cooperatives',
       currentUser: function(User,Testbed,Cooperatives){
@@ -281,15 +298,116 @@ angular.module('civis.youpower', [
   }
 })
 
+// Dontation states
+//commented out due to lack of clarity
+// .state('main.donation', {
+//   url: '/donation',
+//   views: {
+//     'menuContent': {
+//       templateUrl: 'app/donation/index.html',
+//       controller: 'donationCtrl'
+//     }
+//   }
+// })
+
+
+/* Prosumption states */
+
 .state('main.prosumption', {
   url: '/prosumption',
   views: {
     'menuContent': {
-      templateUrl: 'app/prosumption/index.html',
-          // controller: 'HouseholdCtrl'
+      templateUrl: 'app/prosumption/tabs.html',
+          controller: 'prosumptionCtrl'
         }
       }
     })
+
+  .state('main.prosumption.yours', {
+    url: '/yours',
+    views: {
+      'tab-prosumption-yours': {
+        templateUrl: 'app/prosumption/index_yours.html',
+       controller: 'dataVizCtrl'
+      }
+    }
+  })
+.state('main.prosumption.appliances', {
+    url: '/appliances',
+    views: {
+      'tab-prosumption-appliances': {
+        templateUrl: 'app/prosumption/index_appliances.html',
+       controller: 'dataVizCtrl'
+      }
+    }
+  })
+
+.state('main.prosumption.community', {
+    url: '/community',
+    views: {
+      'tab-prosumption-community': {
+        templateUrl: 'app/prosumption/index_community.html',
+       controller: 'dataVizCtrl'
+      }
+    }
+  })
+.state('main.prosumption.vizEnergyMeteo', {
+  url: '/vizEnergyMeteo',
+  views: {
+    'tab-prosumption-yours': {
+      templateUrl: 'app/prosumption/viz_energy_meteo.html',
+      controller: 'dataVizCtrl',
+    }
+  }
+}
+)
+.state('main.prosumption.vizConsumption', {
+  url: '/viz',
+  views: {
+    'tab-prosumption-yours': {
+    templateUrl: 'app/prosumption/viz_consumption_yours.html',
+    controller: 'dataVizCtrl' ,
+    }
+  }
+})
+.state('main.prosumption.vizProduction', {
+  url: '/viz2',
+  views: {
+    'tab-prosumption-yours': {
+    templateUrl: 'app/prosumption/viz_production_yours.html',
+    controller: 'dataVizCtrl' ,
+    }
+  }
+})
+.state('main.prosumption.vizHistoricalPersonal', {
+  url: '/vizHistoricalPersonal',
+  views: {
+    'tab-prosumption-yours': {
+      templateUrl: 'app/prosumption/viz_historical_personal.html',
+      controller: 'dataVizCtrl',
+    }
+  }
+}
+)
+.state('main.prosumption.vizHistoricalComparison', {
+  url: '/vizHistoricalComparison',
+  views: {
+    'tab-prosumption-yours' : {
+      templateUrl: 'app/prosumption/viz_historical_comparison.html',
+      controller: 'dataVizCtrl',
+    }
+  }
+}
+)
+.state('main.prosumption.vizAppliance', {
+    url: '/vizAppliance',
+    views: {
+      'tab-prosumption-appliances': {
+        templateUrl: 'app/prosumption/viz_appliance.html',
+       controller: 'dataVizCtrl'
+      }
+    }
+  })
 
 /* Cooperative states */
 

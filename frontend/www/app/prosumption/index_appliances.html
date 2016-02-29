@@ -1,0 +1,23 @@
+<ion-view view-title={{"Energy_Data"|translate}}>
+<ion-content class="padding">
+
+<div class="list card">
+
+  <label class="item item-input">
+  <span class="input-label"><b>{{"Start_date" |translate}}</b></span>
+  <input type="date" ng-model='params.startDate'>
+  </label>
+  <label class="item item-input">
+  <span class="input-label"><b>{{"End_date" |translate}}</b></span>
+  <input type="date" ng-model="params.endDate">
+  </label>
+</div>
+<div>
+ <span class=" item" translate>Household</span> 
+  <a class="item item-divider item-icon-right" ng-repeat="name in listOfAppliancesName | filter:applicanceFilter" ng-click='assignApplianceParam(name._id,params.startDate,params.endDate)' ui-view="tab-prosumption-appliances">{{name.appliance}}<i class="icon-large ion-stats-bars"></i></a>
+</br>
+<span class=" item" translate>Appliance</span>
+ <a class="item item-divider item-icon-right" ng-repeat="name in listOfAppliancesName | filter:applicanceFilterNonProCons" ng-click='assignApplianceParam(name._id,params.startDate,params.endDate)' ui-view="tab-prosumption-appliances">{{name.appliance}}<i class="icon-large ion-stats-bars"></i></a>
+</div>
+</ion-content>
+</ion-view>
