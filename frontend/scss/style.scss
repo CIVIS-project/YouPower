@@ -269,4 +269,7 @@ ul.rating li {
   width: 90%;
   max-width: 450px;
 }
-
+.disable-clickon-tabs {
+    pointer-events: none !important;
+    background-color: #f8f8f8;
+}

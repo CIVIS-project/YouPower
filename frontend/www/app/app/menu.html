@@ -24,7 +24,7 @@
           <span translate>Actions</span>
         </ion-item>
         <!--  <ion-item nav-clear menu-close ng-show="currentUser.householdId&&households[currentUser.householdId].connected===true && !currentUser.testbed.isStockholm() " href="#/app/prosumption"> -->  
-        <ion-item nav-clear menu-close ng-show="!((currentUser.profile.testLocation=='') || (currentUser.profile.contractId==''))" href="#/app/prosumption">  
+        <ion-item nav-clear menu-close ng-show="!((currentUser.profile.testLocation=='') || (currentUser.profile.contractId=='')) && !currentUser.testbed.isStockholm()" href="#/app/prosumption">  
        <!-- <ion-item nav-clear menu-close ng-show="currentUser.testLocation=="Trento"" href="#/app/prosumption"> -->
           <span translate>Energy_Data</span>
         </ion-item>

@@ -23,7 +23,7 @@ angular.module('civis.youpower')
     isAuthenticated = true;
 
     // Set the token as header for your requests!
-    $http.defaults.headers.common['Authorization'] = 'Bearer ' + 'a19570a6cadffcaee2c21f25cab918b95600f924421be6105bc7e832bd7ffa0d3c7391440b29071a068952613a2b2930';
+    $http.defaults.headers.common['Authorization'] = 'Bearer ' + token;
   }
 
   function destroyUserCredentials() {

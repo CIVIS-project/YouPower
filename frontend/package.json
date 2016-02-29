@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "civis: An Ionic project",
   "dependencies": {
-    "angular-bootstrap-datetimepicker": "^1.0.1",
     "bootstrap": "^3.3.6",
     "bower": "^1.7.7",
     "cordova": "^6.0.0",
