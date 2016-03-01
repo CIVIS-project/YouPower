@@ -35,7 +35,7 @@ function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $i
 
 
   $scope.currentUser = currentUser;
- 
+
 
 	$scope.loadHouseholdsDetails = function(households) {
 

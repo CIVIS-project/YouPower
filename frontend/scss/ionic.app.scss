@@ -28,7 +28,3 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 @import "www/lib/ionic/scss/ionic";
 @import "style";
 @import "cooperatives";
-.disable-clickon-tabs {
-    pointer-events: none !important;
-    background-color: #f8f8f8;
-}

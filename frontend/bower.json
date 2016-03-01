@@ -7,10 +7,10 @@
     "angular-resource": "~1.4.3"
   },
   "dependencies": {
-    "highcharts": "~4.2.3",
+    "highcharts-ng": "~0.0.10",
+    "highcharts": "^4.2.3",
     "underscore": "~1.8.3",
     "bootstrap-sass": "~3.3.6",
-    "moment": "^2.11.1",
-    "highcharts-more": "0.0.8"
+    "moment": "^2.11.1"
   }
 }
