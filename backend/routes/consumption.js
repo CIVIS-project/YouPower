@@ -145,11 +145,12 @@ router.get('/last',auth.authenticate(),function(request,response,next){
                     path: request.app.get('civis_opt').path + 'downloadmydata?' + querystring.stringify(
                         {
                             usagepoint: id,
-                            from: dateFormat(now, "yyyy-mm-dd") + 'T00:00:00',
-                            to: dateFormat(now, "yyyy-mm-dd") + 'T23:59:59',
+                            from: dateFormat(now, "yyyy-mm-dd")+ 'T00:00:00',
+                            to: dateFormat(now, "yyyy-mm-dd"),
                             res: 'RAW',
                             type: TYPE
-                        })
+                        }),
+                     //rejectUnauthorized : false
                 };
                 https.get(options, function (res) {
                     var data = [];
@@ -235,7 +236,8 @@ router.get('/appliance',auth.authenticate(),function(request,response,next){
                 console.log(id);
                 var options = {
                     host: request.app.get('civis_opt').host,
-                    path: request.app.get('civis_opt').path + 'getAllSensors'
+                    path: request.app.get('civis_opt').path + 'getAllSensors',
+                   // rejectUnauthorized : false
                 };
                 https.get(options, function (res) {
                     var data = [];
@@ -345,7 +347,8 @@ router.get('/appliance/:applID',auth.authenticate(),function(request,response,ne
                             from: from,
                             to: to,
                             res: res
-                        })
+                        }),
+                    //rejectUnauthorized : false
                 };
                 https.get(options, function (res) {
                     var data = [];
