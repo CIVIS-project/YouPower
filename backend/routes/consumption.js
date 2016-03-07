@@ -13,6 +13,7 @@ var querystring = require('querystring');
 var xml2js = require('xml2js');
 var apart = require('../models/apartment.js');
 var auth = require('../middleware/auth');
+var fs = require('fs');
 
 var parser = new xml2js.Parser({
     explicitArray:false
@@ -69,9 +70,12 @@ router.get('/',auth.authenticate(),function(request,response,next){
                             to: to,
                             res: res,
                             type: TYPE
-                        })
+                        }),
+                     // cert: [fs.readFileSync('backend/ssl/RootCATest.cer')],
+                     rejectUnauthorized : false,
+                     strictSSL: false
                 };
-                https.get(options, function (res) {
+            var requestcons = https.get(options, function (res) {
                     var data = [];
                     res.on('data', function (d) {
                         data.push(d);
@@ -103,6 +107,9 @@ router.get('/',auth.authenticate(),function(request,response,next){
                         response.error(e);
                     });
                 });
+            requestcons.setTimeout(3000, function() {
+            });
+
             }else {
                 response.sendStatus(500);
             }
@@ -150,9 +157,11 @@ router.get('/last',auth.authenticate(),function(request,response,next){
                             res: 'RAW',
                             type: TYPE
                         }),
-                     //rejectUnauthorized : false
+                     // cert: [fs.readFileSync('backend/ssl/RootCATest.cer')],
+                     rejectUnauthorized : false,
+                     strictSSL: false
                 };
-                https.get(options, function (res) {
+            var requestLast =    https.get(options, function (res) {
                     var data = [];
                     res.on('data', function (d) {
                         data.push(d);
@@ -178,6 +187,8 @@ router.get('/last',auth.authenticate(),function(request,response,next){
                         response.error(e);
                     });
                 });
+            requestLast.setTimeout(3000, function() {
+            });
             }else {
                 response.sendStatus(500);
             }
@@ -228,18 +239,21 @@ router.get('/last',auth.authenticate(),function(request,response,next){
  * ]
  */
 router.get('/appliance',auth.authenticate(),function(request,response,next){
+
     var userid = request.query.userid;
     if(userid !== undefined){
         apart.getApartmentID(userid,function(err,a) {
             if(!err) {
                 var id = a.ApartmentID;
-                console.log(id);
+                // console.log(id);
                 var options = {
                     host: request.app.get('civis_opt').host,
                     path: request.app.get('civis_opt').path + 'getAllSensors',
-                   // rejectUnauthorized : false
+                     // cert: [fs.readFileSync('backend/ssl/RootCATest.cer')],
+                     rejectUnauthorized : false,
+                     strictSSL: false
                 };
-                https.get(options, function (res) {
+            var applianceRequest = https.get(options, function (res) {
                     var data = [];
                     res.on('data', function (d) {
                         data.push(d);
@@ -264,8 +278,14 @@ router.get('/appliance',auth.authenticate(),function(request,response,next){
                             response.status(200).type('json').send(res);
                         });
 
-                    })
-                })
+                    }).on('error', function (e) {
+                        response.error(e);
+                    });
+                });
+            applianceRequest.setTimeout(3000, function() {
+                // console.log("waiting under applicance");
+            });
+              
             }else {
                 response.sendStatus(500);
             }
@@ -348,9 +368,12 @@ router.get('/appliance/:applID',auth.authenticate(),function(request,response,ne
                             to: to,
                             res: res
                         }),
-                    //rejectUnauthorized : false
+                     // cert: [fs.readFileSync('backend/ssl/RootCATest.cer')],
+                     rejectUnauthorized : false,
+                     strictSSL: false
+                    // rejectUnauthorized : false
                 };
-                https.get(options, function (res) {
+            var applianceRequest = https.get(options, function (res) {
                     var data = [];
                     res.on('data', function (d) {
                         data.push(d);
@@ -376,10 +399,15 @@ router.get('/appliance/:applID',auth.authenticate(),function(request,response,ne
                                 response.status(400).send(content.Message);
                             }
                         });
+
                     }).on('error', function (e) {
                         response.error(e);
                     });
                 });
+                applianceRequest.setTimeout(3000, function() {
+                // console.log("waiting under appliance id");
+            });
+
             }else {
                 response.sendStatus(500);
             }
@@ -388,5 +416,6 @@ router.get('/appliance/:applID',auth.authenticate(),function(request,response,ne
         response.sendStatus(400);
     }
 });
+
 
 module.exports = router;

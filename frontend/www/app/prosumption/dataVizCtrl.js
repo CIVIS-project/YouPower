@@ -1,20 +1,5 @@
-  //declaring the controller
-var dataVizModule = angular.module('civis.youpower.prosumption').controller('dataVizCtrl', dataVizCtrl);
-
-//write servives to load data for further processing
-
-//declaring various additional services, mostly related to specific highcharts visualizations
-//angular.module('civis.youpower.prosumption').service('getRandomData', getRandomData);
-
-// function printablePercentage(n) {
-//     return (n<=0?'':'+') + String(n)+'%';
-// }
-// function positiveNegativeColor(n) {
-//     return (n<=0? 'energized': 'balanced');
-// }
-// function n(n){
-//     return n > 9 ? "" + n: "0" + n;
-// }
+var dataVizModule = angular.module('civis.youpower.prosumption').controller('dataVizCtrl', 
+    ['$scope', '$rootScope', '$state', 'User', '$http', 'Config', '$q', 'currentUser',
 function dataVizCtrl($scope, $rootScope, $state, User, $http, Config, $q, currentUser) {
 	//just loads the content of the window once the tabs have been generated
 	//$state.go('main.prosumption.yours');
@@ -104,9 +89,6 @@ $scope.getPersonalHistory = function(startDate,endDate){
             }
         productionDataStore = productionDataStore +']';
 
-
-
-
          //preprocess consumption dataset
       var cleanApplianceDatac = _.clone(consumption_data); // create a copy of the array
 
@@ -127,16 +109,6 @@ $scope.getPersonalHistory = function(startDate,endDate){
         }
     consumptionDataStore = consumptionDataStore +']';
 
-    
-   
-    // $scope.$parent.chartConfigComparisonHistorical.series= [{
-    //      name: 'Produzione',
-    //      data: ['b':4],
-    //           },
-    //           {
-    //          name: 'Consumo',
-    //          data: ['a':2],   
-    //          }];
 
         //console.log($scope.chartConfigComparisonHistorical.series);
         $rootScope.chartConfigComparisonHistorical.series = [{
@@ -155,9 +127,9 @@ $scope.getPersonalHistory = function(startDate,endDate){
 
     //console.log(data[0], data[1]);
 },
-function(errorLoad)
+function(err)
 {
-    console.log("The webservice cannot return production and consumption data!");
+    console.error(err.status);
 }
 );
 
@@ -177,7 +149,7 @@ $scope.currentPrice="High";
 ///fetch data for the yours/ tab
 // $scope.currentPrice= 0.12+(0.08*getRandomData());
 //$http.get(serverCN+'/api/tou/'+venue+'/current').then(function(resp) {
-$http.get('http://217.77.95.103/api/tou/'+municipalityIdReal+'/current').then(function(resp) {
+$http.get(Config.host+'/api/energyMeteo/tou/current?municipalityId='+municipalityIdReal).then(function(resp) {
     // console.log('returned response'+JSON.parse(resp));
     $scope.currentPrice = resp.data.tarif;
 
@@ -190,7 +162,7 @@ $http.get('http://217.77.95.103/api/tou/'+municipalityIdReal+'/current').then(fu
         $scope.priceIconColor="energized";
     }
   }, function(err) {
-    console.error('ERR,', err);
+    console.error(err.status);
 
     // err.status will contain the status code
   });
@@ -198,7 +170,7 @@ $http.get('http://217.77.95.103/api/tou/'+municipalityIdReal+'/current').then(fu
 
 //reset global variablemunicipalityIdReal
 
-$http.get('http://217.77.95.103/api/tou/'+municipalityIdReal).then(function(resp) {
+$http.get(Config.host+'/api/energyMeteo/tou?municipalityId='+municipalityIdReal).then(function(resp) {
     
     var energyWeatherData = resp.data.data;
     //iterate over the array to format data
@@ -212,7 +184,7 @@ $http.get('http://217.77.95.103/api/tou/'+municipalityIdReal).then(function(resp
     $rootScope.energyWeatherDataVector = energyWeatherDataArray;
      //console.log(resp.data.data);
     }, function(err) {
-        console.error('ERR, energy data cannot be fetched', err);
+        console.error(err.status);
 
     // err.status will contain the status code
     });
@@ -230,31 +202,6 @@ for (var i=0; i<$rootScope.energyWeatherDataVector.length; i++) {
         $scope.futurePriceIconColors[i]="energized";
     }  
 }
-// var numberElementsFuture = 12;
-// var timeNow=3;
-// var fromTime=timeNow;
-// var toTime = fromTime+3;
-// var tmp;
-// var priceIconTmp;
-// var priceIconColorTmp;
-// for (var i=0; i<numberElementsFuture; i++) {
-//     tmp= (0.08*getRandomData());
-//     if (isPriceGood(tmp)) {
-//     priceIconTmp='ion-happy-outline';
-//     priceIconColorTmp="balanced";
-// }
-// else {
-//     priceIconTmp='ion-sad-outline';
-//     priceIconColorTmp="energized";
-// }
-//     $scope.futurePrices[i]=[n(fromTime),n(toTime),priceIconTmp,priceIconColorTmp];
-// // console.log("futurePrices "+ $scope.futurePrices[i][0]);
-//     fromTime=(fromTime+3)%24;
-//     toTime=(toTime+3)%24;
-// }
-
-//var currentUserId='104769';
-
 
 // initialize last consumption gauge
 
@@ -418,25 +365,6 @@ $http.get(Config.host+'/api/production/last?userid='+currentUserId).then(functio
     // err.status will contain the status code
     });
 
-
-// var $rootScope.consumptionDataStore= '';
-// var $rootScope.productionDataStore = '';
-
-
-
-//-----------------------------Code for has production------------------//
-//----------------------------------------------------------------------//
-// $http.get('http://localhost:3005/api/production/hasProduction?userid='+currentUserId).then(function(resp) {
-//     $scope.hasProduction=resp;
-//     }, function(err){
-//         console.error('ERR', err.status);
-//     // err.status will contain the status code
-//     });
-
-
-//------------------Applicance related code  begins here--------------------//
-//--------------------------------------------------------------------------//
-
 $scope.listOfAppliancesName=[];
 $http.get(Config.host+'/api/consumption/appliance?userid='+currentUserId).then(function(resp) {
     $scope.listOfAppliances=resp.data;
@@ -447,183 +375,10 @@ for (i=0;i<$scope.listOfAppliances.length;i++) {
     $scope.listOfAppliancesName.push($scope.listOfAppliances[i]);  
 }
 
-// start chart here....
-
-// $scope.chartConfigAppliance = {
-//         options: {
-//             chart: {
-//                 type: 'area',
-//             },
-//         },
-//         title: {
-//             text: 'Consumption Pattern',
-//         },
-//              series : [{
-//                 name : 't',
-//                 data : applianceArrayData,
-//                 gapSize: 5,
-//                 tooltip: {
-//                     valueDecimals: 2
-//                 },
-//                 fillColor : {
-//                     linearGradient : {
-//                         x1: 0,
-//                         y1: 0,
-//                         x2: 0,
-//                         y2: 1
-//                     },
-//                     stops : [
-//                         [0, Highcharts.getOptions().colors[0]],
-//                         [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
-//                     ]
-//                 },
-//                 threshold: null
-//             }],
-//             plotOptions: {
-//                 area: {
-//                     //space for specific options to be passed to highcharts constructor
-//                 }
-//             },
-//         loading: false
-//     };
-
-    //end of chart
-
-
-
     }, function(err){
-        console.error('ERR', err);
+        console.error(err.status);
     // err.status will contain the status code
     });
-
-
-
-
-// $scope.lastConsumption= getRandomData();
-// $scope.lastProduction = getRandomData();
-
-
-// var limit = 12; //number of entries, based on a monthly sampling
-// for (var i =0; i<limit; i++) {
-//     $rootScope.productionDataStore.push(20*getRandomData());
-//     consumptionArray.push(20*getRandomData());
-//     // console.log('dato:'+String($rootScope.productionDataStore[i]));
-// }
-// // console.log($rootScope.productionDataStore);
-// var communityConsumptionArray = [];
-// var limit = 12;
-// for (var i=0; i<limit; i++) {
-//     communityConsumptionArray.push(20*getRandomData());
-// }
-// $scope.chartConfigComparisonHistorical={
-//     series: [{
-//     }],
-// }
-// $scope.chartConfigComparisonHistorical.series.push({
-//             data: $rootScope.productionDataStore
-//         })
-// $scope.chartConfigComparisonHistorical.series.push({
-//             data: consumptionArray
-//         })
-
-//fetch data for the appliances tab
-// var limit = 100; //number of entries, based on a monthly sampling
-// for (var i =0; i<limit; i++) {
-//     applianceArrayData.push(getRandomData());
-//     //console.log('dato:'+String(applianceArrayData[i]));
-// }
-
-//fetch data for the community tab
-// commented out for the time being, not there 
-// $scope.totalCommunityConsumption = 10*getRandomData();
-// $scope.totalCommunityProduction = 10*getRandomData();
-// tmp1=getRandomTrend();
-// //console.log('trend: '+colorTrend);
-// $scope.communityConsumptionTrend= printablePercentage(tmp1);
-// $scope.colorSpan= positiveNegativeColor(tmp1);
-// tmp2=getRandomTrend();
-// //console.log('trend: '+colorTrend2);
-// $scope.communityProductionTrend= printablePercentage(tmp2);
-// $scope.colorSpan2= positiveNegativeColor(tmp2);
-
-//configuration for the various graphs
-
-
-   
-// $scope.chartConfigCommunityBalance = {
-//         options: {
-//             chart: {
-//                 type: 'pie',
-//                 plotBackgroundColor: null,
-//                 plotBorderWidth: null,
-//                 plotShadow: false,
-//             },
-//             plotOptions: {
-//                 pie: {
-//                     dataLabels: {
-//                         enabled: false
-//                     },
-//                     showInLegend: true
-//                 }
-//             },
-//             colors: ['#50B432', '#24CBE5'],
-//         },
-//         series: [{
-//              type: 'pie',
-//             data: [
-//                 ['Produzione', $scope.totalCommunityProduction],
-//                 ['Energia acquistata',$scope.totalCommunityConsumption-$scope.totalCommunityProduction]
-//                 ]
-//                     }],
-//         title: {
-//             text: $scope.communitybuilding
-//         },
-//         loading: false
-//     };
-
- // var applianceArrayData = [];
- // $scope.chartConfigAppliance = {
- //        options: {
- //            chart: {
- //                type: 'area',
- //            },
- //        },
- //        title: {
- //            text: 'Consumption Pattern',
- //        },
- //             series : [{
- //                name : 't',
- //                data : applianceArrayData,
- //                gapSize: 5,
- //                tooltip: {
- //                    valueDecimals: 2
- //                },
- //                fillColor : {
- //                    linearGradient : {
- //                        x1: 0,
- //                        y1: 0,
- //                        x2: 0,
- //                        y2: 1
- //                    },
- //                    stops : [
- //                        [0, Highcharts.getOptions().colors[0]],
- //                        [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
- //                    ]
- //                },
- //                threshold: null
- //            }],
- //            plotOptions: {
- //                area: {
- //                    //space for specific options to be passed to highcharts constructor
- //                }
- //            },
- //        loading: false
- //    };
- //            console.log("After first configuration chartConfigAppliance2");
-
-
-      
-
 
     $rootScope.chartConfigAppliance2 = {
                 options: {
@@ -666,11 +421,6 @@ for (i=0;i<$scope.listOfAppliances.length;i++) {
                     }],
                 loading: false
             };      
-
-
-
-
-
 
         // var chartData='[[04/10/2015,534.827468425035],[04/10/2015,213.072995232185],[04/10/2015,281.020645804703],[05/10/2015,526.704251356423],[05/10/2015,218.13283588551],[05/10/2015,299.548069406301]]';
     $scope.assignApplianceParam = function (ApplianceId,startDate,endDate)
@@ -736,134 +486,11 @@ for (i=0;i<$scope.listOfAppliances.length;i++) {
         };
         //end chart configuration
         }, function(err){
-            console.error('ERR', err);
+            console.error(err.status);
         // err.status will contain the status code
         });
                    $state.go('main.prosumption.vizAppliance')
 };
-
-//console.log("We are from heaven");
-        // end of service call
- 
-
-    
-    //end of controller
-// $scope.chartConfigAppliance2 = {
-//  options: {
-//      chart: {
-//          type: 'bar',
-//          title: "puppa",
-//      }
-//  },
-//  title: {
-//      text: 'puppa',
-//  },
-//  series: [{
-//          data: [$scope.lastConsumption, $scope.lastProduction]//[10, 15, 12, 8, 7]
-//              }],
-// };
-
-
-/** ToDO */
-// $scope.chartConfigHistoryComparison = {
-//      options: {
-//             chart: {
-//                 type: 'areaspline',
-//             },
-//              legend: {
-//                 enabled: true, 
-//                 borderWidth: 1,
-//                 align: 'left',
-//             },
-//             plotOptions: {
-//                 areaspline: {
-//                     fillOpacity: 0.5
-//                 }
-//             }
-//         },
-//         title: {
-//             text: 'Consumption Comparison',
-//         },
-//         series: [{
-//             data: $scope.consumptionArray,
-//             name: 'You',
-//         }, {
-//             data: communityConsumptionArray,
-//             name: 'Benchmark',
-//         }]
-// };
-
-
-//configure input vector for plotting meteo energy
- // var limit = 16;
- // var meteoEnergyPriceArray = [];
-// for (var i=0; i<limit; i++) {
-//     meteoEnergyPriceArray.push(0.5*getRandomData());
-// }
-//  var thresholdTarif=1.2;
-// var dataPlotMeteoEnergy = [];
-// var dataDateTimeArray = [];
-// for (var i=0; i<limit; i++) {
-//     markerTmp='url(http://icons.iconarchive.com/icons/icons8/ios7/128/Messaging-Sad-icon.png)'
-//     if (meteoEnergyPriceArray[i]<thresholdTarif) {
-//         markerTmp='url(http://icons.iconarchive.com/icons/icons8/ios7/128/Messaging-Happy-icon.png)'
-//     }
-//     dataDateTimeArray.push(Date(2015,9,8,14+i).toString());
-//     dataPlotMeteoEnergy.push({
-//         y: meteoEnergyPriceArray[i],
-//         marker: {
-//             symbol: markerTmp,
-//             width: 50,
-//             height: 50,
-//         }
-//     })
-// };
-
-
-
-//end of chart for personal history
-
-
-
-
-
-
-// console.log("Before chart config energy mateo");
-// $scope.chartConfigEnergyMeteo = {
-//     options: {
-//         chart: {
-//             type: 'spline'
-//         },
-//         legend: {
-//             enabled: false
-//         },
-//         xAxis: {
-//             type: 'datetime',
-//             categories : dataDateTimeArray
-//         }
-//     },
-//     title: {
-//         text: 'Tariff Prediction'
-//     },
-//     series: [{
-//         name: 'Price',
-//         color: "#003366",
-//         marker: {
-//             symbol: 'square'
-//         },
-//         lineWidth : 4,
-//         data :  dataPlotMeteoEnergy,
-//         // data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, {
-//         //         y: 26.5,
-//         //         marker: {
-//         //             symbol: 'url(http://simpleicon.com/wp-content/uploads/sad.png)',
-//         //             width: 50,
-//         //             height: 50,
-//         //         }
-//         //     }, 23.3, 18.3, 13.9, 9.6]
-//     }]
-// };
-
 
 // add scope for filtering production and consumption from other appliances
 // Should be modified, better if changed from the schema
@@ -877,7 +504,7 @@ $scope.applicanceFilterNonProCons = function(name){
             !(name._id === '8') ;
 }
 
-//add for highchart title traslations
+//add for highchart title traslations, TODO
 
 //end of dataVizCtrl controller
-}
+}]);

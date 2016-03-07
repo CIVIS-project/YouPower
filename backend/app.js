@@ -10,7 +10,7 @@ winston.loggers.add('default', {
 });
 
 var l = winston.loggers.get('default');
-//process.env.NODE_TLS_REJECT_UNAUTHORIZED='0';
+process.env.NODE_TLS_REJECT_UNAUTHORIZED='0';
 if (process.env.NODE_ENV === 'test') {
   l.warn('========================= NOTICE ==========================');
   l.warn('running in test mode, this should NOT be used in production');
