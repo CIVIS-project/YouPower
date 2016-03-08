@@ -2,7 +2,7 @@
 
 var express = require('express');
 var router = express.Router();
-
+router.use('/energymeteo', require('./energymeteo'));
 router.use('/consumption', require('./consumption'));
 router.use('/production', require('./production'));
 router.use('/user', require('./user'));

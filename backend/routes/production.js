@@ -72,7 +72,7 @@ router.get('/',auth.authenticate(),function(request,response,next){
                             type: TYPE
                         })
                 };
-                https.get(options, function (res) {
+            var requestprod = https.get(options, function (res) {
                     var data = [];
                     res.on('data', function (d) {
                         data.push(d);
@@ -105,6 +105,10 @@ router.get('/',auth.authenticate(),function(request,response,next){
                         response.error(e);
                     });
                 });
+                requestprod.setTimeout(3000, function() {
+                // console.log("waiting under appliance id");
+            });
+            
             }else {
                 response.sendStatus(500);
             }
@@ -136,6 +140,7 @@ router.get('/',auth.authenticate(),function(request,response,next){
  *   }
  */
 router.get('/last',auth.authenticate(),function(request,response,next){
+
     var userid = request.query.userid;
     if(userid !== undefined ) {
 
@@ -154,7 +159,7 @@ router.get('/last',auth.authenticate(),function(request,response,next){
                             type: TYPE
                         })
                 };
-                https.get(options, function (res) {
+            var requestlast = https.get(options, function (res) {
                     var data = [];
                     res.on('data', function (d) {
                         data.push(d);
@@ -180,6 +185,10 @@ router.get('/last',auth.authenticate(),function(request,response,next){
                         response.error(e);
                     });
                 });
+            requestlast.setTimeout(3000, function() {
+                // console.log("waiting under production last");
+            });
+           
             }else {
                 response.sendStatus(500);
             }
