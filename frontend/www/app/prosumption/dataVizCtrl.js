@@ -1,8 +1,8 @@
 var dataVizModule = angular.module('civis.youpower.prosumption').controller('dataVizCtrl', 
     ['$scope', '$rootScope', '$state', 'User', '$http', 'Config', '$q', 'currentUser',
 function dataVizCtrl($scope, $rootScope, $state, User, $http, Config, $q, currentUser) {
-	//just loads the content of the window once the tabs have been generated
-	//$state.go('main.prosumption.yours');
+    //just loads the content of the window once the tabs have been generated
+    //$state.go('main.prosumption.yours');
     var consumptionDataStore='';
     var productionDataStore= '';
     var currentUserId = $scope.currentUser.profile.contractId;
@@ -26,7 +26,7 @@ function dataVizCtrl($scope, $rootScope, $state, User, $http, Config, $q, curren
          },
           yAxis: {
             title: {
-                text: 'KWH'
+                text: 'WH'
             },
             plotLines: [{
                 value: 0,
@@ -74,11 +74,11 @@ $scope.getPersonalHistory = function(startDate,endDate){
             for (i=0;i<cleanApplianceDatap.length;i++) {
                 //create list of names of appliances for visualization purposes
                 var TempArrayp = [];
-                var tempDayCleanp = moment.utc(cleanApplianceDatap[i].date).format('DD-MM-YYYY');
+                var tempDayCleanp = moment.utc(cleanApplianceDatap[i].date).add(1,'days').format('DD-MM-YYYY');
                                
 
                 tempArrayDaysp.push(tempDayCleanp);
-                TempArrayp.push("\""+tempDayCleanp+"\"",cleanApplianceDatap[i].production.toFixed(2));
+                TempArrayp.push("\""+tempDayCleanp+"\"",parseFloat(cleanApplianceDatap[i].production).toFixed(3));
                 //pass the last index
                 if(i == (cleanApplianceDatap.length - 1)){
                     productionDataStore = productionDataStore + '[' + TempArrayp + ']';
@@ -98,7 +98,7 @@ $scope.getPersonalHistory = function(startDate,endDate){
             var TempArrayc = [];
 
             //format the date for highchart to work
-            TempArrayc.push("\""+moment.utc(cleanApplianceDatac[i].date).format('DD-MM-YYYY') + "\"",cleanApplianceDatac[i].consumption.toFixed(2));
+            TempArrayc.push("\""+moment.utc(cleanApplianceDatac[i].date).add(1,'days').format('DD-MM-YYYY') + "\"",parseFloat(cleanApplianceDatac[i].consumption).toFixed(3));
             //pass the last index
             if(i == (cleanApplianceDatac.length - 1)){
                 consumptionDataStore = consumptionDataStore + '[' + TempArrayc + ']';
@@ -110,7 +110,6 @@ $scope.getPersonalHistory = function(startDate,endDate){
     consumptionDataStore = consumptionDataStore +']';
 
 
-        //console.log($scope.chartConfigComparisonHistorical.series);
         $rootScope.chartConfigComparisonHistorical.series = [{
             name: 'Produzione',
             data: JSON.parse(productionDataStore)
@@ -150,7 +149,6 @@ $scope.currentPrice="High";
 // $scope.currentPrice= 0.12+(0.08*getRandomData());
 //$http.get(serverCN+'/api/tou/'+venue+'/current').then(function(resp) {
 $http.get(Config.host+'/api/energyMeteo/tou/current?municipalityId='+municipalityIdReal).then(function(resp) {
-    // console.log('returned response'+JSON.parse(resp));
     $scope.currentPrice = resp.data.tarif;
 
     if ($scope.currentPrice=="Low") {
@@ -182,7 +180,6 @@ $http.get(Config.host+'/api/energyMeteo/tou?municipalityId='+municipalityIdReal)
         energyWeatherDataArray.push(energyWeatherObj);
     }
     $rootScope.energyWeatherDataVector = energyWeatherDataArray;
-     //console.log(resp.data.data);
     }, function(err) {
         console.error(err.status);
 
@@ -235,7 +232,7 @@ $rootScope.chartConfigLastConsumption = {
             data: [],
              dataLabels: {
                 format: '<div style="text-align:center"><span style="font-size:25px;color:black">{y}</span><br/>' + 
-                    '<span style="font-size:12px;color:silver">km/h</span></div>'
+                    '<span style="font-size:12px;color:silver">WH</span></div>'
             }
         }],
 
@@ -274,7 +271,7 @@ $http.get(Config.host+'/api/consumption/last?userid='+currentUserId).then(functi
             data: [lastConsumptionData],
              dataLabels: {
                 format: '<div style="text-align:center"><span style="font-size:25px;color:black">{y}</span><br/>' + 
-                    '<span style="font-size:12px;color:silver">km/h</span></div>'
+                    '<span style="font-size:12px;color:silver">WH</span></div>'
             }
         }];
     
@@ -319,7 +316,7 @@ $rootScope.chartConfigLastProduction = {
             data: [],
              dataLabels: {
                 format: '<div style="text-align:center"><span style="font-size:25px;color:black">{y}</span><br/>' + 
-                    '<span style="font-size:12px;color:silver">km/h</span></div>'
+                    '<span style="font-size:12px;color:silver">WH</span></div>'
             }
         }],
 
@@ -357,7 +354,7 @@ $http.get(Config.host+'/api/production/last?userid='+currentUserId).then(functio
             data: [lastProductionData],
              dataLabels: {
                 format: '<div style="text-align:center"><span style="font-size:25px;color:black">{y}</span><br/>' + 
-                    '<span style="font-size:12px;color:silver">km/h</span></div>'
+                    '<span style="font-size:12px;color:silver">WH</span></div>'
             }
         }];
     }, function(err){
@@ -398,7 +395,7 @@ for (i=0;i<$scope.listOfAppliances.length;i++) {
                     },
                      yAxis: {
                         title: {
-                            text: 'KWH'
+                            text: 'WH'
                         }
                     },
                    
@@ -430,12 +427,12 @@ for (i=0;i<$scope.listOfAppliances.length;i++) {
         //get the start and end dates
         chartData = '[';
         
-        
-        var startDateAppliance = moment.utc(startDate).add('days',1).format('YYYY-MM-DD') ;
-        var endDateAppliance=  moment.utc(endDate).add('days',1).format('YYYY-MM-DD') ;
+        var startDateAppliance = moment.utc(startDate).add(1,'days').format('YYYY-MM-DD') ;
+        var endDateAppliance=  moment.utc(endDate).add(1,'days').format('YYYY-MM-DD') ;
         var applianceData=[];
         $http.get(Config.host+'/api/consumption/appliance/'+ApplianceId+"?userid="+currentUserId+"&from="+startDateAppliance+ "&to="+endDateAppliance).then(function(resp) {
         applianceData.push(resp.data);
+        console.dir(applianceData);
         // create a copy of the array
         var cleanApplianceData = _.clone(applianceData[0]); // create a copy of the array
 
@@ -444,18 +441,20 @@ for (i=0;i<$scope.listOfAppliances.length;i++) {
         for (i=0;i<cleanApplianceData.length;i++) {
             //create list of names of appliances for visualization purposes
             var TempArray = [];
-            var tempDayClean = moment.utc(cleanApplianceData[i].date).format('DD-MM-YYYY');
+            var tempDayClean = moment.utc(cleanApplianceData[i].date).add(1,'days').format('DD-MM-YYYY');
 
             //format the date for highchart to work
-            tempArrayDays.push(tempDayClean);
-            TempArray.push("\""+tempDayClean+ "\"",cleanApplianceData[i].consumption);
+            TempArray.push("\""+tempDayClean+ "\"",parseFloat(cleanApplianceData[i].consumption).toFixed(3));
             //pass the last index
 
             if(i == (cleanApplianceData.length - 1)){
                 chartData = chartData + '[' + TempArray + ']';
+                // add complete date with hour and minutes, to check last time appliance is active
+                tempArrayDays.push(moment.utc(cleanApplianceData[i].date).add(1,'days').format('DD-MM-YYYY HH:mm:ss'));
             }
             else{
-            chartData = chartData + '[' + TempArray + '],';
+                tempArrayDays.push(tempDayClean);
+                chartData = chartData + '[' + TempArray + '],';
         }
         }
     chartData = chartData+']'; // add closing tag for the dataset

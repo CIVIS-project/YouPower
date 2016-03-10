@@ -218,23 +218,28 @@ router.get('/last',auth.authenticate(),function(request,response,next){
  * [
  *  {
  *      "appliance": "Consumo Elettrico",
- *      "_id": "0"
+ *      "_id": "0",
+ *      "lastSampleTimestamp": "2015-10-05T00:00:00+02:00"
  *    },
  *    {
  *      "appliance": "Freezer",
- *      "_id": "1"
+ *      "_id": "1",
+ *      "lastSampleTimestamp": "2015-10-05T00:00:00+02:00"
  *    },
  *    {
  *      "appliance": "Lavatrice",
- *      "_id": "2"
+ *      "_id": "2",
+ *      "lastSampleTimestamp": "2015-10-05T00:00:00+02:00"
  *    },
  *    {
  *      "appliance": "Produz. Elettrica",
- *      "_id": "8"
+ *      "_id": "8",
+ *      "lastSampleTimestamp": "2015-10-05T00:00:00+02:00"
  *    },
  *    {
  *      "appliance": "Temp. Interna",
- *      "_id": "32"
+ *      "_id": "32",
+ *      "lastSampleTimeStamp": "2015-10-05T00:00:00+02:00"
  *    }
  * ]
  */
@@ -245,7 +250,6 @@ router.get('/appliance',auth.authenticate(),function(request,response,next){
         apart.getApartmentID(userid,function(err,a) {
             if(!err) {
                 var id = a.ApartmentID;
-                // console.log(id);
                 var options = {
                     host: request.app.get('civis_opt').host,
                     path: request.app.get('civis_opt').path + 'getAllSensors',
@@ -268,7 +272,8 @@ router.get('/appliance',auth.authenticate(),function(request,response,next){
                                     content.UsagePoint[i].sensors.sensor.forEach(function (sensor) {
                                         res.push({
                                             appliance: sensor.label,
-                                            _id: sensor.sensorNumber
+                                            _id: sensor.sensorNumber,
+                                            lastSampleTimestamp: sensor.lastSampleTimestamp
                                         });
                                     });
                                     //stop here
