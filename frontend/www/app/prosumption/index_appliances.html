@@ -1,5 +1,5 @@
 <ion-view view-title={{"Energy_Data"|translate}}>
-<ion-content class="padding">
+<ion-content class="padding" overflow-scroll = "true">
 
 <div class="list card">
 
@@ -13,11 +13,17 @@
   </label>
 </div>
 <div>
- <span class=" item" translate>Household</span> 
-  <a class="item item-divider item-icon-right" ng-repeat="name in listOfAppliancesName | filter:applicanceFilter" ng-click='assignApplianceParam(name._id,params.startDate,params.endDate)' ui-view="tab-prosumption-appliances">{{name.appliance}}<i class="icon-large ion-stats-bars"></i></a>
-</br>
+ <!-- <span class=" item" translate>Household</span> 
+  <a class="item item-divider item-icon-right" ng-repeat="name in listOfAppliancesName | filter:applicanceFilter" ng-click='assignApplianceParam(name._id,params.startDate,params.endDate)' ui-view="tab-prosumption-appliances">{{name.appliance}} <i class="icon-large ion-stats-bars"></i>
+  </a>
+</br> -->
 <span class=" item" translate>Appliance</span>
- <a class="item item-divider item-icon-right" ng-repeat="name in listOfAppliancesName | filter:applicanceFilterNonProCons" ng-click='assignApplianceParam(name._id,params.startDate,params.endDate)' ui-view="tab-prosumption-appliances">{{name.appliance}}<i class="icon-large ion-stats-bars"></i></a>
+ <a class="item item-divider item-icon-right" ng-repeat="name in listOfAppliancesName | filter:applicanceFilterNonProCons" ng-click='assignApplianceParam(name._id,params.startDate,params.endDate)' ui-view="tab-prosumption-appliances">{{name.appliance}}<i class="icon-large ion-stats-bars"></i>
+ </a>
+ <span class=" item" translate>SensorStatus</span>
+ <label class="item item-divider item-icon-right" ng-repeat="name in listOfAppliancesName | filter: {_id:'!32'}"  ui-view="tab-prosumption-appliances"><div class="row">
+ <div class="col col-50">{{name.appliance}} </div> <div class="col col-50">&nbsp;&nbsp;&nbsp;{{name.lastSampleTimestamp | date: "dd-MM-yyyy HH:mm:ss"}}</div></div>
+ </label>
 </div>
 </ion-content>
 </ion-view>
