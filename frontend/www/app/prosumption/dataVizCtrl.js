@@ -7,6 +7,7 @@ function dataVizCtrl($scope, $rootScope, $state, User, $http, Config, $q, curren
     var productionDataStore= '';
     var currentUserId = $scope.currentUser.profile.contractId;
     var municipalityId = $scope.currentUser.profile.testLocation;
+    var userEmail = $scope.currentUser.email;
      /**
     CEIS -- corresponds to San Lorenzo in Banale
     CEdis -- corresponds to storo
@@ -61,7 +62,7 @@ $scope.getPersonalHistory = function(startDate,endDate){
     $http.get(Config.host+'/api/consumption?userid='+ currentUserId + '&from='+ historyStartDate + '&to='+ historyEndDate),
     $http.get(Config.host+'/api/production?userid='+ currentUserId+ '&from='+ historyStartDate + '&to='+ historyEndDate)
     ]).then(function(data){
-
+        mixpanel.trentino.track('Trentino prosumption data requested:',{Category: "Personal production/consumption comparision",ContractId:currentUserId, userEmail: userEmail, municipality:municipalityId, fromDate: historyStartDate, toDate: historyEndDate, date:moment().format('YYYY-MM-DDTHH:mm:ss')});
         // production
         var production_data = data[1].data;
         var consumption_data = data[0].data;
@@ -148,9 +149,10 @@ $scope.currentPrice="High";
 ///fetch data for the yours/ tab
 // $scope.currentPrice= 0.12+(0.08*getRandomData());
 //$http.get(serverCN+'/api/tou/'+venue+'/current').then(function(resp) {
-$http.get(Config.host+'/api/energyMeteo/tou/current?municipalityId='+municipalityIdReal).then(function(resp) {
+$http.get(Config.host+'/api/energyMeteo/tou/current?municipalityId='+municipalityIdReal+"&userid="+currentUserId).then(function(resp) {
+    console.dir(resp);
     $scope.currentPrice = resp.data.tarif;
-
+    mixpanel.trentino.track('Trentino prosumption data requested:',{Category: "Current energy meteo",ContractId:currentUserId, userEmail: userEmail, municipality:municipalityId, date:moment().format('YYYY-MM-DDTHH:mm:ss'),currentPrice: $scope.currentPrice});
     if ($scope.currentPrice=="Low") {
         $scope.priceIcon='ion-happy-outline';
         $scope.priceIconColor="balanced";
@@ -160,7 +162,7 @@ $http.get(Config.host+'/api/energyMeteo/tou/current?municipalityId='+municipalit
         $scope.priceIconColor="energized";
     }
   }, function(err) {
-    console.error(err.status);
+    // console.error(err.status);
 
     // err.status will contain the status code
   });
@@ -168,9 +170,9 @@ $http.get(Config.host+'/api/energyMeteo/tou/current?municipalityId='+municipalit
 
 //reset global variablemunicipalityIdReal
 
-$http.get(Config.host+'/api/energyMeteo/tou?municipalityId='+municipalityIdReal).then(function(resp) {
-    
+$http.get(Config.host+'/api/energyMeteo/tou?municipalityId='+municipalityIdReal+"&userid="+currentUserId).then(function(resp) {
     var energyWeatherData = resp.data.data;
+    mixpanel.trentino.track('Trentino prosumption data requested:',{Category: "Energy meteo history",ContractId:currentUserId, municipality:municipalityId, userEmail: userEmail, date:moment().format('YYYY-MM-DDTHH:mm:ss')});
     //iterate over the array to format data
     var energyWeatherDataArray = new Array();
     for(i =0; i< energyWeatherData.length; i++ ){
@@ -181,7 +183,7 @@ $http.get(Config.host+'/api/energyMeteo/tou?municipalityId='+municipalityIdReal)
     }
     $rootScope.energyWeatherDataVector = energyWeatherDataArray;
     }, function(err) {
-        console.error(err.status);
+        // console.error(err.status);
 
     // err.status will contain the status code
     });
@@ -266,6 +268,7 @@ $rootScope.chartConfigLastConsumption = {
 // $http.get(Config.host+'/api/consumption/last?userid='+currentUserId).then(function(resp) {
 $http.get(Config.host+'/api/consumption/last?userid='+currentUserId).then(function(resp) {
     var lastConsumptionData = resp.data.consumption;
+    mixpanel.trentino.track('Trentino prosumption data requested:',{Category: "Last consumption data",ContractId:currentUserId, municipality:municipalityId, userEmail: userEmail, consumptionLevel:lastConsumptionData, date:moment().format('YYYY-MM-DDTHH:mm:ss'),currentPrice: $scope.currentPrice});
     $rootScope.chartConfigLastConsumption.series = [{
             name: 'consumo',
             data: [lastConsumptionData],
@@ -349,6 +352,7 @@ $rootScope.chartConfigLastProduction = {
 //update last consumption gauge
 $http.get(Config.host+'/api/production/last?userid='+currentUserId).then(function(resp) {
     var lastProductionData = resp.data.production;
+    mixpanel.trentino.track('Trentino prosumption data requested:',{Category: "Last production data",ContractId:currentUserId, municipality:municipalityId, userEmail: userEmail, productionLevel:lastProductionData, date:moment().format('YYYY-MM-DDTHH:mm:ss')});
     $rootScope.chartConfigLastProduction.series = [{
             name: 'produzione',
             data: [lastProductionData],
@@ -365,7 +369,7 @@ $http.get(Config.host+'/api/production/last?userid='+currentUserId).then(functio
 $scope.listOfAppliancesName=[];
 $http.get(Config.host+'/api/consumption/appliance?userid='+currentUserId).then(function(resp) {
     $scope.listOfAppliances=resp.data;
-    
+    mixpanel.trentino.track('Trentino prosumption data requested:',{Category: "List of appliances data",ContractId:currentUserId, municipality:municipalityId, userEmail: userEmail, date:moment().format('YYYY-MM-DDTHH:mm:ss')});    
 //var applianceId;
     //create list of names of appliances for visualization purposes
 for (i=0;i<$scope.listOfAppliances.length;i++) {
@@ -432,11 +436,9 @@ for (i=0;i<$scope.listOfAppliances.length;i++) {
         var applianceData=[];
         $http.get(Config.host+'/api/consumption/appliance/'+ApplianceId+"?userid="+currentUserId+"&from="+startDateAppliance+ "&to="+endDateAppliance).then(function(resp) {
         applianceData.push(resp.data);
-        console.dir(applianceData);
+        mixpanel.trentino.track('Trentino prosumption data requested:',{Category: "Specific appliance data:",ContractId:currentUserId, municipality:municipalityId, userEmail: userEmail, appliance:ApplianceId, fromDate: startDateAppliance, toDate: endDateAppliance, date:moment().format('YYYY-MM-DDTHH:mm:ss')});    
         // create a copy of the array
         var cleanApplianceData = _.clone(applianceData[0]); // create a copy of the array
-
-
         var tempArrayDays = new Array();
         for (i=0;i<cleanApplianceData.length;i++) {
             //create list of names of appliances for visualization purposes
@@ -490,6 +492,16 @@ for (i=0;i<$scope.listOfAppliances.length;i++) {
         });
                    $state.go('main.prosumption.vizAppliance')
 };
+// has production part
+$scope.hasProduction = false;
+$http.get(Config.host+'/api/production/hasProduction?userid='+currentUserId).then(function(resp) {
+    if(resp.data.production == true){
+        $scope.hasProduction = true; 
+    }
+}, function(err){
+        console.error(err.status);
+    // err.status will contain the status code
+    });
 
 // add scope for filtering production and consumption from other appliances
 // Should be modified, better if changed from the schema

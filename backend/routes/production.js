@@ -13,6 +13,7 @@ var querystring = require('querystring');
 var xml2js = require('xml2js');
 var apart = require('../models/apartment.js');
 var auth = require('../middleware/auth');
+var trentinoLogs = require('../models').trentinoLogs;
 
 var parser = new xml2js.Parser({
     explicitArray:false
@@ -97,6 +98,15 @@ router.get('/',auth.authenticate(),function(request,response,next){
 
                                 });
                                 response.type('json').status('200').send(ms);
+
+                                trentinoLogs.create({
+                                contractId: userid,
+                                category: 'Production data',
+                                fromDate: from,
+                                toDate: to,
+                                data: ms
+                              });
+
                             } else {
                                 response.status(400).send(content.Message);
                             }
@@ -174,6 +184,13 @@ router.get('/last',auth.authenticate(),function(request,response,next){
                                     response.type('json').status('200').send({
                                         "production": parseFloat(last.value)
                                     });
+
+                                    trentinoLogs.create({
+                                    contractId: userid,
+                                    category: 'Production last data',
+                                    data: {"production": parseFloat(last.value)}
+                                    });
+
                                 } else {
                                     response.status('204').next();
                                 }

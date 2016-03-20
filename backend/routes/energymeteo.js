@@ -8,6 +8,7 @@ var router = express.Router();
 var querystring = require('querystring');
 var xml2js = require('xml2js');
 var auth = require('../middleware/auth');
+var trentinoLogs = require('../models').trentinoLogs;
 var parser = new xml2js.Parser({
     explicitArray:false
 });
@@ -44,6 +45,7 @@ var parser = new xml2js.Parser({
 
 router.get('/tou', auth.authenticate(), function(request, response,next) {
 	 var municipalityId = request.query.municipalityId;
+     var userid = request.query.userid;
  var options = {
                     host: '217.77.95.103',
                     path: '/api/tou/'+ municipalityId
@@ -52,9 +54,18 @@ router.get('/tou', auth.authenticate(), function(request, response,next) {
                      // strictSSL: false
                 };
              var requestcur = http.get(options, function (res) {
-                    var data = [];
-                     res.on("data", function(incomingDataCurrent) {
-                        response.type('json').status('200').send(incomingDataCurrent);
+                     res.on('data', function(incomingData) {
+                        if(incomingData.hasOwnProperty('data')){
+                            response.type('json').status('200').send(incomingData);
+                        }
+                        else{
+                            response.sendStatus(500);
+                        }
+                        trentinoLogs.create({
+                        contractId: userid,
+                        category: 'Energy meteo data',
+                        });
+
                     }).on("error", function(){
                         response.sendStatus(500);
                     });                    
@@ -89,6 +100,7 @@ router.get('/tou', auth.authenticate(), function(request, response,next) {
  */
 router.get('/tou/current', auth.authenticate(), function(request, response, next) {
 	 var municipalityId = request.query.municipalityId;
+     var userid = request.query.userid;
  var options = {
                     host: '217.77.95.103',
                     path: '/api/tou/'+ municipalityId + '/current'
@@ -98,8 +110,19 @@ router.get('/tou/current', auth.authenticate(), function(request, response, next
                 };
          var requesttou = http.get(options, function (res) {
                     var data = [];
-                     res.on("data", function(incomingDataCurrent) {
-                        response.type('json').status('200').send(incomingDataCurrent);
+                     res.on('data', function(incomingDataCurrent) {
+                        if(incomingDataCurrent.hasOwnProperty('data')){
+                            response.type('json').status('200').send(incomingDataCurrent);
+                        }
+                        else{
+                            response.sendStatus(500);
+                        }
+
+                        trentinoLogs.create({
+                        contractId: userid,
+                        category: 'Energy meteo current data',
+                        });
+
                     }).on("error",function(){
                 response.sendStatus(500);
              });                    
