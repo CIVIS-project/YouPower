@@ -9,7 +9,6 @@ exports.cooperatives = require('./cooperatives');
 exports.feedback = require('./feedback');
 exports.households = require('./households');
 exports.logs = require('./logs');
-exports.trentinoLogs = require('./trentinoLogs');
 exports.users = require('./users');
 exports.sensor = require('./sensor');
 exports.testbeds = require('./testbeds');

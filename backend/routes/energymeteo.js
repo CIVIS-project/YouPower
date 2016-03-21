@@ -8,7 +8,7 @@ var router = express.Router();
 var querystring = require('querystring');
 var xml2js = require('xml2js');
 var auth = require('../middleware/auth');
-var trentinoLogs = require('../models').trentinoLogs;
+var Log = require('../models').logs;
 var parser = new xml2js.Parser({
     explicitArray:false
 });
@@ -49,29 +49,38 @@ router.get('/tou', auth.authenticate(), function(request, response,next) {
  var options = {
                     host: '217.77.95.103',
                     path: '/api/tou/'+ municipalityId
-                     // cert: [fs.readFileSync('backend/ssl/RootCATest.cer')],
-                     // rejectUnauthorized : false,
-                     // strictSSL: false
                 };
              var requestcur = http.get(options, function (res) {
+                var data = [];
                      res.on('data', function(incomingData) {
-                        if(incomingData.hasOwnProperty('data')){
-                            response.type('json').status('200').send(incomingData);
+                        data.push(incomingData);
+                    }).on('end',function(){
+                        try{
+                        data = JSON.parse(data);
+                        }
+                        catch(err){
+                            console.error("Error parsing meteo data");
+                        }
+                         if(data.hasOwnProperty('data')){
+                            response.type('json').status('200').send(data);
                         }
                         else{
                             response.sendStatus(500);
                         }
-                        trentinoLogs.create({
-                        contractId: userid,
-                        category: 'Energy meteo data',
-                        });
+                        
+                        Log.create({
+                            category: 'Energy meteo data',
+                            type: 'get',
+                            data: {
+                                contractId: userid
+                            }
+                          });
 
                     }).on("error", function(){
                         response.sendStatus(500);
                     });                    
                 });
              requestcur.setTimeout(3000, function() {
-                // console.log("waiting under appliance id");
             });
             
 });
@@ -104,34 +113,39 @@ router.get('/tou/current', auth.authenticate(), function(request, response, next
  var options = {
                     host: '217.77.95.103',
                     path: '/api/tou/'+ municipalityId + '/current'
-                     // cert: [fs.readFileSync('backend/ssl/RootCATest.cer')],
-                     // rejectUnauthorized : false,
-                     // strictSSL: false
                 };
          var requesttou = http.get(options, function (res) {
                     var data = [];
                      res.on('data', function(incomingDataCurrent) {
-                        if(incomingDataCurrent.hasOwnProperty('data')){
-                            response.type('json').status('200').send(incomingDataCurrent);
+                        data.push(incomingDataCurrent);
+                    }).on('end',function(){
+                        try{
+                        data = JSON.parse(data);
+                        }
+                        catch(err){
+                            console.error("Error parsing current meteo data");
+                        }
+                        if(data.hasOwnProperty('tarif')){
+                            response.type('json').status('200').send(data);
                         }
                         else{
                             response.sendStatus(500);
                         }
 
-                        trentinoLogs.create({
-                        contractId: userid,
-                        category: 'Energy meteo current data',
-                        });
+                        Log.create({
+                            category: 'Energy meteo current data',
+                            type: 'get',
+                            data: {
+                                contractId: userid
+                            }
+                          });
 
                     }).on("error",function(){
                 response.sendStatus(500);
              });                    
                 });
           requesttou.setTimeout(3000, function() {
-                // console.log("waiting under appliance id");
             });
-             // request.end();
-
 });
 
 module.exports = router;

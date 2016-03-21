@@ -13,7 +13,7 @@ var querystring = require('querystring');
 var xml2js = require('xml2js');
 var apart = require('../models/apartment.js');
 var auth = require('../middleware/auth');
-var trentinoLogs = require('../models').trentinoLogs;
+var Log = require('../models').logs;
 var fs = require('fs');
 
 var parser = new xml2js.Parser({
@@ -101,12 +101,15 @@ router.get('/',auth.authenticate(),function(request,response,next){
                                 });
                                 response.type('json').status('200').send(ms);
 
-                                trentinoLogs.create({
-                                contractId: userid,
+                                Log.create({
                                 category: 'Consumption data',
-                                fromDate: from,
-                                toDate: to,
-                                data: ms
+                                type: 'get',
+                                data: {
+                                    contractId: userid,
+                                    from: from,
+                                    to: to,
+                                    consumption: ms       
+                                }
                               });
 
                             } else {
@@ -187,10 +190,13 @@ router.get('/last',auth.authenticate(),function(request,response,next){
                                         "consumption": parseFloat(last.value)
                                     });
 
-                                trentinoLogs.create({
-                                contractId: userid,
+                                Log.create({
                                 category: 'Consumption last data',
-                                data: {"consumption": parseFloat(last.value)}
+                                type: 'get',
+                                data: {
+                                    contractId: userid,
+                                    consumption: parseFloat(last.value) 
+                                }
                               });
 
                                 } else {
@@ -299,10 +305,12 @@ router.get('/appliance',auth.authenticate(),function(request,response,next){
                             }
                             response.status(200).type('json').send(res);
 
-                            trentinoLogs.create({
-                                contractId: userid,
+                            Log.create({
                                 category: 'Appliance list data',
-                                data: res
+                                type: 'get',
+                                data: {
+                                    contractId: userid,
+                                    applianceList: res                                     }
                               });
                         });
 
@@ -422,12 +430,15 @@ router.get('/appliance/:applID',auth.authenticate(),function(request,response,ne
                                     }
                                 });
                                 response.type('json').status('200').send(ms);
-                                trentinoLogs.create({
-                                contractId: userid,
+                                
+                                Log.create({
                                 category: 'Specific appliance data',
-                                fromDate: String(from),
-                                toDate: String(to),
-                                data: ms
+                                type: 'get',
+                                data: {
+                                    contractId: userid,
+                                    from: from,
+                                    to: to,
+                                    ApplianceData: ms                                      }
                               });
 
                             } else {
