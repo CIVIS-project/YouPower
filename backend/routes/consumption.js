@@ -13,6 +13,7 @@ var querystring = require('querystring');
 var xml2js = require('xml2js');
 var apart = require('../models/apartment.js');
 var auth = require('../middleware/auth');
+var trentinoLogs = require('../models').trentinoLogs;
 var fs = require('fs');
 
 var parser = new xml2js.Parser({
@@ -99,6 +100,15 @@ router.get('/',auth.authenticate(),function(request,response,next){
                                     }
                                 });
                                 response.type('json').status('200').send(ms);
+
+                                trentinoLogs.create({
+                                contractId: userid,
+                                category: 'Consumption data',
+                                fromDate: from,
+                                toDate: to,
+                                data: ms
+                              });
+
                             } else {
                                 response.status(400).send(content.Message);
                             }
@@ -176,6 +186,13 @@ router.get('/last',auth.authenticate(),function(request,response,next){
                                     response.type('json').status('200').send({
                                         "consumption": parseFloat(last.value)
                                     });
+
+                                trentinoLogs.create({
+                                contractId: userid,
+                                category: 'Consumption last data',
+                                data: {"consumption": parseFloat(last.value)}
+                              });
+
                                 } else {
                                     response.status('204').send();
                                 }
@@ -281,6 +298,12 @@ router.get('/appliance',auth.authenticate(),function(request,response,next){
                                 }
                             }
                             response.status(200).type('json').send(res);
+
+                            trentinoLogs.create({
+                                contractId: userid,
+                                category: 'Appliance list data',
+                                data: res
+                              });
                         });
 
                     }).on('error', function (e) {
@@ -399,6 +422,14 @@ router.get('/appliance/:applID',auth.authenticate(),function(request,response,ne
                                     }
                                 });
                                 response.type('json').status('200').send(ms);
+                                trentinoLogs.create({
+                                contractId: userid,
+                                category: 'Specific appliance data',
+                                fromDate: String(from),
+                                toDate: String(to),
+                                data: ms
+                              });
+
                             } else {
                                 //content should be an error message
                                 response.status(400).send(content.Message);
