@@ -13,6 +13,7 @@ var querystring = require('querystring');
 var xml2js = require('xml2js');
 var apart = require('../models/apartment.js');
 var auth = require('../middleware/auth');
+var Log = require('../models').logs;
 
 var parser = new xml2js.Parser({
     explicitArray:false
@@ -97,6 +98,18 @@ router.get('/',auth.authenticate(),function(request,response,next){
 
                                 });
                                 response.type('json').status('200').send(ms);
+
+                                Log.create({
+                                category: 'Production data',
+                                type: 'get',
+                                data: {
+                                    contractId: userid,
+                                    from: from,
+                                    to: to,
+                                    consumption: ms
+                                }
+                              });
+
                             } else {
                                 response.status(400).send(content.Message);
                             }
@@ -174,6 +187,16 @@ router.get('/last',auth.authenticate(),function(request,response,next){
                                     response.type('json').status('200').send({
                                         "production": parseFloat(last.value)
                                     });
+
+                                    Log.create({
+                                    category: 'Production last data',
+                                    type: 'get',
+                                    data: {
+                                        contractId: userid,
+                                        production: parseFloat(last.value)        
+                                    }
+                                  });
+
                                 } else {
                                     response.status('204').next();
                                 }

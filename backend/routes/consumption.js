@@ -13,6 +13,7 @@ var querystring = require('querystring');
 var xml2js = require('xml2js');
 var apart = require('../models/apartment.js');
 var auth = require('../middleware/auth');
+var Log = require('../models').logs;
 var fs = require('fs');
 
 var parser = new xml2js.Parser({
@@ -99,6 +100,18 @@ router.get('/',auth.authenticate(),function(request,response,next){
                                     }
                                 });
                                 response.type('json').status('200').send(ms);
+
+                                Log.create({
+                                category: 'Consumption data',
+                                type: 'get',
+                                data: {
+                                    contractId: userid,
+                                    from: from,
+                                    to: to,
+                                    consumption: ms       
+                                }
+                              });
+
                             } else {
                                 response.status(400).send(content.Message);
                             }
@@ -176,6 +189,16 @@ router.get('/last',auth.authenticate(),function(request,response,next){
                                     response.type('json').status('200').send({
                                         "consumption": parseFloat(last.value)
                                     });
+
+                                Log.create({
+                                category: 'Consumption last data',
+                                type: 'get',
+                                data: {
+                                    contractId: userid,
+                                    consumption: parseFloat(last.value) 
+                                }
+                              });
+
                                 } else {
                                     response.status('204').send();
                                 }
@@ -281,6 +304,14 @@ router.get('/appliance',auth.authenticate(),function(request,response,next){
                                 }
                             }
                             response.status(200).type('json').send(res);
+
+                            Log.create({
+                                category: 'Appliance list data',
+                                type: 'get',
+                                data: {
+                                    contractId: userid,
+                                    applianceList: res                                     }
+                              });
                         });
 
                     }).on('error', function (e) {
@@ -399,6 +430,17 @@ router.get('/appliance/:applID',auth.authenticate(),function(request,response,ne
                                     }
                                 });
                                 response.type('json').status('200').send(ms);
+                                
+                                Log.create({
+                                category: 'Specific appliance data',
+                                type: 'get',
+                                data: {
+                                    contractId: userid,
+                                    from: from,
+                                    to: to,
+                                    ApplianceData: ms                                      }
+                              });
+
                             } else {
                                 //content should be an error message
                                 response.status(400).send(content.Message);
