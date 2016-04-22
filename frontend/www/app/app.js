@@ -9,6 +9,7 @@ angular.module('civis.youpower.donation',[]);
 
 angular.module('civis.youpower', [
   'ionic',
+  'ion-datetime-picker',
   'ionic.rating',
   'ngResource',
   'ngSanitize',
@@ -38,9 +39,6 @@ angular.module('civis.youpower', [
   $rootScope.applicanceDataStore = [];
   $rootScope.chartConfigAppliance2 = [];
   $rootScope.energyWeatherDataVector=[];
-  $rootScope.chartConfigLastProduction = [];
-  $rootScope.chartConfigLastConsumption = [];
-
 
   // Making underscore available in the angular expressions
   $rootScope._=_;

@@ -1,17 +1,23 @@
 <ion-view view-title={{"Energy_Data"|translate}}>
-<ion-content class="padding">
+<ion-content  class="padding" overflow-scroll = "true">
 
 <div class="list card">
-  <div class="item item-divider"><span translate>Total_consumption</span></div>
-  <div class="item item-text-wrap">
-<span translate>Last_month</span> {{totalCommunityConsumption}}  kWh &nbsp &nbsp &nbsp <span class="ng-class: {{colorSpan}}">{{communityConsumptionTrend}} </span></div>
-</div>
+  <div class="item item-divider">
+  <span translate>Consumption_Rate</span>
+   <span translate>from</span>
 
-<div class="list card">
-  <div class="item item-divider"> <span translate>Total_production</span></div>
+  <span>
+  10-03    <span translate>to</span>
+ {{LastDateConsumptionRecord | date: "dd-MM"}}</span></div>
   <div class="item item-text-wrap">
-<span translate>Last_month</span> {{totalCommunityProduction}}  kWh &nbsp &nbsp &nbsp <span class="ng-class: {{colorSpan2}}">{{communityProductionTrend}} </span></div>
+<span>
+<div><highchart id="chart3" config="chartConfigPersonalConsumption"></highchart></div>
+ </span>
+ <hr>
+<span>
+ <div><highchart id="chart3" config="chartConfigCommunityConsumption"></highchart></div>
+  </span>
+ </div>
 </div>
-<div><highchart id="chart3" config="chartConfigCommunityBalance"></highchart></div>
 </ion-content>
 </ion-view>
