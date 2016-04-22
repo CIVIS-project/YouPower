@@ -9,7 +9,7 @@ var querystring = require('querystring');
 var xml2js = require('xml2js');
 var auth = require('../middleware/auth');
 var Log = require('../models').logs;
-var meteo = require('../models/meteohistory.js');
+// var meteo = require('../models/meteohistory.js');
 var parser = new xml2js.Parser({
     explicitArray:false
 });
@@ -148,16 +148,10 @@ router.get('/tou/current', auth.authenticate(), function(request, response, next
           requesttou.setTimeout(3000, function() {
             });
 });
+/**
 router.get('/meteodata',auth.authenticate(),function(request,response,next){
     var municipalityId = request.query.municipalityId;
-    // var from  = request.query.from;
-    // var to = request.query.to;
-    // var res = request.query.res;
     var meteoHistory = [];
-    console.log("nay sturid thing here...");
-    console.log(municipalityId);
-    // console.log(from);
-    // console.log(to);
     meteo.findMeteoHistory(municipalityId,function(err,result){
         if(!err){
         result.forEach(function(meteodata){
@@ -166,7 +160,7 @@ router.get('/meteodata',auth.authenticate(),function(request,response,next){
         response.status(200).type('json').send(meteoHistory);
     }
     });
-});
+}); */
 
 module.exports = router;
 

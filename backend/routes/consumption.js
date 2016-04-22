@@ -94,11 +94,6 @@ router.get('/',auth.authenticate(),function(request,response,next){
                                 block.IntervalReading.forEach(function (interval) {
                                     value += parseFloat(interval.value);
                                     var duration = parseFloat(interval.timePeriod.duration/3600);
-                                    // console.log("Value", value);
-                                    // console.dir(interval);
-                                    // var duration = parseFloat(last.timePeriod.duration/3600);
-                                    // var consumption_level = parseFloat(last.value);
-                                    // var startTime = last.timePeriod.start;
                                     if (interval.timeslot == 'F3') {
                                         ms.push({
                                             date: interval.timePeriod.start,
@@ -334,7 +329,6 @@ router.get('/appliance',auth.authenticate(),function(request,response,next){
                     });
                 });
             applianceRequest.setTimeout(3000, function() {
-                // console.log("waiting under applicance");
             });
               
             }else {
