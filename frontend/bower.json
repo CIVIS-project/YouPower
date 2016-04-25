@@ -11,6 +11,7 @@
     "highcharts": "^4.2.3",
     "underscore": "~1.8.3",
     "bootstrap-sass": "~3.3.6",
-    "moment": "^2.11.1"
+    "moment": "^2.11.1",
+    "ion-datetime-picker": "^0.1.2"
   }
 }
