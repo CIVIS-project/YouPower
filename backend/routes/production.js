@@ -184,8 +184,13 @@ router.get('/last',auth.authenticate(),function(request,response,next){
                                 var block = content.IntervalBlock;
                                 if (block.IntervalReading.length > 0) {
                                     var last = block.IntervalReading[block.IntervalReading.length - 1];
+                                    var duration = parseFloat(last.timePeriod.duration/3600);
+                                    var production_level = parseFloat(last.value);
+                                    var startTime = last.timePeriod.start;
                                     response.type('json').status('200').send({
-                                        "production": parseFloat(last.value)
+                                        "production": production_level.toFixed(2),
+                                        "power_Level": (production_level/duration).toFixed(2),
+                                        "startTime": startTime
                                     });
 
                                     Log.create({

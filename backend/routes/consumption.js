@@ -12,6 +12,7 @@ var router = express.Router();
 var querystring = require('querystring');
 var xml2js = require('xml2js');
 var apart = require('../models/apartment.js');
+var usagepoint = require('../models/usagesummary');
 var auth = require('../middleware/auth');
 var Log = require('../models').logs;
 var fs = require('fs');
@@ -58,10 +59,11 @@ router.get('/',auth.authenticate(),function(request,response,next){
     var from = request.query.from;
     var to = request.query.to;
     var res = request.query.res || 'DAILY';
+    var source = request.query.requestSource;
     if(userid !== undefined && from !== undefined && to !== undefined ) {
         apart.getApartmentID(userid,function(err,a) {
-            if(!err) {
-                var id = a.ApartmentID;
+            if(!err || (source == 2)) {
+                var id = (source == 2)?userid:a.ApartmentID;
                 var options = {
                     host: request.app.get('civis_opt').host,
                     path: request.app.get('civis_opt').path + 'downloadmydata?' + querystring.stringify(
@@ -91,10 +93,13 @@ router.get('/',auth.authenticate(),function(request,response,next){
                                 var value = 0.0;
                                 block.IntervalReading.forEach(function (interval) {
                                     value += parseFloat(interval.value);
+                                    var duration = parseFloat(interval.timePeriod.duration/3600);
                                     if (interval.timeslot == 'F3') {
                                         ms.push({
                                             date: interval.timePeriod.start,
-                                            consumption: value
+                                            consumption: value,
+                                            contractId: id,
+                                            averagePower: (value/duration).toFixed(2)
                                         });
                                         value = 0.0;
                                     }
@@ -186,8 +191,13 @@ router.get('/last',auth.authenticate(),function(request,response,next){
                                 var block = content.IntervalBlock;
                                 if (block.IntervalReading.length > 0) {
                                     var last = block.IntervalReading[block.IntervalReading.length - 1];
+                                    var duration = parseFloat(last.timePeriod.duration/3600);
+                                    var consumption_level = parseFloat(last.value);
+                                    var startTime = last.timePeriod.start;
                                     response.type('json').status('200').send({
-                                        "consumption": parseFloat(last.value)
+                                        "consumption": consumption_level.toFixed(2),
+                                        "power_Level": (consumption_level/duration).toFixed(2),
+                                        "startTime": startTime
                                     });
 
                                 Log.create({
@@ -319,7 +329,6 @@ router.get('/appliance',auth.authenticate(),function(request,response,next){
                     });
                 });
             applianceRequest.setTimeout(3000, function() {
-                // console.log("waiting under applicance");
             });
               
             }else {
@@ -463,6 +472,64 @@ router.get('/appliance/:applID',auth.authenticate(),function(request,response,ne
         response.sendStatus(400);
     }
 });
+/**
+    This endpoint lacks documentation which will be added in next update
+*/
+router.get('/usagepoints',auth.authenticate(),function(request,response,next){
+     var municipalityId = request.query.municipalityId;
+     var municipalityIdReal = (municipalityId=='sanlorenzo')?"San Lorenzo in Banale":"storo";
+     var usagePoints = [];
+     var options = {
+                    host: request.app.get('civis_opt').host,
+                    path: request.app.get('civis_opt').path + 'getAllUsagePoints?' + querystring.stringify(
+                        {
+                            city: municipalityIdReal,
+                        }),
+                     // cert: [fs.readFileSync('backend/ssl/RootCATest.cer')],
+                     rejectUnauthorized : false,
+                     strictSSL: false
+                };
+                https.get(options, function (res) {
+                var data = [];
+                res.on('data', function (d) {
+                    data.push(d);
+                }).on('end', function () {
+                    data = Buffer.concat(data).toString();
+                    parser.parseString(data, function (err, result) {
+                        var content = result.feed.entry;
+                        content.UsagePoint.forEach(function(points){
+                            usagePoints.push(points.usagePointID);
+                        });
+                        response.type('json').status('200').send(usagePoints);
+                    });
+                }).on('error',function(e){
+                    response.sendStatus(500);
+                });
+});
+});
+router.get('/allUsagePointsSummary',auth.authenticate(),function(request,response,next){
+    var userid = request.query.userid;
+    var allUsageSummary = [];
+    usagepoint.findTotalUsageSummary(function(err,result){
+        if(!err){
+        result.forEach(function(summarydata){
+            allUsageSummary.push(summarydata);
+        });
+         apart.getApartmentID(userid,function(err,a){
+            var id = a.ApartmentID;
+            allUsageSummary.push(id);
+            response.status(200).type('json').send(allUsageSummary);
+             Log.create({
+                                category: 'Trentino power-consumption chart',
+                                type: 'get',
+                                data: {
+                                    contractId: userid                                    }
+                              });
+        }); 
+    }
+    });
+});
+
 
 
 module.exports = router;

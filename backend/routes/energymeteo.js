@@ -9,6 +9,7 @@ var querystring = require('querystring');
 var xml2js = require('xml2js');
 var auth = require('../middleware/auth');
 var Log = require('../models').logs;
+// var meteo = require('../models/meteohistory.js');
 var parser = new xml2js.Parser({
     explicitArray:false
 });
@@ -46,7 +47,7 @@ var parser = new xml2js.Parser({
 router.get('/tou', auth.authenticate(), function(request, response,next) {
 	 var municipalityId = request.query.municipalityId;
      var userid = request.query.userid;
- var options = {
+     var options = {
                     host: '217.77.95.103',
                     path: '/api/tou/'+ municipalityId
                 };
@@ -147,6 +148,19 @@ router.get('/tou/current', auth.authenticate(), function(request, response, next
           requesttou.setTimeout(3000, function() {
             });
 });
+/**
+router.get('/meteodata',auth.authenticate(),function(request,response,next){
+    var municipalityId = request.query.municipalityId;
+    var meteoHistory = [];
+    meteo.findMeteoHistory(municipalityId,function(err,result){
+        if(!err){
+        result.forEach(function(meteodata){
+            meteoHistory.push(meteodata);
+        });
+        response.status(200).type('json').send(meteoHistory);
+    }
+    });
+}); */
 
 module.exports = router;
 
