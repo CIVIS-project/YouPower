@@ -6,6 +6,7 @@
 var TYPE = 'S_CONS';
 
 var dateFormat = require('dateformat');
+var moment = require('moment');
 var https = require('https');
 var express = require('express');
 var router = express.Router();
@@ -160,17 +161,20 @@ router.get('/',auth.authenticate(),function(request,response,next){
  */
 router.get('/last',auth.authenticate(),function(request,response,next){
     var userid = request.query.userid;
+    console.log("Last consumption requested...");
+    console.log("User id is:", userid);
     if(userid !== undefined ) {
         apart.getApartmentID(userid,function(err,a) {
             if(!err) {
                 var id = a.ApartmentID;
                 var now = new Date();
+                console.log(dateFormat(now, "yyyy-mm-dd"));
                 var options = {
                     host: request.app.get('civis_opt').host,
                     path: request.app.get('civis_opt').path + 'downloadmydata?' + querystring.stringify(
                         {
                             usagepoint: id,
-                            from: dateFormat(now, "yyyy-mm-dd")+ 'T00:00:00',
+                            from: moment.utc(now).subtract(12, 'days').format('YYYY-MM-DD'),
                             to: dateFormat(now, "yyyy-mm-dd"),
                             res: 'RAW',
                             type: TYPE
@@ -179,6 +183,7 @@ router.get('/last',auth.authenticate(),function(request,response,next){
                      rejectUnauthorized : false,
                      strictSSL: false
                 };
+                console.dir(options);
             var requestLast =    https.get(options, function (res) {
                     var data = [];
                     res.on('data', function (d) {
@@ -191,6 +196,8 @@ router.get('/last',auth.authenticate(),function(request,response,next){
                                 var block = content.IntervalBlock;
                                 if (block.IntervalReading.length > 0) {
                                     var last = block.IntervalReading[block.IntervalReading.length - 1];
+                                    console.log("Last is", last);
+                                    console.dir(last);
                                     var duration = parseFloat(last.timePeriod.duration/3600);
                                     var consumption_level = parseFloat(last.value);
                                     var startTime = last.timePeriod.start;
