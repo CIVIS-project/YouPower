@@ -6,6 +6,7 @@
 var TYPE = 'S_CONS';
 
 var dateFormat = require('dateformat');
+var moment = require('moment');
 var https = require('https');
 var express = require('express');
 var router = express.Router();
@@ -170,7 +171,7 @@ router.get('/last',auth.authenticate(),function(request,response,next){
                     path: request.app.get('civis_opt').path + 'downloadmydata?' + querystring.stringify(
                         {
                             usagepoint: id,
-                            from: dateFormat(now, "yyyy-mm-dd")+ 'T00:00:00',
+                            from: moment.utc(now).subtract(12, 'days').format('YYYY-MM-DD'),
                             to: dateFormat(now, "yyyy-mm-dd"),
                             res: 'RAW',
                             type: TYPE
