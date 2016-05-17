@@ -478,7 +478,30 @@ router.post('/connectUsagePoint', auth.authenticate(), function(req, res) {
   });
 });
 
-
+/**
+ * @api {get} /household/:id/consumption/:type/:granularity Get household consumption
+ * @apiGroup Cooperative
+ *
+ * @apiParam {String} id MongoId of household
+ * @apiParam {String} type Consumption type (e.g. electricity, heating)
+ * @apiParam {String} granularity Granularity (e.g. year, month)
+ * @apiParam {String} from Range date of consumption in YYYYMM-YYYYMM format (MM is optional)
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/household/55f14ce337d4bef728a861ab/consumption/electricity/month?from=201505-201604
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   [
+ *   5.335204147764095,
+ *   3.957101425793908,
+ *   3.3761681788723266
+ *   ...
+ *   ]
+ */
 router.get('/:id/consumption/:type/:granularity',function(req,res){
   // TODO: make it work with real households
   // req.checkParams('id', 'Invalid cooperative id').isMongoId();

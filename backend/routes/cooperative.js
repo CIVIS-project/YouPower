@@ -121,6 +121,29 @@ router.get('/:id', function(req, res) {
   }
 });
 
+
+/**
+ * @api {get} /cooperative/ Get list of all cooperatives
+ * @apiGroup Cooperative
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/cooperative/
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   [{
+ *     "__v": 8,
+ *     "_id": "555ef84b2fd41ffc6e078a34",
+ *     "date": "2015-07-01T12:04:33.599Z",
+ *     "name": "BRF Hamarby"
+ *     ...
+ *   }
+ *   ...
+ *   ]
+ */
 router.get('/', function(req, res) {
   var err;
   if ((err = req.validationErrors())) {
@@ -136,6 +159,38 @@ router.get('/', function(req, res) {
   }
 });
 
+/**
+ * @api {put} /cooperative/:id Update the cooperative information
+ * @apiGroup Cooperative
+ *
+ * @apiParam {String} id MongoId of cooperative
+ * @apiParam (Body) {String} name Cooperative name
+ * @apiParam (Body) {String} email Cooperative contact email
+ * @apiParam (Body) {Number} yearOfConst Year of construction of the cooperative
+ * @apiParam (Body) {Number} area Area in square meters of the cooperative shared space
+ * @apiParam (Body) {Number} numOfApartments Number of apartments in the cooperative
+ * @apiParam (Body) {String} ventilationType Ventilation type
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X PUT -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
+ *  '{
+ *    "name": "New Cooperative"
+ *    "email": "new@example.com"
+ *  }' \
+ *  http://localhost:3000/api/cooperative/55f14ce337d4bef728a861ab
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "__v": 8,
+ *     "_id": "555ef84b2fd41ffc6e078a34",
+ *     "date": "2015-07-01T12:04:33.599Z",
+ *     "name": "BRF Hamarby"
+ *     ...
+ *   }
+ */
 router.put('/:id', function(req, res) {
   req.checkParams('id', 'Invalid cooperative id').isMongoId();
 
@@ -154,6 +209,37 @@ router.put('/:id', function(req, res) {
   }
 });
 
+
+/**
+ * @api {post} /cooperative/:id/meter Add new meter to cooperative
+ * @apiGroup Cooperative
+ *
+ * @apiParam {String} id MongoId of cooperative
+ * @apiParam (Body) {String} meterId Id of the new meter
+ * @apiParam (Body) {String} type Type of the new meter (e.g. electricity, heating)
+ * @apiParam (Body) {Boolean} useInCalc Whether to use the meter reading in energy calculations
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X PUSH -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
+ *  '{
+ *    "meterId": "12341234",
+ *    "type": "electricity",
+ *    "useInCalc": true
+ *  }' \
+ *  http://localhost:3000/api/cooperative/55f14ce337d4bef728a861ab/meter
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "__v": 8,
+ *     "_id": "555ef84b2fd41ffc6e078a34",
+ *     "date": "2015-07-01T12:04:33.599Z",
+ *     "name": "BRF Hamarby"
+ *     ...
+ *   }
+ */
 router.post('/:id/meter', function(req, res) {
 
   req.checkParams('id', 'Invalid cooperative id').isMongoId();
@@ -176,6 +262,37 @@ router.post('/:id/meter', function(req, res) {
   }
 });
 
+/**
+ * @api {post} /cooperative/:id/meter Add new cooperative action
+ * @apiGroup Cooperative
+ *
+ * @apiParam {String} id MongoId of cooperative
+ * @apiParam (Body) {String} name Name of the action
+ * @apiParam (Body) {Date} date Date when action was taken
+ * @apiParam (Body) {String} description Action description
+ * @apiParam (Body) {Number} cost Action cost
+ * @apiParam (Body) {Number[]} types Action types
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X PUSH -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
+ *  '{
+ *    "name": "Ventilation change",
+ *    "cost": "120"
+ *  }' \
+ *  http://localhost:3000/api/cooperative/55f14ce337d4bef728a861ab/action
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "__v": 8,
+ *     "_id": "555ef84b2fd41ffc6e078a34",
+ *     "date": "2015-07-01T12:04:33.599Z",
+ *     "name": "BRF Hamarby"
+ *     ...
+ *   }
+ */
 router.post('/:id/action', function(req, res) {
 
     req.checkParams('id', 'Invalid cooperative id').isMongoId();
@@ -198,6 +315,39 @@ router.post('/:id/action', function(req, res) {
   }
 });
 
+
+/**
+ * @api {put} /cooperative/:id/action/:actionId Update cooperative action
+ * @apiGroup Cooperative
+ *
+ * @apiParam {String} id MongoId of cooperative
+ * @apiParam {String} actionId MongoId of the action
+ * @apiParam (Body) {String} name Name of the action
+ * @apiParam (Body) {Date} date Date when action was taken
+ * @apiParam (Body) {String} description Action description
+ * @apiParam (Body) {Number} cost Action cost
+ * @apiParam (Body) {Number[]} types Action types
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X PUT -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
+ *  '{
+ *    "name": "Ventilation change",
+ *    "cost": "120"
+ *  }' \
+ *  http://localhost:3000/api/cooperative/55f14ce337d4bef728a861ab/action/55f14ce337dlkabef728a861ab
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "__v": 8,
+ *     "_id": "555ef84b2fd41ffc6e078a34",
+ *     "date": "2015-07-01T12:04:33.599Z",
+ *     "name": "BRF Hamarby"
+ *     ...
+ *   }
+ */
 router.put('/:id/action/:actionId', function(req, res) {
   req.checkParams('id', 'Invalid cooperative id').isMongoId();
   req.checkParams('actionId', 'Invalid cooperative action id').isMongoId();
@@ -221,6 +371,29 @@ router.put('/:id/action/:actionId', function(req, res) {
   }
 });
 
+/**
+ * @api {delete} /cooperative/:id/action/:actionId Delet cooperative action
+ * @apiGroup Cooperative
+ *
+ * @apiParam {String} id MongoId of cooperative
+ * @apiParam {String} actionId MongoId of the action
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X DELETE -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/cooperative/55f14ce337d4bef728a861ab/action/55f14ce337dlkabef728a861ab
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "__v": 8,
+ *     "_id": "555ef84b2fd41ffc6e078a34",
+ *     "date": "2015-07-01T12:04:33.599Z",
+ *     "name": "BRF Hamarby"
+ *     ...
+ *   }
+ */
 router.delete('/:id/action/:actionId', function(req, res) {
   req.checkParams('id', 'Invalid cooperative id').isMongoId();
   req.checkParams('actionId', 'Invalid cooperative action id').isMongoId();
@@ -243,6 +416,33 @@ router.delete('/:id/action/:actionId', function(req, res) {
   }
 });
 
+/**
+ * @api {post} /cooperative/:id/action/:actionId/comment Comment cooperative action
+ * @apiGroup Cooperative
+ *
+ * @apiParam {String} id MongoId of cooperative
+ * @apiParam {String} actionId MongoId of the action
+ * @apiParam (Body) {String} comment The text of the comment
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X PUT -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
+ *  '{
+ *    "comment": "Nice job"
+ *  }' \
+ *  http://localhost:3000/api/cooperative/55f14ce337d4bef728a861ab/action/55f14ce337dlkabef728a861ab
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "__v": 8,
+ *     "_id": "555ef84b2fd41ffc6e078a34",
+ *     "date": "2015-07-01T12:04:33.599Z",
+ *     "name": "BRF Hamarby"
+ *     ...
+ *   }
+ */
 router.post('/:id/action/:actionId/comment', auth.authenticate(), function(req, res) {
   req.checkParams('id', 'Invalid cooperative id').isMongoId();
   req.checkParams('actionId', 'Invalid cooperative action id').isMongoId();
@@ -266,6 +466,30 @@ router.post('/:id/action/:actionId/comment', auth.authenticate(), function(req, 
   }
 });
 
+/**
+ * @api {get} /cooperative/:id/action/:actionId/comment Load more comments
+ * @apiGroup Cooperative
+ *
+ * @apiParam {String} id MongoId of cooperative
+ * @apiParam {String} actionId MongoId of the action
+ * @apiParam (Query) {String} lastCommentId MongoId of the last comment retrieved
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X PUT -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/cooperative/55f14ce337d4bef728a861ab/action/55f14ce337dlkabef728a861ab/comment?lastCommentId=65f14ce337dlkabef728a861ab
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "__v": 8,
+ *     "_id": "555ef84b2fd41ffc6e078a34",
+ *     "date": "2015-07-01T12:04:33.599Z",
+ *     "name": "BRF Hamarby"
+ *     ...
+ *   }
+ */
 router.get('/:id/action/:actionId/comment', function(req, res) {
   req.checkParams('id', 'Invalid cooperative id').isMongoId();
   req.checkParams('actionId', 'Invalid cooperative action id').isMongoId();
@@ -290,7 +514,30 @@ router.get('/:id/action/:actionId/comment', function(req, res) {
   }
 });
 
-
+/**
+ * @api {delete} /cooperative/:id/action/:actionId/comment/:commentId Delete cooperative action comments
+ * @apiGroup Cooperative
+ *
+ * @apiParam {String} id MongoId of cooperative
+ * @apiParam {String} actionId MongoId of the action
+ * @apiParam {String} commentId MongoId of the comment
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X DELETE -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/cooperative/55f14ce337d4bef728a861ab/action/55f14ce337dlkabef728a861ab/comment/12983ujaw9210
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "__v": 8,
+ *     "_id": "555ef84b2fd41ffc6e078a34",
+ *     "date": "2015-07-01T12:04:33.599Z",
+ *     "name": "BRF Hamarby"
+ *     ...
+ *   }
+ */
 router.delete('/:id/action/:actionId/comment/:commentId', function(req, res) {
   req.checkParams('id', 'Invalid cooperative id').isMongoId();
   req.checkParams('actionId', 'Invalid cooperative action id').isMongoId();
@@ -365,6 +612,30 @@ router.delete('/:id/editor/:coopEditorId', function(req, res) {
   }
 });
 
+/**
+ * @api {get} /cooperative/:id/consumption/:type/:granularity Get cooperative consumption
+ * @apiGroup Cooperative
+ *
+ * @apiParam {String} id MongoId of cooperative
+ * @apiParam {String} type Consumption type (e.g. electricity, heating)
+ * @apiParam {String} granularity Granularity (e.g. year, month)
+ * @apiParam {String} from Range date of consumption in YYYYMM-YYYYMM format (MM is optional)
+ *
+ * @apiExample {curl} Example usage:
+ *  # Get API token via /api/user/token
+ *  export API_TOKEN=fc35e6b2f27e0f5ef...
+ *
+ *  curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" \
+ *  http://localhost:3000/api/cooperative/55f14ce337d4bef728a861ab/consumption/electricity/month?from=201505-201604
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   [
+ *   5.335204147764095,
+ *   3.957101425793908,
+ *   3.3761681788723266
+ *   ...
+ *   ]
+ */
 router.get('/:id/consumption/:type/:granularity', function(req, res) {
   req.checkParams('id', 'Invalid cooperative id').isMongoId();
 

@@ -710,7 +710,7 @@ router.get('/:actionId/picture', auth.authenticate(), function(req, res) {
   });
 });
 
-/*
+/**
  * @api {get} /action/search Search for Actions by name
  * @apiGroup Challenge
  *
