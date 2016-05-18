@@ -198,16 +198,16 @@ angular.module('civis.youpower.translations',[])
       se: 'Varmvatten',
     },
     GRAPH_DATA_COMPARE : {
-      en: 'Compare to',
+      en: 'Compare',
       se: 'Jämför med',
     },
     GRAPH_COMPARE_AVG : {
-      en: 'neighborhood average',
-      se: 'medel i området',
+      en: 'Neighborhood average',
+      se: 'Medel i området',
     },
     GRAPH_COMPARE_PREV_YEAR : {
-      en: 'previous year',
-      se: 'föregående år',
+      en: 'Previous year',
+      se: 'Föregående år',
     },
     GRAPH_COMPARE_PREV_YEAR_NORM : {
       en: 'previous year (normalized)',
@@ -221,6 +221,10 @@ angular.module('civis.youpower.translations',[])
       en: 'average',
       se: 'medel',
     },
+    GRAPH_DATA_CATEGORY : {
+      en: 'Category',
+      se: 'Kategori',
+    }
   }
 
   householdTranslations = {

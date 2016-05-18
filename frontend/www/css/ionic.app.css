@@ -7716,6 +7716,9 @@ td {
   font-size: 12px;
   color: gray; }
 
+.text-medium-small {
+  font-size: 14px; }
+
 .text-medium {
   font-size: 16px; }
 
@@ -7874,6 +7877,10 @@ ul.rating li {
 .button.active {
   font-weight: bold; }
 
+.button .icon {
+  vertical-align: middle;
+  padding-left: 10px; }
+
 .popup-flexible .popup {
   width: 90%;
   max-width: 450px; }
@@ -7881,6 +7888,48 @@ ul.rating li {
 .disable-clickon-tabs {
   pointer-events: none !important;
   background-color: #f8f8f8; }
+
+.col-options {
+  padding: 0px; }
+
+input[type=radio] ~ label {
+  padding-right: 8px;
+  font-size: 12px; }
+
+input[type=radio]:checked ~ .check {
+  font-weight: bold; }
+
+input[type=radio]:checked ~ label {
+  font-weight: bold; }
+
+.borderless-list {
+  border-width: 0; }
+
+.popup-custom .popup {
+  width: 300px;
+  max-height: 400px;
+  background-color: #FFFFFF;
+  border-radius: 10px; }
+.popup-custom .popup-title {
+  font-size: 18px;
+  text-transform: uppercase;
+  color: #2d4d75; }
+.popup-custom .popup-body {
+  font-size: 13px; }
+.popup-custom .popup-buttons > button {
+  color: #2d4d75; }
+
+.list .item.item-accordion {
+  line-height: 10px;
+  padding-top: 0;
+  padding-bottom: 0;
+  transition: 0.1s all linear; }
+
+.list .item.item-accordion.ng-hide {
+  line-height: 0px; }
+
+.list .item.item-accordion.ng-hide-add, .list .item.item-accordion.ng-hide-remove {
+  display: block !important; }
 
 .chart-container {
   padding-left: 28px;

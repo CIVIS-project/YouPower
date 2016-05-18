@@ -1,0 +1,10 @@
+<ion-list class="list item-text-wrap">
+  <ion-radio class ="borderless-list"
+             icon="ion-android-radio-button-on"
+             ng-repeat="category in categories"
+             ng-value="category.name"
+             ng-model="categories.type"
+             ng-change="changeCategory(category.name)">
+    {{'GRAPH_DATA_' + (category.label || category.name | uppercase)  | translate}}
+  </ion-radio>
+</ion-list>

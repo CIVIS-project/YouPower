@@ -1,69 +1,48 @@
 <div class="item item-no-border-bottom">
-  <div class="button-bar">
-    <a ng-repeat="granularity in settings.granularities" class="button button-small button-mulitline btn btn btn-default" ng-class="{active:settings.granularity==granularity}" ng-click="changeGranularity(granularity)" ng-disabled="settings.disabledGranularities.indexOf(granularity)>=0">
-    {{'GRAPH_DATA_' + (granularity | uppercase) | translate}}</a>
-  </div>
-  <div class="button-bar padding-top padding-bottom" ng-if="settings.types.length > 1">
-    <a ng-repeat="type in settings.types" class="button button-small button-multiline {{getTypeClass(type)}} btn btn-default" ng-class="{active:settings.type == type.name}" ng-click="changeType(type.name)">{{'GRAPH_DATA_' + (type.label || type.name | uppercase) | translate}}</a>
-  </div>
-  <h1 class="{{getTypeClass(settings.types[0])}}" ng-if="settings.types.length == 1">{{'GRAPH_DATA_' + (settings.types[0].label || settings.types[0].name | uppercase) | translate }}</h1>
-  <label class="item item-input item-select select-small" ng-if="settings.comparisons.length > 1">
-    <div class="input-label">
-      {{'GRAPH_DATA_COMPARE' | translate}}
+  <!--<div class="row">
+    <div class="col col-100">
+      <div style="float: right; margin-left: 5px;" >
+        <label class="padding-top right" ng-repeat="granularity in settings.granularities">
+          <input type="radio" ng-model="settings.granularity" ng-value="granularity" ng-change="changeGranularity(granularity)" ng-class="{active:settings.granularity==granularity}" />
+          <label>{{'GRAPH_DATA_' + (granularity | uppercase) | translate}}</label>
+        </label>
+      </div>
     </div>
-    <select ng-model="settings.compareTo" ng-change="changeComparison()">
-      <option ng-repeat="option in settings.comparisons" value="{{option.name}}" translate>{{option.name}}</option>
-    </select>
-  </label>
-  <div class="padding-top">
-    <h2>{{'GRAPH_DATA_ENERGY_USE' | translate}} (<span ng-bind-html="settings.unit"></span>)</h2>
-    <table>
-      <tr>
-        <td class="padding-horizontal padding-top text-right">
-          max:
-        </td class="padding-horizontal">
-        <td ng-class="{balanced:settings.type == 'electricity', positive:settings.type == 'heating'}">
-          <b>{{getMainMax().y | number:2}}</b>
-          <span ng-show="settings.granularity=='monthly'">({{getMainMax().x | date:"MMM ''''yy"}})</span>
-          <span ng-show="settings.granularity=='yearly'">({{getMainMax().x | date:"yyyy"}})</span>
-        </td>
-        <td class="padding-horizontal" ng-if="settings.compareTo">
-          <b>{{getComparedMax().y | number:2}}</b>
-          <span ng-show="settings.granularity=='monthly'">({{getCorrectDate(getComparedMax().x) | date:"MMM ''''yy"}})</span>
-          <span ng-show="settings.granularity=='yearly'">({{getCorrectDate(getComparedMax().x) | date:"yyyy"}})</span>
-        </td>
-      </tr>
-      <tr>
-        <td class="padding-horizontal text-right">
-          min:
-        </td class="padding-horizontal">
-        <td ng-class="{balanced:settings.type == 'electricity', positive:settings.type == 'heating'}">
-          <b>{{getMainMin().y | number:2}}</b>
-          <span ng-show="settings.granularity=='monthly'">({{getMainMin().x| date:"MMM ''''yy"}})</span>
-          <span ng-show="settings.granularity=='yearly'">({{getMainMin().x | date:"yyyy"}})</span>
-        </td>
-        <td class="padding-horizontal" ng-if="settings.compareTo">
-          <b>{{getComparedMin().y | number:2}}</b>
-          <span ng-show="settings.granularity=='monthly'">({{getCorrectDate(getComparedMin().x) | date:"MMM ''''yy"}})</span>
-          <span ng-show="settings.granularity=='yearly'">({{getCorrectDate(getComparedMin().x) | date:"yyyy"}})</span>
-        </td>
-      </tr>
-      <tr>
-        <td class="padding-horizontal padding-bottom text-right">
-          {{'GRAPH_DATA_AVERAGE' | translate}}:
-        </td class="padding-horizontal">
-        <td ng-class="{balanced:settings.type == 'electricity', positive:settings.type == 'heating'}">
-          <b>{{getMainAvg() | number:2}}</b>
-        </td>
-        <td class="padding-horizontal" ng-if="settings.compareTo">
-          <b>{{getComparedAvg() | number:2}}</b>
-        </td>
-      </tr>
-    </table>
+  </div>-->
+  <div class="button-bar">
+    <a ng-repeat="granularity in settings.granularities" class="button button-small button-multiline btn btn btn-default" ng-class="{active:settings.granularity==granularity}" ng-click="changeGranularity(granularity)" ng-disabled="settings.disabledGranularities.indexOf(granularity)>=0">
+      {{'GRAPH_DATA_' + (granularity | uppercase) | translate}}</a>
   </div>
-</div>
-<div class="chart-container">
-  <a class="button button-clear button-stable chart-navigation ion-chevron-left" ng-click="move(-1)" ng-disabled="chartConfig.loading" ng-hide="settings.granularity=='yearly' || !hasMoreData(-1)"></a>
-  <highchart id="chart" config="chartConfig"></highchart>
-  <a class="button button-clear button-stable chart-navigation ion-chevron-right" ng-click="move(1)" ng-disabled="chartConfig.loading" ng-hide="settings.granularity=='yearly' || !hasMoreData(+1)"></a>
+  <div class="row">
+    <div class="col col-100">
+      <div style="float: left" class="text-right">
+        <button  class="button button-clear button-dark button-multiline" ng-click="listCategories()">
+          <b>{{'GRAPH_DATA_' + (settings.type | uppercase) | translate}}</b>
+          <i class="icon ion-ios-arrow-right"></i>
+        </button>
+      </div>
+      <div style="float: right; margin-left: 5px;" class = "padding-top">
+        <button style="color: #2d4d75" class="button button-clear button-dark button-small text-medium-small" ng-click="listComparisons()">
+          {{'GRAPH_DATA_COMPARE' | translate}}
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col col-100">
+      <div style="padding-top: 5px; padding-left: 20px" class= "text-medium-small padding-left">
+        {{'GRAPH_DATA_ENERGY_USE' | translate}}
+        (<span ng-bind-html="settings.unit"></span>)
+        <i class="icon ion-information-circled positive"></i></div>
+      </div>
+    </div>
+  </div>
+<div class="row">
+  <div class="col col-100">
+    <div class="chart-container">
+      <a class="button button-clear button-stable chart-navigation ion-chevron-left" ng-click="move(-1)" ng-disabled="chartConfig.loading" ng-hide="settings.granularity=='yearly' || !hasMoreData(-1)"></a>
+      <highchart id="chart" config="chartConfig"></highchart>
+      <a class="button button-clear button-stable chart-navigation ion-chevron-right" ng-click="move(1)" ng-disabled="chartConfig.loading" ng-hide="settings.granularity=='yearly' || !hasMoreData(+1)"></a>
+    </div>
+  </div>
 </div>

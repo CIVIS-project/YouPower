@@ -1,0 +1,39 @@
+<ion-list class="list item-text-wrap" ng-repeat="option in settings.comparisons">
+    <ion-radio class ="borderless-list"
+               name="option"
+               ng-if="!(option.name ==='Housing_Cooperatives')"
+               icon="ion-android-radio-button-on"
+               ng-value="option.name"
+               ng-change= "areCooperativesShown() ? toggleCooperatives() : null"
+               ng-model="settings.compareTo">
+      {{option.name | translate}}
+    </ion-radio>
+    <div ng-if="option.name === 'Housing_Cooperatives' ">
+      <ion-radio class="item borderless-list"
+                 name="option"
+                 icon="ion-android-radio-button-on"
+                 ng-click="toggleCooperatives()"
+                 ng-value="option.name"
+                 ng-model="settings.compareTo">
+            {{option.name | translate}}
+            &nbsp;
+        <i class="icon" ng-class="areCooperativesShown() ? 'ion-ios-arrow-down' : 'ion-ios-arrow-right'"></i>
+      </ion-radio>
+      </div>
+</ion-list>
+<ion-list>
+  <div class="padding-left">
+    <ion-radio class="borderless-list  text-medium-small padding-left item-accordion"
+               icon="ion-android-radio-button-on"
+               name="cooperative"
+               ng-repeat="cooperative in cooperatives | orderBy:'name'"
+               ng-show = "areCooperativesShown()"
+               ng-value="cooperative"
+               ng-model="settings.selectedCooperative"
+               ng-disabled="!(settings.compareTo ==='Housing_Cooperatives')">
+            {{cooperative.name}}
+    </ion-radio>
+  </div>
+</ion-list>
+
+

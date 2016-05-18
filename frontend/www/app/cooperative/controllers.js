@@ -2,9 +2,9 @@
 
 angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
 
-.controller('CooperativeCtrl', function($scope,$timeout,$state,$q,$stateParams,$translate,$ionicPopup,Cooperatives,currentUser) {
-
+.controller('CooperativeCtrl', function($scope,$timeout,$state,$q,$stateParams,$translate,$ionicPopup,Cooperatives,currentUser,$location,$ionicScrollDelegate) {
   $scope.actionTypes = Cooperatives.getActionTypes();
+  $scope.cooperatives = Cooperatives.query();
 
   $scope.$on("$ionicView.enter",function(){
     var id = $stateParams.id || currentUser.cooperativeId;
@@ -19,7 +19,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
 
   $scope.energyGraphSettings = {
     granularity: "monthly",
-    compareTo: "",
+    compareTo: "GRAPH_COMPARE_PREV_YEAR",
     type: "electricity",
     unit: "kWh/m<sup>2</sup>",
     granularities: ['monthly','yearly'],
@@ -31,15 +31,25 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
       cssClass: 'balanced'
     }],
     comparisons: [
-      {name: ""},
-      {name: "GRAPH_COMPARE_AVG"},
       {name: "GRAPH_COMPARE_PREV_YEAR"},
+      {name: "GRAPH_COMPARE_AVG"},
+      {name: "Housing_Cooperatives"}
       // {name: "COOPERATIVE_COMPARE_PREV_YEAR_NORM"}
-    ]
+    ],
+    selectedCooperative: {}
   }
 
   $scope.performanceYear = new Date();
   $scope.performanceYear.setFullYear($scope.performanceYear.getFullYear()-1);
+
+  $scope.goToAction = function(action){
+    $scope.$broadcast("goToActionInGraph", {actionId: action._id });
+  }
+
+  $scope.scrollTo = function(id) {
+    $location.hash(id);
+    $ionicScrollDelegate.anchorScroll();
+  }
 
   $scope.actionFilter = function(action, index) {
     var type = $scope.energyGraphSettings.type == 'electricity' ? 200 : 100;

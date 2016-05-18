@@ -1,6 +1,10 @@
 <ion-list>
   <ion-item class="item-text-wrap" ng-repeat="action in filteredActions = cooperative.actions | orderBy:'date':true" ng-class="{'item-button-right':canEditActions, 'item-complex-left':!canEditActions}">
-    <div class="item-complex-header" ng-click="action.showExtra = !action.showExtra; trackActionClicked(action)">
+    <div style="float:right; padding-right: 20px" ng-click="action.showExtra = !action.showExtra" >
+      <i class="icon" ng-class="action.showExtra ? 'ion-ios-arrow-down' : 'ion-ios-arrow-right'"></i>
+    </div>
+    <div class="item-complex-header">
+      <div style="width: 50%" ng-click="goToAction(action);scrollTo('graph'); trackActionClicked(action)">
       <span class="badge badge-energized" ng-show="!canEditActions">{{filteredActions.length - $index}}</span>
       <h2>
         {{action.name}}
@@ -8,6 +12,7 @@
       <h4>
         <span ng-repeat="id in action.types">{{'COOPERATIVE_ACTION_TYPE_' + id | translate}}{{$last?'':', '}}</span>
       </h4>
+      </div>
       <p>
         {{action.date | date:"MMM yyyy"}}
         <span style="float:right" ng-show="action.comments.length > 0 && !action.showExtra && !canEditActions">
@@ -20,7 +25,7 @@
       {{action.description}}
     </p>
     <button ng-if="canEditActions" class="button button-info clearfix"
-                       ui-sref=".actionUpdate({id:action._id, action:action})">
+            ui-sref=".actionUpdate({id:action._id, action:action})">
       <i class="icon ion-edit"></i>
     </button>
 
