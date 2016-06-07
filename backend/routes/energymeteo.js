@@ -9,13 +9,13 @@ var querystring = require('querystring');
 var xml2js = require('xml2js');
 var auth = require('../middleware/auth');
 var Log = require('../models').logs;
-// var meteo = require('../models/meteohistory.js');
+var meteo = require('../models/meteohistory.js');
 var parser = new xml2js.Parser({
     explicitArray:false
 });
 
 /**
- * @api {get} /api/energymeteo/tou Request a series of energy meteo levels
+ * @api {get} /energymeteo/tou Request a series of energy meteo levels
  * @apiGroup Energymeteo
  *
  * @apiParam {String} municipalityId  Test location(trentino users) Id, either storo or sanLorenzo
@@ -86,7 +86,7 @@ router.get('/tou', auth.authenticate(), function(request, response,next) {
             
 });
 /**
- * @api {get} /api/energymeteo/tou/current Request the current energy meteo level
+ * @api {get} /energymeteo/tou/current Request the current energy meteo level
 * @apiGroup Energymeteo
  * @apiParam {String} municipalityId  Test location(trentino users) Id, either storo or sanLorenzo
  * @apiParam {String} token
@@ -122,17 +122,14 @@ router.get('/tou/current', auth.authenticate(), function(request, response, next
                     }).on('end',function(){
                         try{
                         data = JSON.parse(data);
-                        }
-                        catch(err){
-                            console.error("Error parsing current meteo data");
-                        }
                         if(data.hasOwnProperty('tarif')){
                             response.type('json').status('200').send(data);
                         }
-                        else{
+                        }
+                        catch(err){
+                            console.error("Error parsing current meteo data");
                             response.sendStatus(500);
                         }
-
                         Log.create({
                             category: 'Energy meteo current data',
                             type: 'get',
@@ -145,10 +142,12 @@ router.get('/tou/current', auth.authenticate(), function(request, response, next
                 response.sendStatus(500);
              });                    
                 });
-          requesttou.setTimeout(3000, function() {
-            });
 });
 /**
+The following script is used to retrieve all meteo data which are dumped from CN server.
+Used while we generate allusagepointsummary information
+*/
+/*
 router.get('/meteodata',auth.authenticate(),function(request,response,next){
     var municipalityId = request.query.municipalityId;
     var meteoHistory = [];
@@ -158,9 +157,11 @@ router.get('/meteodata',auth.authenticate(),function(request,response,next){
             meteoHistory.push(meteodata);
         });
         response.status(200).type('json').send(meteoHistory);
+    }else{
+        response.sendStatus(500);
     }
     });
-}); */
+});  */
 
 module.exports = router;
 

@@ -1,0 +1,23 @@
+<ion-view view-title={{"Green_Red_Cons"|translate}}>
+<ion-content  class="padding" overflow-scroll = "true">
+
+<div class="list card">
+  <div class="item item-divider">
+  <span translate>Consumption_Rate</span>
+   <span translate>from</span>
+
+  <span>
+  10-03    <span translate>to</span>
+ {{LastDateConsumptionRecord | date: "dd-MM"}}</span></div>
+  <div class="item item-text-wrap">
+<span>
+<div><highchart id="chart3" config="chartConfigPersonalConsumption"></highchart></div>
+ </span>
+ <hr>
+<span>
+ <div><highchart id="chart4" config="chartConfigCommunityConsumption"></highchart></div>
+  </span>
+ </div>
+</div>
+</ion-content>
+</ion-view>
