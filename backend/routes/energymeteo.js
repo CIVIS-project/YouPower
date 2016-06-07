@@ -9,7 +9,7 @@ var querystring = require('querystring');
 var xml2js = require('xml2js');
 var auth = require('../middleware/auth');
 var Log = require('../models').logs;
-var meteo = require('../models/meteohistory.js');
+// var meteo = require('../models/meteohistory.js');
 var parser = new xml2js.Parser({
     explicitArray:false
 });

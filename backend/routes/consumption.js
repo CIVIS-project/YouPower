@@ -665,26 +665,30 @@ router.get('/hourlyconsumption',auth.authenticate(),function(request,response,ne
  *  export API_TOKEN=fc35e6b2f27e0f5ef...
  *
  *  curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
- *[
+ *[[
  * { 
  *   "date": "2016-05-12T02:00:00+02:00", 
  *   "duration": "3600", 
  *   "consumption": 69.6736526489258, 
- *   "averagePower": "69.67"
+ *   "averagePower": "69.67",
+ *   "contractId": "0"
  *}, 
  *{ 
  *   "date": "2016-05-12T07:00:00+02:00", 
  *   "duration": "3600", 
  *   "consumption": 150.57075214386, 
- *   "averagePower": "150.57"
+ *   "averagePower": "150.57",
+ *   "contractId": "0"
  *}
- *]
+ *],'sanlorenzo']
+ *
  *  http://localhost:3000/api/consumption/addhourlyconsumption
  *
  */
 router.post('/addHourlyConsumption', auth.authenticate(), function(req,res,next){
     var hourlyConsumptionData = req.body;
     var output = [];
+    console.dir(hourlyConsumptionData);
     hourlyUsage.create(hourlyConsumptionData,function(err,result){
         res.end();
     });
