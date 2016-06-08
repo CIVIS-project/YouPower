@@ -3,7 +3,6 @@
 var mongoose = require('mongoose');
 var dateFormat = require('dateformat');
 var moment = require('moment');
-var momentTimeZone  = require('moment-timezone');
 var Schema = mongoose.Schema;
 
 /*
