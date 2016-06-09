@@ -652,6 +652,13 @@ router.get('/hourlyconsumption',auth.authenticate(),function(request,response,ne
     }else{
             response.sendStatus(404);
     }
+    Log.create({
+            category: 'Trentino hourly consumption request',
+            type: 'get',
+            data: {
+                consumptionData: result                                    }
+          });
+
     });
 });
 /**
@@ -688,7 +695,6 @@ router.get('/hourlyconsumption',auth.authenticate(),function(request,response,ne
 router.post('/addHourlyConsumption', auth.authenticate(), function(req,res,next){
     var hourlyConsumptionData = req.body;
     var output = [];
-    console.dir(hourlyConsumptionData);
     hourlyUsage.create(hourlyConsumptionData,function(err,result){
         res.end();
     });
@@ -724,6 +730,12 @@ router.get('/getUsagePointId',auth.authenticate(),function(request,response,next
         }else{
             response.sendStatus(404);
         }
+        Log.create({
+            category: 'Usage point Id request',
+            type: 'get',
+            data: {
+                consumptionData: apartmentID                                    }
+          });
     });
 });
 module.exports = router;
