@@ -39,6 +39,8 @@ angular.module('civis.youpower', [
   $rootScope.applicanceDataStore = [];
   $rootScope.chartConfigAppliance2 = [];
   $rootScope.energyWeatherDataVector=[];
+  $rootScope.chartConfigHistoryComparisonPersonal = [];
+  $rootScope.chartConfigHistoryComparison = [];
 
   // Making underscore available in the angular expressions
   $rootScope._=_;
@@ -368,6 +370,15 @@ angular.module('civis.youpower', [
     }
   }
 })
+.state('main.prosumption.vizConsComparision', {
+  url: '/vizConsumptionComparision',
+  views: {
+    'tab-prosumption-community': {
+    templateUrl: 'app/prosumption/viz_consumption_comparision.html',
+    controller: 'dataVizCtrl' ,
+    }
+  }
+})
 .state('main.prosumption.vizProduction', {
   url: '/viz2',
   views: {
@@ -390,7 +401,7 @@ angular.module('civis.youpower', [
 .state('main.prosumption.vizHistoricalComparison', {
   url: '/vizHistoricalComparison',
   views: {
-    'tab-prosumption-yours' : {
+    'tab-prosumption-community' : {
       templateUrl: 'app/prosumption/viz_historical_comparison.html',
       controller: 'dataVizCtrl',
     }
