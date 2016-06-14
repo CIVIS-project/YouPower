@@ -726,7 +726,7 @@ router.get('/getUsagePointId',auth.authenticate(),function(request,response,next
     apart.getApartmentID(contractId,function(err,a) {
         if(!err){
             apartmentID = a.ApartmentID;
-            response.type('json').status('200').send({apartmentID});
+            response.type('json').status('200').send({"apartmentID":apartmentID});
         }else{
             response.sendStatus(404);
         }
