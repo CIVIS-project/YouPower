@@ -1,23 +1,20 @@
-<ion-view view-title={{"Energy_Data"|translate}}>
-<ion-content  class="padding" overflow-scroll = "true">
+<ion-view view-title={{"Community_Power_Consumption"|translate}}>
+<ion-content overflow-scroll = "true" class="padding">
 
 <div class="list card">
-  <div class="item item-divider">
-  <span translate>Consumption_Rate</span>
-   <span translate>from</span>
-
-  <span>
-  10-03    <span translate>to</span>
- {{LastDateConsumptionRecord | date: "dd-MM"}}</span></div>
-  <div class="item item-text-wrap">
-<span>
-<div><highchart id="chart3" config="chartConfigPersonalConsumption"></highchart></div>
- </span>
- <hr>
-<span>
- <div><highchart id="chart3" config="chartConfigCommunityConsumption"></highchart></div>
-  </span>
- </div>
-</div>
+<ion-list>
+  <div class="item item-divider"><h1><span translate>Community_Power_Consumption</span></h1></div>
+  <!-- <div class="item item-text-wrap"> -->
+ <a class="item item-icon-right" ui-sref="main.prosumption.vizConsComparision"> <span translate>Green_Red_Cons</span> &nbsp  &nbsp  &nbsp<i class="icon-large ion-stats-bars"></i></a>
+   <div class="item item-divider"></div>
+ <label class="item item-input">
+  <span class="input-label"><b><span translate>Select_Date</span></b></span>
+  <input type="date" ng-model='params.startDateComp'>
+  </label>
+ <a  ng-class="{'disable-clickon-tabs':compareDates(params.startDateComp), 'item item-icon-right':true}" 	
+ 	ng-click='getHourlyConsumption(params.startDateComp)' 
+ 	ng-class="expression"> <span translate>Consumption_comparisions</span>  &nbsp  &nbsp  &nbsp<i class="icon-large ion-stats-bars"></i><br> <center><h3 ng-show=dataNotAvailable translate>Please_wait</h3></center>
+ 	</a>
+ 	</div>
 </ion-content>
 </ion-view>

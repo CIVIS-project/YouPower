@@ -12,4 +12,4 @@ exports.logs = require('./logs');
 exports.users = require('./users');
 exports.sensor = require('./sensor');
 exports.testbeds = require('./testbeds');
-exports.usagePoint = require('./usagePoint');
+exports.municipalityhourlyusage = require('./municipalityhourlyusage');
