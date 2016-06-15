@@ -21,7 +21,7 @@ var parser = new xml2js.Parser({
 
 
 /**
- * @api {get} /api/production Request a time series of production data
+ * @api {get} /production Request a time series of production data
  * @apiGroup Production
  * @apiParam {Number} userid ContractID
  * @apiParam {String} token
@@ -35,7 +35,7 @@ var parser = new xml2js.Parser({
  *
  *  curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
  *  '{
- *      "userid":104532,
+ *      "userid":9999,
  *      "from":2015-10-10,
  *      "to":2015-10-11
  *  }'\
@@ -118,8 +118,8 @@ router.get('/',auth.authenticate(),function(request,response,next){
                         response.error(e);
                     });
                 });
-                requestprod.setTimeout(3000, function() {
-                // console.log("waiting under appliance id");
+                requestprod.setTimeout(500, function() {
+                    requestprod.end();
             });
             
             }else {
@@ -132,7 +132,7 @@ router.get('/',auth.authenticate(),function(request,response,next){
 });
 
 /**
- * @api {get} /api/production/last Request the last production data
+ * @api {get} /production/last Request the last production data
  * @apiGroup Production
  * @apiParam {Number} userid ContractID
  * @apiParam {String} token
@@ -143,7 +143,7 @@ router.get('/',auth.authenticate(),function(request,response,next){
  *
  * curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
  *  '{
- *      "userid":104532,
+ *      "userid":9999,
  *  }'\
  *  http://localhost:3000/api/production/last
  *
@@ -203,7 +203,7 @@ router.get('/last',auth.authenticate(),function(request,response,next){
                                   });
 
                                 } else {
-                                    response.status('204').next();
+                                    response.status(400).send();
                                 }
                             } else {
                                 response.status(400).send(content.Message);
@@ -213,8 +213,8 @@ router.get('/last',auth.authenticate(),function(request,response,next){
                         response.error(e);
                     });
                 });
-            requestlast.setTimeout(3000, function() {
-                // console.log("waiting under production last");
+            requestlast.setTimeout(500, function() {
+                requestlast.end();
             });
            
             }else {
@@ -228,7 +228,7 @@ router.get('/last',auth.authenticate(),function(request,response,next){
 
 
 /**
- * @api {get} /api/hasProduction Check whether production is present for a given user
+ * @api {get} /hasProduction Check whether production is present for a given user
  * @apiGroup Production
  * @apiParam {Number} userid ContractID
  * @apiParam {String} token
@@ -239,7 +239,7 @@ router.get('/last',auth.authenticate(),function(request,response,next){
  *
  * curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
  *  '{
- *      "userid":104532,
+ *      "userid":9999,
  *  }'\
  *  http://localhost:3000/api/hasProduction
  *
