@@ -20,7 +20,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
   $scope.energyGraphSettings = {
     granularity: "monthly",
     compareTo: "",
-    type: "electricity",
+    type: "heating",
     unit: "kWh/m<sup>2</sup>",
     granularities: ['monthly','yearly'],
     types: [{
