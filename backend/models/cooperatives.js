@@ -61,7 +61,10 @@ var CooperativeSchema = new Schema({
     area: Number
   }],
   editors: [{
-      editorId: Schema.Types.ObjectId,
+      editorId: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+      },
       name: String,
   }],
   extraInfo: Schema.Types.Mixed
@@ -458,6 +461,27 @@ exports.addMeter = function(id, meterId, type, useInCalc, cb) {
   })
 }
 
+exports.removeMeter = function(id, mId, cb) {
+  Cooperative.findOne({
+    _id:id
+  },function(err,cooperative){
+    if(err) {
+      cb(err);
+    } else if (!cooperative){
+      cb('Cooperative not found');
+    } else {
+      cooperative.meters.pull({
+        _id:mId
+      });
+      cooperative.markModified('meters');
+      cooperative.save(function(err){
+        cb(err,cooperative);
+      })
+    }
+  })
+}
+
+
 exports.getConsumption = function(id, type, granularity, from, to, cb) {
   Cooperative.findOne({
     _id:id
@@ -473,7 +497,9 @@ exports.getConsumption = function(id, type, granularity, from, to, cb) {
 }
 
 exports.getAll = function(cb){
-  Cooperative.find({},cb);
+  Cooperative.find({})
+    .populate('editors.editorId','profile')
+    .exec(cb);
 }
 
 

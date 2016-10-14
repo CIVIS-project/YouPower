@@ -745,4 +745,8 @@ exports.getSmappeeUsers = function(cb) {
   })
 }
 
+
+exports.getAllUsers = function(cb) {
+  User.find({},cb);
+}
 exports.model = User;

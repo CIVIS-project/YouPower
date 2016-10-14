@@ -1,0 +1,31 @@
+<div class="modal-header">
+  <button type="button" class="close" ng-click="$dismiss()"><span aria-hidden="true">&times;</span></button>
+  <h4 class="modal-title">Add meters</h4>
+</div>
+<div class="modal-body">
+  <input ng-model="search" type="text" class="form-control" placeholder="Search by name or email">
+  <table class="table table-condensed ">
+    <tr>
+      <th>#</th>
+      <th>Name</th>
+      <th>Email</th>
+      <th></th>
+    </tr>
+    <tr ng-repeat="c in users | filter:search">
+      <td>{{$index + 1}}</td>
+      <td>
+        {{c.profile.name}}
+      </td>
+      <td>
+        {{c.email}}
+      </td>
+      <td>
+        <button type="button" class="btn btn-primary" ng-click="save(c)" >Add</button>
+      </td>
+    </tr>
+  </table>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" ng-click="$dismiss()">Close</button>
+  <span class="text-danger">{{error}}</span>
+</div>

@@ -65,6 +65,15 @@ angular.module('civis.youpower.admin', [
       household: null
     },
   })
+  .state('main.cooperatives',{
+    url: "/cooperatives",
+    templateUrl: "templates/cooperatives.html",
+    controller: 'CooperativesController',
+    params: {
+      household: null
+    },
+  })
+
 
   //$urlRouterProvider.otherwise('/app/actions/yours');
   $urlRouterProvider.otherwise('');
@@ -126,7 +135,8 @@ angular.module('civis.youpower.admin', [
       templateUrl: "templates/addMeterModal.html",
       controller: 'MeterAddController',
       resolve: {
-        household: function() {return household}
+        item: function() {return household},
+        type: function() {return 'households'}
       }
     }).result.then(function(result){
       angular.extend(household,result);
@@ -168,7 +178,7 @@ angular.module('civis.youpower.admin', [
 
 })
 
-.controller('MeterAddController', function($scope, $timeout, $uibModalInstance, $http, Config, Household, household){
+.controller('MeterAddController', function($scope, $timeout, $uibModalInstance, $http, Config, item, type){
   $scope.type = 'electricity';
   $http.get("https://app.energimolnet.se/api/2.0/meters?active=true",{
     headers: {
@@ -183,10 +193,14 @@ angular.module('civis.youpower.admin', [
     $scope.working = true;
     var meterData = {
       id: $scope.meterId,
-      type: 'electricity',
-      source: 'energimolnet'
+      type: 'electricity'
     }
-    $http.post(Config.host + '/api/admin/households/' + household._id + "/meters", meterData).then(function(response){
+    if( type == 'households') {
+      meterData.source = 'energimolnet'
+    } else {
+      meterData.useInCalc = true
+    }
+    $http.post(Config.host + '/api/admin/' + type  + '/' + item._id + "/meters", meterData).then(function(response){
       $uibModalInstance.close(response.data);
     },function(response){
       $scope.error = response.data;
@@ -223,5 +237,78 @@ angular.module('civis.youpower.admin', [
   $scope.message = message;
 })
 
+.controller('CooperativesController', function($scope,$http,$uibModal,Config) {
+  $http.get(Config.host + '/api/admin/cooperatives').then(function(response){
+    $scope.cooperatives = response.data;
+  })
+
+  $scope.addMeter = function(cooperative) {
+    $uibModal.open({
+      templateUrl: "templates/addMeterModal.html",
+      controller: 'MeterAddController',
+      resolve: {
+        item: function() {return cooperative},
+        type: function() {return 'cooperatives'}
+      }
+    }).result.then(function(result){
+      angular.extend(cooperative,result);
+    })
+  }
+
+  $scope.removeMeter = function(cooperative, meter){
+    $uibModal.open({
+      templateUrl: "templates/deleteConfirmationModal.html",
+      controller: 'DeleteModalController',
+      resolve: {
+        message: function() {return 'the meter: ' + meter.meterId}
+      }
+    }).result.then(function(){
+      $http.delete(Config.host + '/api/admin/cooperatives/' + cooperative._id + "/meters/" + meter._id).then(function(response){
+        angular.extend(cooperative,response.data)
+      });
+    });
+  }
+
+  $scope.addAdmin = function(cooperative) {
+    $uibModal.open({
+      templateUrl: "templates/addAdminModal.html",
+      controller: 'AdminAddController',
+      resolve: {
+        cooperative: function() {return cooperative}
+      }
+    }).result.then(function(result){
+      angular.extend(cooperative,result);
+    })
+  }
 
 
+  $scope.removeAdmin = function(cooperative, editor){
+    $http.delete(Config.host + '/api/admin/cooperatives/' + cooperative._id + "/editor/" + editor._id).then(function(response){
+      angular.extend(cooperative,response.data)
+    });
+  }
+
+})
+
+.controller('AdminAddController', function($scope, $timeout, $uibModalInstance, $http, Config, cooperative){
+  $http.get(Config.host + '/api/admin/users/').then(function(response){
+    $scope.users= _.reject(response.data,function(user){
+      return _.findWhere(cooperative.editors,{editorId:user._id});
+    });
+  })
+
+  $scope.save = function (user){
+    $scope.error;
+    $scope.working = true;
+    var data = {
+      editorId:user._id
+    }
+    $http.post(Config.host + '/api/admin/cooperatives/' + cooperative._id + "/editor", data).then(function(response){
+      $uibModalInstance.close(response.data);
+    },function(response){
+      $scope.error = response.data;
+    }).finally(function(){
+      $scope.working = false;
+    })
+  }
+})

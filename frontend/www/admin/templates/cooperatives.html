@@ -1,0 +1,36 @@
+
+<table class="table table-condensed">
+  <tr>
+    <th>#</th>
+    <th>Cooperative</th>
+    <th>Admins</th>
+    <th>Meters</th>
+  </tr>
+  <tr ng-repeat="c in cooperatives">
+    <td>{{$index + 1}}</td>
+    <td>
+      {{c.name}}
+    </td>
+    <td>
+      <div ng-repeat="user in c.editors" style="border-bottom: 1px solid #bbb; margin-bottom: 5px;">
+        <button class="btn btn-link" ng-click="removeAdmin(c,user)"><i class="fa fa-trash"></i></button>
+        {{user.editorId.profile.name || user.name}}<br>
+      </div>
+      <button class="btn btn-success btn-xs" ng-click="addAdmin(c)">
+        Add
+      </button>
+    </td>
+    <td>
+      <div ng-repeat="m in c.meters" style="border-bottom: 1px solid #bbb; margin-bottom: 5px;">
+        <button class="btn btn-link" ng-click="removeMeter(c,m)"><i class="fa fa-trash"></i></button>
+        <b>{{m.mType}}</b>: {{m.meterId}}, {{m.useInCalc}}<br>
+      </div>
+      <button class="btn btn-success btn-xs" ng-click="addMeter(c)">
+        Add
+      </button>
+      <button class="btn btn-default btn-xs" ng-click="previewData(c)">
+        Preview data
+      </button>
+    </td>
+  </tr>
+</table>
