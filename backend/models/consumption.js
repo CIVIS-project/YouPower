@@ -237,7 +237,7 @@ var getConsumptionFromAPI = function(meterId, granularity, from, to, cb) {
   var to = to ? '-' + to : '';
   console.log(meterId,granularity,from,to);
   request({
-    url: 'https://app.energimolnet.se/api/2.0/consumptions/'+ meterId + '/' + granularity + '/' + from + to + '/',
+    url: 'https://app.metry.io/api/2.0/consumptions/'+ meterId + '/' + granularity + '/' + from + to + '/',
     headers: energimolnetHeaders
   },function(error, response, body){
     if(!error && response.statusCode == 200) {

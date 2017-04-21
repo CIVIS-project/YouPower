@@ -180,7 +180,7 @@ angular.module('civis.youpower.admin', [
 
 .controller('MeterAddController', function($scope, $timeout, $uibModalInstance, $http, Config, item, type){
   $scope.type = 'electricity';
-  $http.get("https://app.energimolnet.se/api/2.0/meters?active=true",{
+  $http.get("https://app.metry.io/api/2.0/meters?active=true",{
     headers: {
       'Authorization': 'OAuth a4f4e751401477d5e3f1c68805298aef9807c0eae1b31db1009e2ee90c6e'
     }
